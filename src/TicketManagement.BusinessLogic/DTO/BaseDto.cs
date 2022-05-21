@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TicketManagement.DataAccess.Entities
+namespace TicketManagement.BusinessLogic.DTO
 {
-    public abstract class BaseEntity : IEqualityComparer<BaseEntity>
+    public abstract class BaseDto : IEqualityComparer<BaseDto>
     {
         private readonly List<BusinessRule> _brokenRules = new List<BusinessRule>();
         public Guid Id { get; set; }
@@ -22,7 +22,7 @@ namespace TicketManagement.DataAccess.Entities
             _brokenRules.Add(businessRule);
         }
 
-        public bool Equals(BaseEntity entity1, BaseEntity entity2)
+        public bool Equals(BaseDto entity1, BaseDto entity2)
         {
             if (entity1 == null && entity2 == null)
             {
@@ -42,7 +42,7 @@ namespace TicketManagement.DataAccess.Entities
             return false;
         }
 
-        public int GetHashCode(BaseEntity obj)
+        public int GetHashCode(BaseDto obj)
         {
             if (obj is null)
             {

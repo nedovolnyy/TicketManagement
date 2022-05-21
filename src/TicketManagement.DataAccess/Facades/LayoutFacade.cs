@@ -8,10 +8,10 @@ namespace TicketManagement.DataAccess.Facades
 {
     public class LayoutFacade
     {
-        private readonly ILayoutRepository _layoutRepository;
+        private readonly IRepository<Layout> _layoutRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public LayoutFacade(ILayoutRepository repository, IUnitOfWork uow)
+        public LayoutFacade(IRepository<Layout> repository, IUnitOfWork uow)
         {
             _layoutRepository = repository;
             _unitOfWork = uow;

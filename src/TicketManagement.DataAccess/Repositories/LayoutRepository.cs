@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
+    public class LayoutRepository : BaseRepository<Layout>, IRepository<Layout>
     {
         public LayoutRepository(IUnitOfWork uow)
             : base(uow)
@@ -68,8 +68,8 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    layout.Id = Convert.ToInt32(reader["Id"].ToString());
-                    layout.VenueId = Convert.ToInt32(reader["VenueId"].ToString());
+                    layout.Id = Guid.Parse(reader["Id"].ToString());
+                    layout.VenueId = Guid.Parse(reader["VenueId"].ToString());
                     layout.Description = reader["Description"].ToString();
                 }
             }
@@ -90,8 +90,8 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     Layout layout = new Layout();
-                    layout.Id = Convert.ToInt32(reader["Id"].ToString());
-                    layout.VenueId = Convert.ToInt32(reader["VenueId"].ToString());
+                    layout.Id = Guid.Parse(reader["Id"].ToString());
+                    layout.VenueId = Guid.Parse(reader["VenueId"].ToString());
                     layout.Description = reader["Description"].ToString();
                     areas.Add(layout);
                 }

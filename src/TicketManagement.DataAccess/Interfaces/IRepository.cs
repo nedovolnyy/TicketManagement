@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using TicketManagement.DataAccess.Entities;
 
 namespace TicketManagement.DataAccess.Interfaces

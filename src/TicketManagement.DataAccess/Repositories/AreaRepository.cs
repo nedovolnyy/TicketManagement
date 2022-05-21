@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class AreaRepository : BaseRepository<Area>, IAreaRepository
+    public class AreaRepository : BaseRepository<Area>, IRepository<Area>
     {
         public AreaRepository(IUnitOfWork uow)
             : base(uow)
@@ -72,8 +72,8 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    area.Id = Convert.ToInt32(reader["Id"].ToString());
-                    area.LayoutId = Convert.ToInt32(reader["LayoutId"].ToString());
+                    area.Id = Guid.Parse(reader["Id"].ToString());
+                    area.LayoutId = Guid.Parse(reader["LayoutId"].ToString());
                     area.Description = reader["Description"].ToString();
                     area.CoordX = Convert.ToInt32(reader["CoordX"].ToString());
                     area.CoordY = Convert.ToInt32(reader["CoordY"].ToString());
@@ -96,8 +96,8 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     Area area = new Area();
-                    area.Id = Convert.ToInt32(reader["Id"].ToString());
-                    area.LayoutId = Convert.ToInt32(reader["LayoutId"].ToString());
+                    area.Id = Guid.Parse(reader["Id"].ToString());
+                    area.LayoutId = Guid.Parse(reader["LayoutId"].ToString());
                     area.Description = reader["Description"].ToString();
                     area.CoordX = Convert.ToInt32(reader["CoordX"].ToString());
                     area.CoordY = Convert.ToInt32(reader["CoordY"].ToString());

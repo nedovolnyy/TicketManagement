@@ -1,10 +1,15 @@
-﻿namespace TicketManagement.BusinessLogic.DTO
+﻿using System;
+
+namespace TicketManagement.BusinessLogic.DTO
 {
-    public class SeatDTO
+    public class SeatDto : BaseDto
     {
-        public int Id { get; set; }
-        public int AreaId { get; set; }
+        public Guid AreaId { get; set; }
         public int Row { get; set; }
         public int Number { get; set; }
+        protected override void Validate()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

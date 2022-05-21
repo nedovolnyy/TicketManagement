@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class VenueRepository : BaseRepository<Venue>, IVenueRepository
+    public class VenueRepository : BaseRepository<Venue>, IRepository<Venue>
     {
         public VenueRepository(IUnitOfWork uow)
             : base(uow)
@@ -70,7 +70,7 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    venue.Id = Convert.ToInt32(reader["Id"].ToString());
+                    venue.Id = Guid.Parse(reader["Id"].ToString());
                     venue.Description = reader["Description"].ToString();
                     venue.Address = reader["Address"].ToString();
                     venue.Phone = reader["Phone"].ToString();
@@ -93,7 +93,7 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     Venue venue = new Venue();
-                    venue.Id = Convert.ToInt32(reader["Id"].ToString());
+                    venue.Id = Guid.Parse(reader["Id"].ToString());
                     venue.Description = reader["Description"].ToString();
                     venue.Address = reader["Address"].ToString();
                     venue.Phone = reader["Phone"].ToString();

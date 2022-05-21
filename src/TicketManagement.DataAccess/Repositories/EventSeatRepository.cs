@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
+    public class EventSeatRepository : BaseRepository<EventSeat>, IRepository<EventSeat>
     {
         public EventSeatRepository(IUnitOfWork uow)
             : base(uow)
@@ -72,8 +72,8 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    eventSeat.Id = Convert.ToInt32(reader["Id"].ToString());
-                    eventSeat.EventAreaId = Convert.ToInt32(reader["EventAreaId"].ToString());
+                    eventSeat.Id = Guid.Parse(reader["Id"].ToString());
+                    eventSeat.EventAreaId = Guid.Parse(reader["EventAreaId"].ToString());
                     eventSeat.Row = Convert.ToInt32(reader["Row"].ToString());
                     eventSeat.Number = Convert.ToInt32(reader["Number"].ToString());
                     eventSeat.State = Convert.ToInt32(reader["State"].ToString());
@@ -96,8 +96,8 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     EventSeat eventSeat = new EventSeat();
-                    eventSeat.Id = Convert.ToInt32(reader["Id"].ToString());
-                    eventSeat.EventAreaId = Convert.ToInt32(reader["EventAreaId"].ToString());
+                    eventSeat.Id = Guid.Parse(reader["Id"].ToString());
+                    eventSeat.EventAreaId = Guid.Parse(reader["EventAreaId"].ToString());
                     eventSeat.Row = Convert.ToInt32(reader["Row"].ToString());
                     eventSeat.Number = Convert.ToInt32(reader["Number"].ToString());
                     eventSeat.State = Convert.ToInt32(reader["State"].ToString());

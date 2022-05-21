@@ -8,10 +8,10 @@ namespace TicketManagement.DataAccess.Facades
 {
     public class VenueFacade
     {
-        private readonly IVenueRepository _venueRepository;
+        private readonly IRepository<Venue> _venueRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public VenueFacade(IVenueRepository repository, IUnitOfWork uow)
+        public VenueFacade(IRepository<Venue> repository, IUnitOfWork uow)
         {
             _venueRepository = repository;
             _unitOfWork = uow;

@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
+    public class EventAreaRepository : BaseRepository<EventArea>, IRepository<EventArea>
     {
         public EventAreaRepository(IUnitOfWork uow)
             : base(uow)
@@ -74,8 +74,8 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    eventArea.Id = Convert.ToInt32(reader["Id"].ToString());
-                    eventArea.EventId = Convert.ToInt32(reader["EventId"].ToString());
+                    eventArea.Id = Guid.Parse(reader["Id"].ToString());
+                    eventArea.EventId = Guid.Parse(reader["EventId"].ToString());
                     eventArea.Description = reader["Description"].ToString();
                     eventArea.CoordX = Convert.ToInt32(reader["CoordX"].ToString());
                     eventArea.CoordY = Convert.ToInt32(reader["CoordY"].ToString());
@@ -99,8 +99,8 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     EventArea eventArea = new EventArea();
-                    eventArea.Id = Convert.ToInt32(reader["Id"].ToString());
-                    eventArea.EventId = Convert.ToInt32(reader["EventId"].ToString());
+                    eventArea.Id = Guid.Parse(reader["Id"].ToString());
+                    eventArea.EventId = Guid.Parse(reader["EventId"].ToString());
                     eventArea.Description = reader["Description"].ToString();
                     eventArea.CoordX = Convert.ToInt32(reader["CoordX"].ToString());
                     eventArea.CoordY = Convert.ToInt32(reader["CoordY"].ToString());

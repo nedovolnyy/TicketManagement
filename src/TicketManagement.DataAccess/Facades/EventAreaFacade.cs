@@ -8,10 +8,10 @@ namespace TicketManagement.DataAccess.Facades
 {
     public class EventAreaFacade
     {
-        private readonly IEventAreaRepository _eventEventAreaRepository;
+        private readonly IRepository<EventArea> _eventEventAreaRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public EventAreaFacade(IEventAreaRepository repository, IUnitOfWork uow)
+        public EventAreaFacade(IRepository<EventArea> repository, IUnitOfWork uow)
         {
             _eventEventAreaRepository = repository;
             _unitOfWork = uow;

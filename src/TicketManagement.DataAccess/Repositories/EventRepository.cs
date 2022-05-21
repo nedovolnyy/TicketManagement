@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventRepository : BaseRepository<Event>, IEventRepository
+    public class EventRepository : BaseRepository<Event>, IRepository<Event>
     {
         public EventRepository(IUnitOfWork uow)
             : base(uow)
@@ -70,10 +70,10 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    evnt.Id = Convert.ToInt32(reader["Id"].ToString());
+                    evnt.Id = Guid.Parse(reader["Id"].ToString());
                     evnt.Name = reader["Name"].ToString();
                     evnt.Description = reader["Description"].ToString();
-                    evnt.LayoutId = Convert.ToInt32(reader["LayoutId"].ToString());
+                    evnt.LayoutId = Guid.Parse(reader["LayoutId"].ToString());
                 }
             }
 
@@ -93,10 +93,10 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     Event evnt = new Event();
-                    evnt.Id = Convert.ToInt32(reader["Id"].ToString());
+                    evnt.Id = Guid.Parse(reader["Id"].ToString());
                     evnt.Name = reader["Name"].ToString();
                     evnt.Description = reader["Description"].ToString();
-                    evnt.LayoutId = Convert.ToInt32(reader["LayoutId"].ToString());
+                    evnt.LayoutId = Guid.Parse(reader["LayoutId"].ToString());
                     evnts.Add(evnt);
                 }
             }

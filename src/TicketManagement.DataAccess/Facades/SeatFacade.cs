@@ -8,10 +8,10 @@ namespace TicketManagement.DataAccess.Facades
 {
     public class SeatFacade
     {
-        private readonly ISeatRepository _seatRepository;
+        private readonly IRepository<Seat> _seatRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public SeatFacade(ISeatRepository repository, IUnitOfWork uow)
+        public SeatFacade(IRepository<Seat> repository, IUnitOfWork uow)
         {
             _seatRepository = repository;
             _unitOfWork = uow;

@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class SeatRepository : BaseRepository<Seat>, ISeatRepository
+    public class SeatRepository : BaseRepository<Seat>, IRepository<Seat>
     {
         public SeatRepository(IUnitOfWork uow)
             : base(uow)
@@ -70,8 +70,8 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    seat.Id = Convert.ToInt32(reader["Id"].ToString());
-                    seat.AreaId = Convert.ToInt32(reader["AreaId"].ToString());
+                    seat.Id = Guid.Parse(reader["Id"].ToString());
+                    seat.AreaId = Guid.Parse(reader["AreaId"].ToString());
                     seat.Row = Convert.ToInt32(reader["Row"].ToString());
                     seat.Number = Convert.ToInt32(reader["Number"].ToString());
                 }
@@ -93,8 +93,8 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     Seat seat = new Seat();
-                    seat.Id = Convert.ToInt32(reader["Id"].ToString());
-                    seat.AreaId = Convert.ToInt32(reader["AreaId"].ToString());
+                    seat.Id = Guid.Parse(reader["Id"].ToString());
+                    seat.AreaId = Guid.Parse(reader["AreaId"].ToString());
                     seat.Row = Convert.ToInt32(reader["Row"].ToString());
                     seat.Number = Convert.ToInt32(reader["Number"].ToString());
                     seats.Add(seat);

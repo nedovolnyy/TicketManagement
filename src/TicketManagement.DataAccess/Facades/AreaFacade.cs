@@ -8,10 +8,10 @@ namespace TicketManagement.DataAccess.Facades
 {
     public class AreaFacade
     {
-        private readonly IAreaRepository _areaRepository;
+        private readonly IRepository<Area> _areaRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AreaFacade(IAreaRepository repository, IUnitOfWork uow)
+        public AreaFacade(IRepository<Area> repository, IUnitOfWork uow)
         {
             _areaRepository = repository;
             _unitOfWork = uow;
