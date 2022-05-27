@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30330.147
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{502C7BF9-0688-4EB0-ADDE-BE35C207FA89}"
 EndProject
@@ -24,6 +24,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.DataAccess", "src\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj", "{B3C3A030-1814-4DDA-A717-450DB031934A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.IntegrationTests", "test\TicketManagement.IntegrationTests\TicketManagement.IntegrationTests.csproj", "{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsoleApp1", "TestConsoleApp1\TestConsoleApp1.csproj", "{1962191F-AABA-4F4D-A131-BDFE098B1A3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{F17C1AB0-BCDA-4FFE-BCA2-6827C9EDEB91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketManagement.Common", "src\TicketManagement.Common\TicketManagement.Common.csproj", "{16E7A392-F4DD-4E70-94E6-929CDFF2CF96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +59,14 @@ Global
 		{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1962191F-AABA-4F4D-A131-BDFE098B1A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1962191F-AABA-4F4D-A131-BDFE098B1A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1962191F-AABA-4F4D-A131-BDFE098B1A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1962191F-AABA-4F4D-A131-BDFE098B1A3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16E7A392-F4DD-4E70-94E6-929CDFF2CF96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16E7A392-F4DD-4E70-94E6-929CDFF2CF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16E7A392-F4DD-4E70-94E6-929CDFF2CF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16E7A392-F4DD-4E70-94E6-929CDFF2CF96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +77,8 @@ Global
 		{043F49A7-7253-4F37-8E49-C4E6CDFFB798} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 		{B3C3A030-1814-4DDA-A717-450DB031934A} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 		{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7} = {9C280FDA-A325-4950-B4A6-33CE274C6EC2}
+		{1962191F-AABA-4F4D-A131-BDFE098B1A3C} = {9C280FDA-A325-4950-B4A6-33CE274C6EC2}
+		{16E7A392-F4DD-4E70-94E6-929CDFF2CF96} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCBA386-043C-4C32-82A6-14ABB78C7FEC}

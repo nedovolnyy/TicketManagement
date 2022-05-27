@@ -1,34 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using TicketManagement.DataAccess.Entities;
+using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     public class LayoutRepository : BaseRepository<Layout>, IRepository<Layout>
     {
-        public LayoutRepository(IUnitOfWork uow)
-            : base(uow)
+        public LayoutRepository()
+            : base()
         {
         }
 
-        /// <summary>
-        /// Passes the parameters for Insert Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
+        protected override string ActionToSqlString(char action) => action switch
+        {
+            'I' => "INSERT INTO Layout (VenueId, Description) VALUES (@VenueId, @Description);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
+            'U' => "UPDATE Layout SET VenueId = @VenueId, Description = @Description Where Id = @Id",
+            'D' => "DELETE FROM Layout WHERE Id = @Id",
+            'G' => "SELECT * FROM Layout WHERE Id = @Id",
+            'A' => "SELECT * FROM Layout",
+            _ => ""
+        };
+
         protected override void InsertCommandParameters(Layout entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@VenueId", entity.VenueId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
         }
 
-        /// <summary>
-        /// Passes the parameters for Update Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
         protected override void UpdateCommandParameters(Layout entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
@@ -36,31 +36,16 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Description", entity.Description);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for Delete Statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void DeleteCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for populate by key statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Maps data for populate by key statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override Layout Map(SqlDataReader reader)
         {
             Layout layout = new Layout();
@@ -68,20 +53,15 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    layout.Id = Guid.Parse(reader["Id"].ToString());
-                    layout.VenueId = Guid.Parse(reader["VenueId"].ToString());
-                    layout.Description = reader["Description"].ToString();
+                    layout = new Layout(id: int.Parse(reader["Id"].ToString()),
+                                        venueId: int.Parse(reader["VenueId"].ToString()),
+                                        description: reader["Description"].ToString());
                 }
             }
 
             return layout;
         }
 
-        /// <summary>
-        /// Maps data for populate all statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override List<Layout> Maps(SqlDataReader reader)
         {
             List<Layout> areas = new List<Layout>();
@@ -89,10 +69,9 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    Layout layout = new Layout();
-                    layout.Id = Guid.Parse(reader["Id"].ToString());
-                    layout.VenueId = Guid.Parse(reader["VenueId"].ToString());
-                    layout.Description = reader["Description"].ToString();
+                    Layout layout = new Layout(id: int.Parse(reader["Id"].ToString()),
+                                        venueId: int.Parse(reader["VenueId"].ToString()),
+                                        description: reader["Description"].ToString());
                     areas.Add(layout);
                 }
             }

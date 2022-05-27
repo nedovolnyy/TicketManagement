@@ -1,25 +1,32 @@
-﻿using TicketManagement.BusinessLogic.Assembler;
-using TicketManagement.BusinessLogic.DTO;
+﻿using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.DataAccess.Facades;
+using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class LayoutService : IService<LayoutDto>
+    public class LayoutService : IService<Layout>
     {
-        private readonly LayoutFacade _layoutFacade;
-        private readonly LayoutAssembler _layoutAssembler;
+        private readonly LayoutRepository _layoutRepository;
 
-        public LayoutService(LayoutFacade layoutFacade, LayoutAssembler layoutAssembler)
+        public LayoutService()
         {
-            _layoutFacade = layoutFacade;
-            _layoutAssembler = layoutAssembler;
+            _layoutRepository = new LayoutRepository();
         }
 
-        public LayoutDto Get(int id)
-        {
-            var layoutDto = _layoutFacade.GetById(id);
-            return _layoutAssembler.WriteDto(layoutDto);
-        }
+        public void Insert(Layout dto) =>
+            _layoutRepository.Insert(dto);
+
+        public void Update(Layout dto) =>
+            _layoutRepository.Update(dto);
+
+        public void Delete(int id) =>
+            _layoutRepository.Delete(id);
+
+        public Layout GetById(int id) =>
+            _layoutRepository.GetById(id);
+
+        public IEnumerable<Layout> GetAll() =>
+            _layoutRepository.GetAll();
     }
 }

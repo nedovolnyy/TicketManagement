@@ -2,48 +2,39 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using TicketManagement.DataAccess.Entities;
+using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     public abstract class BaseRepository<T> : IRepository<T>
-        where T : BaseEntity, IAggregateRoot, new()
+        where T : BaseEntity, new()
     {
-        private readonly SqlConnection _conn;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseRepository{T}"/> class.
-        /// Initialize the connection.
-        /// </summary>
-        /// <param name="uow">UnitOfWork.</param>
-        protected BaseRepository(IUnitOfWork uow)
-        {
-            IUnitOfWork unitOfWork;
-            unitOfWork = uow
-                ?? throw new ArgumentNullException("uow");
-            _conn = unitOfWork.DataContext.Connection;
-        }
-
         /// <summary>
         /// Base Method for Insert Data.
         /// </summary>
         /// <param name="entity">entity.</param>
-        /// <param name="insertSql">insertSql.</param>
-        /// <param name="sqlTransaction">sqlTransaction.</param>
-        /// <returns>0 - bad, !0 - good.</returns>
-        public int Insert(T entity, string insertSql, SqlTransaction sqlTransaction)
+        /// <returns>Count changed columns.</returns>
+        public int Insert(T entity)
         {
             int i = 0;
             try
             {
-                using (var cmd = _conn.CreateCommand())
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
                 {
-                    cmd.CommandText = insertSql;
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Transaction = sqlTransaction;
-                    InsertCommandParameters(entity, cmd);
-                    i = cmd.ExecuteNonQuery();
+                    using (var sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (var cmd = sqlConnection.CreateCommand())
+                        {
+                            cmd.CommandText = ActionToSqlString('I');
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Transaction = sqlTransaction;
+                            InsertCommandParameters(entity, cmd);
+                            i = cmd.ExecuteNonQuery();
+                            sqlTransaction.Commit();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -58,19 +49,32 @@ namespace TicketManagement.DataAccess.Repositories
         /// Base Method for Update Data.
         /// </summary>
         /// <param name="entity">entity.</param>
-        /// <param name="updateSql">updateSql.</param>
-        /// <param name="sqlTransaction">sqlTransaction.</param>
-        /// <returns>0 - bad, !0 - good.</returns>
-        public int Update(T entity, string updateSql, SqlTransaction sqlTransaction)
+        /// <returns>Count changed columns.</returns>
+        public int Update(T entity)
         {
             int i = 0;
-            using (var cmd = _conn.CreateCommand())
+            try
             {
-                cmd.CommandText = updateSql;
-                cmd.CommandType = CommandType.Text;
-                cmd.Transaction = sqlTransaction;
-                UpdateCommandParameters(entity, cmd);
-                i = cmd.ExecuteNonQuery();
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (var cmd = sqlConnection.CreateCommand())
+                        {
+                            cmd.CommandText = ActionToSqlString('U');
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Transaction = sqlTransaction;
+                            UpdateCommandParameters(entity, cmd);
+                            i = cmd.ExecuteNonQuery();
+
+                            sqlTransaction.Commit();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return i;
@@ -80,19 +84,32 @@ namespace TicketManagement.DataAccess.Repositories
         /// Base Method for Delete Data.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <param name="deleteSql">deleteSql.</param>
-        /// <param name="sqlTransaction">sqlTransaction.</param>
-        /// <returns>0 - bad, !0 - good.</returns>
-        public int Delete(int id, string deleteSql, SqlTransaction sqlTransaction)
+        /// <returns>Count changed columns.</returns>
+        public int Delete(int id)
         {
             int i = 0;
-            using (var cmd = _conn.CreateCommand())
+            try
             {
-                cmd.CommandText = deleteSql;
-                cmd.CommandType = CommandType.Text;
-                cmd.Transaction = sqlTransaction;
-                DeleteCommandParameters(id, cmd);
-                i = cmd.ExecuteNonQuery();
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var sqlTransaction = sqlConnection.BeginTransaction())
+                    {
+                        using (var cmd = sqlConnection.CreateCommand())
+                        {
+                            cmd.CommandText = ActionToSqlString('D');
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Transaction = sqlTransaction;
+                            DeleteCommandParameters(id, cmd);
+                            i = cmd.ExecuteNonQuery();
+
+                            sqlTransaction.Commit();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
 
             return i;
@@ -102,40 +119,59 @@ namespace TicketManagement.DataAccess.Repositories
         /// Base Method for Populate Data by key.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <param name="getByIdSql">getByIdSql.</param>
-        /// <returns>Entity by Id.</returns>
-        public T GetById(int id, string getByIdSql)
+        /// <returns>Get Entity by Id.</returns>
+        public T GetById(int id)
         {
-            using (var cmd = _conn.CreateCommand())
+            try
             {
-                cmd.CommandText = getByIdSql;
-                cmd.CommandType = CommandType.Text;
-                GetByIdCommandParameters(id, cmd);
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
                 {
-                    return Map(reader);
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('G');
+                        cmd.CommandType = CommandType.Text;
+                        GetByIdCommandParameters(id, cmd);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            return Map(reader);
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
         /// <summary>
         /// Base Method for Populate All Data.
         /// </summary>
-        /// <param name="getAllSql">getAllSql.</param>
         /// <returns>Get all.</returns>
-        public IEnumerable<T> GetAll(string getAllSql)
+        public IEnumerable<T> GetAll()
         {
-            using (var cmd = _conn.CreateCommand())
+            try
             {
-                cmd.CommandText = getAllSql;
-                cmd.CommandType = CommandType.Text;
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
                 {
-                    return Maps(reader);
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('A');
+                        cmd.CommandType = CommandType.Text;
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            return Maps(reader);
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
+        protected abstract string ActionToSqlString(char action);
         protected abstract void InsertCommandParameters(T entity, SqlCommand cmd);
         protected abstract void UpdateCommandParameters(T entity, SqlCommand cmd);
         protected abstract void DeleteCommandParameters(int id, SqlCommand cmd);

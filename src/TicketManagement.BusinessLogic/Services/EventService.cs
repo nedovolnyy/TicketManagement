@@ -1,25 +1,32 @@
-﻿using TicketManagement.BusinessLogic.Assembler;
-using TicketManagement.BusinessLogic.DTO;
+﻿using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.DataAccess.Facades;
+using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class EventService : IService<EventDto>
+    public class EventService : IService<Event>
     {
-        private readonly EventFacade _eventFacade;
-        private readonly EventAssembler _eventAssembler;
+        private readonly EventRepository _eventRepository;
 
-        public EventService(EventFacade eventFacade, EventAssembler eventAssembler)
+        public EventService()
         {
-            _eventFacade = eventFacade;
-            _eventAssembler = eventAssembler;
+            _eventRepository = new EventRepository();
         }
 
-        public EventDto Get(int id)
-        {
-            var evnt = _eventFacade.GetById(id);
-            return _eventAssembler.WriteDto(evnt);
-        }
+        public void Insert(Event dto) =>
+            _eventRepository.Insert(dto);
+
+        public void Update(Event dto) =>
+            _eventRepository.Update(dto);
+
+        public void Delete(int id) =>
+            _eventRepository.Delete(id);
+
+        public Event GetById(int id) =>
+            _eventRepository.GetById(id);
+
+        public IEnumerable<Event> GetAll() =>
+            _eventRepository.GetAll();
     }
 }

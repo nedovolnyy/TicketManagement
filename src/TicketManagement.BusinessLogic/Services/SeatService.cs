@@ -1,25 +1,32 @@
-﻿using TicketManagement.BusinessLogic.Assembler;
-using TicketManagement.BusinessLogic.DTO;
+﻿using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.DataAccess.Facades;
+using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class SeatService : IService<SeatDto>
+    public class SeatService : IService<Seat>
     {
-        private readonly SeatFacade _seatFacade;
-        private readonly SeatAssembler _seatAssembler;
+        private readonly SeatRepository _seatRepository;
 
-        public SeatService(SeatFacade seatFacade, SeatAssembler seatAssembler)
+        public SeatService()
         {
-            _seatFacade = seatFacade;
-            _seatAssembler = seatAssembler;
+            _seatRepository = new SeatRepository();
         }
 
-        public SeatDto Get(int id)
-        {
-            var seatDto = _seatFacade.GetById(id);
-            return _seatAssembler.WriteDto(seatDto);
-        }
+        public void Insert(Seat dto) =>
+            _seatRepository.Insert(dto);
+
+        public void Update(Seat dto) =>
+            _seatRepository.Update(dto);
+
+        public void Delete(int id) =>
+            _seatRepository.Delete(id);
+
+        public Seat GetById(int id) =>
+            _seatRepository.GetById(id);
+
+        public IEnumerable<Seat> GetAll() =>
+            _seatRepository.GetAll();
     }
 }

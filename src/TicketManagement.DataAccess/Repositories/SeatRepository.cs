@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using TicketManagement.DataAccess.Entities;
+using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     public class SeatRepository : BaseRepository<Seat>, IRepository<Seat>
     {
-        public SeatRepository(IUnitOfWork uow)
-            : base(uow)
+        public SeatRepository()
+            : base()
         {
         }
 
-        /// <summary>
-        /// Passes the parameters for Insert Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
+        protected override string ActionToSqlString(char action) => action switch
+        {
+            'I' => "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
+            'U' => "UPDATE Seat SET AreaId = @AreaId, Row = @Row, Number = @Number Where Id = @Id",
+            'D' => "DELETE FROM Seat WHERE Id = @Id",
+            'G' => "SELECT * FROM Seat WHERE Id = @Id",
+            'A' => "SELECT * FROM Seat",
+            _ => ""
+        };
+
         protected override void InsertCommandParameters(Seat entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@AreaId", entity.AreaId);
@@ -25,11 +31,6 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Number", entity.Number);
         }
 
-        /// <summary>
-        /// Passes the parameters for Update Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
         protected override void UpdateCommandParameters(Seat entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
@@ -38,31 +39,16 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Number", entity.Number);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for Delete Statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void DeleteCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for populate by key statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Maps data for populate by key statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override Seat Map(SqlDataReader reader)
         {
             Seat seat = new Seat();
@@ -70,21 +56,16 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    seat.Id = Guid.Parse(reader["Id"].ToString());
-                    seat.AreaId = Guid.Parse(reader["AreaId"].ToString());
-                    seat.Row = Convert.ToInt32(reader["Row"].ToString());
-                    seat.Number = Convert.ToInt32(reader["Number"].ToString());
+                    seat = new Seat(id: int.Parse(reader["Id"].ToString()),
+                                    areaId: int.Parse(reader["AreaId"].ToString()),
+                                    row: Convert.ToInt32(reader["Row"].ToString()),
+                                    number: Convert.ToInt32(reader["Number"].ToString()));
                 }
             }
 
             return seat;
         }
 
-        /// <summary>
-        /// Maps data for populate all statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override List<Seat> Maps(SqlDataReader reader)
         {
             List<Seat> seats = new List<Seat>();
@@ -92,11 +73,10 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    Seat seat = new Seat();
-                    seat.Id = Guid.Parse(reader["Id"].ToString());
-                    seat.AreaId = Guid.Parse(reader["AreaId"].ToString());
-                    seat.Row = Convert.ToInt32(reader["Row"].ToString());
-                    seat.Number = Convert.ToInt32(reader["Number"].ToString());
+                    Seat seat = new Seat(id: int.Parse(reader["Id"].ToString()),
+                                    areaId: int.Parse(reader["AreaId"].ToString()),
+                                    row: Convert.ToInt32(reader["Row"].ToString()),
+                                    number: Convert.ToInt32(reader["Number"].ToString()));
                     seats.Add(seat);
                 }
             }

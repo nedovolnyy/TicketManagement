@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace TicketManagement.DataAccess.Entities
+namespace TicketManagement.Common.Entities
 {
     public abstract class BaseEntity : IEqualityComparer<BaseEntity>
     {
         private readonly List<BusinessRule> _brokenRules = new List<BusinessRule>();
-        public Guid Id { get; set; }
+        public int Id { get; protected set; }
 
         protected abstract void Validate();
 

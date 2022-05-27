@@ -1,23 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using TicketManagement.DataAccess.Entities;
+using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     public class EventRepository : BaseRepository<Event>, IRepository<Event>
     {
-        public EventRepository(IUnitOfWork uow)
-            : base(uow)
+        public EventRepository()
+            : base()
         {
         }
 
-        /// <summary>
-        /// Passes the parameters for Insert Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
+        protected override string ActionToSqlString(char action) => action switch
+        {
+            'I' => "INSERT INTO Event (Name, Description, LayoutId) VALUES (@Name, @Description, @LayoutId);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
+            'U' => "UPDATE Event SET Name = @Name, Description = @Description, LayoutId = @LayoutId Where Id = @Id",
+            'D' => "DELETE FROM Event WHERE Id = @Id",
+            'G' => "SELECT * FROM Event WHERE Id = @Id",
+            'A' => "SELECT * FROM Event",
+            _ => ""
+        };
+
         protected override void InsertCommandParameters(Event entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Name", entity.Name);
@@ -25,11 +30,6 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
         }
 
-        /// <summary>
-        /// Passes the parameters for Update Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
         protected override void UpdateCommandParameters(Event entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
@@ -38,31 +38,16 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for Delete Statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void DeleteCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for populate by key statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Maps data for populate by key statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override Event Map(SqlDataReader reader)
         {
             Event evnt = new Event();
@@ -70,21 +55,16 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    evnt.Id = Guid.Parse(reader["Id"].ToString());
-                    evnt.Name = reader["Name"].ToString();
-                    evnt.Description = reader["Description"].ToString();
-                    evnt.LayoutId = Guid.Parse(reader["LayoutId"].ToString());
+                    evnt = new Event(id: int.Parse(reader["Id"].ToString()),
+                                     name: reader["Name"].ToString(),
+                                     description: reader["Description"].ToString(),
+                                     layoutId: int.Parse(reader["LayoutId"].ToString()));
                 }
             }
 
             return evnt;
         }
 
-        /// <summary>
-        /// Maps data for populate all statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override List<Event> Maps(SqlDataReader reader)
         {
             List<Event> evnts = new List<Event>();
@@ -92,11 +72,10 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    Event evnt = new Event();
-                    evnt.Id = Guid.Parse(reader["Id"].ToString());
-                    evnt.Name = reader["Name"].ToString();
-                    evnt.Description = reader["Description"].ToString();
-                    evnt.LayoutId = Guid.Parse(reader["LayoutId"].ToString());
+                    Event evnt = new Event(id: int.Parse(reader["Id"].ToString()),
+                                     name: reader["Name"].ToString(),
+                                     description: reader["Description"].ToString(),
+                                     layoutId: int.Parse(reader["LayoutId"].ToString()));
                     evnts.Add(evnt);
                 }
             }

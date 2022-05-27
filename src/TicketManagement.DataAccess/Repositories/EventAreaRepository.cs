@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using TicketManagement.DataAccess.Entities;
+using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     public class EventAreaRepository : BaseRepository<EventArea>, IRepository<EventArea>
     {
-        public EventAreaRepository(IUnitOfWork uow)
-            : base(uow)
+        public EventAreaRepository()
+            : base()
         {
         }
 
-        /// <summary>
-        /// Passes the parameters for Insert Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
+        protected override string ActionToSqlString(char action) => action switch
+        {
+            'I' => "INSERT INTO EventArea (EventId, Description, CoordX, CoordY, Price) VALUES (@EventId, @Description, @CoordX, @CoordY, @Price);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
+            'U' => "UPDATE EventArea SET EventId = @EventId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY, Price = @Price Where Id = @Id",
+            'D' => "DELETE FROM EventArea WHERE Id = @Id",
+            'G' => "SELECT * FROM EventArea WHERE Id = @Id",
+            'A' => "SELECT * FROM EventArea",
+            _ => ""
+        };
+
         protected override void InsertCommandParameters(EventArea entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@EventId", entity.EventId);
@@ -27,11 +33,6 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Price", entity.Price);
         }
 
-        /// <summary>
-        /// Passes the parameters for Update Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
         protected override void UpdateCommandParameters(EventArea entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
@@ -42,31 +43,16 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Price", entity.Price);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for Delete Statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void DeleteCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for populate by key statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Maps data for populate by key statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override EventArea Map(SqlDataReader reader)
         {
             EventArea eventArea = new EventArea();
@@ -74,23 +60,18 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    eventArea.Id = Guid.Parse(reader["Id"].ToString());
-                    eventArea.EventId = Guid.Parse(reader["EventId"].ToString());
-                    eventArea.Description = reader["Description"].ToString();
-                    eventArea.CoordX = Convert.ToInt32(reader["CoordX"].ToString());
-                    eventArea.CoordY = Convert.ToInt32(reader["CoordY"].ToString());
-                    eventArea.Price = Convert.ToDecimal(reader["Price"].ToString());
+                    eventArea = new EventArea(id: int.Parse(reader["Id"].ToString()),
+                                              eventId: int.Parse(reader["EventId"].ToString()),
+                                              description: reader["Description"].ToString(),
+                                              coordX: Convert.ToInt32(reader["CoordX"].ToString()),
+                                              coordY: Convert.ToInt32(reader["CoordY"].ToString()),
+                                              price: Convert.ToDecimal(reader["Price"].ToString()));
                 }
             }
 
             return eventArea;
         }
 
-        /// <summary>
-        /// Maps data for populate all statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override List<EventArea> Maps(SqlDataReader reader)
         {
             List<EventArea> eventAreas = new List<EventArea>();
@@ -98,13 +79,12 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    EventArea eventArea = new EventArea();
-                    eventArea.Id = Guid.Parse(reader["Id"].ToString());
-                    eventArea.EventId = Guid.Parse(reader["EventId"].ToString());
-                    eventArea.Description = reader["Description"].ToString();
-                    eventArea.CoordX = Convert.ToInt32(reader["CoordX"].ToString());
-                    eventArea.CoordY = Convert.ToInt32(reader["CoordY"].ToString());
-                    eventArea.Price = Convert.ToDecimal(reader["Price"].ToString());
+                    EventArea eventArea = new EventArea(id: int.Parse(reader["Id"].ToString()),
+                                                        eventId: int.Parse(reader["EventId"].ToString()),
+                                                        description: reader["Description"].ToString(),
+                                                        coordX: Convert.ToInt32(reader["CoordX"].ToString()),
+                                                        coordY: Convert.ToInt32(reader["CoordY"].ToString()),
+                                                        price: Convert.ToDecimal(reader["Price"].ToString()));
                     eventAreas.Add(eventArea);
                 }
             }

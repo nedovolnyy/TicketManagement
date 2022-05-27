@@ -1,25 +1,32 @@
-﻿using TicketManagement.BusinessLogic.Assembler;
-using TicketManagement.BusinessLogic.DTO;
+﻿using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.DataAccess.Facades;
+using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class AreaService : IService<AreaDto>
+    public class AreaService : IService<Area>
     {
-        private readonly AreaFacade _areaFacade;
-        private readonly AreaAssembler _areaAssembler;
+        private readonly AreaRepository _areaRepository;
 
-        public AreaService(AreaFacade areaFacade, AreaAssembler areaAssembler)
+        public AreaService()
         {
-            _areaFacade = areaFacade;
-            _areaAssembler = areaAssembler;
+            _areaRepository = new AreaRepository();
         }
 
-        public AreaDto Get(int id)
-        {
-            var areaDto = _areaFacade.GetById(id);
-            return _areaAssembler.WriteDto(areaDto);
-        }
+        public void Insert(Area dto) =>
+            _areaRepository.Insert(dto);
+
+        public void Update(Area dto) =>
+            _areaRepository.Update(dto);
+
+        public void Delete(int id) =>
+            _areaRepository.Delete(id);
+
+        public Area GetById(int id) =>
+            _areaRepository.GetById(id);
+
+        public IEnumerable<Area> GetAll() =>
+            _areaRepository.GetAll();
     }
 }

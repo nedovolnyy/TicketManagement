@@ -1,4 +1,4 @@
-﻿namespace TicketManagement.BusinessLogic.DTO
+﻿namespace TicketManagement.Common.Entities
 {
     public class BusinessRule
     {
@@ -8,7 +8,7 @@
             Rule = rule;
         }
 
-        public string Property { get; set; }
-        public string Rule { get; set; }
+        public string Property { get; private set; }
+        public string Rule { get; private set; }
     }
 }

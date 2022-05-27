@@ -1,23 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using TicketManagement.DataAccess.Entities;
+using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     public class VenueRepository : BaseRepository<Venue>, IRepository<Venue>
     {
-        public VenueRepository(IUnitOfWork uow)
-            : base(uow)
+        public VenueRepository()
+            : base()
         {
         }
 
-        /// <summary>
-        /// Passes the parameters for Insert Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
+        protected override string ActionToSqlString(char action) => action switch
+        {
+            'I' => "INSERT INTO Venue (Description, Address, Phone) VALUES (@Description, @Address, @Phone);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
+            'U' => "UPDATE Venue SET Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id",
+            'D' => "DELETE FROM Venue WHERE Id = @Id",
+            'G' => "SELECT * FROM Venue WHERE Id = @Id",
+            'A' => "SELECT * FROM Venue",
+            _ => ""
+        };
+
         protected override void InsertCommandParameters(Venue entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -25,11 +30,6 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Phone", entity.Phone);
         }
 
-        /// <summary>
-        /// Passes the parameters for Update Statement.
-        /// </summary>
-        /// <param name="entity">.</param>
-        /// <param name="cmd">..</param>
         protected override void UpdateCommandParameters(Venue entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
@@ -38,31 +38,16 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Phone", entity.Phone);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for Delete Statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void DeleteCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Passes the parameters to command for populate by key statement.
-        /// </summary>
-        /// <param name="id">.</param>
-        /// <param name="cmd">..</param>
         protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        /// <summary>
-        /// Maps data for populate by key statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override Venue Map(SqlDataReader reader)
         {
             Venue venue = new Venue();
@@ -70,21 +55,16 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    venue.Id = Guid.Parse(reader["Id"].ToString());
-                    venue.Description = reader["Description"].ToString();
-                    venue.Address = reader["Address"].ToString();
-                    venue.Phone = reader["Phone"].ToString();
+                    venue = new Venue(id: int.Parse(reader["Id"].ToString()),
+                                      description: reader["Description"].ToString(),
+                                      address: reader["Address"].ToString(),
+                                      phone: reader["Phone"].ToString());
                 }
             }
 
             return venue;
         }
 
-        /// <summary>
-        /// Maps data for populate all statement.
-        /// </summary>
-        /// <param name="reader">.</param>
-        /// <returns>..</returns>
         protected override List<Venue> Maps(SqlDataReader reader)
         {
             List<Venue> venues = new List<Venue>();
@@ -92,11 +72,10 @@ namespace TicketManagement.DataAccess.Repositories
             {
                 while (reader.Read())
                 {
-                    Venue venue = new Venue();
-                    venue.Id = Guid.Parse(reader["Id"].ToString());
-                    venue.Description = reader["Description"].ToString();
-                    venue.Address = reader["Address"].ToString();
-                    venue.Phone = reader["Phone"].ToString();
+                    Venue venue = new Venue(id: int.Parse(reader["Id"].ToString()),
+                                      description: reader["Description"].ToString(),
+                                      address: reader["Address"].ToString(),
+                                      phone: reader["Phone"].ToString());
                     venues.Add(venue);
                 }
             }
