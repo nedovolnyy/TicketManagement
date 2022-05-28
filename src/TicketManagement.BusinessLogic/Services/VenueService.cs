@@ -14,18 +14,16 @@ namespace TicketManagement.BusinessLogic.Services
             _venueRepository = new VenueRepository();
         }
 
-        public void Insert(Venue dto) =>
-            _venueRepository.Insert(dto);
-
-        public void Update(Venue dto) =>
-            _venueRepository.Update(dto);
-
+        public void Insert(Venue entity) =>
+            _venueRepository.Insert(entity);
+        public void Update(Venue entity) =>
+            _venueRepository.Update(entity);
         public void Delete(int id) =>
             _venueRepository.Delete(id);
-
+        public void Delete(Venue entity) =>
+            _venueRepository.Delete(entity);
         public Venue GetById(int id) =>
             _venueRepository.GetById(id);
-
         public IEnumerable<Venue> GetAll() =>
             _venueRepository.GetAll();
     }

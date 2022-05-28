@@ -9,6 +9,7 @@ namespace TicketManagement.DataAccess.Interfaces
         int Insert(T entity);
         int Update(T entity);
         int Delete(int id);
+        int Delete(T entity);
         T GetById(int id);
         IEnumerable<T> GetAll();
     }

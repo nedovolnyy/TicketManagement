@@ -14,14 +14,16 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = new EventRepository();
         }
 
-        public void Insert(Event dto) =>
-            _eventRepository.Insert(dto);
+        public void Insert(Event entity) =>
+            _eventRepository.Insert(entity);
 
-        public void Update(Event dto) =>
-            _eventRepository.Update(dto);
+        public void Update(Event entity) =>
+            _eventRepository.Update(entity);
 
         public void Delete(int id) =>
             _eventRepository.Delete(id);
+        public void Delete(Event entity) =>
+            _eventRepository.Delete(entity);
 
         public Event GetById(int id) =>
             _eventRepository.GetById(id);

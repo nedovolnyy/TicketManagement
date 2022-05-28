@@ -11,6 +11,10 @@ namespace TicketManagement.DataAccess.Repositories
     public abstract class BaseRepository<T> : IRepository<T>
         where T : BaseEntity, new()
     {
+        protected BaseRepository()
+        {
+        }
+
         /// <summary>
         /// Base Method for Insert Data.
         /// </summary>
@@ -103,6 +107,56 @@ namespace TicketManagement.DataAccess.Repositories
                             i = cmd.ExecuteNonQuery();
 
                             sqlTransaction.Commit();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return i;
+        }
+
+        /// <summary>
+        /// Base Method for Delete Data.
+        /// </summary>
+        /// <param name="entity">id.</param>
+        /// <returns>Count changed columns.</returns>
+        public int Delete(T entity)
+        {
+            int i = 0;
+            var tmpEntity = new T();
+            try
+            {
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('G');
+                        cmd.CommandType = CommandType.Text;
+                        GetByIdCommandParameters(entity.Id, cmd);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            tmpEntity = Map(reader);
+                        }
+                    }
+
+                    if (entity.Equals(entity, tmpEntity))
+                        {
+                        using (var sqlTransaction = sqlConnection.BeginTransaction())
+                        {
+                            using (var cmd = sqlConnection.CreateCommand())
+                            {
+                                cmd.CommandText = ActionToSqlString('D');
+                                cmd.CommandType = CommandType.Text;
+                                cmd.Transaction = sqlTransaction;
+                                DeleteCommandParameters(entity.Id, cmd);
+                                i = cmd.ExecuteNonQuery();
+
+                                sqlTransaction.Commit();
+                            }
                         }
                     }
                 }

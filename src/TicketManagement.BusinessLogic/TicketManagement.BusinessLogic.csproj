@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Infrastructure\ValidationException.cs" />
+    <Compile Remove="Validation\ValidationException.cs" />
     <Compile Remove="Interfaces\IAreaRepository.cs" />
     <Compile Remove="Interfaces\IAreaService.cs" />
     <Compile Remove="Interfaces\IEnentSeatRepository.cs" />
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Infrastructure\ValidationException.cs" />
+    <None Include="Validation\ValidationException.cs" />
     <None Include="Interfaces\IAreaRepository.cs" />
     <None Include="Interfaces\IAreaService.cs" />
     <None Include="Interfaces\IEnentSeatRepository.cs" />

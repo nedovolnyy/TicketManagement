@@ -14,14 +14,16 @@ namespace TicketManagement.BusinessLogic.Services
             _seatRepository = new SeatRepository();
         }
 
-        public void Insert(Seat dto) =>
-            _seatRepository.Insert(dto);
+        public void Insert(Seat entity) =>
+            _seatRepository.Insert(entity);
 
-        public void Update(Seat dto) =>
-            _seatRepository.Update(dto);
+        public void Update(Seat entity) =>
+            _seatRepository.Update(entity);
 
         public void Delete(int id) =>
             _seatRepository.Delete(id);
+        public void Delete(Seat entity) =>
+            _seatRepository.Delete(entity);
 
         public Seat GetById(int id) =>
             _seatRepository.GetById(id);

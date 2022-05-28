@@ -14,14 +14,16 @@ namespace TicketManagement.BusinessLogic.Services
             _areaRepository = new AreaRepository();
         }
 
-        public void Insert(Area dto) =>
-            _areaRepository.Insert(dto);
+        public void Insert(Area entity) =>
+            _areaRepository.Insert(entity);
 
-        public void Update(Area dto) =>
-            _areaRepository.Update(dto);
+        public void Update(Area entity) =>
+            _areaRepository.Update(entity);
 
         public void Delete(int id) =>
             _areaRepository.Delete(id);
+        public void Delete(Area entity) =>
+            _areaRepository.Delete(entity);
 
         public Area GetById(int id) =>
             _areaRepository.GetById(id);

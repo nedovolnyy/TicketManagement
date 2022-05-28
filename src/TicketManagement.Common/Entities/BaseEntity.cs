@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace TicketManagement.Common.Entities
 {
@@ -6,8 +7,13 @@ namespace TicketManagement.Common.Entities
     {
         private readonly List<BusinessRule> _brokenRules = new List<BusinessRule>();
         public int Id { get; protected set; }
-
+        protected abstract string ForEquals(BaseEntity entity);
         protected abstract void Validate();
+
+        public string ForEq(BaseEntity entity)
+        {
+            return entity.ForEquals(entity);
+        }
 
         public IEnumerable<BusinessRule> GetBrokenRules()
         {
@@ -21,19 +27,19 @@ namespace TicketManagement.Common.Entities
             _brokenRules.Add(businessRule);
         }
 
-        public bool Equals(BaseEntity entity1, BaseEntity entity2)
+        public bool Equals(BaseEntity entity, BaseEntity tmpEntity)
         {
-            if (entity1 == null && entity2 == null)
+            if (entity == null && tmpEntity == null)
             {
                 return true;
             }
 
-            if (entity1 == null || entity2 == null)
+            if (entity == null || tmpEntity == null)
             {
                 return false;
             }
 
-            if (entity1.Id.ToString() == entity2.Id.ToString())
+            if (entity.ForEquals(entity) == tmpEntity.ForEquals(tmpEntity))
             {
                 return true;
             }
@@ -41,14 +47,14 @@ namespace TicketManagement.Common.Entities
             return false;
         }
 
-        public int GetHashCode(BaseEntity obj)
+        public int GetHashCode(BaseEntity entity)
         {
-            if (obj is null)
+            if (entity is null)
             {
                 return 0;
             }
 
-            return obj.Id.GetHashCode();
+            return entity.ForEquals(entity).GetHashCode();
         }
     }
 }

@@ -14,14 +14,16 @@ namespace TicketManagement.BusinessLogic.Services
             _layoutRepository = new LayoutRepository();
         }
 
-        public void Insert(Layout dto) =>
-            _layoutRepository.Insert(dto);
+        public void Insert(Layout entity) =>
+            _layoutRepository.Insert(entity);
 
-        public void Update(Layout dto) =>
-            _layoutRepository.Update(dto);
+        public void Update(Layout entity) =>
+            _layoutRepository.Update(entity);
 
         public void Delete(int id) =>
             _layoutRepository.Delete(id);
+        public void Delete(Layout entity) =>
+            _layoutRepository.Delete(entity);
 
         public Layout GetById(int id) =>
             _layoutRepository.GetById(id);

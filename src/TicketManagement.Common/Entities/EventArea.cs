@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace TicketManagement.Common.Entities
 {
@@ -23,6 +24,8 @@ namespace TicketManagement.Common.Entities
         public int CoordX { get; private set; }
         public int CoordY { get; private set; }
         public decimal Price { get; private set; }
+        protected override string ForEquals(BaseEntity entity) =>
+                EventId+Description+CoordX+CoordY+Price;
         protected override void Validate()
         {
             throw new NotImplementedException();

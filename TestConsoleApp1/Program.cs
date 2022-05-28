@@ -5,7 +5,7 @@ using TicketManagement.Common.Entities;
 var bll = new AreaService();
 var bllV = new VenueService();
 
-bll.Update(new Area(id: 2, layoutId: 2, description: "!!!!!!!!!32w", coordX: 4, coordY: 6));
+bll.Delete(new Area(id: 1024, layoutId: 2, description: "e_!___!_!!__w", coordX: 4, coordY: 6));
 
 List<Venue> l = bllV.GetAll().ToList();
 
