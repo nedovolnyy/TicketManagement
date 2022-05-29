@@ -12,18 +12,18 @@ DataAccess Layer
 # Usage
 * Create new instance of necessary bll.service of entity and use it.
 Example:
-'''
+```
 var example = new AreaService();
-'''
+```
 * Use necessary method of Insert, Update, Delete, GetById, GetAll
 Example:
-'''
+```
 example.Insert(Entity entity);
 example.Update(Entity entity);
 example.Delete(Entity entity); or example.Delete(int entity.id);
 example.GetById(int entity.id);
 example.GetAll();
-'''
+```
 
 # Steps how to check
 
