@@ -5,22 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Interfaces\IAreaService.cs" />
-    <Compile Remove="Interfaces\IEventAreaService.cs" />
-    <Compile Remove="Interfaces\IEventSeatService.cs" />
-    <Compile Remove="Interfaces\IEventService.cs" />
-    <Compile Remove="Interfaces\ILayoutService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Interfaces\IAreaService.cs" />
-    <None Include="Interfaces\IEventAreaService.cs" />
-    <None Include="Interfaces\IEventSeatService.cs" />
-    <None Include="Interfaces\IEventService.cs" />
-    <None Include="Interfaces\ILayoutService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
   </ItemGroup>
 

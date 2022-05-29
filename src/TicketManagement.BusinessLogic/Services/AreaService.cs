@@ -6,16 +6,19 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class AreaService : IService<Area>
+    public class AreaService : BaseService<Area>, IService<Area>
     {
         private readonly AreaRepository _areaRepository;
-
         public AreaService()
+            : base()
         {
-            _areaRepository = new AreaRepository();
+            EntityRepository = new AreaRepository();
+            _areaRepository = (AreaRepository)EntityRepository;
         }
 
-        public void Insert(Area entity)
+        protected override BaseRepository<Area> EntityRepository { get; }
+
+        protected override void Validation(Area entity)
         {
             IEnumerable<Area> areaArray = _areaRepository.GetAllByLayoutId(entity.LayoutId);
             foreach (Area area in areaArray)
@@ -25,19 +28,6 @@ namespace TicketManagement.BusinessLogic.Services
                     throw new ValidationException("Area description should be unique for area!", "");
                 }
             }
-
-            _areaRepository.Insert(entity);
         }
-
-        public void Update(Area entity) =>
-            _areaRepository.Update(entity);
-        public void Delete(int id) =>
-            _areaRepository.Delete(id);
-        public void Delete(Area entity) =>
-            _areaRepository.Delete(entity);
-        public Area GetById(int id) =>
-            _areaRepository.GetById(id);
-        public IEnumerable<Area> GetAll() =>
-            _areaRepository.GetAll();
     }
 }

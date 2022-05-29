@@ -6,37 +6,24 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class EventSeatService : IService<EventSeat>
+    public class EventSeatService : BaseService<EventSeat>, IService<EventSeat>
     {
         private readonly EventSeatRepository _eventSeatRepository;
-
         public EventSeatService()
+            : base()
         {
-            _eventSeatRepository = new EventSeatRepository();
+            EntityRepository = new EventSeatRepository();
+            _eventSeatRepository = (EventSeatRepository)EntityRepository;
         }
 
-        public void Insert(EventSeat entity)
+        protected override BaseRepository<EventSeat> EntityRepository { get; }
+
+        protected override void Validation(EventSeat entity)
         {
             if ((entity.Row == null) || (entity.Number == null))
             {
                 throw new ValidationException("Event can't be created without any seats!", "");
             }
-
-            _eventSeatRepository.Insert(entity);
         }
-
-        public void Update(EventSeat entity) =>
-            _eventSeatRepository.Update(entity);
-
-        public void Delete(int id) =>
-            _eventSeatRepository.Delete(id);
-        public void Delete(EventSeat entity) =>
-            _eventSeatRepository.Delete(entity);
-
-        public EventSeat GetById(int id) =>
-            _eventSeatRepository.GetById(id);
-
-        public IEnumerable<EventSeat> GetAll() =>
-            _eventSeatRepository.GetAll();
     }
 }

@@ -7,16 +7,19 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class EventService : IService<Event>
+    public class EventService : BaseService<Event>, IService<Event>
     {
         private readonly EventRepository _eventRepository;
-
         public EventService()
+            : base()
         {
-            _eventRepository = new EventRepository();
+            EntityRepository = new EventRepository();
+            _eventRepository = (EventRepository)EntityRepository;
         }
 
-        public void Insert(Event entity)
+        protected override BaseRepository<Event> EntityRepository { get; }
+
+        protected override void Validation(Event entity)
         {
             if ((Convert.ToDateTime(entity.Description).Ticks - DateTime.Now.Ticks) < 0)
             {
@@ -31,22 +34,6 @@ namespace TicketManagement.BusinessLogic.Services
                     throw new ValidationException("Layout name should be unique in venue!", "");
                 }
             }
-
-            _eventRepository.Insert(entity);
         }
-
-        public void Update(Event entity) =>
-            _eventRepository.Update(entity);
-
-        public void Delete(int id) =>
-            _eventRepository.Delete(id);
-        public void Delete(Event entity) =>
-            _eventRepository.Delete(entity);
-
-        public Event GetById(int id) =>
-            _eventRepository.GetById(id);
-
-        public IEnumerable<Event> GetAll() =>
-            _eventRepository.GetAll();
     }
 }

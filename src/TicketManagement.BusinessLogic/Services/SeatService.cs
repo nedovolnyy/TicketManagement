@@ -6,16 +6,19 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class SeatService : IService<Seat>
+    public class SeatService : BaseService<Seat>, IService<Seat>
     {
         private readonly SeatRepository _seatRepository;
-
         public SeatService()
+            : base()
         {
-            _seatRepository = new SeatRepository();
+            EntityRepository = new SeatRepository();
+            _seatRepository = (SeatRepository)EntityRepository;
         }
 
-        public void Insert(Seat entity)
+        protected override BaseRepository<Seat> EntityRepository { get; }
+
+        protected override void Validation(Seat entity)
         {
             IEnumerable<Seat> seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
             foreach (Seat seat in seatArray)
@@ -25,22 +28,6 @@ namespace TicketManagement.BusinessLogic.Services
                     throw new ValidationException("Row and number should be unique for area!", "");
                 }
             }
-
-            _seatRepository.Insert(entity);
         }
-
-        public void Update(Seat entity) =>
-            _seatRepository.Update(entity);
-
-        public void Delete(int id) =>
-            _seatRepository.Delete(id);
-        public void Delete(Seat entity) =>
-            _seatRepository.Delete(entity);
-
-        public Seat GetById(int id) =>
-            _seatRepository.GetById(id);
-
-        public IEnumerable<Seat> GetAll() =>
-            _seatRepository.GetAll();
     }
 }

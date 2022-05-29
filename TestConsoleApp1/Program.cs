@@ -4,7 +4,7 @@ using TicketManagement.Common.Entities;
 // See https://aka.ms/new-console-template for more information
 var bll = new AreaService();
 
-bll.Insert(new Area(id: 1024, layoutId: 1, description: "e_!_22332w", coordX: 4, coordY: 6));
+bll.Update(new Area(id: 1028, layoutId: 1, description: "e_!_!223!32w", coordX: 4, coordY: 6));
 
 #pragma warning disable S1125
 #pragma warning disable SA1408
