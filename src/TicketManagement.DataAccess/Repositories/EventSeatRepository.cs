@@ -41,12 +41,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@State", entity.State);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void DeleteCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }

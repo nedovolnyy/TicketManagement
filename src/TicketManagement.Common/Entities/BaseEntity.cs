@@ -1,19 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TicketManagement.Common.Entities
 {
     public abstract class BaseEntity : IEqualityComparer<BaseEntity>
     {
         private readonly List<BusinessRule> _brokenRules = new List<BusinessRule>();
-        public int Id { get; protected set; }
+        public int? Id { get; protected set; }
+        protected abstract bool IsNull(BaseEntity entity);
         protected abstract string ForEquals(BaseEntity entity);
         protected abstract void Validate();
 
-        public string ForEq(BaseEntity entity)
-        {
-            return entity.ForEquals(entity);
-        }
+        public bool IsEmpty(BaseEntity entity) =>
+            IsNull(entity);
+
+        public string StringForEquals(BaseEntity entity) =>
+            ForEquals(entity);
 
         public IEnumerable<BusinessRule> GetBrokenRules()
         {
@@ -29,17 +30,17 @@ namespace TicketManagement.Common.Entities
 
         public bool Equals(BaseEntity entity, BaseEntity tmpEntity)
         {
-            if (entity == null && tmpEntity == null)
+            if (entity.IsEmpty() && tmpEntity.IsEmpty())
             {
                 return true;
             }
 
-            if (entity == null || tmpEntity == null)
+            if (entity.IsEmpty() || tmpEntity.IsEmpty())
             {
                 return false;
             }
 
-            if (entity.ForEquals(entity) == tmpEntity.ForEquals(tmpEntity))
+            if (entity.StringForEquals() == tmpEntity.StringForEquals())
             {
                 return true;
             }
@@ -49,12 +50,12 @@ namespace TicketManagement.Common.Entities
 
         public int GetHashCode(BaseEntity entity)
         {
-            if (entity is null)
+            if (entity.IsEmpty())
             {
                 return 0;
             }
 
-            return entity.ForEquals(entity).GetHashCode();
+            return entity.StringForEquals().GetHashCode();
         }
     }
 }

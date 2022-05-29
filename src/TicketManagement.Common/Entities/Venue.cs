@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 
 namespace TicketManagement.Common.Entities
 {
@@ -9,7 +8,7 @@ namespace TicketManagement.Common.Entities
         {
         }
 
-        public Venue(int id, string description, string address, string phone)
+        public Venue(int? id, string description, string address, string phone)
         {
             Id = id;
             Description = description;
@@ -22,6 +21,11 @@ namespace TicketManagement.Common.Entities
         public string Phone { get; private set; }
         protected override string ForEquals(BaseEntity entity) =>
                 Description+Address+Phone;
+        protected override bool IsNull(BaseEntity entity) =>
+                   Description == null
+                 & Address == null
+                 & Phone == null;
+
         protected override void Validate()
         {
             throw new NotImplementedException();

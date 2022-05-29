@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
-namespace TicketManagement.BusinessLogic.Infrastructure
+namespace TicketManagement.BusinessLogic.Validation
 {
+    [Serializable]
     public class ValidationException : Exception
     {
         public ValidationException(string message, string prop)
-            : base(message)
+            : base(message) => Property = prop;
+
+        protected ValidationException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
-            Property = prop;
         }
 
         public string Property { get; protected set; }

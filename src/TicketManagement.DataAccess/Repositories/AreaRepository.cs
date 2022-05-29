@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class AreaRepository : BaseRepository<Area>, IRepository<Area>
+    public class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
         public AreaRepository()
             : base()
@@ -41,12 +41,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@CoordY", entity.CoordY);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void DeleteCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }

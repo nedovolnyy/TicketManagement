@@ -5,35 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Validation\ValidationException.cs" />
-    <Compile Remove="Interfaces\IAreaRepository.cs" />
     <Compile Remove="Interfaces\IAreaService.cs" />
-    <Compile Remove="Interfaces\IEnentSeatRepository.cs" />
-    <Compile Remove="Interfaces\IEventAreaRepository.cs" />
     <Compile Remove="Interfaces\IEventAreaService.cs" />
-    <Compile Remove="Interfaces\IEventRepository.cs" />
     <Compile Remove="Interfaces\IEventSeatService.cs" />
     <Compile Remove="Interfaces\IEventService.cs" />
-    <Compile Remove="Interfaces\ILayoutRepository.cs" />
     <Compile Remove="Interfaces\ILayoutService.cs" />
-    <Compile Remove="Interfaces\ISeatRepository.cs" />
-    <Compile Remove="Interfaces\IVenueRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Validation\ValidationException.cs" />
-    <None Include="Interfaces\IAreaRepository.cs" />
     <None Include="Interfaces\IAreaService.cs" />
-    <None Include="Interfaces\IEnentSeatRepository.cs" />
-    <None Include="Interfaces\IEventAreaRepository.cs" />
     <None Include="Interfaces\IEventAreaService.cs" />
-    <None Include="Interfaces\IEventRepository.cs" />
     <None Include="Interfaces\IEventSeatService.cs" />
     <None Include="Interfaces\IEventService.cs" />
-    <None Include="Interfaces\ILayoutRepository.cs" />
     <None Include="Interfaces\ILayoutService.cs" />
-    <None Include="Interfaces\ISeatRepository.cs" />
-    <None Include="Interfaces\IVenueRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>

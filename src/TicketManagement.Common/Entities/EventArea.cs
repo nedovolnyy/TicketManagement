@@ -9,7 +9,7 @@ namespace TicketManagement.Common.Entities
         {
         }
 
-        public EventArea(int id, int eventId, string description, int coordX, int coordY, decimal price)
+        public EventArea(int? id, int? eventId, string description, int? coordX, int? coordY, decimal? price)
         {
             Id = id;
             EventId = eventId;
@@ -19,13 +19,19 @@ namespace TicketManagement.Common.Entities
             Price = price;
         }
 
-        public int EventId { get; private set; }
+        public int? EventId { get; private set; }
         public string Description { get; private set; }
-        public int CoordX { get; private set; }
-        public int CoordY { get; private set; }
-        public decimal Price { get; private set; }
+        public int? CoordX { get; private set; }
+        public int? CoordY { get; private set; }
+        public decimal? Price { get; private set; }
         protected override string ForEquals(BaseEntity entity) =>
                 EventId+Description+CoordX+CoordY+Price;
+        protected override bool IsNull(BaseEntity entity) =>
+                   EventId == null
+                 & Description == null
+                 & CoordX == null
+                 & CoordY == null
+                 & Price == null;
         protected override void Validate()
         {
             throw new NotImplementedException();

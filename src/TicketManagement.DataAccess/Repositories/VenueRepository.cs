@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class VenueRepository : BaseRepository<Venue>, IRepository<Venue>
+    public class VenueRepository : BaseRepository<Venue>, IVenueRepository
     {
         public VenueRepository()
             : base()
@@ -20,6 +23,7 @@ namespace TicketManagement.DataAccess.Repositories
             'D' => "DELETE FROM Venue WHERE Id = @Id",
             'G' => "SELECT * FROM Venue WHERE Id = @Id",
             'A' => "SELECT * FROM Venue",
+            'V' => "SELECT TOP 1 * FROM Venue WHERE Description = @Description",
             _ => ""
         };
 
@@ -38,12 +42,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Phone", entity.Phone);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void DeleteCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
@@ -81,6 +85,35 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return venues;
+        }
+
+        /// <summary>
+        /// Base Method for Populate Data by key.
+        /// </summary>
+        /// <param name="name">name.</param>
+        /// <returns>Get Venue by name.</returns>
+        public Venue GetFirstByName(string name)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@Description", name);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            return Map(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

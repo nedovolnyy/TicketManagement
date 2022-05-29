@@ -228,8 +228,8 @@ namespace TicketManagement.DataAccess.Repositories
         protected abstract string ActionToSqlString(char action);
         protected abstract void InsertCommandParameters(T entity, SqlCommand cmd);
         protected abstract void UpdateCommandParameters(T entity, SqlCommand cmd);
-        protected abstract void DeleteCommandParameters(int id, SqlCommand cmd);
-        protected abstract void GetByIdCommandParameters(int id, SqlCommand cmd);
+        protected abstract void DeleteCommandParameters(int? id, SqlCommand cmd);
+        protected abstract void GetByIdCommandParameters(int? id, SqlCommand cmd);
         protected abstract T Map(SqlDataReader reader);
         protected abstract List<T> Maps(SqlDataReader reader);
     }
