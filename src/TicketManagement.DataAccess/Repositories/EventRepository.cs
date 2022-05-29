@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventRepository : BaseRepository<Event>, IRepository<Event>
+    public class EventRepository : BaseRepository<Event>, IEventRepository
     {
         public EventRepository()
             : base()
@@ -20,6 +23,7 @@ namespace TicketManagement.DataAccess.Repositories
             'D' => "DELETE FROM Event WHERE Id = @Id",
             'G' => "SELECT * FROM Event WHERE Id = @Id",
             'A' => "SELECT * FROM Event",
+            'V' => "SELECT * FROM Event WHERE LayoutId = @LayoutId",
             _ => ""
         };
 
@@ -46,6 +50,35 @@ namespace TicketManagement.DataAccess.Repositories
         protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        /// <summary>
+        /// Base Method for Populate Data by key.
+        /// </summary>
+        /// <param name="id">id.</param>
+        /// <returns>Get all Entity by LayoutId.</returns>
+        public IEnumerable<Event> GetAllByLayoutId(int? id)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@LayoutId", id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            return Maps(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         protected override Event Map(SqlDataReader reader)

@@ -52,6 +52,35 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
+        /// <summary>
+        /// Base Method for Populate Data by key.
+        /// </summary>
+        /// <param name="name">name.</param>
+        /// <returns>Get Venue by name.</returns>
+        public Venue GetFirstByName(string name)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@Description", name);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            return Map(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         protected override Venue Map(SqlDataReader reader)
         {
             Venue venue = new Venue();
@@ -85,35 +114,6 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return venues;
-        }
-
-        /// <summary>
-        /// Base Method for Populate Data by key.
-        /// </summary>
-        /// <param name="name">name.</param>
-        /// <returns>Get Venue by name.</returns>
-        public Venue GetFirstByName(string name)
-        {
-            try
-            {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
-                {
-                    using (var cmd = sqlConnection.CreateCommand())
-                    {
-                        cmd.CommandText = ActionToSqlString('V');
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@Description", name);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            return Map(reader);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
     }
 }

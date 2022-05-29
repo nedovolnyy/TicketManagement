@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
@@ -21,6 +23,7 @@ namespace TicketManagement.DataAccess.Repositories
             'D' => "DELETE FROM Area WHERE Id = @Id",
             'G' => "SELECT * FROM Area WHERE Id = @Id",
             'A' => "SELECT * FROM Area",
+            'V' => "SELECT * FROM Area WHERE LayoutId = @LayoutId",
             _ => ""
         };
 
@@ -49,6 +52,35 @@ namespace TicketManagement.DataAccess.Repositories
         protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        /// <summary>
+        /// Base Method for Populate Data by key.
+        /// </summary>
+        /// <param name="id">id.</param>
+        /// <returns>Get all Entity by LayoutId.</returns>
+        public IEnumerable<Area> GetAllByLayoutId(int? id)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@LayoutId", id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            return Maps(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         protected override Area Map(SqlDataReader reader)

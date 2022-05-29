@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
+using TicketManagement.BusinessLogic.Validation;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Repositories;
 
@@ -14,8 +15,20 @@ namespace TicketManagement.BusinessLogic.Services
             _areaRepository = new AreaRepository();
         }
 
-        public void Insert(Area entity) =>
+        public void Insert(Area entity)
+        {
+            IEnumerable<Area> areaArray = _areaRepository.GetAllByLayoutId(entity.LayoutId);
+            foreach (Area area in areaArray)
+            {
+                if (entity.Description == area.Description)
+                {
+                    throw new ValidationException("Area description should be unique for area!", "");
+                }
+            }
+
             _areaRepository.Insert(entity);
+        }
+
         public void Update(Area entity) =>
             _areaRepository.Update(entity);
         public void Delete(int id) =>

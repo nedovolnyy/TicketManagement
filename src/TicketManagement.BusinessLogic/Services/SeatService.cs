@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
+using TicketManagement.BusinessLogic.Validation;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Repositories;
 
@@ -14,8 +15,19 @@ namespace TicketManagement.BusinessLogic.Services
             _seatRepository = new SeatRepository();
         }
 
-        public void Insert(Seat entity) =>
+        public void Insert(Seat entity)
+        {
+            IEnumerable<Seat> seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
+            foreach (Seat seat in seatArray)
+            {
+                if ((entity.Row == seat.Row) && (entity.Number == seat.Number))
+                {
+                    throw new ValidationException("Row and number should be unique for area!", "");
+                }
+            }
+
             _seatRepository.Insert(entity);
+        }
 
         public void Update(Seat entity) =>
             _seatRepository.Update(entity);

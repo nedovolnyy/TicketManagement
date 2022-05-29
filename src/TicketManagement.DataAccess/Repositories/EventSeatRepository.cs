@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventSeatRepository : BaseRepository<EventSeat>, IRepository<EventSeat>
+    public class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
     {
         public EventSeatRepository()
             : base()

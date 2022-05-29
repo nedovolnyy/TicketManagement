@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
+using TicketManagement.BusinessLogic.Validation;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Repositories;
 
@@ -14,8 +16,24 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = new EventRepository();
         }
 
-        public void Insert(Event entity) =>
+        public void Insert(Event entity)
+        {
+            if ((Convert.ToDateTime(entity.Description).Ticks - DateTime.Now.Ticks) < 0)
+            {
+                throw new ValidationException("Event can't be created in the past!", "");
+            }
+
+            IEnumerable<Event> evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
+            foreach (Event evnt in evntArray)
+            {
+                if ((entity.LayoutId == evnt.LayoutId) && (entity.Description == evnt.Description))
+                {
+                    throw new ValidationException("Layout name should be unique in venue!", "");
+                }
+            }
+
             _eventRepository.Insert(entity);
+        }
 
         public void Update(Event entity) =>
             _eventRepository.Update(entity);

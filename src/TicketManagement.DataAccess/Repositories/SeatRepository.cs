@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class SeatRepository : BaseRepository<Seat>, IRepository<Seat>
+    public class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
         public SeatRepository()
             : base()
@@ -21,6 +23,7 @@ namespace TicketManagement.DataAccess.Repositories
             'D' => "DELETE FROM Seat WHERE Id = @Id",
             'G' => "SELECT * FROM Seat WHERE Id = @Id",
             'A' => "SELECT * FROM Seat",
+            'V' => "SELECT * FROM Seat WHERE AreaId = @AreaId",
             _ => ""
         };
 
@@ -47,6 +50,35 @@ namespace TicketManagement.DataAccess.Repositories
         protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        /// <summary>
+        /// Base Method for Populate Data by key.
+        /// </summary>
+        /// <param name="id">id.</param>
+        /// <returns>Get all Entity by AreaId.</returns>
+        public IEnumerable<Seat> GetAllByAreaId(int? id)
+        {
+            try
+            {
+                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                {
+                    using (var cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@AreaId", id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            return Maps(reader);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         protected override Seat Map(SqlDataReader reader)

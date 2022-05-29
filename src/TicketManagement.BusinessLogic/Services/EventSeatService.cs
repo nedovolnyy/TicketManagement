@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TicketManagement.BusinessLogic.Interfaces;
+using TicketManagement.BusinessLogic.Validation;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Repositories;
 
@@ -14,8 +15,15 @@ namespace TicketManagement.BusinessLogic.Services
             _eventSeatRepository = new EventSeatRepository();
         }
 
-        public void Insert(EventSeat entity) =>
+        public void Insert(EventSeat entity)
+        {
+            if ((entity.Row == null) || (entity.Number == null))
+            {
+                throw new ValidationException("Event can't be created without any seats!", "");
+            }
+
             _eventSeatRepository.Insert(entity);
+        }
 
         public void Update(EventSeat entity) =>
             _eventSeatRepository.Update(entity);
