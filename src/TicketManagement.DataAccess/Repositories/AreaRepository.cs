@@ -15,17 +15,21 @@ namespace TicketManagement.DataAccess.Repositories
         {
         }
 
+#pragma warning disable S1135 // Track uses of "TODO" tags
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
             'U' => "UPDATE Area SET LayoutId = @LayoutId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY WHERE Id = @Id",
             'D' => "DELETE FROM Area WHERE Id = @Id",
+
+            // TODO: Replace * to Column_name.
             'G' => "SELECT * FROM Area WHERE Id = @Id",
             'A' => "SELECT * FROM Area",
             'V' => "SELECT * FROM Area WHERE LayoutId = @LayoutId",
             _ => ""
         };
+#pragma warning restore S1135 // Track uses of "TODO" tags
 
         protected override void InsertCommandParameters(Area entity, SqlCommand cmd)
         {
