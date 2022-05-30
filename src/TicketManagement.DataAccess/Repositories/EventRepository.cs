@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -21,9 +22,9 @@ namespace TicketManagement.DataAccess.Repositories
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
             'U' => "UPDATE Event SET Name = @Name, Description = @Description, LayoutId = @LayoutId Where Id = @Id",
             'D' => "DELETE FROM Event WHERE Id = @Id",
-            'G' => "SELECT * FROM Event WHERE Id = @Id",
-            'A' => "SELECT * FROM Event",
-            'V' => "SELECT * FROM Event WHERE LayoutId = @LayoutId",
+            'G' => "SELECT Id, Name, Description, LayoutId FROM Event WHERE Id = @Id",
+            'A' => "SELECT Id, Name, Description, LayoutId FROM Event",
+            'V' => "SELECT Id, Name, Description, LayoutId FROM Event WHERE LayoutId = @LayoutId",
             _ => ""
         };
 
@@ -94,6 +95,10 @@ namespace TicketManagement.DataAccess.Repositories
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
                 }
             }
+            else
+            {
+                throw new ValidationException("Don't have events to show!", "");
+            }
 
             return evnt;
         }
@@ -111,6 +116,10 @@ namespace TicketManagement.DataAccess.Repositories
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
                     evnts.Add(evnt);
                 }
+            }
+            else
+            {
+                throw new ValidationException("Don't have events to show!", "");
             }
 
             return evnts;

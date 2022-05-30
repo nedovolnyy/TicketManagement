@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -21,9 +22,9 @@ namespace TicketManagement.DataAccess.Repositories
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
             'U' => "UPDATE Layout SET VenueId = @VenueId, Description = @Description Where Id = @Id",
             'D' => "DELETE FROM Layout WHERE Id = @Id",
-            'G' => "SELECT * FROM Layout WHERE Id = @Id",
-            'A' => "SELECT * FROM Layout",
-            'V' => "SELECT * FROM Layout WHERE VenueId = @VenueId",
+            'G' => "SELECT Id, VenueId, Description FROM Layout WHERE Id = @Id",
+            'A' => "SELECT Id, VenueId, Description FROM Layout",
+            'V' => "SELECT Id, VenueId, Description FROM Layout WHERE VenueId = @VenueId",
             _ => ""
         };
 
@@ -91,6 +92,10 @@ namespace TicketManagement.DataAccess.Repositories
                                         description: reader["Description"].ToString());
                 }
             }
+            else
+            {
+                throw new ValidationException("Don't have layouts to show!", "");
+            }
 
             return layout;
         }
@@ -107,6 +112,10 @@ namespace TicketManagement.DataAccess.Repositories
                                         description: reader["Description"].ToString());
                     areas.Add(layout);
                 }
+            }
+            else
+            {
+                throw new ValidationException("Don't have layouts to show!", "");
             }
 
             return areas;

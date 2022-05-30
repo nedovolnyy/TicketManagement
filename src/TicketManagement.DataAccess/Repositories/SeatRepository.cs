@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -21,9 +22,9 @@ namespace TicketManagement.DataAccess.Repositories
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
             'U' => "UPDATE Seat SET AreaId = @AreaId, Row = @Row, Number = @Number Where Id = @Id",
             'D' => "DELETE FROM Seat WHERE Id = @Id",
-            'G' => "SELECT * FROM Seat WHERE Id = @Id",
-            'A' => "SELECT * FROM Seat",
-            'V' => "SELECT * FROM Seat WHERE AreaId = @AreaId",
+            'G' => "SELECT Id, AreaId, Row, Number FROM Seat WHERE Id = @Id",
+            'A' => "SELECT Id, AreaId, Row, Number FROM Seat",
+            'V' => "SELECT Id, AreaId, Row, Number FROM Seat WHERE AreaId = @AreaId",
             _ => ""
         };
 
@@ -94,6 +95,10 @@ namespace TicketManagement.DataAccess.Repositories
                                     number: Convert.ToInt32(reader["Number"].ToString()));
                 }
             }
+            else
+            {
+                throw new ValidationException("Don't have seats to show!", "");
+            }
 
             return seat;
         }
@@ -111,6 +116,10 @@ namespace TicketManagement.DataAccess.Repositories
                                     number: Convert.ToInt32(reader["Number"].ToString()));
                     seats.Add(seat);
                 }
+            }
+            else
+            {
+                throw new ValidationException("Don't have seats to show!", "");
             }
 
             return seats;

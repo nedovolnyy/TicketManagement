@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
@@ -19,8 +20,8 @@ namespace TicketManagement.DataAccess.Repositories
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
             'U' => "UPDATE EventArea SET EventId = @EventId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY, Price = @Price Where Id = @Id",
             'D' => "DELETE FROM EventArea WHERE Id = @Id",
-            'G' => "SELECT * FROM EventArea WHERE Id = @Id",
-            'A' => "SELECT * FROM EventArea",
+            'G' => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea WHERE Id = @Id",
+            'A' => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea",
             _ => ""
         };
 
@@ -68,6 +69,10 @@ namespace TicketManagement.DataAccess.Repositories
                                               price: Convert.ToDecimal(reader["Price"].ToString()));
                 }
             }
+            else
+            {
+                throw new ValidationException("Don't have eventAreas to show!", "");
+            }
 
             return eventArea;
         }
@@ -87,6 +92,10 @@ namespace TicketManagement.DataAccess.Repositories
                                                         price: Convert.ToDecimal(reader["Price"].ToString()));
                     eventAreas.Add(eventArea);
                 }
+            }
+            else
+            {
+                throw new ValidationException("Don't have eventAreas to show!", "");
             }
 
             return eventAreas;

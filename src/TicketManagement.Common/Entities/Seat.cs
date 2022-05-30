@@ -25,9 +25,5 @@ namespace TicketManagement.Common.Entities
                    AreaId == null
                  & Row == null
                  & Number == null;
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -22,9 +22,5 @@ namespace TicketManagement.Common.Entities
         protected override bool IsNull(BaseEntity entity) =>
                    VenueId == null
                  & Description == null;
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

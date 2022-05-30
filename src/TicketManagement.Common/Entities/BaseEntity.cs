@@ -4,29 +4,15 @@ namespace TicketManagement.Common.Entities
 {
     public abstract class BaseEntity : IEqualityComparer<BaseEntity>
     {
-        private readonly List<BusinessRule> _brokenRules = new List<BusinessRule>();
         public int? Id { get; protected set; }
         protected abstract bool IsNull(BaseEntity entity);
         protected abstract string ForEquals(BaseEntity entity);
-        protected abstract void Validate();
 
         public bool IsEmpty(BaseEntity entity) =>
             IsNull(entity);
 
         public string StringForEquals(BaseEntity entity) =>
             ForEquals(entity);
-
-        public IEnumerable<BusinessRule> GetBrokenRules()
-        {
-            _brokenRules.Clear();
-            Validate();
-            return _brokenRules;
-        }
-
-        protected void AddBrokenRule(BusinessRule businessRule)
-        {
-            _brokenRules.Add(businessRule);
-        }
 
         public bool Equals(BaseEntity entity, BaseEntity tmpEntity)
         {

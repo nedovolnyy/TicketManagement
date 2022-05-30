@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -144,7 +145,7 @@ namespace TicketManagement.DataAccess.Repositories
                     }
 
                     if (entity.Equals(entity, tmpEntity))
-                        {
+                    {
                         using (var sqlTransaction = sqlConnection.BeginTransaction())
                         {
                             using (var cmd = sqlConnection.CreateCommand())
@@ -158,6 +159,10 @@ namespace TicketManagement.DataAccess.Repositories
                                 sqlTransaction.Commit();
                             }
                         }
+                    }
+                    else
+                    {
+                        throw new ValidationException("dbo.Entity haven't this record of entity!", "");
                     }
                 }
             }

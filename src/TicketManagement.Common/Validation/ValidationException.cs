@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace TicketManagement.BusinessLogic.Validation
+namespace TicketManagement.Common.Validation
 {
     [Serializable]
     public class ValidationException : Exception

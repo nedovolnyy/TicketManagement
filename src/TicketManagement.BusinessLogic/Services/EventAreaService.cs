@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.BusinessLogic.Validation;
+﻿using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Repositories;
 

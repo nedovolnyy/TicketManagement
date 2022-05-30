@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -15,21 +16,17 @@ namespace TicketManagement.DataAccess.Repositories
         {
         }
 
-#pragma warning disable S1135 // Track uses of "TODO" tags
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
             'U' => "UPDATE Area SET LayoutId = @LayoutId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY WHERE Id = @Id",
             'D' => "DELETE FROM Area WHERE Id = @Id",
-
-            // TODO: Replace * to Column_name.
-            'G' => "SELECT * FROM Area WHERE Id = @Id",
-            'A' => "SELECT * FROM Area",
-            'V' => "SELECT * FROM Area WHERE LayoutId = @LayoutId",
+            'G' => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE Id = @Id",
+            'A' => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area",
+            'V' => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE LayoutId = @LayoutId",
             _ => ""
         };
-#pragma warning restore S1135 // Track uses of "TODO" tags
 
         protected override void InsertCommandParameters(Area entity, SqlCommand cmd)
         {
@@ -102,6 +99,10 @@ namespace TicketManagement.DataAccess.Repositories
                                     coordY: Convert.ToInt32(reader["CoordY"].ToString()));
                 }
             }
+            else
+            {
+                throw new ValidationException("Don't have areas to show!", "");
+            }
 
             return area;
         }
@@ -120,6 +121,10 @@ namespace TicketManagement.DataAccess.Repositories
                                     coordY: Convert.ToInt32(reader["CoordY"].ToString()));
                     areas.Add(area);
                 }
+            }
+            else
+            {
+                throw new ValidationException("Don't have areas to show!", "");
             }
 
             return areas;

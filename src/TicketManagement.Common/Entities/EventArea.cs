@@ -31,9 +31,5 @@ namespace TicketManagement.Common.Entities
                  & CoordX == null
                  & CoordY == null
                  & Price == null;
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

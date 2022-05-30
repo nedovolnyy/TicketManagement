@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -21,9 +22,9 @@ namespace TicketManagement.DataAccess.Repositories
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
             'U' => "UPDATE Venue SET Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id",
             'D' => "DELETE FROM Venue WHERE Id = @Id",
-            'G' => "SELECT * FROM Venue WHERE Id = @Id",
-            'A' => "SELECT * FROM Venue",
-            'V' => "SELECT TOP 1 * FROM Venue WHERE Description = @Description",
+            'G' => "SELECT Id, Description, Address, Phone FROM Venue WHERE Id = @Id",
+            'A' => "SELECT Id, Description, Address, Phone FROM Venue",
+            'V' => "SELECT TOP 1 Id, Description, Address, Phone FROM Venue WHERE Description = @Description",
             _ => ""
         };
 
@@ -94,6 +95,10 @@ namespace TicketManagement.DataAccess.Repositories
                                       phone: reader["Phone"].ToString());
                 }
             }
+            else
+            {
+                throw new ValidationException("Don't have venues to show!", "");
+            }
 
             return venue;
         }
@@ -111,6 +116,10 @@ namespace TicketManagement.DataAccess.Repositories
                                       phone: reader["Phone"].ToString());
                     venues.Add(venue);
                 }
+            }
+            else
+            {
+                throw new ValidationException("Don't have venues to show!", "");
             }
 
             return venues;

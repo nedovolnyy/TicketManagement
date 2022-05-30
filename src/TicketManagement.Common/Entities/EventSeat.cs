@@ -28,9 +28,5 @@ namespace TicketManagement.Common.Entities
                  & Row == null
                  & Number == null
                  & State == null;
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
