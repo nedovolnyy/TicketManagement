@@ -26,7 +26,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             {
                 // arrange
                 var strException =
-                    "Don't have eventAreas to show!";
+                    "dbo.Entity haven't this record of entity!";
 
                 // act
                 var ex = Assert.Throws<ValidationException>(

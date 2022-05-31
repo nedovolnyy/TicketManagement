@@ -58,9 +58,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             }
         }
 
-        [TestCase(2, 2, "First area of second layout", 4, 6)]
         [TestCase(1, 1, "First area of first layout", 1, 1)]
-        public void AreaService_Delete_ByArea_Exc_refTable(int? id, int? layoutId, string description, int? coordX, int? coordY)
+        public void AreaService_Delete_ByArea_Exc_refTable1(int? id, int? layoutId, string description, int? coordX, int? coordY)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -72,6 +71,24 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // act
                 var ex = Assert.Throws<SqlException>(
+                                () => _areaService.Delete(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY)));
+
+                // assert
+                Assert.That(ex.Message, Is.EqualTo(strException));
+            }
+        }
+
+        [TestCase(2, 2, "First area of second layout", 4, 6)]
+        public void AreaService_Delete_ByArea_Exc_refTable2(int? id, int? layoutId, string description, int? coordX, int? coordY)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                // arrange
+                var strException =
+                    "dbo.Entity haven't this record of entity!";
+
+                // act
+                var ex = Assert.Throws<ValidationException>(
                                 () => _areaService.Delete(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY)));
 
                 // assert

@@ -19,49 +19,47 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _evntService = new EventService();
         }
 
-        [TestCase(1, 2, "First evnt of second layout", "jjl")]
-        [TestCase(2, 1, "First evnt of first layout", "fhkh")]
-        [TestCase(3, 2, "First evnt of second layout", "gjlgj")]
-        public void EventService_Insert_ValidationException(int? id, int? layoutId, string name, string description)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
+        public void EventService_Insert_EventInPastException(int? id, int? layoutId, string name, DateTime eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
                 string strException =
-                    "was not recognized as a valid DateTime";
+                    "Event can't be created in the past!";
 
                 // act
-                var ex = Assert.Throws<FormatException>(
-                                () => _evntService.Insert(new Event(id: id, layoutId: layoutId, name: name, description: description)));
+                var ex = Assert.Throws<ValidationException>(
+                                () => _evntService.Insert(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description)));
 
                 // assert
                 StringAssert.Contains(strException, ex.Message);
             }
         }
 
-        [TestCase(1, 2, "First evnt of second layout", "jjl")]
-        [TestCase(2, 1, "First evnt of first layout", "fhkh")]
-        [TestCase(3, 2, "First evnt of second layout", "gjlgj")]
-        public void EventService_Update_ValidationException(int? id, int? layoutId, string name, string description)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
+        public void EventService_Update_EventInPastException(int? id, int? layoutId, string name, DateTime eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
                 string strException =
-                    "was not recognized as a valid DateTime";
+                    "Event can't be created in the past!";
 
                 // act
-                var ex = Assert.Throws<FormatException>(
-                                () => _evntService.Update(new Event(id: id, layoutId: layoutId, name: name, description: description)));
+                var ex = Assert.Throws<ValidationException>(
+                                () => _evntService.Update(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description)));
 
                 // assert
                 StringAssert.Contains(strException, ex.Message);
             }
         }
 
-        [TestCase(2, 2, "First evnt of second layout", "fjfjfghjfg")]
-        [TestCase(1, 1, "First evnt of first layout", "ghjfghjfghj")]
-        public void EventService_Delete_ByEvent_Exc_refTable(int? id, int? layoutId, string name, string description)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
+        public void EventService_Delete_ByEvent_Exc_refTable(int? id, int? layoutId, string name, DateTime eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -71,25 +69,26 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // act
                 var ex = Assert.Throws<ValidationException>(
-                                () => _evntService.Delete(new Event(id: id, layoutId: layoutId, name: name, description: description)));
+                                () => _evntService.Delete(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description)));
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));
             }
         }
 
-        [TestCase(23525, 8, "Figngngndgndgnout", "hkfhjkghj")]
-        public void EventService_Delete_ByEvent_Exc_HaventEvent(int? id, int? layoutId, string name, string description)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
+        public void EventService_Delete_ByEvent_Exc_HaventEvent(int? id, int? layoutId, string name, DateTime eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
                 var strException =
-                    "Don't have events to show!";
+                    "dbo.Entity haven't this record of entity!";
 
                 // act
                 var ex = Assert.Throws<ValidationException>(
-                                () => _evntService.Delete(new Event(id: id, layoutId: layoutId, name: name, description: description)));
+                                () => _evntService.Delete(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description)));
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));

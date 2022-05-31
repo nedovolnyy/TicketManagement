@@ -18,9 +18,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _eventSeatService = new EventSeatService();
         }
 
-        [TestCase(1, 2, 56, 2, 4)]
-        [TestCase(2, 1, 3, 3, 2)]
-        [TestCase(3, 2, 9, 1, 7)]
+        [TestCase(1, 6, 56, 2, 4)]
+        [TestCase(2, 7, 3, 3, 2)]
+        [TestCase(3, 5, 9, 1, 7)]
         public void EventSeatService_Insert_ValidationException(int? id, int? eventAreaId, int? row, int? number, int? state)
         {
             using (TransactionScope scope = new TransactionScope())
@@ -40,8 +40,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             }
         }
 
-        [TestCase(2, 1, 3, 3, 2)]
-        [TestCase(3, 2, 9, 1, 7)]
+        [TestCase(2, 6, 3, 3, 2)]
+        [TestCase(3, 5, 9, 1, 7)]
         public void EventSeatService_Update_ValidationException(int? id, int? eventAreaId, int? row, int? number, int? state)
         {
             using (TransactionScope scope = new TransactionScope())
@@ -61,15 +61,15 @@ namespace TicketManagement.BusinessLogic.UnitTests
             }
         }
 
-        [TestCase(1, 5, 34, 4, 6)]
-        [TestCase(1, 4, 76, 4, 1)]
+        [TestCase(1, 4, 1, 4, 0)]
+        [TestCase(1, 1, 3, 4, 1)]
         public void EventSeatService_Delete_ByEventSeat_Exc_refTable(int? id, int? eventAreaId, int? row, int? number, int? state)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
                 var strException =
-                    "Don't have eventSeats to show!";
+                    "dbo.Entity haven't this record of entity!";
 
                 // act
                 var ex = Assert.Throws<ValidationException>(
