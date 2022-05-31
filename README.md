@@ -14,9 +14,9 @@
 flowchart LR;
     UI-->BLL;
     BLL-->DAL;
-    COMMON-->UI;
-    COMMON-->BLL;
-    COMMON-->DAL;
+    UI-->COMMON;
+    BLL-->COMMON;
+    DAL-->COMMON;
     DAL-->id1[(Database)]
 ```
 * UI not realised into task-1.
