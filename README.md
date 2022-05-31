@@ -1,8 +1,12 @@
+# Task-1 DDD back-end
 
-# Task-1
+## How many items from requirements was completed?
+*  all
+
 ## Possible Drawbacks/Concerns (What should reviewers look out for?)
-*
-## Testing Notes
+* Tests, maybe
+
+## Testing Notes (How do we know this works & doesn't break other things)
 * In unit testing in each service, GetAll() method checking will intentionally fail.
 
 # Structure

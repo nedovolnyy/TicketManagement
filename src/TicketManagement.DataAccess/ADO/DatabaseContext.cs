@@ -6,12 +6,12 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.ADO
 {
-    public class DatabaseContext : IDatabaseContext
+    internal class DatabaseContext : IDatabaseContext
     {
         private readonly string _connectionString;
         private SqlConnection _connection;
 
-        public DatabaseContext()
+        internal DatabaseContext()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         }

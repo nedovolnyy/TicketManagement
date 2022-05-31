@@ -9,13 +9,8 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public sealed class EventRepository : BaseRepository<Event>, IEventRepository
+    internal sealed class EventRepository : BaseRepository<Event>, IEventRepository
     {
-        public EventRepository()
-            : base()
-        {
-        }
-
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO Event (Name, EventTime, Description, LayoutId) VALUES (@Name, @EventTime, @Description, @LayoutId);" +

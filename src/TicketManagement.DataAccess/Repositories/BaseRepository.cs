@@ -9,13 +9,9 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public abstract class BaseRepository<T> : IRepository<T>
+    internal abstract class BaseRepository<T> : IRepository<T>
         where T : BaseEntity, new()
     {
-        protected BaseRepository()
-        {
-        }
-
         /// <summary>
         /// Base Method for Insert Data.
         /// </summary>

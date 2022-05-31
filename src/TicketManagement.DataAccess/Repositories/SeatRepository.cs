@@ -9,13 +9,8 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public sealed class SeatRepository : BaseRepository<Seat>, ISeatRepository
+    internal sealed class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
-        public SeatRepository()
-            : base()
-        {
-        }
-
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +

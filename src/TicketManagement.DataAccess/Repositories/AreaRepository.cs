@@ -9,13 +9,8 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public sealed class AreaRepository : BaseRepository<Area>, IAreaRepository
+    internal sealed class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
-        public AreaRepository()
-            : base()
-        {
-        }
-
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
