@@ -2,21 +2,22 @@
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     public class SeatService : BaseService<Seat>, IService<Seat>
     {
-        private readonly SeatRepository _seatRepository;
+        private readonly ISeatRepository _seatRepository;
         public SeatService()
             : base()
         {
             EntityRepository = new SeatRepository();
-            _seatRepository = (SeatRepository)EntityRepository;
+            _seatRepository = (ISeatRepository)EntityRepository;
         }
 
-        protected override BaseRepository<Seat> EntityRepository { get; }
+        protected override IRepository<Seat> EntityRepository { get; }
 
         protected override void Validation(Seat entity)
         {

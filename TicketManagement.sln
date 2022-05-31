@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.BusinessLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.DataAccess", "src\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj", "{B3C3A030-1814-4DDA-A717-450DB031934A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.IntegrationTests", "test\TicketManagement.IntegrationTests\TicketManagement.IntegrationTests.csproj", "{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.DataAccess.IntegrationTests", "test\TicketManagement.IntegrationTests\TicketManagement.DataAccess.IntegrationTests.csproj", "{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bin", "bin", "{F17C1AB0-BCDA-4FFE-BCA2-6827C9EDEB91}"
 EndProject

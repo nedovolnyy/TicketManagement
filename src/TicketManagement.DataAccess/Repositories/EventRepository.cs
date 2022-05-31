@@ -9,7 +9,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventRepository : BaseRepository<Event>, IEventRepository
+    public sealed class EventRepository : BaseRepository<Event>, IEventRepository
     {
         public EventRepository()
             : base()
@@ -18,19 +18,20 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override string ActionToSqlString(char action) => action switch
         {
-            'I' => "INSERT INTO Event (Name, Description, LayoutId) VALUES (@Name, @Description, @LayoutId);" +
+            'I' => "INSERT INTO Event (Name, EventTime, Description, LayoutId) VALUES (@Name, @EventTime, @Description, @LayoutId);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Event SET Name = @Name, Description = @Description, LayoutId = @LayoutId Where Id = @Id",
+            'U' => "UPDATE Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId Where Id = @Id",
             'D' => "DELETE FROM Event WHERE Id = @Id",
-            'G' => "SELECT Id, Name, Description, LayoutId FROM Event WHERE Id = @Id",
-            'A' => "SELECT Id, Name, Description, LayoutId FROM Event",
-            'V' => "SELECT Id, Name, Description, LayoutId FROM Event WHERE LayoutId = @LayoutId",
+            'G' => "SELECT Id, Name, EventTime, Description, LayoutId FROM Event WHERE Id = @Id",
+            'A' => "SELECT Id, Name, EventTime, Description, LayoutId FROM Event",
+            'V' => "SELECT Id, Name, EventTime, Description, LayoutId FROM Event WHERE LayoutId = @LayoutId",
             _ => ""
         };
 
         protected override void InsertCommandParameters(Event entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Name", entity.Name);
+            cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
         }
@@ -39,6 +40,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@Name", entity.Name);
+            cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
         }
@@ -91,6 +93,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     evnt = new Event(id: int.Parse(reader["Id"].ToString()),
                                      name: reader["Name"].ToString(),
+                                     eventTime: DateTime.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
                 }
@@ -112,6 +115,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     Event evnt = new Event(id: int.Parse(reader["Id"].ToString()),
                                      name: reader["Name"].ToString(),
+                                     eventTime: DateTime.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
                     evnts.Add(evnt);

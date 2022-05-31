@@ -1,20 +1,21 @@
 ﻿using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     public class EventAreaService : BaseService<EventArea>, IService<EventArea>
     {
-        private readonly EventAreaRepository _eventAreaRepository;
+        private readonly IEventAreaRepository _eventAreaRepository;
         public EventAreaService()
             : base()
         {
             EntityRepository = new EventAreaRepository();
-            _eventAreaRepository = (EventAreaRepository)EntityRepository;
+            _eventAreaRepository = (IEventAreaRepository)EntityRepository;
         }
 
-        protected override BaseRepository<EventArea> EntityRepository { get; }
+        protected override IRepository<EventArea> EntityRepository { get; }
 
         protected override void Validation(EventArea entity)
         {

@@ -9,7 +9,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class SeatRepository : BaseRepository<Seat>, ISeatRepository
+    public sealed class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
         public SeatRepository()
             : base()
@@ -91,8 +91,8 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     seat = new Seat(id: int.Parse(reader["Id"].ToString()),
                                     areaId: int.Parse(reader["AreaId"].ToString()),
-                                    row: Convert.ToInt32(reader["Row"].ToString()),
-                                    number: Convert.ToInt32(reader["Number"].ToString()));
+                                    row: int.Parse(reader["Row"].ToString()),
+                                    number: int.Parse(reader["Number"].ToString()));
                 }
             }
             else
@@ -112,8 +112,8 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     Seat seat = new Seat(id: int.Parse(reader["Id"].ToString()),
                                     areaId: int.Parse(reader["AreaId"].ToString()),
-                                    row: Convert.ToInt32(reader["Row"].ToString()),
-                                    number: Convert.ToInt32(reader["Number"].ToString()));
+                                    row: int.Parse(reader["Row"].ToString()),
+                                    number: int.Parse(reader["Number"].ToString()));
                     seats.Add(seat);
                 }
             }

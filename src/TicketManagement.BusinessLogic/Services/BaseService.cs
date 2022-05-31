@@ -2,7 +2,6 @@
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -13,7 +12,7 @@ namespace TicketManagement.BusinessLogic.Services
         {
         }
 
-        protected abstract BaseRepository<T> EntityRepository { get; }
+        protected abstract IRepository<T> EntityRepository { get; }
 
         public void Insert(T entity)
         {

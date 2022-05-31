@@ -9,7 +9,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class VenueRepository : BaseRepository<Venue>, IVenueRepository
+    public sealed class VenueRepository : BaseRepository<Venue>, IVenueRepository
     {
         public VenueRepository()
             : base()

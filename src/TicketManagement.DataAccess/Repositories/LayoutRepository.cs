@@ -9,7 +9,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
+    public sealed class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
     {
         public LayoutRepository()
             : base()

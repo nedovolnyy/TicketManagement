@@ -9,7 +9,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class AreaRepository : BaseRepository<Area>, IAreaRepository
+    public sealed class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
         public AreaRepository()
             : base()
@@ -60,7 +60,7 @@ namespace TicketManagement.DataAccess.Repositories
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns>Get all Entity by LayoutId.</returns>
-        public IEnumerable<Area> GetAllByLayoutId(int? id)
+        IEnumerable<Area> IAreaRepository.GetAllByLayoutId(int? id)
         {
             try
             {
@@ -95,8 +95,8 @@ namespace TicketManagement.DataAccess.Repositories
                     area = new Area(id: int.Parse(reader["Id"].ToString()),
                                     layoutId: int.Parse(reader["LayoutId"].ToString()),
                                     description: reader["Description"].ToString(),
-                                    coordX: Convert.ToInt32(reader["CoordX"].ToString()),
-                                    coordY: Convert.ToInt32(reader["CoordY"].ToString()));
+                                    coordX: int.Parse(reader["CoordX"].ToString()),
+                                    coordY: int.Parse(reader["CoordY"].ToString()));
                 }
             }
             else
@@ -117,8 +117,8 @@ namespace TicketManagement.DataAccess.Repositories
                     Area area = new Area(id: int.Parse(reader["Id"].ToString()),
                                     layoutId: int.Parse(reader["LayoutId"].ToString()),
                                     description: reader["Description"].ToString(),
-                                    coordX: Convert.ToInt32(reader["CoordX"].ToString()),
-                                    coordY: Convert.ToInt32(reader["CoordY"].ToString()));
+                                    coordX: int.Parse(reader["CoordX"].ToString()),
+                                    coordY: int.Parse(reader["CoordY"].ToString()));
                     areas.Add(area);
                 }
             }

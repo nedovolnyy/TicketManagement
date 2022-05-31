@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
@@ -7,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
+    public sealed class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
     {
         public EventSeatRepository()
             : base()
@@ -60,10 +59,10 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     eventSeat = new EventSeat(id: int.Parse(reader["Id"].ToString()),
-                                              eventAreaId: int.Parse(reader["EventId"].ToString()),
-                                              row: Convert.ToInt32(reader["Row"].ToString()),
-                                              number: Convert.ToInt32(reader["Number"].ToString()),
-                                              state: Convert.ToInt32(reader["State"].ToString()));
+                                              eventAreaId: int.Parse(reader["EventAreaId"].ToString()),
+                                              row: int.Parse(reader["Row"].ToString()),
+                                              number: int.Parse(reader["Number"].ToString()),
+                                              state: int.Parse(reader["State"].ToString()));
                 }
             }
             else
@@ -82,10 +81,10 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     EventSeat eventSeat = new EventSeat(id: int.Parse(reader["Id"].ToString()),
-                                              eventAreaId: int.Parse(reader["EventId"].ToString()),
-                                              row: Convert.ToInt32(reader["Row"].ToString()),
-                                              number: Convert.ToInt32(reader["Number"].ToString()),
-                                              state: Convert.ToInt32(reader["State"].ToString()));
+                                              eventAreaId: int.Parse(reader["EventAreaId"].ToString()),
+                                              row: int.Parse(reader["Row"].ToString()),
+                                              number: int.Parse(reader["Number"].ToString()),
+                                              state: int.Parse(reader["State"].ToString()));
                     eventSeats.Add(eventSeat);
                 }
             }

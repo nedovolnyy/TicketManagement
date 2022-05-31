@@ -7,7 +7,7 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    public class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
+    public sealed class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
     {
         public EventAreaRepository()
             : base()
@@ -64,8 +64,8 @@ namespace TicketManagement.DataAccess.Repositories
                     eventArea = new EventArea(id: int.Parse(reader["Id"].ToString()),
                                               eventId: int.Parse(reader["EventId"].ToString()),
                                               description: reader["Description"].ToString(),
-                                              coordX: Convert.ToInt32(reader["CoordX"].ToString()),
-                                              coordY: Convert.ToInt32(reader["CoordY"].ToString()),
+                                              coordX: int.Parse(reader["CoordX"].ToString()),
+                                              coordY: int.Parse(reader["CoordY"].ToString()),
                                               price: Convert.ToDecimal(reader["Price"].ToString()));
                 }
             }
@@ -87,8 +87,8 @@ namespace TicketManagement.DataAccess.Repositories
                     EventArea eventArea = new EventArea(id: int.Parse(reader["Id"].ToString()),
                                                         eventId: int.Parse(reader["EventId"].ToString()),
                                                         description: reader["Description"].ToString(),
-                                                        coordX: Convert.ToInt32(reader["CoordX"].ToString()),
-                                                        coordY: Convert.ToInt32(reader["CoordY"].ToString()),
+                                                        coordX: int.Parse(reader["CoordX"].ToString()),
+                                                        coordY: int.Parse(reader["CoordY"].ToString()),
                                                         price: Convert.ToDecimal(reader["Price"].ToString()));
                     eventAreas.Add(eventArea);
                 }

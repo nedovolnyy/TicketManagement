@@ -2,21 +2,22 @@
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     public class AreaService : BaseService<Area>, IService<Area>
     {
-        private readonly AreaRepository _areaRepository;
+        private readonly IAreaRepository _areaRepository;
         public AreaService()
             : base()
         {
             EntityRepository = new AreaRepository();
-            _areaRepository = (AreaRepository)EntityRepository;
+            _areaRepository = (IAreaRepository)EntityRepository;
         }
 
-        protected override BaseRepository<Area> EntityRepository { get; }
+        protected override IRepository<Area> EntityRepository { get; }
 
         protected override void Validation(Area entity)
         {
