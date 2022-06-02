@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -30,8 +29,8 @@ namespace TicketManagement.DataAccess.Repositories
                         {
                             cmd.CommandText = ActionToSqlString('I');
                             cmd.CommandType = CommandType.Text;
-                            cmd.Transaction = sqlTransaction;
                             InsertCommandParameters(entity, cmd);
+                            cmd.Transaction = sqlTransaction;
                             i = cmd.ExecuteNonQuery();
                             sqlTransaction.Commit();
                         }
@@ -64,8 +63,8 @@ namespace TicketManagement.DataAccess.Repositories
                         {
                             cmd.CommandText = ActionToSqlString('U');
                             cmd.CommandType = CommandType.Text;
-                            cmd.Transaction = sqlTransaction;
                             UpdateCommandParameters(entity, cmd);
+                            cmd.Transaction = sqlTransaction;
                             i = cmd.ExecuteNonQuery();
 
                             sqlTransaction.Commit();
@@ -99,66 +98,12 @@ namespace TicketManagement.DataAccess.Repositories
                         {
                             cmd.CommandText = ActionToSqlString('D');
                             cmd.CommandType = CommandType.Text;
-                            cmd.Transaction = sqlTransaction;
                             DeleteCommandParameters(id, cmd);
+                            cmd.Transaction = sqlTransaction;
                             i = cmd.ExecuteNonQuery();
 
                             sqlTransaction.Commit();
                         }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return i;
-        }
-
-        /// <summary>
-        /// Base Method for Delete Data.
-        /// </summary>
-        /// <param name="entity">id.</param>
-        /// <returns>Count changed columns.</returns>
-        public int Delete(T entity)
-        {
-            int i = 0;
-            var tmpEntity = new T();
-            try
-            {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
-                {
-                    using (var cmd = sqlConnection.CreateCommand())
-                    {
-                        cmd.CommandText = ActionToSqlString('G');
-                        cmd.CommandType = CommandType.Text;
-                        GetByIdCommandParameters(entity.Id, cmd);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            tmpEntity = Map(reader);
-                        }
-                    }
-
-                    if (entity.Equals(entity, tmpEntity))
-                    {
-                        using (var sqlTransaction = sqlConnection.BeginTransaction())
-                        {
-                            using (var cmd = sqlConnection.CreateCommand())
-                            {
-                                cmd.CommandText = ActionToSqlString('D');
-                                cmd.CommandType = CommandType.Text;
-                                cmd.Transaction = sqlTransaction;
-                                DeleteCommandParameters(entity.Id, cmd);
-                                i = cmd.ExecuteNonQuery();
-
-                                sqlTransaction.Commit();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        throw new ValidationException("dbo.Entity haven't this record of entity!", "");
                     }
                 }
             }
@@ -213,6 +158,7 @@ namespace TicketManagement.DataAccess.Repositories
                     {
                         cmd.CommandText = ActionToSqlString('A');
                         cmd.CommandType = CommandType.Text;
+                        GetAllCommandParameters(cmd);
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             return Maps(reader);
@@ -231,6 +177,7 @@ namespace TicketManagement.DataAccess.Repositories
         protected abstract void UpdateCommandParameters(T entity, SqlCommand cmd);
         protected abstract void DeleteCommandParameters(int? id, SqlCommand cmd);
         protected abstract void GetByIdCommandParameters(int? id, SqlCommand cmd);
+        protected abstract void GetAllCommandParameters(SqlCommand cmd);
         protected abstract T Map(SqlDataReader reader);
         protected abstract List<T> Maps(SqlDataReader reader);
     }

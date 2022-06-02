@@ -58,43 +58,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             }
         }
 
-        [TestCase(1, 5, 34, 4)]
-        [TestCase(1, 4, 76, 4)]
-        public void SeatService_Delete_BySeat_Exc_refTable(int? id, int? areaId, int? row, int? number)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "dbo.Entity haven't this record of entity!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _seatService.Delete(new Seat(id: id, areaId: areaId, row: row, number: number)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [TestCase(23525, 8, 43, 4)]
-        public void SeatService_Delete_BySeat_Exc_HaventSeat(int? id, int? areaId, int? row, int? number)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Don't have seats to show!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _seatService.Delete(new Seat(id, areaId, row, number)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]

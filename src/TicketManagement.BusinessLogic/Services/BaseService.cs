@@ -5,36 +5,30 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public abstract class BaseService<T> : IService<T>
+    internal abstract class BaseService<T> : IService<T>
         where T : BaseEntity, new()
     {
-        protected BaseService()
-        {
-        }
-
-        protected abstract IRepository<T> EntityRepository { get; }
+        protected abstract IRepository<T> EntityRepository { get; set; }
 
         public void Insert(T entity)
         {
-            Validation(entity);
+            Validate(entity);
             EntityRepository.Insert(entity);
         }
 
         public void Update(T entity)
         {
-            Validation(entity);
+            Validate(entity);
             EntityRepository.Update(entity);
         }
 
         public void Delete(int id) =>
             EntityRepository.Delete(id);
-        public void Delete(T entity) =>
-            EntityRepository.Delete(entity);
         public T GetById(int id) =>
             EntityRepository.GetById(id);
         public IEnumerable<T> GetAll() =>
             EntityRepository.GetAll();
 
-        protected abstract void Validation(T entity);
+        protected abstract void Validate(T entity);
     }
 }

@@ -59,43 +59,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             }
         }
 
-        [TestCase(1, 2, "First layout")]
-        [TestCase(2, 1, "First layout")]
-        public void LayoutService_Delete_ByLayout_Exc_refTable(int? id, int? venueId, string description)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "dbo.Entity haven't this record of entity!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _layoutService.Delete(new Layout(id: id, venueId: venueId, description: description)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [TestCase(23525, 8, "Figngngndgndgnout")]
-        public void LayoutService_Delete_ByLayout_Exc_HaventLayout(int? id, int? venueId, string description)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Don't have layouts to show!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _layoutService.Delete(new Layout(id: id, venueId: venueId, description: description)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]

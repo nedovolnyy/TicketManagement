@@ -11,20 +11,17 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal sealed class EventRepository : BaseRepository<Event>, IEventRepository
     {
-        protected override string ActionToSqlString(char action) => action switch
+        protected override string ActionToSqlString(char action) => "";
+        private void ForStoredProcedure(SqlCommand cmd)
         {
-            'I' => "INSERT INTO Event (Name, EventTime, Description, LayoutId) VALUES (@Name, @EventTime, @Description, @LayoutId);" +
-                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId Where Id = @Id",
-            'D' => "DELETE FROM Event WHERE Id = @Id",
-            'G' => "SELECT Id, Name, EventTime, Description, LayoutId FROM Event WHERE Id = @Id",
-            'A' => "SELECT Id, Name, EventTime, Description, LayoutId FROM Event",
-            'V' => "SELECT Id, Name, EventTime, Description, LayoutId FROM Event WHERE LayoutId = @LayoutId",
-            _ => ""
-        };
+            cmd.CommandText = "spEvent";
+            cmd.CommandType = CommandType.StoredProcedure;
+        }
 
         protected override void InsertCommandParameters(Event entity, SqlCommand cmd)
         {
+            ForStoredProcedure(cmd);
+            cmd.Parameters.AddWithValue("@Action", "Save");
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -33,6 +30,8 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void UpdateCommandParameters(Event entity, SqlCommand cmd)
         {
+            ForStoredProcedure(cmd);
+            cmd.Parameters.AddWithValue("@Action", "Save");
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
@@ -42,12 +41,22 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void DeleteCommandParameters(int? id, SqlCommand cmd)
         {
+            ForStoredProcedure(cmd);
+            cmd.Parameters.AddWithValue("@Action", "Delete");
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
         {
+            ForStoredProcedure(cmd);
+            cmd.Parameters.AddWithValue("@Action", "GetById");
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+            ForStoredProcedure(cmd);
+            cmd.Parameters.AddWithValue("@Action", "GetAll");
         }
 
         /// <summary>
@@ -63,8 +72,8 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
-                        cmd.CommandText = ActionToSqlString('V');
-                        cmd.CommandType = CommandType.Text;
+                        ForStoredProcedure(cmd);
+                        cmd.Parameters.AddWithValue("@Action", "ForValidate");
                         cmd.Parameters.AddWithValue("@LayoutId", id);
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -88,7 +97,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     evnt = new Event(id: int.Parse(reader["Id"].ToString()),
                                      name: reader["Name"].ToString(),
-                                     eventTime: DateTime.Parse(reader["EventTime"].ToString()),
+                                     eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
                 }
@@ -110,7 +119,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     Event evnt = new Event(id: int.Parse(reader["Id"].ToString()),
                                      name: reader["Name"].ToString(),
-                                     eventTime: DateTime.Parse(reader["EventTime"].ToString()),
+                                     eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
                     evnts.Add(evnt);

@@ -1,28 +1,25 @@
-﻿using System.Collections.Generic;
-using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.Common.Entities;
+﻿using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class AreaService : BaseService<Area>, IService<Area>
+    internal class AreaService : BaseService<Area>
     {
         private readonly IAreaRepository _areaRepository;
-        public AreaService()
-            : base()
+        internal AreaService()
         {
             EntityRepository = new AreaRepository();
             _areaRepository = (IAreaRepository)EntityRepository;
         }
 
-        protected override IRepository<Area> EntityRepository { get; }
+        protected override IRepository<Area> EntityRepository { get; set; }
 
-        protected override void Validation(Area entity)
+        protected override void Validate(Area entity)
         {
-            IEnumerable<Area> areaArray = _areaRepository.GetAllByLayoutId(entity.LayoutId);
-            foreach (Area area in areaArray)
+            var areaArray = _areaRepository.GetAllByLayoutId(entity.LayoutId);
+            foreach (var area in areaArray)
             {
                 if (entity.Description == area.Description)
                 {

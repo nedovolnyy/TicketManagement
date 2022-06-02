@@ -124,5 +124,9 @@ namespace TicketManagement.DataAccess.Repositories
 
             return areas;
         }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+        }
     }
 }

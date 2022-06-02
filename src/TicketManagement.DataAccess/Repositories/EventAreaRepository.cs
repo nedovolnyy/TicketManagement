@@ -95,5 +95,9 @@ namespace TicketManagement.DataAccess.Repositories
 
             return eventAreas;
         }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+        }
     }
 }

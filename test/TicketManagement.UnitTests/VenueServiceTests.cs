@@ -59,44 +59,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             }
         }
 
-        [TestCase(1, "First venue", "dggdfd", "+4988955568")]
-        [TestCase(2, "Second venue", "st DFgee", "+58487555")]
-        public void VenueService_Delete_ByVenue_Exc_refTable(int? id, string description, string address, string phone)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "dbo.Entity haven't this record of entity!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _venueService.Delete(new Venue(id: id, description: description, address: address, phone: phone)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [TestCase(1, "First venue", "dggdfd", "+4988955568")]
-        [TestCase(2, "Second venue", "st DFgee", "+58487555")]
-        public void VenueService_Delete_ByVenue_Exc_HaventVenue(int? id, string description, string address, string phone)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "dbo.Entity haven't this record of entity!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _venueService.Delete(new Venue(id, description, address, phone)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]

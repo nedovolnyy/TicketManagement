@@ -18,43 +18,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _eventAreaService = new EventAreaService();
         }
 
-        [TestCase(2, 2, "First eventArea of second event", 4, 6, 345366)]
-        [TestCase(1, 1, "First eventArea of first event", 1, 1, 35366)]
-        public void EventAreaService_Delete_ByEventArea_Exc_refTable(int? id, int? eventId, string description, int? coordX, int? coordY, decimal? price)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "dbo.Entity haven't this record of entity!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _eventAreaService.Delete(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [TestCase(23525, 8, "Figngngndgndgnout", 4, 4, 4563)]
-        public void EventAreaService_Delete_ByEventArea_Exc_HaventEventArea(int? id, int? eventId, string description, int? coordX, int? coordY, decimal? price)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Don't have eventAreas to show!";
-
-                // act
-                var ex = Assert.Throws<ValidationException>(
-                                () => _eventAreaService.Delete(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price)));
-
-                // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]

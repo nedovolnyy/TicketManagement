@@ -90,5 +90,9 @@ namespace TicketManagement.DataAccess.Repositories
 
             return eventSeats;
         }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+        }
     }
 }

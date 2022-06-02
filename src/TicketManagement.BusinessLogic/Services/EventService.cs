@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
@@ -8,31 +6,35 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class EventService : BaseService<Event>, IService<Event>
+    internal class EventService : BaseService<Event>
     {
         private readonly IEventRepository _eventRepository;
-        public EventService()
-            : base()
+        internal EventService()
         {
             EntityRepository = new EventRepository();
             _eventRepository = (IEventRepository)EntityRepository;
         }
 
-        protected override IRepository<Event> EntityRepository { get; }
+        protected override IRepository<Event> EntityRepository { get; set; }
 
-        protected override void Validation(Event entity)
+        protected override void Validate(Event entity)
         {
-            if ((entity.EventTime.Ticks - DateTime.Now.Ticks) < 0)
+            if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
                 throw new ValidationException("Event can't be created in the past!", "");
             }
 
-            IEnumerable<Event> evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
-            foreach (Event evnt in evntArray)
+            var evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
+            foreach (var evnt in evntArray)
             {
                 if ((entity.LayoutId == evnt.LayoutId) && (entity.Description == evnt.Description))
                 {
                     throw new ValidationException("Layout name should be unique in venue!", "");
+                }
+
+                if ((entity.LayoutId == evnt.LayoutId) && (entity.EventTime == evnt.EventTime))
+                {
+                    throw new ValidationException("Do not create event for the same layout in the same time!", "");
                 }
             }
         }

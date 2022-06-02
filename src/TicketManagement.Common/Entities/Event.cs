@@ -8,7 +8,7 @@ namespace TicketManagement.Common.Entities
         {
         }
 
-        public Event(int? id, string name, DateTime eventTime, string description, int? layoutId)
+        public Event(int? id, string name, DateTimeOffset eventTime, string description, int? layoutId)
         {
             Id = id;
             Name = name;
@@ -18,7 +18,7 @@ namespace TicketManagement.Common.Entities
         }
 
         public string Name { get; private set; }
-        public DateTime EventTime { get; private set; }
+        public DateTimeOffset EventTime { get; private set; }
         public string Description { get; private set; }
         public int? LayoutId { get; private set; }
         protected override string ForEquals(BaseEntity entity) =>

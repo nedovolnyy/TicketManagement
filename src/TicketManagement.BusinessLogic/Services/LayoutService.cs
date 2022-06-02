@@ -1,28 +1,25 @@
-﻿using System.Collections.Generic;
-using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.Common.Entities;
+﻿using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    public class LayoutService : BaseService<Layout>, IService<Layout>
+    internal class LayoutService : BaseService<Layout>
     {
         private readonly ILayoutRepository _layoutRepository;
-        public LayoutService()
-            : base()
+        internal LayoutService()
         {
             EntityRepository = new LayoutRepository();
             _layoutRepository = (ILayoutRepository)EntityRepository;
         }
 
-        protected override IRepository<Layout> EntityRepository { get; }
+        protected override IRepository<Layout> EntityRepository { get; set; }
 
-        protected override void Validation(Layout entity)
+        protected override void Validate(Layout entity)
         {
-            IEnumerable<Layout> layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
-            foreach (Layout layout in layoutArray)
+            var layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
+            foreach (var layout in layoutArray)
             {
                 if (entity.Description == layout.Description)
                 {

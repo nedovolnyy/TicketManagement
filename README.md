@@ -14,9 +14,9 @@
 flowchart LR;
     UI-->BLL;
     BLL-->DAL;
-    COMMON-->UI;
-    COMMON-->BLL;
-    COMMON-->DAL;
+    UI-->COMMON;
+    BLL-->COMMON;
+    DAL-->COMMON;
     DAL-->id1[(Database)]
 ```
 * UI not realised into task-1.
@@ -28,6 +28,7 @@ flowchart LR;
 * [Integration Tests](test/TicketManagement.IntegrationTests/) for DataAccess Layer.
 
 # Usage
+* Add 'InternalsVisibleTo' attribyte into bll.csproj for necessary Presentation Layer project.
 * Create new instance of necessary bll.service of entity and use it.
 Example:
 ```c#
