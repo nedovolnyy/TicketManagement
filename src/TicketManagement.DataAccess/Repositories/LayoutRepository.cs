@@ -36,12 +36,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Description", entity.Description);
         }
 
-        protected override void DeleteCommandParameters(int? id, SqlCommand cmd)
+        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
+        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
@@ -51,7 +51,7 @@ namespace TicketManagement.DataAccess.Repositories
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns>Get all Entity by VenueId.</returns>
-        public IEnumerable<Layout> GetAllByVenueId(int? id)
+        public IEnumerable<Layout> GetAllByVenueId(int id)
         {
             try
             {

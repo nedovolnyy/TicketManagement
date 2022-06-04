@@ -18,7 +18,7 @@ namespace TicketManagement.BusinessLogic.Services
 
         protected override void Validate(EventSeat entity)
         {
-            if ((entity.Row == null) || (entity.Number == null))
+            if ((entity.Row == 0) || (entity.Number == 0))
             {
                 throw new ValidationException("Event can't be created without any seats!", "");
             }

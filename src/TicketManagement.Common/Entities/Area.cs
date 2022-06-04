@@ -8,7 +8,7 @@ namespace TicketManagement.Common.Entities
         {
         }
 
-        public Area(int? id, int? layoutId, string description, int? coordX, int? coordY)
+        public Area(int id, int layoutId, string description, int coordX, int coordY)
         {
             Id = id;
             LayoutId = layoutId;
@@ -17,9 +17,9 @@ namespace TicketManagement.Common.Entities
             CoordY = coordY;
         }
 
-        public int? LayoutId { get; private set; }
+        public int LayoutId { get; private set; }
         public string Description { get; private set; }
-        public int? CoordX { get; private set; }
-        public int? CoordY { get; private set; }
+        public int CoordX { get; private set; }
+        public int CoordY { get; private set; }
     }
 }

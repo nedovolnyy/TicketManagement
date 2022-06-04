@@ -39,14 +39,14 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
         }
 
-        protected override void DeleteCommandParameters(int? id, SqlCommand cmd)
+        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
         {
             ForStoredProcedure(cmd);
             cmd.Parameters.AddWithValue("@Action", "Delete");
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int? id, SqlCommand cmd)
+        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
         {
             ForStoredProcedure(cmd);
             cmd.Parameters.AddWithValue("@Action", "GetById");
@@ -64,7 +64,7 @@ namespace TicketManagement.DataAccess.Repositories
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns>Get all Entity by LayoutId.</returns>
-        public IEnumerable<Event> GetAllByLayoutId(int? id)
+        public IEnumerable<Event> GetAllByLayoutId(int id)
         {
             try
             {

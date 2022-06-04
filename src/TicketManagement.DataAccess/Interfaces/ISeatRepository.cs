@@ -5,6 +5,6 @@ namespace TicketManagement.DataAccess.Interfaces
 {
     public interface ISeatRepository : IRepository<Seat>
     {
-        IEnumerable<Seat> GetAllByAreaId(int? id);
+        IEnumerable<Seat> GetAllByAreaId(int id);
     }
 }

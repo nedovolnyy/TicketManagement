@@ -21,7 +21,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]
-        public void EventAreaService_GetById_Exc_noEventArea(int id)
+        public void EventAreaService_GetById_WhenNonExistentId_ShouldThrow(int id)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -35,24 +35,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [Test]
-        public void EventAreaService_GetAll_Exc_noEventArea()
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Invalid column name";
-
-                // act
-                var ex = Assert.Throws<SqlException>(
-                                () => _eventAreaService.GetAll());
-
-                // assert
-                StringAssert.Contains(strException, ex.Message);
             }
         }
     }

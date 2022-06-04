@@ -21,7 +21,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 1, 1, 1)]
         [TestCase(2, 1, 2, 2)]
         [TestCase(3, 2, 1, 1)]
-        public void SeatService_Insert_ValidationException(int? id, int? areaId, int? row, int? number)
+        public void SeatService_Insert_WhenRowAndNumberNonUnique_ShouldThrow(int id, int areaId, int row, int number)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -41,7 +41,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 1, 1, 1)]
         [TestCase(2, 1, 2, 2)]
         [TestCase(3, 2, 1, 1)]
-        public void SeatService_Update_ValidationException(int? id, int? areaId, int? row, int? number)
+        public void SeatService_Update_WhenRowAndNumberNonUnique_ShouldThrow(int id, int areaId, int row, int number)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -61,7 +61,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]
-        public void SeatService_GetById_Exc_noSeat(int id)
+        public void SeatService_GetById_WhenNonExistentId_ShouldThrow(int id)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -75,24 +75,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [Test]
-        public void SeatService_GetAll_Exc_noSeat()
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Invalid column name";
-
-                // act
-                var ex = Assert.Throws<SqlException>(
-                                () => _seatService.GetAll());
-
-                // assert
-                StringAssert.Contains(strException, ex.Message);
             }
         }
     }

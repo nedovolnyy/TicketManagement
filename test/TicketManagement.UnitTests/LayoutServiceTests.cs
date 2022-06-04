@@ -22,7 +22,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 1, "First layout")]
         [TestCase(2, 1, "Second layout")]
         [TestCase(3, 2, "Second layout")]
-        public void LayoutService_Insert_ValidationException(int? id, int? venueId, string description)
+        public void LayoutService_Insert_WhenDescriptionNonUnique_ShouldThrow(int id, int venueId, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -42,7 +42,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 1, "First layout")]
         [TestCase(2, 1, "Second layout")]
         [TestCase(3, 2, "Second layout")]
-        public void LayoutService_Update_ValidationException(int? id, int? venueId, string description)
+        public void LayoutService_Update_WhenDescriptionNonUnique_ShouldThrow(int id, int venueId, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -62,7 +62,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]
-        public void LayoutService_GetById_Exc_noLayout(int id)
+        public void LayoutService_GetById_WhenNonExistentId_ShouldThrow(int id)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -76,24 +76,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [Test]
-        public void LayoutService_GetAll_Exc_noLayout()
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Invalid column name";
-
-                // act
-                var ex = Assert.Throws<SqlException>(
-                                () => _layoutService.GetAll());
-
-                // assert
-                StringAssert.Contains(strException, ex.Message);
             }
         }
     }

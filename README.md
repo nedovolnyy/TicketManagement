@@ -4,10 +4,10 @@
 *  all
 
 ## Possible Drawbacks/Concerns (What should reviewers look out for?)
-* Tests, maybe
+* 
 
 ## Testing Notes (How do we know this works & doesn't break other things)
-* In unit testing in each service, GetAll() method checking will intentionally fail.
+* 
 
 # Structure
 ```mermaid

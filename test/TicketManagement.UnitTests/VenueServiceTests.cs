@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
-using System.Transactions;
+﻿using System.Transactions;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
@@ -22,7 +20,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, "First venue", "dggdfd", "+4988955568")]
         [TestCase(2, "Second venue", "st DFgee", "+58487555")]
         [TestCase(3, "Second venue", "df eErtg", "+84845464")]
-        public void VenueService_Insert_ValidationException(int? id, string description, string address, string phone)
+        public void VenueService_Insert_WhenDescriptionNonUnique_ShouldThrow(int id, string description, string address, string phone)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -42,7 +40,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, "First venue", "dggdfd", "+4988955568")]
         [TestCase(2, "Second venue", "st DFgee", "+58487555")]
         [TestCase(3, "Second venue", "df eErtg", "+84845464")]
-        public void VenueService_Update_ValidationException(int? id, string description, string address, string phone)
+        public void VenueService_Update_WhenDescriptionNonUnique_ShouldThrow(int id, string description, string address, string phone)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -62,7 +60,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]
-        public void VenueService_GetById_Exc_noVenue(int id)
+        public void VenueService_GetById_WhenNonExistentId_ShouldThrow(int id)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -76,24 +74,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [Test]
-        public void VenueService_GetAll_Exc_noVenue()
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Invalid column name";
-
-                // act
-                var ex = Assert.Throws<SqlException>(
-                                () => _venueService.GetAll());
-
-                // assert
-                StringAssert.Contains(strException, ex.Message);
             }
         }
     }

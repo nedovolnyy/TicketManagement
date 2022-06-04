@@ -5,6 +5,6 @@ namespace TicketManagement.DataAccess.Interfaces
 {
     public interface ILayoutRepository : IRepository<Layout>
     {
-        IEnumerable<Layout> GetAllByVenueId(int? id);
+        IEnumerable<Layout> GetAllByVenueId(int id);
     }
 }

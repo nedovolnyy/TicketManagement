@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Transactions;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
@@ -20,7 +19,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [TestCase(2, 1, "Stanger Things Serie", "2022-06-08 00:00:00.0000000 +00:00", "Stanger Things Serie")]
-        public void EventService_Insert_EventInSameTimeLayout(int? id, int? layoutId, string name, DateTimeOffset eventTime, string description)
+        public void EventService_Insert_WhenEventInSameTimeLayout_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -38,7 +37,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [TestCase(2, 1, "Stanger Things Serie", "2022-06-08 00:00:00.0000000 +00:00", "Stanger Things Serie")]
-        public void EventService_Update_EventInSameTimeLayout(int? id, int? layoutId, string name, DateTimeOffset eventTime, string description)
+        public void EventService_Update_WhenEventInSameTimeLayout_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -57,7 +56,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
-        public void EventService_Insert_EventInPastException(int? id, int? layoutId, string name, DateTimeOffset eventTime, string description)
+        public void EventService_Insert_WhenEventInPast_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -76,7 +75,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
-        public void EventService_Update_EventInPastException(int? id, int? layoutId, string name, DateTimeOffset eventTime, string description)
+        public void EventService_Update_WhenEventInPast_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -96,7 +95,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]
-        public void EventService_GetById_Exc_noEvent(int id)
+        public void EventService_GetById_WhenNonExistentId_ShouldThrow(int id)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -110,24 +109,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [Test]
-        public void EventService_GetAll_Exc_noEvent()
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Invalid column name";
-
-                // act
-                var ex = Assert.Throws<SqlException>(
-                                () => _evntService.GetAll());
-
-                // assert
-                StringAssert.Contains(strException, ex.Message);
             }
         }
     }

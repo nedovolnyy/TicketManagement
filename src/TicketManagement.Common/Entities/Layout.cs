@@ -8,14 +8,14 @@ namespace TicketManagement.Common.Entities
         {
         }
 
-        public Layout(int? id, int? venueId, string description)
+        public Layout(int id, int venueId, string description)
         {
             Id = id;
             VenueId = venueId;
             Description = description;
         }
 
-        public int? VenueId { get; private set; }
+        public int VenueId { get; private set; }
         public string Description { get; private set; }
     }
 }

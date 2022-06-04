@@ -8,7 +8,7 @@ namespace TicketManagement.Common.Entities
         {
         }
 
-        public Venue(int? id, string description, string address, string phone)
+        public Venue(int id, string description, string address, string phone)
         {
             Id = id;
             Description = description;

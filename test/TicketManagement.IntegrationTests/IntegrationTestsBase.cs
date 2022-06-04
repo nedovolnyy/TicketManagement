@@ -20,7 +20,7 @@ namespace TicketManagement.IntegrationTests
         {
             try
             {
-                SetupLocalBD.SetupLocalDb();
+                SetupLocalDB.SetupLocalDb();
                 _testDbContext = new DatabaseContext();
             }
             catch (Exception ex)

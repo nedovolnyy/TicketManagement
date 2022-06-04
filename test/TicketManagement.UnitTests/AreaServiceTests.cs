@@ -21,7 +21,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 2, "First area of second layout", 2, 4)]
         [TestCase(2, 1, "First area of first layout", 3, 2)]
         [TestCase(3, 2, "First area of second layout", 1, 7)]
-        public void AreaService_Insert_ValidationException(int? id, int? layoutId, string description, int? coordX, int? coordY)
+        public void AreaService_Insert_WhenDescriptionNonUnique_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -41,7 +41,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 2, "First area of second layout", 2, 4)]
         [TestCase(2, 1, "First area of first layout", 3, 2)]
         [TestCase(3, 2, "First area of second layout", 1, 7)]
-        public void AreaService_Update_ValidationException(int? id, int? layoutId, string description, int? coordX, int? coordY)
+        public void AreaService_Update_WhenDescriptionNonUnique_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -60,7 +60,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
         [TestCase(2)]
         [TestCase(1)]
-        public void AreaService_Delete_ById_Exc_refTable(int id)
+        public void AreaService_Delete_WhenReferenceConstraint_ShouldThrowSqlException(int id)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -82,7 +82,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(-65464)]
         [TestCase(000033366)]
         [TestCase(5444)]
-        public void AreaService_GetById_Exc_noArea(int id)
+        public void AreaService_GetById_WhenNonExistentId_ShouldThrow(int id)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -96,24 +96,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
                 // assert
                 Assert.That(ex.Message, Is.EqualTo(strException));
-            }
-        }
-
-        [Test]
-        public void AreaService_GetAll_Exc_noArea()
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var strException =
-                    "Invalid column name";
-
-                // act
-                var ex = Assert.Throws<SqlException>(
-                                () => _areaService.GetAll());
-
-                // assert
-                StringAssert.Contains(strException, ex.Message);
             }
         }
     }

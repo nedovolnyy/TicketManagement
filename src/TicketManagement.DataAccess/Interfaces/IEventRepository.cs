@@ -5,6 +5,6 @@ namespace TicketManagement.DataAccess.Interfaces
 {
     public interface IEventRepository : IRepository<Event>
     {
-        IEnumerable<Event> GetAllByLayoutId(int? id);
+        IEnumerable<Event> GetAllByLayoutId(int id);
     }
 }

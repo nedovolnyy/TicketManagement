@@ -3,9 +3,9 @@ using System.Diagnostics;
 
 namespace TicketManagement.IntegrationTests
 {
-    public class SetupLocalBD
+    public class SetupLocalDB
     {
-        protected SetupLocalBD()
+        protected SetupLocalDB()
         {
         }
 
