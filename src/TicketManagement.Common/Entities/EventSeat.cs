@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public class EventSeat : BaseEntity
+    public sealed class EventSeat : BaseEntity
     {
         public EventSeat()
         {
@@ -21,12 +21,5 @@ namespace TicketManagement.Common.Entities
         public int? Row { get; private set; }
         public int? Number { get; private set; }
         public int? State { get; private set; }
-        protected override string ForEquals(BaseEntity entity) =>
-                EventAreaId.ToString() + Row + Number + State;
-        protected override bool IsNull(BaseEntity entity) =>
-                   EventAreaId == null
-                 & Row == null
-                 & Number == null
-                 & State == null;
     }
 }

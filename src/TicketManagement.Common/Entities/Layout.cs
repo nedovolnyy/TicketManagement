@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public class Layout : BaseEntity
+    public sealed class Layout : BaseEntity
     {
         public Layout()
         {
@@ -17,10 +17,5 @@ namespace TicketManagement.Common.Entities
 
         public int? VenueId { get; private set; }
         public string Description { get; private set; }
-        protected override string ForEquals(BaseEntity entity) =>
-                VenueId+Description;
-        protected override bool IsNull(BaseEntity entity) =>
-                   VenueId == null
-                 & Description == null;
     }
 }

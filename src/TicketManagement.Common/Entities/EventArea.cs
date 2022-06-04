@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public class EventArea : BaseEntity
+    public sealed class EventArea : BaseEntity
     {
         public EventArea()
         {
@@ -23,13 +23,5 @@ namespace TicketManagement.Common.Entities
         public int? CoordX { get; private set; }
         public int? CoordY { get; private set; }
         public decimal? Price { get; private set; }
-        protected override string ForEquals(BaseEntity entity) =>
-                EventId+Description+CoordX+CoordY+Price;
-        protected override bool IsNull(BaseEntity entity) =>
-                   EventId == null
-                 & Description == null
-                 & CoordX == null
-                 & CoordY == null
-                 & Price == null;
     }
 }

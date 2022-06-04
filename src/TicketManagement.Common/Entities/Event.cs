@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public class Event : BaseEntity
+    public sealed class Event : BaseEntity
     {
         public Event()
         {
@@ -21,12 +21,5 @@ namespace TicketManagement.Common.Entities
         public DateTimeOffset EventTime { get; private set; }
         public string Description { get; private set; }
         public int? LayoutId { get; private set; }
-        protected override string ForEquals(BaseEntity entity) =>
-                Name+Description+LayoutId;
-        protected override bool IsNull(BaseEntity entity) =>
-                   Name == null
-                 & EventTime == null
-                 & Description == null
-                 & LayoutId == null;
     }
 }

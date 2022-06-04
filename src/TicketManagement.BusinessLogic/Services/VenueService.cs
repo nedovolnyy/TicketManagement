@@ -19,7 +19,7 @@ namespace TicketManagement.BusinessLogic.Services
         protected override void Validate(Venue entity)
         {
             var venue = _venueRepository.GetFirstByName(entity.Description);
-            if (!venue.IsEmpty())
+            if (venue.Description != null)
             {
                 throw new ValidationException("The Venue description has not unique!", "");
             }

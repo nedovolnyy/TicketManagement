@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public class Area : BaseEntity
+    public sealed class Area : BaseEntity
     {
         public Area()
         {
@@ -21,12 +21,5 @@ namespace TicketManagement.Common.Entities
         public string Description { get; private set; }
         public int? CoordX { get; private set; }
         public int? CoordY { get; private set; }
-        protected override string ForEquals(BaseEntity entity) =>
-            LayoutId + Description + CoordX + CoordY;
-        protected override bool IsNull(BaseEntity entity) =>
-                   LayoutId == null
-                 & Description == null
-                 & CoordX == null
-                 & CoordY == null;
     }
 }

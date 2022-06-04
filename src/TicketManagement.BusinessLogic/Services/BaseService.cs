@@ -6,7 +6,7 @@ using TicketManagement.DataAccess.Interfaces;
 namespace TicketManagement.BusinessLogic.Services
 {
     internal abstract class BaseService<T> : IService<T>
-        where T : BaseEntity, new()
+        where T : BaseEntity
     {
         protected abstract IRepository<T> EntityRepository { get; set; }
 

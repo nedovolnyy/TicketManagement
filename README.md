@@ -27,26 +27,14 @@ flowchart LR;
 * [Unit Tests](test/TicketManagement.UnitTests/) for BusinessLogic Layer.
 * [Integration Tests](test/TicketManagement.IntegrationTests/) for DataAccess Layer.
 
-# Usage
-* Add 'InternalsVisibleTo' attribyte into bll.csproj for necessary Presentation Layer project.
-* Create new instance of necessary bll.service of entity and use it.
-Example:
-```c#
-var example = new AreaService();
-```
-* Use necessary method of Insert, Update, Delete, GetById, GetAll
-Example:
-```c#
-example.Insert(Entity entity);
-example.Update(Entity entity);
-example.Delete(Entity entity); or example.Delete(int entity.id);
-example.GetById(int entity.id);
-example.GetAll();
-```
-
 # Steps how to check
-Unit Tests for BusinessLogic Layer - testing with database transactions.
-Integration tests for Data Access Layer.
+Database deployment for tests:
+1. Initially, build TicketManagement.Database project
+2. Open Microsoft SQL Server Management Studio(SSMS) and connect to SQL Server
+3. Now, we navigate the tree in the Object Explorer to the database to deploy to.
+4. Then, right-click on the "Databases" and select "Deploy Data-tier Application…"
+5. Click Next and select DAC package in build folder of TicketManagement.Database project to deploy him
+6. Click Next everywhere
 
 The project database contains the initial population of data.
 
