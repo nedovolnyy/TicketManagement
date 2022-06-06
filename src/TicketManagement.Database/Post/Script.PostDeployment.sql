@@ -1,20 +1,20 @@
 ﻿--- Venue
 insert into dbo.Venue
 	values 
-		('First venue', 'First venue address', '123 45 678 90 12'),
-		('Second venue', 'Second venue address', '544 38 665 90 64'),
-		('Thirst venue', 'Thirst venue address', '953 69 678 30 17')
+		('First venue', 'Description first venue', 'First venue address', '123 45 678 90 12'),
+		('Second venue', 'Description second venue', 'Second venue address', '544 38 665 90 64'),
+		('Thirst venue', 'Description thirst venue', 'Thirst venue address', '953 69 678 30 17')
 
 --- Layout
 insert into dbo.Layout
 	values 
-		(1, 'First layout'),
-		(1, 'Second layout'),
-		(2, 'First layout'),
-		(2, 'Second layout'),
-		(2, 'Thirst layout'),
-		(3, 'First layout'),
-		(3, 'Second layout')
+		('First layout', 1, 'Description first layout'),
+		('Second layout', 1, 'Description second layout'),
+		('First layout', 2, 'Description first layout'),
+		('Second layout', 2, 'Description second layout'),
+		('Thirst layout', 2, 'Description thirst layout'),
+		('First layout', 3, 'Description first layout'),
+		('Second layout', 3, 'Description second layout')
 
 --- Area
 insert into dbo.Area

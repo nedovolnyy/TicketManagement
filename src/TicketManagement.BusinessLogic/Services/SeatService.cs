@@ -8,13 +8,18 @@ namespace TicketManagement.BusinessLogic.Services
     internal class SeatService : BaseService<Seat>
     {
         private readonly ISeatRepository _seatRepository;
+
         internal SeatService()
+            : base(new SeatRepository())
         {
-            EntityRepository = new SeatRepository();
-            _seatRepository = (ISeatRepository)EntityRepository;
+            _seatRepository = new SeatRepository();
         }
 
-        protected override IRepository<Seat> EntityRepository { get; set; }
+        public SeatService(ISeatRepository seatRepository)
+            : base(seatRepository)
+        {
+            _seatRepository = seatRepository;
+        }
 
         protected override void Validate(Seat entity)
         {

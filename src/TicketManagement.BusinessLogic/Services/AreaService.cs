@@ -9,12 +9,16 @@ namespace TicketManagement.BusinessLogic.Services
     {
         private readonly IAreaRepository _areaRepository;
         internal AreaService()
+            : base(new AreaRepository())
         {
-            EntityRepository = new AreaRepository();
-            _areaRepository = (IAreaRepository)EntityRepository;
+            _areaRepository = new AreaRepository();
         }
 
-        protected override IRepository<Area> EntityRepository { get; set; }
+        internal AreaService(IAreaRepository areaRepository)
+            : base(areaRepository)
+        {
+            _areaRepository = areaRepository;
+        }
 
         protected override void Validate(Area entity)
         {

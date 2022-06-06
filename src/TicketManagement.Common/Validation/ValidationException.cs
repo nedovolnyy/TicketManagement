@@ -9,6 +9,10 @@ namespace TicketManagement.Common.Validation
         public ValidationException(string message, string prop)
             : base(message) => Property = prop;
 
+        public ValidationException()
+        {
+        }
+
         protected ValidationException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

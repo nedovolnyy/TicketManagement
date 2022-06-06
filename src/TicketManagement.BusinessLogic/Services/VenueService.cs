@@ -8,20 +8,25 @@ namespace TicketManagement.BusinessLogic.Services
     internal class VenueService : BaseService<Venue>
     {
         private readonly IVenueRepository _venueRepository;
+
         internal VenueService()
+            : base(new VenueRepository())
         {
-            EntityRepository = new VenueRepository();
-            _venueRepository = (IVenueRepository)EntityRepository;
+            _venueRepository = new VenueRepository();
         }
 
-        protected override IRepository<Venue> EntityRepository { get; set; }
+        public VenueService(IVenueRepository venueRepository)
+            : base(venueRepository)
+        {
+            _venueRepository = venueRepository;
+        }
 
         protected override void Validate(Venue entity)
         {
-            var venue = _venueRepository.GetFirstByName(entity.Description);
-            if (venue.Description != null)
+            var venue = _venueRepository.GetFirstByName(entity.Name);
+            if (venue.Name != null)
             {
-                throw new ValidationException("The Venue description has not unique!", "");
+                throw new ValidationException("The Venue name has not unique!", "");
             }
         }
     }

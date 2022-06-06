@@ -9,8 +9,21 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal sealed class EventRepository : BaseRepository<Event>, IEventRepository
+    internal class EventRepository : BaseRepository<Event>, IEventRepository
     {
+        private readonly IDatabaseContext _databaseContext;
+
+        public EventRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        internal EventRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         protected override string ActionToSqlString(char action) => "";
         private void ForStoredProcedure(SqlCommand cmd)
         {
@@ -68,7 +81,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {

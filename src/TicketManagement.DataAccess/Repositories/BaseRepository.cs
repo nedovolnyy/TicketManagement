@@ -8,9 +8,34 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal abstract class BaseRepository<T> : IRepository<T>
+    internal abstract class BaseRepository<T> : IRepository<T>, IDisposable
         where T : BaseEntity
     {
+        private readonly IDatabaseContext _databaseContext;
+        protected BaseRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        protected BaseRepository(IDatabaseContext databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_databaseContext.Connection != null && _databaseContext.Connection.State == ConnectionState.Open)
+            {
+                _databaseContext.Connection.Close();
+            }
+        }
+
         /// <summary>
         /// Base Method for Insert Data.
         /// </summary>
@@ -21,7 +46,7 @@ namespace TicketManagement.DataAccess.Repositories
             int i = 0;
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var sqlTransaction = sqlConnection.BeginTransaction())
                     {
@@ -55,7 +80,7 @@ namespace TicketManagement.DataAccess.Repositories
             int i = 0;
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var sqlTransaction = sqlConnection.BeginTransaction())
                     {
@@ -90,7 +115,7 @@ namespace TicketManagement.DataAccess.Repositories
             int i = 0;
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var sqlTransaction = sqlConnection.BeginTransaction())
                     {
@@ -124,7 +149,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
@@ -152,7 +177,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {

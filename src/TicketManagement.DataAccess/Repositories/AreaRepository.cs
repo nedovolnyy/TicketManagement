@@ -9,8 +9,21 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal sealed class AreaRepository : BaseRepository<Area>, IAreaRepository
+    internal class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
+        private readonly IDatabaseContext _databaseContext;
+
+        public AreaRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        internal AreaRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
@@ -59,7 +72,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {

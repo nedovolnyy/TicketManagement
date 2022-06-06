@@ -9,22 +9,36 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal sealed class VenueRepository : BaseRepository<Venue>, IVenueRepository
+    internal class VenueRepository : BaseRepository<Venue>, IVenueRepository
     {
+        private readonly IDatabaseContext _databaseContext;
+
+        public VenueRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        internal VenueRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         protected override string ActionToSqlString(char action) => action switch
         {
-            'I' => "INSERT INTO Venue (Description, Address, Phone) VALUES (@Description, @Address, @Phone);" +
+            'I' => "INSERT INTO Venue (Name, Description, Address, Phone) VALUES (@Name, @Description, @Address, @Phone);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Venue SET Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id",
+            'U' => "UPDATE Venue SET Name = @Name, Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id",
             'D' => "DELETE FROM Venue WHERE Id = @Id",
-            'G' => "SELECT Id, Description, Address, Phone FROM Venue WHERE Id = @Id",
-            'A' => "SELECT Id, Description, Address, Phone FROM Venue",
-            'V' => "SELECT TOP 1 Id, Description, Address, Phone FROM Venue WHERE Description = @Description",
+            'G' => "SELECT Id, Name, Description, Address, Phone FROM Venue WHERE Id = @Id",
+            'A' => "SELECT Id, Name, Description, Address, Phone FROM Venue",
+            'V' => "SELECT TOP 1 Id, Name, Description, Address, Phone FROM Venue WHERE Name = @Name",
             _ => ""
         };
 
         protected override void InsertCommandParameters(Venue entity, SqlCommand cmd)
         {
+            cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@Address", entity.Address);
             cmd.Parameters.AddWithValue("@Phone", entity.Phone);
@@ -33,6 +47,7 @@ namespace TicketManagement.DataAccess.Repositories
         protected override void UpdateCommandParameters(Venue entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
+            cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@Address", entity.Address);
             cmd.Parameters.AddWithValue("@Phone", entity.Phone);
@@ -57,13 +72,13 @@ namespace TicketManagement.DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
                         cmd.CommandText = ActionToSqlString('V');
                         cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@Description", name);
+                        cmd.Parameters.AddWithValue("@Name", name);
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             return Map(reader);
@@ -85,6 +100,7 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     venue = new Venue(id: int.Parse(reader["Id"].ToString()),
+                                      name: reader["Name"].ToString(),
                                       description: reader["Description"].ToString(),
                                       address: reader["Address"].ToString(),
                                       phone: reader["Phone"].ToString());
@@ -106,9 +122,10 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     Venue venue = new Venue(id: int.Parse(reader["Id"].ToString()),
-                                      description: reader["Description"].ToString(),
-                                      address: reader["Address"].ToString(),
-                                      phone: reader["Phone"].ToString());
+                                            name: reader["Name"].ToString(),
+                                            description: reader["Description"].ToString(),
+                                            address: reader["Address"].ToString(),
+                                            phone: reader["Phone"].ToString());
                     venues.Add(venue);
                 }
             }

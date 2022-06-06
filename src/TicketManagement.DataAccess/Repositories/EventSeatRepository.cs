@@ -2,12 +2,26 @@
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal sealed class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
+    internal class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
     {
+        private readonly IDatabaseContext _databaseContext;
+
+        public EventSeatRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        internal EventSeatRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO EventSeat (EventAreaId, Row, Number, State) VALUES (@EventAreaId, @Row, @Number, @State);" +

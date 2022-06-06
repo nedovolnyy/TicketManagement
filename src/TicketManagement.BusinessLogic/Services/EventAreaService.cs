@@ -7,13 +7,18 @@ namespace TicketManagement.BusinessLogic.Services
     internal class EventAreaService : BaseService<EventArea>
     {
         private readonly IEventAreaRepository _eventAreaRepository;
+
         internal EventAreaService()
+            : base(new EventAreaRepository())
         {
-            EntityRepository = new EventAreaRepository();
-            _eventAreaRepository = (IEventAreaRepository)EntityRepository;
+            _eventAreaRepository = new EventAreaRepository();
         }
 
-        protected override IRepository<EventArea> EntityRepository { get; set; }
+        public EventAreaService(IEventAreaRepository eventAreaRepository)
+            : base(eventAreaRepository)
+        {
+            _eventAreaRepository = eventAreaRepository;
+        }
 
         protected override void Validate(EventArea entity)
         {

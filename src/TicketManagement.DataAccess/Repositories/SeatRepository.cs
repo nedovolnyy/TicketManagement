@@ -9,8 +9,21 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal sealed class SeatRepository : BaseRepository<Seat>, ISeatRepository
+    internal class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
+        private readonly IDatabaseContext _databaseContext;
+
+        public SeatRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        internal SeatRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +
@@ -57,7 +70,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {

@@ -8,26 +8,34 @@ namespace TicketManagement.BusinessLogic.Services
     internal abstract class BaseService<T> : IService<T>
         where T : BaseEntity
     {
-        protected abstract IRepository<T> EntityRepository { get; set; }
+        private readonly IRepository<T> _entityRepository;
+        protected BaseService(IRepository<T> entityRepository)
+        {
+            _entityRepository = entityRepository;
+        }
+
+        protected BaseService()
+        {
+        }
 
         public void Insert(T entity)
         {
             Validate(entity);
-            EntityRepository.Insert(entity);
+            _entityRepository.Insert(entity);
         }
 
         public void Update(T entity)
         {
             Validate(entity);
-            EntityRepository.Update(entity);
+            _entityRepository.Update(entity);
         }
 
         public void Delete(int id) =>
-            EntityRepository.Delete(id);
+            _entityRepository.Delete(id);
         public T GetById(int id) =>
-            EntityRepository.GetById(id);
+            _entityRepository.GetById(id);
         public IEnumerable<T> GetAll() =>
-            EntityRepository.GetAll();
+            _entityRepository.GetAll();
 
         protected abstract void Validate(T entity);
     }

@@ -9,22 +9,36 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal sealed class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
+    internal class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
     {
+        private readonly IDatabaseContext _databaseContext;
+
+        public LayoutRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        internal LayoutRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         protected override string ActionToSqlString(char action) => action switch
         {
-            'I' => "INSERT INTO Layout (VenueId, Description) VALUES (@VenueId, @Description);" +
+            'I' => "INSERT INTO Layout (Name, VenueId, Description) VALUES (@Name, @VenueId, @Description);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Layout SET VenueId = @VenueId, Description = @Description Where Id = @Id",
+            'U' => "UPDATE Layout SET Name = @Name, VenueId = @VenueId, Description = @Description Where Id = @Id",
             'D' => "DELETE FROM Layout WHERE Id = @Id",
-            'G' => "SELECT Id, VenueId, Description FROM Layout WHERE Id = @Id",
-            'A' => "SELECT Id, VenueId, Description FROM Layout",
-            'V' => "SELECT Id, VenueId, Description FROM Layout WHERE VenueId = @VenueId",
+            'G' => "SELECT Id, Name, VenueId, Description FROM Layout WHERE Id = @Id",
+            'A' => "SELECT Id, Name, VenueId, Description FROM Layout",
+            'V' => "SELECT Id, Name, VenueId, Description FROM Layout WHERE VenueId = @VenueId",
             _ => ""
         };
 
         protected override void InsertCommandParameters(Layout entity, SqlCommand cmd)
         {
+            cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@VenueId", entity.VenueId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
         }
@@ -32,6 +46,7 @@ namespace TicketManagement.DataAccess.Repositories
         protected override void UpdateCommandParameters(Layout entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
+            cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@VenueId", entity.VenueId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
         }
@@ -55,7 +70,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection sqlConnection = new DatabaseContext().Connection)
+                using (SqlConnection sqlConnection = _databaseContext.Connection)
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
@@ -83,6 +98,7 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     layout = new Layout(id: int.Parse(reader["Id"].ToString()),
+                                        name: reader["Name"].ToString(),
                                         venueId: int.Parse(reader["VenueId"].ToString()),
                                         description: reader["Description"].ToString());
                 }
@@ -103,8 +119,9 @@ namespace TicketManagement.DataAccess.Repositories
                 while (reader.Read())
                 {
                     Layout layout = new Layout(id: int.Parse(reader["Id"].ToString()),
-                                        venueId: int.Parse(reader["VenueId"].ToString()),
-                                        description: reader["Description"].ToString());
+                                               name: reader["Name"].ToString(),
+                                               venueId: int.Parse(reader["VenueId"].ToString()),
+                                               description: reader["Description"].ToString());
                     areas.Add(layout);
                 }
             }

@@ -3,12 +3,26 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal sealed class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
+    internal class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
     {
+        private readonly IDatabaseContext _databaseContext;
+
+        public EventAreaRepository()
+        {
+            _databaseContext = new DatabaseContext();
+        }
+
+        internal EventAreaRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         protected override string ActionToSqlString(char action) => action switch
         {
             'I' => "INSERT INTO EventArea (EventId, Description, CoordX, CoordY, Price) VALUES (@EventId, @Description, @CoordX, @CoordY, @Price);" +
