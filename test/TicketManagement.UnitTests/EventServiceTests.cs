@@ -21,7 +21,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         private readonly List<Event> _expectedEvents = new List<Event>
         {
             new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2),
-            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2022"), "Stanger Things Serie", 1),
+            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00.0000000 +03:00"), "Stanger Things Serie", 1),
         };
         private EventService _evntService;
         private int _timesApplyRuleCalled;

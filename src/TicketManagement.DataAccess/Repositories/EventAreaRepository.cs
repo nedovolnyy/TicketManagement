@@ -23,14 +23,14 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        protected override string ActionToSqlString(char action) => action switch
+        protected override string ActionToSqlString(string action) => action switch
         {
-            'I' => "INSERT INTO EventArea (EventId, Description, CoordX, CoordY, Price) VALUES (@EventId, @Description, @CoordX, @CoordY, @Price);" +
+            "Insert" => "INSERT INTO EventArea (EventId, Description, CoordX, CoordY, Price) VALUES (@EventId, @Description, @CoordX, @CoordY, @Price);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE EventArea SET EventId = @EventId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY, Price = @Price Where Id = @Id",
-            'D' => "DELETE FROM EventArea WHERE Id = @Id",
-            'G' => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea WHERE Id = @Id",
-            'A' => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea",
+            "Update" => "UPDATE EventArea SET EventId = @EventId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY, Price = @Price Where Id = @Id",
+            "Delete" => "DELETE FROM EventArea WHERE Id = @Id",
+            "GetById" => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea WHERE Id = @Id",
+            "GetAll" => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea",
             _ => ""
         };
 

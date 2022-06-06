@@ -52,7 +52,7 @@ namespace TicketManagement.DataAccess.Repositories
                     {
                         using (var cmd = sqlConnection.CreateCommand())
                         {
-                            cmd.CommandText = ActionToSqlString('I');
+                            cmd.CommandText = ActionToSqlString("Insert");
                             cmd.CommandType = CommandType.Text;
                             InsertCommandParameters(entity, cmd);
                             cmd.Transaction = sqlTransaction;
@@ -86,7 +86,7 @@ namespace TicketManagement.DataAccess.Repositories
                     {
                         using (var cmd = sqlConnection.CreateCommand())
                         {
-                            cmd.CommandText = ActionToSqlString('U');
+                            cmd.CommandText = ActionToSqlString("Update");
                             cmd.CommandType = CommandType.Text;
                             UpdateCommandParameters(entity, cmd);
                             cmd.Transaction = sqlTransaction;
@@ -121,7 +121,7 @@ namespace TicketManagement.DataAccess.Repositories
                     {
                         using (var cmd = sqlConnection.CreateCommand())
                         {
-                            cmd.CommandText = ActionToSqlString('D');
+                            cmd.CommandText = ActionToSqlString("Delete");
                             cmd.CommandType = CommandType.Text;
                             DeleteCommandParameters(id, cmd);
                             cmd.Transaction = sqlTransaction;
@@ -153,7 +153,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
-                        cmd.CommandText = ActionToSqlString('G');
+                        cmd.CommandText = ActionToSqlString("GetById");
                         cmd.CommandType = CommandType.Text;
                         GetByIdCommandParameters(id, cmd);
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -181,7 +181,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
-                        cmd.CommandText = ActionToSqlString('A');
+                        cmd.CommandText = ActionToSqlString("GetAll");
                         cmd.CommandType = CommandType.Text;
                         GetAllCommandParameters(cmd);
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -197,7 +197,7 @@ namespace TicketManagement.DataAccess.Repositories
             }
         }
 
-        protected abstract string ActionToSqlString(char action);
+        protected abstract string ActionToSqlString(string action);
         protected abstract void InsertCommandParameters(T entity, SqlCommand cmd);
         protected abstract void UpdateCommandParameters(T entity, SqlCommand cmd);
         protected abstract void DeleteCommandParameters(int id, SqlCommand cmd);

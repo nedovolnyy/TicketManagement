@@ -24,7 +24,7 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        protected override string ActionToSqlString(char action) => "";
+        protected override string ActionToSqlString(string action) => "";
         private void ForStoredProcedure(SqlCommand cmd)
         {
             cmd.CommandText = "spEvent";

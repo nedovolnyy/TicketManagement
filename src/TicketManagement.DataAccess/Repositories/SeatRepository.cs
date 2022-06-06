@@ -24,15 +24,15 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        protected override string ActionToSqlString(char action) => action switch
+        protected override string ActionToSqlString(string action) => action switch
         {
-            'I' => "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +
+            "Insert" => "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Seat SET AreaId = @AreaId, Row = @Row, Number = @Number Where Id = @Id",
-            'D' => "DELETE FROM Seat WHERE Id = @Id",
-            'G' => "SELECT Id, AreaId, Row, Number FROM Seat WHERE Id = @Id",
-            'A' => "SELECT Id, AreaId, Row, Number FROM Seat",
-            'V' => "SELECT Id, AreaId, Row, Number FROM Seat WHERE AreaId = @AreaId",
+            "Update" => "UPDATE Seat SET AreaId = @AreaId, Row = @Row, Number = @Number Where Id = @Id",
+            "Delete" => "DELETE FROM Seat WHERE Id = @Id",
+            "GetById" => "SELECT Id, AreaId, Row, Number FROM Seat WHERE Id = @Id",
+            "GetAll" => "SELECT Id, AreaId, Row, Number FROM Seat",
+            "ActionForValidate" => "SELECT Id, AreaId, Row, Number FROM Seat WHERE AreaId = @AreaId",
             _ => ""
         };
 
@@ -74,7 +74,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
-                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandText = ActionToSqlString("ActionForValidate");
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.AddWithValue("@AreaId", id);
                         using (SqlDataReader reader = cmd.ExecuteReader())

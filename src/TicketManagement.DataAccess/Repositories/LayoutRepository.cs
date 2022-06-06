@@ -24,15 +24,15 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        protected override string ActionToSqlString(char action) => action switch
+        protected override string ActionToSqlString(string action) => action switch
         {
-            'I' => "INSERT INTO Layout (Name, VenueId, Description) VALUES (@Name, @VenueId, @Description);" +
+            "Insert" => "INSERT INTO Layout (Name, VenueId, Description) VALUES (@Name, @VenueId, @Description);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Layout SET Name = @Name, VenueId = @VenueId, Description = @Description Where Id = @Id",
-            'D' => "DELETE FROM Layout WHERE Id = @Id",
-            'G' => "SELECT Id, Name, VenueId, Description FROM Layout WHERE Id = @Id",
-            'A' => "SELECT Id, Name, VenueId, Description FROM Layout",
-            'V' => "SELECT Id, Name, VenueId, Description FROM Layout WHERE VenueId = @VenueId",
+            "Update" => "UPDATE Layout SET Name = @Name, VenueId = @VenueId, Description = @Description Where Id = @Id",
+            "Delete" => "DELETE FROM Layout WHERE Id = @Id",
+            "GetById" => "SELECT Id, Name, VenueId, Description FROM Layout WHERE Id = @Id",
+            "GetAll" => "SELECT Id, Name, VenueId, Description FROM Layout",
+            "ActionForValidate" => "SELECT Id, Name, VenueId, Description FROM Layout WHERE VenueId = @VenueId",
             _ => ""
         };
 
@@ -74,7 +74,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
-                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandText = ActionToSqlString("ActionForValidate");
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.AddWithValue("@VenueId", id);
                         using (SqlDataReader reader = cmd.ExecuteReader())

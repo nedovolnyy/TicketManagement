@@ -24,15 +24,15 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        protected override string ActionToSqlString(char action) => action switch
+        protected override string ActionToSqlString(string action) => action switch
         {
-            'I' => "INSERT INTO Venue (Name, Description, Address, Phone) VALUES (@Name, @Description, @Address, @Phone);" +
+            "Insert" => "INSERT INTO Venue (Name, Description, Address, Phone) VALUES (@Name, @Description, @Address, @Phone);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Venue SET Name = @Name, Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id",
-            'D' => "DELETE FROM Venue WHERE Id = @Id",
-            'G' => "SELECT Id, Name, Description, Address, Phone FROM Venue WHERE Id = @Id",
-            'A' => "SELECT Id, Name, Description, Address, Phone FROM Venue",
-            'V' => "SELECT TOP 1 Id, Name, Description, Address, Phone FROM Venue WHERE Name = @Name",
+            "Update" => "UPDATE Venue SET Name = @Name, Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id",
+            "Delete" => "DELETE FROM Venue WHERE Id = @Id",
+            "GetById" => "SELECT Id, Name, Description, Address, Phone FROM Venue WHERE Id = @Id",
+            "GetAll" => "SELECT Id, Name, Description, Address, Phone FROM Venue",
+            "ActionForValidate" => "SELECT TOP 1 Id, Name, Description, Address, Phone FROM Venue WHERE Name = @Name",
             _ => ""
         };
 
@@ -76,7 +76,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
-                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandText = ActionToSqlString("ActionForValidate");
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.AddWithValue("@Name", name);
                         using (SqlDataReader reader = cmd.ExecuteReader())

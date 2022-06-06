@@ -24,15 +24,15 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        protected override string ActionToSqlString(char action) => action switch
+        protected override string ActionToSqlString(string action) => action switch
         {
-            'I' => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
+            "Insert" => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            'U' => "UPDATE Area SET LayoutId = @LayoutId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY WHERE Id = @Id",
-            'D' => "DELETE FROM Area WHERE Id = @Id",
-            'G' => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE Id = @Id",
-            'A' => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area",
-            'V' => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE LayoutId = @LayoutId",
+            "Update" => "UPDATE Area SET LayoutId = @LayoutId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY WHERE Id = @Id",
+            "Delete" => "DELETE FROM Area WHERE Id = @Id",
+            "GetById" => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE Id = @Id",
+            "GetAll" => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area",
+            "ActionForValidate" => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE LayoutId = @LayoutId",
             _ => ""
         };
 
@@ -76,7 +76,7 @@ namespace TicketManagement.DataAccess.Repositories
                 {
                     using (var cmd = sqlConnection.CreateCommand())
                     {
-                        cmd.CommandText = ActionToSqlString('V');
+                        cmd.CommandText = ActionToSqlString("ActionForValidate");
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.AddWithValue("@LayoutId", id);
                         using (SqlDataReader reader = cmd.ExecuteReader())
