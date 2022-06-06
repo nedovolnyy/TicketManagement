@@ -54,16 +54,13 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns>Get all Entity by VenueId.</returns>
         public IEnumerable<Layout> GetAllByVenueId(int id)
         {
-            using (var cmd = new DatabaseContext().Connection.CreateCommand())
-            {
-                cmd.CommandText = GetSQLStatement("ActionForValidate");
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.AddWithValue("@VenueId", id);
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    return Maps(reader);
-                }
-            }
+            using var sqlConnection = new DatabaseContext().Connection;
+            using var cmd = sqlConnection.CreateCommand();
+            cmd.CommandText = GetSQLStatement("ActionForValidate");
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.AddWithValue("@VenueId", id);
+            using var reader = cmd.ExecuteReader();
+            return Maps(reader);
         }
 
         protected override Layout Map(SqlDataReader reader)

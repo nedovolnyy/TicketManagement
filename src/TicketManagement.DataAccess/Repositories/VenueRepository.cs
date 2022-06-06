@@ -56,16 +56,13 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns>Get Venue by name.</returns>
         public Venue GetFirstByName(string name)
         {
-            using (var cmd = new DatabaseContext().Connection.CreateCommand())
-            {
-                cmd.CommandText = GetSQLStatement("ActionForValidate");
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.AddWithValue("@Name", name);
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    return Map(reader);
-                }
-            }
+            using var sqlConnection = new DatabaseContext().Connection;
+            using var cmd = sqlConnection.CreateCommand();
+            cmd.CommandText = GetSQLStatement("ActionForValidate");
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.AddWithValue("@Name", name);
+            using var reader = cmd.ExecuteReader();
+            return Map(reader);
         }
 
         protected override Venue Map(SqlDataReader reader)

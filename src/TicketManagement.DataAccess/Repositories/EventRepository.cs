@@ -66,16 +66,13 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns>Get all Entity by LayoutId.</returns>
         public IEnumerable<Event> GetAllByLayoutId(int id)
         {
-                using (var cmd = new DatabaseContext().Connection.CreateCommand())
-                {
-                        ForStoredProcedure(cmd);
-                        cmd.Parameters.AddWithValue("@Action", "ForValidate");
-                        cmd.Parameters.AddWithValue("@LayoutId", id);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            return Maps(reader);
-                        }
-                }
+            using var sqlConnection = new DatabaseContext().Connection;
+            using var cmd = sqlConnection.CreateCommand();
+            ForStoredProcedure(cmd);
+            cmd.Parameters.AddWithValue("@Action", "ForValidate");
+            cmd.Parameters.AddWithValue("@LayoutId", id);
+            using var reader = cmd.ExecuteReader();
+            return Maps(reader);
         }
 
         protected override Event Map(SqlDataReader reader)

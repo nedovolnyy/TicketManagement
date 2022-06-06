@@ -56,16 +56,13 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns>Get all Entity by LayoutId.</returns>
         IEnumerable<Area> IAreaRepository.GetAllByLayoutId(int id)
         {
-            using (var cmd = new DatabaseContext().Connection.CreateCommand())
-            {
-                cmd.CommandText = GetSQLStatement("ActionForValidate");
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.AddWithValue("@LayoutId", id);
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    return Maps(reader);
-                }
-            }
+            using var sqlConnection = new DatabaseContext().Connection;
+            using var cmd = sqlConnection.CreateCommand();
+            cmd.CommandText = GetSQLStatement("ActionForValidate");
+            cmd.CommandType = CommandType.Text;
+            cmd.Parameters.AddWithValue("@LayoutId", id);
+            using var reader = cmd.ExecuteReader();
+            return Maps(reader);
         }
 
         protected override Area Map(SqlDataReader reader)
