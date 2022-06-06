@@ -2,13 +2,12 @@
 using System.Transactions;
 using Autofac.Extras.Moq;
 using Moq;
-using Moq.Protected;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.Common.Validation;
+using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
@@ -33,28 +32,22 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 2, "First area of second layout", 2, 4)]
         [TestCase(2, 1, "First area of first layout", 3, 2)]
         [TestCase(3, 2, "First area of second layout", 1, 7)]
-        public void Validate_WhenCallbackValidate_ShouldTrue(int id, int layoutId, string description, int coordX, int coordY)
+        public void Validate_WhenDescriptionNonUnique_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
-                    var db = new Mock<DatabaseContext> { CallBase = true };
-                    var areaRepository = new Mock<AreaRepository>(db.Object) { CallBase = true };
-                    var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+            // arrange
+            string strException =
+                "Area description should be unique for area!";
+            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
+            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
+            areaRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedAreas);
+            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
-                    // act
-                    areaService.Protected().Setup("Validate", areaExpected).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = areaService.Object;
-                    mockedInstance.Insert(areaExpected);
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => areaService.Object.Validate(areaExpected));
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, 2, "First area of second layout", 2, 4)]

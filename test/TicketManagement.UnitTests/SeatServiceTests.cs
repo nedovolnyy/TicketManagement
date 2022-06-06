@@ -7,7 +7,9 @@ using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
+using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.UnitTests
@@ -33,28 +35,22 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, 1, 1, 1)]
         [TestCase(2, 1, 2, 2)]
         [TestCase(3, 2, 1, 1)]
-        public void Validate_WhenCallbackValidate_ShouldTrue(int id, int areaId, int row, int number)
+        public void Validate_WhenRowAndNumberNonUniqueForSeat_ShouldTrow(int id, int areaId, int row, int number)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
-                    var db = new Mock<DatabaseContext> { CallBase = true };
-                    var seatRepository = new Mock<SeatRepository>(db.Object) { CallBase = true };
-                    var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
+            // arrange
+            string strException =
+                "Row and number should be unique for area!";
+            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
+            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
+            seatRepository.Setup(x => x.GetAllByAreaId(areaId)).Returns(_expectedSeats);
+            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
 
-                    // act
-                    seatService.Protected().Setup("Validate", seatExpected).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = seatService.Object;
-                    mockedInstance.Insert(seatExpected);
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => seatService.Object.Validate(seatExpected));
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, 1, 1, 1)]

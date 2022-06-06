@@ -1,4 +1,5 @@
 ﻿using System;
+using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
@@ -6,7 +7,7 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class EventService : BaseService<Event>
+    internal class EventService : BaseService<Event>, IEventService
     {
         private readonly IEventRepository _eventRepository;
 
@@ -22,7 +23,7 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        protected override void Validate(Event entity)
+        public override void Validate(Event entity)
         {
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {

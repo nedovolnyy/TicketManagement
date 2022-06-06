@@ -1,11 +1,12 @@
-﻿using TicketManagement.Common.Entities;
+﻿using TicketManagement.BusinessLogic.Interfaces;
+using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class LayoutService : BaseService<Layout>
+    internal class LayoutService : BaseService<Layout>, ILayoutService
     {
         private readonly ILayoutRepository _layoutRepository;
 
@@ -21,7 +22,7 @@ namespace TicketManagement.BusinessLogic.Services
             _layoutRepository = layoutRepository;
         }
 
-        protected override void Validate(Layout entity)
+        public override void Validate(Layout entity)
         {
             var layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
             foreach (var layout in layoutArray)

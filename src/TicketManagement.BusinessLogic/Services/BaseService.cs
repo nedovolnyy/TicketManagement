@@ -9,13 +9,13 @@ namespace TicketManagement.BusinessLogic.Services
         where T : BaseEntity
     {
         private readonly IRepository<T> _entityRepository;
+        protected BaseService()
+        {
+        }
+
         protected BaseService(IRepository<T> entityRepository)
         {
             _entityRepository = entityRepository;
-        }
-
-        protected BaseService()
-        {
         }
 
         public void Insert(T entity)
@@ -37,6 +37,6 @@ namespace TicketManagement.BusinessLogic.Services
         public IEnumerable<T> GetAll() =>
             _entityRepository.GetAll();
 
-        protected abstract void Validate(T entity);
+        public abstract void Validate(T entity);
     }
 }

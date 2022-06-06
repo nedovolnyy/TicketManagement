@@ -1,11 +1,12 @@
-﻿using TicketManagement.Common.Entities;
+﻿using TicketManagement.BusinessLogic.Interfaces;
+using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class SeatService : BaseService<Seat>
+    internal class SeatService : BaseService<Seat>, ISeatService
     {
         private readonly ISeatRepository _seatRepository;
 
@@ -21,7 +22,7 @@ namespace TicketManagement.BusinessLogic.Services
             _seatRepository = seatRepository;
         }
 
-        protected override void Validate(Seat entity)
+        public override void Validate(Seat entity)
         {
             var seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
             foreach (var seat in seatArray)

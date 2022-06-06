@@ -8,7 +8,9 @@ using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
+using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.UnitTests
@@ -30,30 +32,63 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _evntService = new EventService();
         }
 
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
+        public void Validate_WhenEventTimeInPast_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        {
+            // arrange
+            string strException =
+                "Event can't be created in the past!";
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntRepository = new Mock<IEventRepository> { CallBase = true };
+            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
+            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => evntService.Object.Validate(evntExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [TestCase(2, 1, "Stanger Things Serie", "2022-09-09 00:00:00.0000000 +03:00", "Things Serie")]
+        public void Validate_WhenEventInSameTimeForLayout_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        {
+            // arrange
+            string strException =
+                "Do not create event for the same layout in the same time!";
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntRepository = new Mock<IEventRepository> { CallBase = true };
+            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
+            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => evntService.Object.Validate(evntExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
         [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
-        public void Validate_WhenCallbackValidate_ShouldTrue(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-                    var db = new Mock<DatabaseContext> { CallBase = true };
-                    var evntRepository = new Mock<EventRepository>(db.Object) { CallBase = true };
-                    var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
+            // arrange
+            string strException =
+                "Layout name should be unique in venue!";
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntRepository = new Mock<IEventRepository> { CallBase = true };
+            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
+            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
-                    // act
-                    evntService.Protected().Setup("Validate", evntExpected).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = evntService.Object;
-                    mockedInstance.Insert(evntExpected);
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => evntService.Object.Validate(evntExpected));
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]

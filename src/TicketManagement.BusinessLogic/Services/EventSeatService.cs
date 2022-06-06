@@ -1,11 +1,12 @@
-﻿using TicketManagement.Common.Entities;
+﻿using TicketManagement.BusinessLogic.Interfaces;
+using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class EventSeatService : BaseService<EventSeat>
+    internal class EventSeatService : BaseService<EventSeat>, IEventSeatService
     {
         private readonly IEventSeatRepository _eventSeatRepository;
 
@@ -21,7 +22,7 @@ namespace TicketManagement.BusinessLogic.Services
             _eventSeatRepository = eventSeatRepository;
         }
 
-        protected override void Validate(EventSeat entity)
+        public override void Validate(EventSeat entity)
         {
             if ((entity.Row == 0) || (entity.Number == 0))
             {

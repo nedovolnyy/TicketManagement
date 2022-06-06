@@ -3,7 +3,7 @@ using TicketManagement.Common.Entities;
 
 namespace TicketManagement.BusinessLogic.Interfaces
 {
-    internal interface IService<T>
+    public interface IService<T>
         where T : BaseEntity
     {
         void Insert(T entity);

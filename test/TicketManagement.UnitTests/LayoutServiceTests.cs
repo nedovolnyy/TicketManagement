@@ -7,7 +7,9 @@ using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
+using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.UnitTests
@@ -33,28 +35,22 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(1, "First layout", 1, "description first layout")]
         [TestCase(2, "Second layout", 1, "description second layout")]
         [TestCase(3, "Second layout", 2, "description second layout")]
-        public void Validate_WhenCallbackValidate_ShouldTrue(int id, string name, int venueId, string description)
+        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, string name, int venueId, string description)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
-                    var db = new Mock<DatabaseContext> { CallBase = true };
-                    var layoutRepository = new Mock<LayoutRepository>(db.Object) { CallBase = true };
-                    var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+            // arrange
+            string strException =
+                "Layout name should be unique in venue!";
+            var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
+            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
+            layoutRepository.Setup(x => x.GetAllByVenueId(venueId)).Returns(_expectedLayouts);
+            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
-                    // act
-                    layoutService.Protected().Setup("Validate", layoutExpected).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = layoutService.Object;
-                    mockedInstance.Insert(layoutExpected);
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => layoutService.Object.Validate(layoutExpected));
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, "First layout", 1, "description first layout")]
