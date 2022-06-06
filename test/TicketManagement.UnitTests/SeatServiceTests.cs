@@ -1,16 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Transactions;
-using Autofac.Extras.Moq;
 using Moq;
-using Moq.Protected;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
@@ -58,24 +53,18 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(3, 2, 1, 1)]
         public void Insert_WhenCallbackInsert_ShouldTrue(int id, int areaId, int row, int number)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
-                    var seatService = new Mock<IService<Seat>> { CallBase = true };
+            // arrange
+            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
+            var seatService = new Mock<IService<Seat>> { CallBase = true };
 
-                    // act
-                    seatService.Setup(x => x.Insert(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = seatService.Object;
-                    mockedInstance.Insert(seatExpected);
+            // act
+            seatService.Setup(x => x.Insert(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = seatService.Object;
+            mockedInstance.Insert(seatExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(1, 1, 1, 1)]
@@ -83,47 +72,35 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(3, 2, 1, 1)]
         public void Update_WhenCallbackUpdate_ShouldTrue(int id, int areaId, int row, int number)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
-                    var seatService = new Mock<IService<Seat>> { CallBase = true };
+            // arrange
+            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
+            var seatService = new Mock<IService<Seat>> { CallBase = true };
 
-                    // act
-                    seatService.Setup(x => x.Update(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = seatService.Object;
-                    mockedInstance.Update(seatExpected);
+            // act
+            seatService.Setup(x => x.Update(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = seatService.Object;
+            mockedInstance.Update(seatExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenCallbackDelete_ShouldTrue(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var seatService = new Mock<IService<Seat>> { CallBase = true };
+            // arrange
+            var seatService = new Mock<IService<Seat>> { CallBase = true };
 
-                    // act
-                    seatService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = seatService.Object;
-                    mockedInstance.Delete(id);
+            // act
+            seatService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = seatService.Object;
+            mockedInstance.Delete(id);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(-65464)]

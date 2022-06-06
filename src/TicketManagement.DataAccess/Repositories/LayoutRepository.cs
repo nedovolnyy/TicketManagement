@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
@@ -11,20 +10,7 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
     {
-        private readonly IDatabaseContext _databaseContext;
-
-        public LayoutRepository()
-        {
-            _databaseContext = new DatabaseContext();
-        }
-
-        internal LayoutRepository(IDatabaseContext databaseContext)
-            : base(databaseContext)
-        {
-            _databaseContext = databaseContext;
-        }
-
-        protected override string ActionToSqlString(string action) => action switch
+        protected override string GetSQLStatement(string action) => action switch
         {
             "Insert" => "INSERT INTO Layout (Name, VenueId, Description) VALUES (@Name, @VenueId, @Description);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
@@ -36,14 +22,14 @@ namespace TicketManagement.DataAccess.Repositories
             _ => ""
         };
 
-        protected override void InsertCommandParameters(Layout entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(Layout entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@VenueId", entity.VenueId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
         }
 
-        protected override void UpdateCommandParameters(Layout entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(Layout entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@Name", entity.Name);
@@ -51,12 +37,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Description", entity.Description);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
@@ -68,25 +54,15 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns>Get all Entity by VenueId.</returns>
         public IEnumerable<Layout> GetAllByVenueId(int id)
         {
-            try
+            using (var cmd = new DatabaseContext().Connection.CreateCommand())
             {
-                using (SqlConnection sqlConnection = _databaseContext.Connection)
+                cmd.CommandText = GetSQLStatement("ActionForValidate");
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@VenueId", id);
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    using (var cmd = sqlConnection.CreateCommand())
-                    {
-                        cmd.CommandText = ActionToSqlString("ActionForValidate");
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@VenueId", id);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            return Maps(reader);
-                        }
-                    }
+                    return Maps(reader);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 

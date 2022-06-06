@@ -11,27 +11,14 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventRepository : BaseRepository<Event>, IEventRepository
     {
-        private readonly IDatabaseContext _databaseContext;
-
-        public EventRepository()
-        {
-            _databaseContext = new DatabaseContext();
-        }
-
-        internal EventRepository(IDatabaseContext databaseContext)
-            : base(databaseContext)
-        {
-            _databaseContext = databaseContext;
-        }
-
-        protected override string ActionToSqlString(string action) => "";
+        protected override string GetSQLStatement(string action) => "";
         private void ForStoredProcedure(SqlCommand cmd)
         {
             cmd.CommandText = "spEvent";
             cmd.CommandType = CommandType.StoredProcedure;
         }
 
-        protected override void InsertCommandParameters(Event entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(Event entity, SqlCommand cmd)
         {
             ForStoredProcedure(cmd);
             cmd.Parameters.AddWithValue("@Action", "Save");
@@ -41,7 +28,7 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
         }
 
-        protected override void UpdateCommandParameters(Event entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(Event entity, SqlCommand cmd)
         {
             ForStoredProcedure(cmd);
             cmd.Parameters.AddWithValue("@Action", "Save");
@@ -52,14 +39,14 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
             ForStoredProcedure(cmd);
             cmd.Parameters.AddWithValue("@Action", "Delete");
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
             ForStoredProcedure(cmd);
             cmd.Parameters.AddWithValue("@Action", "GetById");
@@ -79,12 +66,8 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns>Get all Entity by LayoutId.</returns>
         public IEnumerable<Event> GetAllByLayoutId(int id)
         {
-            try
-            {
-                using (SqlConnection sqlConnection = _databaseContext.Connection)
+                using (var cmd = new DatabaseContext().Connection.CreateCommand())
                 {
-                    using (var cmd = sqlConnection.CreateCommand())
-                    {
                         ForStoredProcedure(cmd);
                         cmd.Parameters.AddWithValue("@Action", "ForValidate");
                         cmd.Parameters.AddWithValue("@LayoutId", id);
@@ -92,13 +75,7 @@ namespace TicketManagement.DataAccess.Repositories
                         {
                             return Maps(reader);
                         }
-                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         protected override Event Map(SqlDataReader reader)

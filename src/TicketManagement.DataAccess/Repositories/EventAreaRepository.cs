@@ -1,29 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
     {
-        private readonly IDatabaseContext _databaseContext;
-
-        public EventAreaRepository()
-        {
-            _databaseContext = new DatabaseContext();
-        }
-
-        internal EventAreaRepository(IDatabaseContext databaseContext)
-            : base(databaseContext)
-        {
-            _databaseContext = databaseContext;
-        }
-
-        protected override string ActionToSqlString(string action) => action switch
+        protected override string GetSQLStatement(string action) => action switch
         {
             "Insert" => "INSERT INTO EventArea (EventId, Description, CoordX, CoordY, Price) VALUES (@EventId, @Description, @CoordX, @CoordY, @Price);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
@@ -34,7 +19,7 @@ namespace TicketManagement.DataAccess.Repositories
             _ => ""
         };
 
-        protected override void InsertCommandParameters(EventArea entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(EventArea entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@EventId", entity.EventId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -43,7 +28,7 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Price", entity.Price);
         }
 
-        protected override void UpdateCommandParameters(EventArea entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(EventArea entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@EventId", entity.EventId);
@@ -53,12 +38,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@Price", entity.Price);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
@@ -75,7 +60,7 @@ namespace TicketManagement.DataAccess.Repositories
                                               description: reader["Description"].ToString(),
                                               coordX: int.Parse(reader["CoordX"].ToString()),
                                               coordY: int.Parse(reader["CoordY"].ToString()),
-                                              price: Convert.ToDecimal(reader["Price"].ToString()));
+                                              price: decimal.Parse(reader["Price"].ToString()));
                 }
             }
             else
@@ -98,7 +83,7 @@ namespace TicketManagement.DataAccess.Repositories
                                                         description: reader["Description"].ToString(),
                                                         coordX: int.Parse(reader["CoordX"].ToString()),
                                                         coordY: int.Parse(reader["CoordY"].ToString()),
-                                                        price: Convert.ToDecimal(reader["Price"].ToString()));
+                                                        price: decimal.Parse(reader["Price"].ToString()));
                     eventAreas.Add(eventArea);
                 }
             }

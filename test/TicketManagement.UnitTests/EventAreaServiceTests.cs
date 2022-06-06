@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Transactions;
-using Autofac.Extras.Moq;
 using Moq;
-using Moq.Protected;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
@@ -36,24 +30,18 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(3, 2, "First eventArea of second layout", 1, 7, 4.3)]
         public void Insert_WhenCallbackInsert_ShouldTrue(int id, int eventId, string description, int coordX, int coordY, decimal price)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
-                    var eventAreaService = new Mock<IService<EventArea>> { CallBase = true };
+            // arrange
+            var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
+            var eventAreaService = new Mock<IService<EventArea>> { CallBase = true };
 
-                    // act
-                    eventAreaService.Setup(x => x.Insert(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = eventAreaService.Object;
-                    mockedInstance.Insert(eventAreaExpected);
+            // act
+            eventAreaService.Setup(x => x.Insert(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = eventAreaService.Object;
+            mockedInstance.Insert(eventAreaExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(1, 2, "First eventArea of second layout", 2, 4, 7.5)]
@@ -61,47 +49,35 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(3, 2, "First eventArea of second layout", 1, 7, 4.3)]
         public void Update_WhenCallbackUpdate_ShouldTrue(int id, int eventId, string description, int coordX, int coordY, decimal price)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
-                    var eventAreaService = new Mock<IService<EventArea>> { CallBase = true };
+            // arrange
+            var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
+            var eventAreaService = new Mock<IService<EventArea>> { CallBase = true };
 
-                    // act
-                    eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = eventAreaService.Object;
-                    mockedInstance.Update(eventAreaExpected);
+            // act
+            eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = eventAreaService.Object;
+            mockedInstance.Update(eventAreaExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenCallbackDelete_ShouldTrue(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var eventAreaService = new Mock<IService<EventArea>> { CallBase = true };
+            // arrange
+            var eventAreaService = new Mock<IService<EventArea>> { CallBase = true };
 
-                    // act
-                    eventAreaService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = eventAreaService.Object;
-                    mockedInstance.Delete(id);
+            // act
+            eventAreaService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = eventAreaService.Object;
+            mockedInstance.Delete(id);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(-65464)]

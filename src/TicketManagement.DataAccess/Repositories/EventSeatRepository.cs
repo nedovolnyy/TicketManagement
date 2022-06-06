@@ -2,27 +2,13 @@
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
     {
-        private readonly IDatabaseContext _databaseContext;
-
-        public EventSeatRepository()
-        {
-            _databaseContext = new DatabaseContext();
-        }
-
-        internal EventSeatRepository(IDatabaseContext databaseContext)
-            : base(databaseContext)
-        {
-            _databaseContext = databaseContext;
-        }
-
-        protected override string ActionToSqlString(string action) => action switch
+        protected override string GetSQLStatement(string action) => action switch
         {
             "Insert" => "INSERT INTO EventSeat (EventAreaId, Row, Number, State) VALUES (@EventAreaId, @Row, @Number, @State);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
@@ -33,7 +19,7 @@ namespace TicketManagement.DataAccess.Repositories
             _ => ""
         };
 
-        protected override void InsertCommandParameters(EventSeat entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(EventSeat entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@EventAreaId", entity.EventAreaId);
             cmd.Parameters.AddWithValue("@Row", entity.Row);
@@ -41,7 +27,7 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@State", entity.State);
         }
 
-        protected override void UpdateCommandParameters(EventSeat entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(EventSeat entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@EventAreaId", entity.EventAreaId);
@@ -50,12 +36,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@State", entity.State);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }

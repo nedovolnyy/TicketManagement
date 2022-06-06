@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
@@ -11,20 +10,7 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
-        private readonly IDatabaseContext _databaseContext;
-
-        public AreaRepository()
-        {
-            _databaseContext = new DatabaseContext();
-        }
-
-        internal AreaRepository(IDatabaseContext databaseContext)
-            : base(databaseContext)
-        {
-            _databaseContext = databaseContext;
-        }
-
-        protected override string ActionToSqlString(string action) => action switch
+        protected override string GetSQLStatement(string action) => action switch
         {
             "Insert" => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)",
@@ -36,7 +22,7 @@ namespace TicketManagement.DataAccess.Repositories
             _ => ""
         };
 
-        protected override void InsertCommandParameters(Area entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(Area entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -44,7 +30,7 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@CoordY", entity.CoordY);
         }
 
-        protected override void UpdateCommandParameters(Area entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(Area entity, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
@@ -53,12 +39,12 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@CoordY", entity.CoordY);
         }
 
-        protected override void DeleteCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
-        protected override void GetByIdCommandParameters(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
             cmd.Parameters.AddWithValue("@Id", id);
         }
@@ -70,25 +56,15 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns>Get all Entity by LayoutId.</returns>
         IEnumerable<Area> IAreaRepository.GetAllByLayoutId(int id)
         {
-            try
+            using (var cmd = new DatabaseContext().Connection.CreateCommand())
             {
-                using (SqlConnection sqlConnection = _databaseContext.Connection)
+                cmd.CommandText = GetSQLStatement("ActionForValidate");
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@LayoutId", id);
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    using (var cmd = sqlConnection.CreateCommand())
-                    {
-                        cmd.CommandText = ActionToSqlString("ActionForValidate");
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@LayoutId", id);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            return Maps(reader);
-                        }
-                    }
+                    return Maps(reader);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 

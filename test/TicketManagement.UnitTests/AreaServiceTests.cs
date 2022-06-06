@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Transactions;
-using Autofac.Extras.Moq;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
@@ -55,24 +53,18 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(3, 2, "First area of second layout", 1, 7)]
         public void Insert_WhenCallbackInsert_ShouldTrue(int id, int layoutId, string description, int coordX, int coordY)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
-                    var areaService = new Mock<IService<Area>> { CallBase = true };
+            // arrange
+            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
+            var areaService = new Mock<IService<Area>> { CallBase = true };
 
-                    // act
-                    areaService.Setup(x => x.Insert(It.IsAny<Area>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = areaService.Object;
-                    mockedInstance.Insert(areaExpected);
+            // act
+            areaService.Setup(x => x.Insert(It.IsAny<Area>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = areaService.Object;
+            mockedInstance.Insert(areaExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(1, 2, "First area of second layout", 2, 4)]
@@ -80,47 +72,35 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(3, 2, "First area of second layout", 1, 7)]
         public void Update_WhenCallbackUpdate_ShouldTrue(int id, int layoutId, string description, int coordX, int coordY)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
-                    var areaService = new Mock<IService<Area>> { CallBase = true };
+            // arrange
+            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
+            var areaService = new Mock<IService<Area>> { CallBase = true };
 
-                    // act
-                    areaService.Setup(x => x.Update(It.IsAny<Area>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = areaService.Object;
-                    mockedInstance.Update(areaExpected);
+            // act
+            areaService.Setup(x => x.Update(It.IsAny<Area>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = areaService.Object;
+            mockedInstance.Update(areaExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenCallbackDelete_ShouldTrue(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var areaService = new Mock<IService<Area>> { CallBase = true };
+            // arrange
+            var areaService = new Mock<IService<Area>> { CallBase = true };
 
-                    // act
-                    areaService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = areaService.Object;
-                    mockedInstance.Delete(id);
+            // act
+            areaService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = areaService.Object;
+            mockedInstance.Delete(id);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(-65464)]

@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Transactions;
-using Autofac.Extras.Moq;
 using Moq;
-using Moq.Protected;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
@@ -95,71 +90,53 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
         public void Insert_WhenCallbackInsert_ShouldTrue(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-                    var evntService = new Mock<IService<Event>> { CallBase = true };
+            // arrange
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntService = new Mock<IService<Event>> { CallBase = true };
 
-                    // act
-                    evntService.Setup(x => x.Insert(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = evntService.Object;
-                    mockedInstance.Insert(evntExpected);
+            // act
+            evntService.Setup(x => x.Insert(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = evntService.Object;
+            mockedInstance.Insert(evntExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
         public void Update_WhenCallbackUpdate_ShouldTrue(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-                    var evntService = new Mock<IService<Event>> { CallBase = true };
+            // arrange
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntService = new Mock<IService<Event>> { CallBase = true };
 
-                    // act
-                    evntService.Setup(x => x.Update(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = evntService.Object;
-                    mockedInstance.Update(evntExpected);
+            // act
+            evntService.Setup(x => x.Update(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = evntService.Object;
+            mockedInstance.Update(evntExpected);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenCallbackDelete_ShouldTrue(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                using (var mock = AutoMock.GetLoose())
-                {
-                    // arrange
-                    var evntService = new Mock<IService<Event>> { CallBase = true };
+            // arrange
+            var evntService = new Mock<IService<Event>> { CallBase = true };
 
-                    // act
-                    evntService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
-                    var mockedInstance = evntService.Object;
-                    mockedInstance.Delete(id);
+            // act
+            evntService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            var mockedInstance = evntService.Object;
+            mockedInstance.Delete(id);
 
-                    // assert
-                    Assert.NotZero(_timesApplyRuleCalled);
-                    _timesApplyRuleCalled = 0;
-                }
-            }
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [TestCase(-65464)]
