@@ -28,15 +28,7 @@ flowchart LR;
 * [Integration Tests](test/TicketManagement.IntegrationTests/) for DataAccess Layer.
 
 # Steps how to check
-Database deployment for tests:
-1. Initially, build TicketManagement.Database project
-2. Open Microsoft SQL Server Management Studio(SSMS) and connect to SQL Server
-3. Now, we navigate the tree in the Object Explorer to the database to deploy to.
-4. Then, right-click on the "Databases" and select "Deploy Data-tier Application…"
-5. Click Next and select DAC package in build folder of TicketManagement.Database project to deploy him
-6. Click Next everywhere
-
-The project database contains the initial population of data.
+Deployment of the database for tests is automatic.
 
 # Credentials
 none
