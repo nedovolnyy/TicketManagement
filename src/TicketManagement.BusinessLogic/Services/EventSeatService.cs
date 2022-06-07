@@ -11,7 +11,6 @@ namespace TicketManagement.BusinessLogic.Services
         private readonly IEventSeatRepository _eventSeatRepository;
 
         internal EventSeatService()
-            : base(new EventSeatRepository())
         {
             _eventSeatRepository = new EventSeatRepository();
         }

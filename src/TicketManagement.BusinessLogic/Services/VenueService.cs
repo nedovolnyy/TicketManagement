@@ -11,7 +11,6 @@ namespace TicketManagement.BusinessLogic.Services
         private readonly IVenueRepository _venueRepository;
 
         internal VenueService()
-            : base(new VenueRepository())
         {
             _venueRepository = new VenueRepository();
         }

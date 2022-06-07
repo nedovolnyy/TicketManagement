@@ -11,7 +11,6 @@ namespace TicketManagement.BusinessLogic.Services
         private readonly IEventAreaRepository _eventAreaRepository;
 
         internal EventAreaService()
-            : base(new EventAreaRepository())
         {
             _eventAreaRepository = new EventAreaRepository();
         }

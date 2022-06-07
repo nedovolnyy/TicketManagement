@@ -11,7 +11,6 @@ namespace TicketManagement.BusinessLogic.Services
         private readonly ILayoutRepository _layoutRepository;
 
         internal LayoutService()
-            : base(new LayoutRepository())
         {
             _layoutRepository = new LayoutRepository();
         }

@@ -11,7 +11,6 @@ namespace TicketManagement.BusinessLogic.Services
     {
         private readonly IAreaRepository _areaRepository;
         public AreaService()
-            : base(new AreaRepository())
         {
             _areaRepository = new AreaRepository();
         }
