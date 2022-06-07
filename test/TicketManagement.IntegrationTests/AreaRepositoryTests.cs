@@ -6,7 +6,7 @@ using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.IntegrationTests.Tests
+namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class AreaRepositoryTests
     {
@@ -26,13 +26,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _areaRepository.Insert(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+                var actualResponse = _areaRepository.Insert(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -44,13 +44,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _areaRepository.Update(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+                var actualResponse = _areaRepository.Update(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -61,57 +61,57 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                var strException =
+                var expectedException =
                     "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_Seat\". " +
-                    "The conflict occurred in database \"TicketManagement.Database\", table \"dbo.Seat\", column 'AreaId'.\r\n" +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Seat\", column 'AreaId'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
-                var ex = Assert.Throws<SqlException>(
+                var actualException = Assert.Throws<SqlException>(
                                 () => _areaRepository.Delete(id));
 
                 // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
+                Assert.That(actualException.Message, Is.EqualTo(expectedException));
             }
         }
 
         [Test]
         public void GetAll_WhenHave3Entry_Should3Entry()
         {
-            // act
-            int exc = 3;
+            // arrange
+            int expectedCount = 3;
 
-            // actual
-            var areas = _areaRepository.GetAll().ToList();
+            // act
+            var actualCount = _areaRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(areas.Count, exc);
+            Assert.AreEqual(expectedCount, actualCount.Count);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
-            // act
-            int exc = 1;
+            // arrange
+            int expectedId = 1;
 
-            // actual
-            var area = _areaRepository.GetById(1);
+            // act
+            var actualId = _areaRepository.GetById(1);
 
             // assert
-            Assert.AreEqual(area.Id, exc);
+            Assert.AreEqual(actualId.Id, expectedId);
         }
 
         [Test]
         public void GetAllByLayoutId_WhenHave2Entry_Should2Entry()
         {
-            // act
-            int exc = 2;
+            // arrange
+            int expectedCount = 2;
 
-            // actual
-            var areas = _areaRepository.GetAllByLayoutId(1).ToList();
+            // act
+            var actualCount = _areaRepository.GetAllByLayoutId(1).ToList();
 
             // assert
-            Assert.AreEqual(areas.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
     }
 }

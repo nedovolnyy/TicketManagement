@@ -26,9 +26,9 @@ insert into dbo.Area
 --- Event
 insert into dbo.Event
 	values 
-		('Sider-Man II', '2022-05-30 00:00:00', 'Spider-Man II Movie', 2),
-		('Venom', '2022-06-08 00:00:00', 'Venom Movie', 1),
-		('Soccer', '2022-05-30 00:00:00', 'CSKA-TSMOKY', 1)
+		('Sider-Man II', '2023-05-30 00:00:00', 'Spider-Man II Movie', 2),
+		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 1),
+		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 1)
 
 --- Seat
 insert into dbo.Seat
@@ -37,8 +37,12 @@ insert into dbo.Seat
 		(1, 1, 2),
 		(1, 2, 3),
 		(1, 2, 2),
+		(1, 2, 1),
 		(2, 1, 1),
-		(1, 2, 1)
+		(2, 1, 2),
+		(2, 2, 3),
+		(2, 2, 2),
+		(2, 2, 1)
 		
 --- EventArea
 insert into dbo.EventArea

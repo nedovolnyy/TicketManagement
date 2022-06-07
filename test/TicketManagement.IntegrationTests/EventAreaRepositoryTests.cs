@@ -6,7 +6,7 @@ using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.IntegrationTests.Tests
+namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class EventAreaRepositoryTests
     {
@@ -25,13 +25,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _eventAreaRepository.Insert(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price));
+                var actualResponse = _eventAreaRepository.Insert(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -42,13 +42,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _eventAreaRepository.Update(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price));
+                var actualResponse = _eventAreaRepository.Update(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -59,44 +59,44 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                var strException =
+                var expectedException =
                     "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_EventSeat\". " +
-                    "The conflict occurred in database \"TicketManagement.Database\", table \"dbo.EventSeat\", column 'EventAreaId'.\r\n" +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventSeat\", column 'EventAreaId'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
-                var ex = Assert.Throws<SqlException>(
+                var actualException = Assert.Throws<SqlException>(
                                 () => _eventAreaRepository.Delete(id));
 
                 // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
+                Assert.That(actualException.Message, Is.EqualTo(expectedException));
             }
         }
 
         [Test]
         public void GetAll_WhenHave3Entry_Should3Entry()
         {
-            // act
-            int exc = 3;
+            // arrange
+            int expectedCount = 3;
 
-            // actual
-            var eventAreas = _eventAreaRepository.GetAll().ToList();
+            // act
+            var actualCount = _eventAreaRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(eventAreas.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
-            // act
-            int exc = 1;
+            // arrange
+            int expectedId = 1;
 
-            // actual
-            var eventArea = _eventAreaRepository.GetById(1);
+            // act
+            var actualId = _eventAreaRepository.GetById(1);
 
             // assert
-            Assert.AreEqual(eventArea.Id, exc);
+            Assert.AreEqual(actualId.Id, expectedId);
         }
     }
 }

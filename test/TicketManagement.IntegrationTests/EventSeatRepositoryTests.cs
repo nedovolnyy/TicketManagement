@@ -6,7 +6,7 @@ using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.IntegrationTests.Tests
+namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class EventSeatRepositoryTests
     {
@@ -26,17 +26,17 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                string strException =
+                string expectedException =
                     "The INSERT statement conflicted with the FOREIGN KEY constraint \"FK_Area_EventSeat\". " +
-                    "The conflict occurred in database \"TicketManagement.Database\", table \"dbo.EventArea\", column 'Id'.\r\n" +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'Id'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
-                var ex = Assert.Throws<SqlException>(
+                var actualException = Assert.Throws<SqlException>(
                                 () => _eventSeatRepository.Insert(new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state)));
 
                 // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
+                Assert.That(actualException.Message, Is.EqualTo(expectedException));
             }
         }
 
@@ -47,17 +47,17 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                string strException =
+                string expectedException =
                     "The UPDATE statement conflicted with the FOREIGN KEY constraint \"FK_Area_EventSeat\". " +
-                    "The conflict occurred in database \"TicketManagement.Database\", table \"dbo.EventArea\", column 'Id'.\r\n" +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'Id'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
-                var ex = Assert.Throws<SqlException>(
+                var actualException = Assert.Throws<SqlException>(
                                 () => _eventSeatRepository.Update(new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state)));
 
                 // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
+                Assert.That(actualException.Message, Is.EqualTo(expectedException));
             }
         }
 
@@ -68,40 +68,40 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _eventSeatRepository.Delete(id);
+                var actualResponse = _eventSeatRepository.Delete(id);
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
         [Test]
         public void GetAll_WhenHave9Entry_Should9Entry()
         {
-            // act
-            int exc = 9;
+            // arrange
+            int expectedCount = 9;
 
-            // actual
-            var eventSeats = _eventSeatRepository.GetAll().ToList();
+            // act
+            var actualCount = _eventSeatRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(eventSeats.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
-            // act
-            int exc = 3;
+            // arrange
+            int expectedId = 3;
 
-            // actual
-            var eventSeat = _eventSeatRepository.GetById(3);
+            // act
+            var actualId = _eventSeatRepository.GetById(3);
 
             // assert
-            Assert.AreEqual(eventSeat.Id, exc);
+            Assert.AreEqual(actualId.Id, expectedId);
         }
     }
 }

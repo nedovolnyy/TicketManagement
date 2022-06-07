@@ -6,7 +6,7 @@ using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.IntegrationTests.Tests
+namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class VenueRepositoryTests
     {
@@ -26,13 +26,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _venueRepository.Insert(new Venue(id: id, name: name, description: description, address: address, phone: phone));
+                var actualResponse = _venueRepository.Insert(new Venue(id: id, name: name, description: description, address: address, phone: phone));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -44,13 +44,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _venueRepository.Update(new Venue(id: id, name: name, description: description, address: address, phone: phone));
+                var actualResponse = _venueRepository.Update(new Venue(id: id, name: name, description: description, address: address, phone: phone));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -61,44 +61,44 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                var strException =
+                var expectedException =
                     "The DELETE statement conflicted with the REFERENCE constraint \"FK_Venue_Layout\". " +
-                    "The conflict occurred in database \"TicketManagement.Database\", table \"dbo.Layout\", column 'VenueId'.\r\n" +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Layout\", column 'VenueId'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
-                var ex = Assert.Throws<SqlException>(
+                var actualException = Assert.Throws<SqlException>(
                                 () => _venueRepository.Delete(id));
 
                 // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
+                Assert.That(actualException.Message, Is.EqualTo(expectedException));
             }
         }
 
         [Test]
         public void GetAll_WhenHave3Entry_Should3Entry()
         {
-            // act
-            int exc = 3;
+            // arrange
+            int expectedCount = 3;
 
-            // actual
-            var venues = _venueRepository.GetAll().ToList();
+            // act
+            var actualCount = _venueRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(venues.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
-            // act
-            int exc = 1;
+            // arrange
+            int expectedId = 1;
 
-            // actual
-            var venue = _venueRepository.GetById(1);
+            // act
+            var actualId = _venueRepository.GetById(1);
 
             // assert
-            Assert.AreEqual(venue.Id, exc);
+            Assert.AreEqual(actualId.Id, expectedId);
         }
     }
 }

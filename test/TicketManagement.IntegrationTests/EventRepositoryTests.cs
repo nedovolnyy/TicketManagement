@@ -7,7 +7,7 @@ using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.IntegrationTests.Tests
+namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class EventRepositoryTests
     {
@@ -26,13 +26,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _evntRepository.Insert(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
+                var actualResponse = _evntRepository.Insert(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -43,13 +43,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _evntRepository.Update(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
+                var actualResponse = _evntRepository.Update(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -60,57 +60,57 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                var strException =
+                var expectedException =
                     "The DELETE statement conflicted with the REFERENCE constraint \"FK_Event_EventArea\". " +
-                    "The conflict occurred in database \"TicketManagement.Database\", table \"dbo.EventArea\", column 'EventId'.\r\n" +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'EventId'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
-                var ex = Assert.Throws<SqlException>(
+                var actualException = Assert.Throws<SqlException>(
                                 () => _evntRepository.Delete(id));
 
                 // assert
-                Assert.That(ex.Message, Is.EqualTo(strException));
+                Assert.That(actualException.Message, Is.EqualTo(expectedException));
             }
         }
 
         [Test]
         public void GetAll_WhenHave3Entry_Should3Entry()
         {
-            // act
-            int exc = 3;
+            // arrange
+            int expectedCount = 3;
 
-            // actual
-            var evnts = _evntRepository.GetAll().ToList();
+            // act
+            var actualCount = _evntRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(evnts.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
-            // act
-            int exc = 3;
+            // arrange
+            int expectedId = 3;
 
-            // actual
-            var evnt = _evntRepository.GetById(3);
+            // act
+            var actualId = _evntRepository.GetById(3);
 
             // assert
-            Assert.AreEqual(evnt.Id, exc);
+            Assert.AreEqual(actualId.Id, expectedId);
         }
 
         [Test]
         public void GetAllByLayoutId_WhenHave2Entry_Should2Entry()
         {
-            // act
-            int exc = 2;
+            // arrange
+            int expectedCount = 2;
 
-            // actual
-            var evnts = _evntRepository.GetAllByLayoutId(1).ToList();
+            // act
+            var actualCount = _evntRepository.GetAllByLayoutId(1).ToList();
 
             // assert
-            Assert.AreEqual(evnts.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
     }
 }

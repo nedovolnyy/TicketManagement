@@ -2,11 +2,10 @@
 using System.Transactions;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.IntegrationTests.Tests
+namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class SeatRepositoryTests
     {
@@ -26,13 +25,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _seatRepository.Insert(new Seat(id: id, areaId: areaId, row: row, number: number));
+                var actualResponse = _seatRepository.Insert(new Seat(id: id, areaId: areaId, row: row, number: number));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -44,13 +43,13 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _seatRepository.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
+                var actualResponse = _seatRepository.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
@@ -61,53 +60,53 @@ namespace TicketManagement.IntegrationTests.Tests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expected = 1;
+                int expectedResponse = 1;
 
                 // act
-                var actual = _seatRepository.Delete(id);
+                var actualResponse = _seatRepository.Delete(id);
 
                 // assert
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
         [Test]
         public void GetAll_WhenHave6Entry_Should6Entry()
         {
-            // act
-            int exc = 6;
+            // arrange
+            int expectedCount = 10;
 
-            // actual
-            var seats = _seatRepository.GetAll().ToList();
+            // act
+            var actualCount = _seatRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(seats.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
-            // act
-            int exc = 1;
+            // arrange
+            int expectedId = 1;
 
-            // actual
-            var seat = _seatRepository.GetById(1);
+            // act
+            var actualId = _seatRepository.GetById(1);
 
             // assert
-            Assert.AreEqual(seat.Id, exc);
+            Assert.AreEqual(actualId.Id, expectedId);
         }
 
         [Test]
         public void GetAllByAreaId_WhenHave5Entry_Should5Entry()
         {
-            // act
-            int exc = 5;
+            // arrange
+            int expectedCount = 5;
 
-            // actual
-            var seats = _seatRepository.GetAllByAreaId(1).ToList();
+            // act
+            var actualCount = _seatRepository.GetAllByAreaId(1).ToList();
 
             // assert
-            Assert.AreEqual(seats.Count, exc);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
     }
 }
