@@ -24,6 +24,11 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Layout entity)
         {
+            if ((entity.VenueId == 0) | (entity.Name == "") | (entity.Description == ""))
+            {
+                throw new ValidationException("The field of Layout is not allowed to be null!", "");
+            }
+
             var layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
             foreach (var layout in layoutArray)
             {

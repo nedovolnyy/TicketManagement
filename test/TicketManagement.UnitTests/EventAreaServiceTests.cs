@@ -4,6 +4,8 @@ using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
+using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
@@ -23,6 +25,28 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Setup()
         {
             _eventAreaService = new EventAreaService();
+        }
+
+        [TestCase(1, 0, "First eventArea of second layout", 2, 4, 7.5)]
+        [TestCase(2, 1, "", 3, 2, 5.5)]
+        [TestCase(3, 2, "First eventArea of second layout", 0, 7, 4.3)]
+        [TestCase(3, 2, "First eventArea of second layout", 1, 0, 4.3)]
+        [TestCase(2, 1, "First eventArea of first layout", 3, 2, 0)]
+        public void Validate_WhenEventAreaFieldNull_ShouldThrow(int id, int eventId, string description, int coordX, int coordY, decimal price)
+        {
+            // arrange
+            string strException =
+                "The field of EventArea is not allowed to be null!";
+            var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
+            var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
+            var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => eventAreaService.Object.Validate(eventAreaExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, 2, "First eventArea of second layout", 2, 4, 7.5)]

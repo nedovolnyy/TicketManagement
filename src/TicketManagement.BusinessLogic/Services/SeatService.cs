@@ -24,6 +24,11 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Seat entity)
         {
+            if ((entity.AreaId == 0) | (entity.Row == 0) | (entity.Number == 0))
+            {
+                throw new ValidationException("The field of Seat is not allowed to be null!", "");
+            }
+
             var seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
             foreach (var seat in seatArray)
             {

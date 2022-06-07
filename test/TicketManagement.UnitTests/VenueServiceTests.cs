@@ -27,6 +27,26 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _venueService = new VenueService();
         }
 
+        [TestCase(1, "", "description first venue", "address first venue", "+4988955568")]
+        [TestCase(2, "Second venue", "", "address second venue", "+58487555")]
+        [TestCase(3, "Second venue", "description second venue", "", "+84845464")]
+        public void Validate_WhenVenueFieldNull_ShouldThrow(int id, string name, string description, string address, string phone)
+        {
+            // arrange
+            string strException =
+                "The field of Venue is not allowed to be null!";
+            var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
+            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
+            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => venueService.Object.Validate(venueExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
         [TestCase(1, "First venue", "description first venue", "address first venue", "+4988955568")]
         [TestCase(2, "Second venue", "description second venue", "address second venue", "+58487555")]
         [TestCase(3, "Second venue", "description second venue", "address second venue", "+84845464")]

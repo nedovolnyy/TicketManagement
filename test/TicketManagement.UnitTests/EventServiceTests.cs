@@ -27,6 +27,27 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _evntService = new EventService();
         }
 
+        [TestCase(2, 0, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
+        [TestCase(1, 2, "", "09/09/2021", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "0001-01-01 12:00:00.0000000 +12:00", "Things Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "")]
+        public void Validate_WhenEventFieldNull_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        {
+            // arrange
+            string strException =
+                "The field of Event is not allowed to be null!";
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntRepository = new Mock<IEventRepository> { CallBase = true };
+            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => evntService.Object.Validate(evntExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
         [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
         public void Validate_WhenEventTimeInPast_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)

@@ -4,6 +4,8 @@ using NUnit.Framework;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
+using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
@@ -23,6 +25,27 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Setup()
         {
             _eventSeatService = new EventSeatService();
+        }
+
+        [TestCase(1, 0, 56, 2, 4)]
+        [TestCase(2, 7, 0, 3, 2)]
+        [TestCase(3, 5, 9, 0, 7)]
+        [TestCase(1, 6, 56, 2, 0)]
+        public void Validate_WhenEventSeatFieldNull_ShouldThrow(int id, int eventAreaId, int row, int number, int state)
+        {
+            // arrange
+            string strException =
+                "The field of EventSeat is not allowed to be null!";
+            var eventSeatExpected = new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state);
+            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
+            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => eventSeatService.Object.Validate(eventSeatExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, 6, 56, 2, 4)]

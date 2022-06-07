@@ -27,6 +27,27 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _areaService = new AreaService();
         }
 
+        [TestCase(1, 0, "First area of second layout", 2, 4)]
+        [TestCase(2, 1, "", 3, 2)]
+        [TestCase(3, 2, "First area of second layout", 0, 3)]
+        [TestCase(3, 2, "First area of second layout", 1, 0)]
+        public void Validate_WhenAreaFieldNull_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
+        {
+            // arrange
+            string strException =
+                "The field of Area is not allowed to be null!";
+            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
+            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
+            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => areaService.Object.Validate(areaExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
         [TestCase(1, 2, "First area of second layout", 2, 4)]
         [TestCase(2, 1, "First area of first layout", 3, 2)]
         [TestCase(3, 2, "First area of second layout", 1, 7)]

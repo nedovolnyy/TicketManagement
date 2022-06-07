@@ -27,6 +27,26 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _seatService = new SeatService();
         }
 
+        [TestCase(1, 0, 1, 1)]
+        [TestCase(2, 1, 0, 2)]
+        [TestCase(3, 2, 1, 0)]
+        public void Validate_WhenSeatFieldNull_ShouldThrow(int id, int areaId, int row, int number)
+        {
+            // arrange
+            string strException =
+                "The field of Seat is not allowed to be null!";
+            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
+            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
+            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => seatService.Object.Validate(seatExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
         [TestCase(1, 1, 1, 1)]
         [TestCase(2, 1, 2, 2)]
         [TestCase(3, 2, 1, 1)]

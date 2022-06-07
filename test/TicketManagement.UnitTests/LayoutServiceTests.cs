@@ -27,6 +27,26 @@ namespace TicketManagement.BusinessLogic.UnitTests
             _layoutService = new LayoutService();
         }
 
+        [TestCase(1, "", 1, "description first layout")]
+        [TestCase(2, "Second layout", 0, "description second layout")]
+        [TestCase(3, "Second layout", 2, "")]
+        public void Validate_WhenLayoutFieldNull_ShouldThrow(int id, string name, int venueId, string description)
+        {
+            // arrange
+            string strException =
+                "The field of Layout is not allowed to be null!";
+            var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
+            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
+            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => layoutService.Object.Validate(layoutExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
         [TestCase(1, "First layout", 1, "description first layout")]
         [TestCase(2, "Second layout", 1, "description second layout")]
         [TestCase(3, "Second layout", 2, "description second layout")]

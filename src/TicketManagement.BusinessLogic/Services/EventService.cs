@@ -25,6 +25,11 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Event entity)
         {
+            if ((entity.LayoutId == 0) | (entity.EventTime == DateTimeOffset.MinValue) | (entity.Name == "") | (entity.Description == ""))
+            {
+                throw new ValidationException("The field of Event is not allowed to be null!", "");
+            }
+
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
                 throw new ValidationException("Event can't be created in the past!", "");
