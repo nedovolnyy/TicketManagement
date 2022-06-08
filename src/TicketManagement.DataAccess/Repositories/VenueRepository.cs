@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -50,10 +49,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Populate Data by key.
+        /// Method for populate data by name.
         /// </summary>
-        /// <param name="name">name.</param>
-        /// <returns>Get Venue by name.</returns>
+        /// <param name="name">id.</param>
+        /// <returns><see cref="Venue"/>List&lt;Seat&gt;.</returns>
         public Venue GetFirstByName(string name)
         {
             using var sqlConnection = new DatabaseContext().Connection;
@@ -67,24 +66,17 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override Venue Map(SqlDataReader reader)
         {
-            Venue venue = new Venue();
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    venue = new Venue(id: int.Parse(reader["Id"].ToString()),
+                reader.Read();
+                return new Venue(id: int.Parse(reader["Id"].ToString()),
                                       name: reader["Name"].ToString(),
                                       description: reader["Description"].ToString(),
                                       address: reader["Address"].ToString(),
                                       phone: reader["Phone"].ToString());
-                }
-            }
-            else
-            {
-                throw new ValidationException("Don't have venues to show!", "");
             }
 
-            return venue;
+            return null;
         }
 
         protected override List<Venue> Maps(SqlDataReader reader)
@@ -101,10 +93,6 @@ namespace TicketManagement.DataAccess.Repositories
                                             phone: reader["Phone"].ToString());
                     venues.Add(venue);
                 }
-            }
-            else
-            {
-                throw new ValidationException("Don't have venues to show!", "");
             }
 
             return venues;

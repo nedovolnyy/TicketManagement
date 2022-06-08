@@ -9,12 +9,6 @@ namespace TicketManagement.BusinessLogic.Services
     internal class SeatService : BaseService<Seat>, ISeatService
     {
         private readonly ISeatRepository _seatRepository;
-
-        internal SeatService()
-        {
-            _seatRepository = new SeatRepository();
-        }
-
         public SeatService(ISeatRepository seatRepository)
             : base(seatRepository)
         {
@@ -25,7 +19,7 @@ namespace TicketManagement.BusinessLogic.Services
         {
             if ((entity.AreaId == 0) | (entity.Row == 0) | (entity.Number == 0))
             {
-                throw new ValidationException("The field of Seat is not allowed to be null!", "");
+                throw new ValidationException("The field of Seat is not allowed to be null!");
             }
 
             var seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
@@ -33,7 +27,7 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 if ((entity.Row == seat.Row) && (entity.Number == seat.Number))
                 {
-                    throw new ValidationException("Row and number should be unique for area!", "");
+                    throw new ValidationException("Row and number should be unique for area!");
                 }
             }
         }

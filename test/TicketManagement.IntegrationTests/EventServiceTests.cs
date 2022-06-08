@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Transactions;
 using NUnit.Framework;
@@ -8,20 +9,19 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
 {
-    public class AreaServiceTests
+    public class EventServiceTests
     {
-        private AreaService _areaService;
+        private EventService _eventService;
 
         [SetUp]
         public void Setup()
         {
-            _areaService = new AreaService(new AreaRepository());
+            _eventService = new EventService(new EventRepository());
         }
 
-        [TestCase(1, 2, "First area of qwef layout", 2, 4)]
-        [TestCase(2, 1, "First area of firqwefqwst layout", 3, 2)]
-        [TestCase(3, 2, "First area of qwef layout", 1, 7)]
-        public void Insert_WhenInsertArea_ShouldInt1(int id, int layoutId, string description, int coordX, int coordY)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2023", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2023", "Stanger Things Serie")]
+        public void Insert_WhenInsertEvent_ShouldInt1(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -29,17 +29,16 @@ namespace TicketManagement.DataAccess.IntegrationTests
                 int expectedResponse = 1;
 
                 // act
-                var actualResponse = _areaService.Insert(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+                var actualResponse = _eventService.Insert(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
 
                 // assert
                 Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
-        [TestCase(1, 2, "First area of qwefw layout", 2, 4)]
-        [TestCase(2, 1, "First area of qwefw layout", 3, 2)]
-        [TestCase(3, 2, "First area of qwfqwef layout", 1, 7)]
-        public void Update_WhenUpdateArea_ShouldInt1(int id, int layoutId, string description, int coordX, int coordY)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2023", "Kitchen Serie")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2023", "Stanger Things Serie")]
+        public void Update_WhenUpdateEvent_ShouldInt1(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -47,7 +46,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
                 int expectedResponse = 1;
 
                 // act
-                var actualResponse = _areaService.Update(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+                var actualResponse = _eventService.Update(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
 
                 // assert
                 Assert.AreEqual(expectedResponse, actualResponse);
@@ -62,13 +61,13 @@ namespace TicketManagement.DataAccess.IntegrationTests
             {
                 // arrange
                 var expectedException =
-                    "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_Seat\". " +
-                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Seat\", column 'AreaId'.\r\n" +
+                    "The DELETE statement conflicted with the REFERENCE constraint \"FK_Event_EventArea\". " +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'EventId'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
                 var actualException = Assert.Throws<SqlException>(
-                                () => _areaService.Delete(id));
+                                () => _eventService.Delete(id));
 
                 // assert
                 Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -82,20 +81,20 @@ namespace TicketManagement.DataAccess.IntegrationTests
             int expectedCount = 3;
 
             // act
-            var actualCount = _areaService.GetAll().ToList();
+            var actualCount = _eventService.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(expectedCount, actualCount.Count);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            int expectedId = 1;
+            int expectedId = 3;
 
             // act
-            var actualId = _areaService.GetById(1);
+            var actualId = _eventService.GetById(3);
 
             // assert
             Assert.AreEqual(actualId.Id, expectedId);

@@ -6,10 +6,8 @@ namespace TicketManagement.Common.Validation
     [Serializable]
     public class ValidationException : Exception
     {
-        public ValidationException(string message, string prop)
-            : base(message) => Property = prop;
-
-        public ValidationException()
+        public ValidationException(string message)
+            : base(message)
         {
         }
 
@@ -17,7 +15,5 @@ namespace TicketManagement.Common.Validation
             : base(info, context)
         {
         }
-
-        public string Property { get; protected set; }
     }
 }

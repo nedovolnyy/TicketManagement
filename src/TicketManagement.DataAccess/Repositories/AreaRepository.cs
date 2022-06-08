@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -50,10 +49,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Populate Data by key.
+        /// Base Method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>Get all Entity by LayoutId.</returns>
+        /// <returns><see cref="Area"/>List&lt;Area&gt;.</returns>
         IEnumerable<Area> IAreaRepository.GetAllByLayoutId(int id)
         {
             using var sqlConnection = new DatabaseContext().Connection;
@@ -67,25 +66,17 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override Area Map(SqlDataReader reader)
         {
-            Area area = new Area();
-
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    area = new Area(id: int.Parse(reader["Id"].ToString()),
-                                    layoutId: int.Parse(reader["LayoutId"].ToString()),
-                                    description: reader["Description"].ToString(),
-                                    coordX: int.Parse(reader["CoordX"].ToString()),
-                                    coordY: int.Parse(reader["CoordY"].ToString()));
-                }
-            }
-            else
-            {
-                throw new ValidationException("Don't have areas to show!", "");
+                reader.Read();
+                return new Area(id: int.Parse(reader["Id"].ToString()),
+                                layoutId: int.Parse(reader["LayoutId"].ToString()),
+                                description: reader["Description"].ToString(),
+                                coordX: int.Parse(reader["CoordX"].ToString()),
+                                coordY: int.Parse(reader["CoordY"].ToString()));
             }
 
-            return area;
+            return null;
         }
 
         protected override List<Area> Maps(SqlDataReader reader)
@@ -102,10 +93,6 @@ namespace TicketManagement.DataAccess.Repositories
                                     coordY: int.Parse(reader["CoordY"].ToString()));
                     areas.Add(area);
                 }
-            }
-            else
-            {
-                throw new ValidationException("Don't have areas to show!", "");
             }
 
             return areas;

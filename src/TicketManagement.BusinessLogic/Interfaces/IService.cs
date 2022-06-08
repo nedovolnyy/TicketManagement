@@ -6,9 +6,9 @@ namespace TicketManagement.BusinessLogic.Interfaces
     public interface IService<T>
         where T : BaseEntity
     {
-        void Insert(T entity);
-        void Update(T entity);
-        void Delete(int id);
+        int Insert(T entity);
+        int Update(T entity);
+        int Delete(int id);
         T GetById(int id);
         IEnumerable<T> GetAll();
     }

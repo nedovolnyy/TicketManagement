@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -60,10 +59,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Populate Data by key.
+        /// Method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>Get all Entity by LayoutId.</returns>
+        /// <returns><see cref="Event"/>List&lt;Event&gt;.</returns>
         public IEnumerable<Event> GetAllByLayoutId(int id)
         {
             using var sqlConnection = new DatabaseContext().Connection;
@@ -77,24 +76,17 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override Event Map(SqlDataReader reader)
         {
-            Event evnt = new Event();
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    evnt = new Event(id: int.Parse(reader["Id"].ToString()),
+                reader.Read();
+                return new Event(id: int.Parse(reader["Id"].ToString()),
                                      name: reader["Name"].ToString(),
                                      eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
-                }
-            }
-            else
-            {
-                throw new ValidationException("Don't have events to show!", "");
             }
 
-            return evnt;
+            return null;
         }
 
         protected override List<Event> Maps(SqlDataReader reader)
@@ -111,10 +103,6 @@ namespace TicketManagement.DataAccess.Repositories
                                      layoutId: int.Parse(reader["LayoutId"].ToString()));
                     evnts.Add(evnt);
                 }
-            }
-            else
-            {
-                throw new ValidationException("Don't have events to show!", "");
             }
 
             return evnts;

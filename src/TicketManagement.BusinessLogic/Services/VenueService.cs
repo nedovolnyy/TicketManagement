@@ -2,19 +2,12 @@
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     internal class VenueService : BaseService<Venue>, IVenueService
     {
         private readonly IVenueRepository _venueRepository;
-
-        internal VenueService()
-        {
-            _venueRepository = new VenueRepository();
-        }
-
         public VenueService(IVenueRepository venueRepository)
             : base(venueRepository)
         {
@@ -25,13 +18,13 @@ namespace TicketManagement.BusinessLogic.Services
         {
             if ((entity.Name == "") | (entity.Address == "") | (entity.Description == ""))
             {
-                throw new ValidationException("The field of Venue is not allowed to be null!", "");
+                throw new ValidationException("The field of Venue is not allowed to be null!");
             }
 
             var venue = _venueRepository.GetFirstByName(entity.Name);
-            if (venue.Name != null)
+            if (venue != null)
             {
-                throw new ValidationException("The Venue name has not unique!", "");
+                throw new ValidationException("The Venue name has not unique!");
             }
         }
     }

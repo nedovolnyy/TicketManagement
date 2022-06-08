@@ -8,20 +8,20 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
 {
-    public class AreaServiceTests
+    public class LayoutServiceTests
     {
-        private AreaService _areaService;
+        private LayoutService _layoutService;
 
         [SetUp]
         public void Setup()
         {
-            _areaService = new AreaService(new AreaRepository());
+            _layoutService = new LayoutService(new LayoutRepository());
         }
 
-        [TestCase(1, 2, "First area of qwef layout", 2, 4)]
-        [TestCase(2, 1, "First area of firqwefqwst layout", 3, 2)]
-        [TestCase(3, 2, "First area of qwef layout", 1, 7)]
-        public void Insert_WhenInsertArea_ShouldInt1(int id, int layoutId, string description, int coordX, int coordY)
+        [TestCase(1, "First egdfslayout", 1, "description first layout")]
+        [TestCase(2, "Second dfglayout", 1, "description second layout")]
+        [TestCase(3, "Second ldfgayout", 2, "description second layout")]
+        public void Insert_WhenInsertLayout_ShouldInt1(int id, string name, int venueId, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -29,17 +29,17 @@ namespace TicketManagement.DataAccess.IntegrationTests
                 int expectedResponse = 1;
 
                 // act
-                var actualResponse = _areaService.Insert(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+                var actualResponse = _layoutService.Insert(new Layout(id: id, name: name, venueId: venueId, description: description));
 
                 // assert
                 Assert.AreEqual(expectedResponse, actualResponse);
             }
         }
 
-        [TestCase(1, 2, "First area of qwefw layout", 2, 4)]
-        [TestCase(2, 1, "First area of qwefw layout", 3, 2)]
-        [TestCase(3, 2, "First area of qwfqwef layout", 1, 7)]
-        public void Update_WhenUpdateArea_ShouldInt1(int id, int layoutId, string description, int coordX, int coordY)
+        [TestCase(1, "First lsdgsdfgayout", 1, "description first layout")]
+        [TestCase(2, "Second lsdfgsdfayout", 1, "description second layout")]
+        [TestCase(3, "Second ladfsgsdfyout", 2, "description second layout")]
+        public void Update_WhenUpdateLayout_ShouldInt1(int id, string name, int venueId, string description)
         {
             using (TransactionScope scope = new TransactionScope())
             {
@@ -47,7 +47,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
                 int expectedResponse = 1;
 
                 // act
-                var actualResponse = _areaService.Update(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+                var actualResponse = _layoutService.Update(new Layout(id: id, name: name, venueId: venueId, description: description));
 
                 // assert
                 Assert.AreEqual(expectedResponse, actualResponse);
@@ -62,13 +62,13 @@ namespace TicketManagement.DataAccess.IntegrationTests
             {
                 // arrange
                 var expectedException =
-                    "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_Seat\". " +
-                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Seat\", column 'AreaId'.\r\n" +
+                    "The DELETE statement conflicted with the REFERENCE constraint \"FK_Layout_Area\". " +
+                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Area\", column 'LayoutId'.\r\n" +
                     "The statement has been terminated.";
 
                 // act
                 var actualException = Assert.Throws<SqlException>(
-                                () => _areaService.Delete(id));
+                                () => _layoutService.Delete(id));
 
                 // assert
                 Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -76,16 +76,16 @@ namespace TicketManagement.DataAccess.IntegrationTests
         }
 
         [Test]
-        public void GetAll_WhenHave3Entry_Should3Entry()
+        public void GetAll_WhenHave7Entry_Should7Entry()
         {
             // arrange
-            int expectedCount = 3;
+            int expectedCount = 7;
 
             // act
-            var actualCount = _areaService.GetAll().ToList();
+            var actualCount = _layoutService.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(expectedCount, actualCount.Count);
+            Assert.AreEqual(actualCount.Count, expectedCount);
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             int expectedId = 1;
 
             // act
-            var actualId = _areaService.GetById(1);
+            var actualId = _layoutService.GetById(1);
 
             // assert
             Assert.AreEqual(actualId.Id, expectedId);

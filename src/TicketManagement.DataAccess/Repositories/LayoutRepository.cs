@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -48,10 +47,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Populate Data by key.
+        /// Method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>Get all Entity by VenueId.</returns>
+        /// <returns><see cref="Layout"/>List&lt;Layout&gt;.</returns>
         public IEnumerable<Layout> GetAllByVenueId(int id)
         {
             using var sqlConnection = new DatabaseContext().Connection;
@@ -65,23 +64,16 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override Layout Map(SqlDataReader reader)
         {
-            Layout layout = new Layout();
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    layout = new Layout(id: int.Parse(reader["Id"].ToString()),
+                reader.Read();
+                return new Layout(id: int.Parse(reader["Id"].ToString()),
                                         name: reader["Name"].ToString(),
                                         venueId: int.Parse(reader["VenueId"].ToString()),
                                         description: reader["Description"].ToString());
-                }
-            }
-            else
-            {
-                throw new ValidationException("Don't have layouts to show!", "");
             }
 
-            return layout;
+            return null;
         }
 
         protected override List<Layout> Maps(SqlDataReader reader)
@@ -97,10 +89,6 @@ namespace TicketManagement.DataAccess.Repositories
                                                description: reader["Description"].ToString());
                     areas.Add(layout);
                 }
-            }
-            else
-            {
-                throw new ValidationException("Don't have layouts to show!", "");
             }
 
             return areas;

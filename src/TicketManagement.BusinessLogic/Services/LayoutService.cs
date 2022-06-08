@@ -2,19 +2,12 @@
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     internal class LayoutService : BaseService<Layout>, ILayoutService
     {
         private readonly ILayoutRepository _layoutRepository;
-
-        internal LayoutService()
-        {
-            _layoutRepository = new LayoutRepository();
-        }
-
         public LayoutService(ILayoutRepository layoutRepository)
             : base(layoutRepository)
         {
@@ -25,7 +18,7 @@ namespace TicketManagement.BusinessLogic.Services
         {
             if ((entity.VenueId == 0) | (entity.Name == "") | (entity.Description == ""))
             {
-                throw new ValidationException("The field of Layout is not allowed to be null!", "");
+                throw new ValidationException("The field of Layout is not allowed to be null!");
             }
 
             var layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
@@ -33,7 +26,7 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 if (entity.Name == layout.Name)
                 {
-                    throw new ValidationException("Layout name should be unique in venue!", "");
+                    throw new ValidationException("Layout name should be unique in venue!");
                 }
             }
         }

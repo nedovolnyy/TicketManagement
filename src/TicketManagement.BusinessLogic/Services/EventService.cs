@@ -10,12 +10,6 @@ namespace TicketManagement.BusinessLogic.Services
     internal class EventService : BaseService<Event>, IEventService
     {
         private readonly IEventRepository _eventRepository;
-
-        internal EventService()
-        {
-            _eventRepository = new EventRepository();
-        }
-
         public EventService(IEventRepository eventRepository)
             : base(eventRepository)
         {
@@ -26,12 +20,12 @@ namespace TicketManagement.BusinessLogic.Services
         {
             if ((entity.LayoutId == 0) | (entity.EventTime == DateTimeOffset.MinValue) | (entity.Name == "") | (entity.Description == ""))
             {
-                throw new ValidationException("The field of Event is not allowed to be null!", "");
+                throw new ValidationException("The field of Event is not allowed to be null!");
             }
 
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
-                throw new ValidationException("Event can't be created in the past!", "");
+                throw new ValidationException("Event can't be created in the past!");
             }
 
             var evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
@@ -39,12 +33,12 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 if ((entity.LayoutId == evnt.LayoutId) && (entity.Description == evnt.Description))
                 {
-                    throw new ValidationException("Layout name should be unique in venue!", "");
+                    throw new ValidationException("Layout name should be unique in venue!");
                 }
 
                 if ((entity.LayoutId == evnt.LayoutId) && (entity.EventTime == evnt.EventTime))
                 {
-                    throw new ValidationException("Do not create event for the same layout in the same time!", "");
+                    throw new ValidationException("Do not create event for the same layout in the same time!");
                 }
             }
         }

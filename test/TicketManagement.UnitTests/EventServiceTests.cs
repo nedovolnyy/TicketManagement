@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
@@ -10,7 +9,6 @@ using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
-    [TestFixture]
     public class EventServiceTests
     {
         private readonly List<Event> _expectedEvents = new List<Event>
@@ -18,14 +16,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2),
             new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00.0000000 +03:00"), "Stanger Things Serie", 1),
         };
-        private EventService _evntService;
-        private int _timesApplyRuleCalled;
-
-        [SetUp]
-        public void Setup()
-        {
-            _evntService = new EventService();
-        }
 
         [TestCase(2, 0, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
         [TestCase(1, 2, "", "09/09/2021", "Kitchen Serie")]
@@ -109,73 +99,52 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
-        public void Insert_WhenCallbackInsert_ShouldTrue(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        public void Insert_WhenInsertEvent_ShouldNotNull(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             // arrange
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var evntService = new Mock<IService<Event>> { CallBase = true };
+            var eventExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var eventRepository = new Mock<IEventRepository> { CallBase = true };
+            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
 
             // act
-            evntService.Setup(x => x.Insert(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
-            var mockedInstance = evntService.Object;
-            mockedInstance.Insert(evntExpected);
+            eventService.Setup(x => x.Insert(It.IsAny<Event>())).Returns(1);
+            var actual = eventService.Object.Insert(eventExpected);
 
             // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
+            Assert.NotNull(actual);
         }
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
-        public void Update_WhenCallbackUpdate_ShouldTrue(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        public void Update_WhenUpdateEvent_ShouldNotNull(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             // arrange
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var evntService = new Mock<IService<Event>> { CallBase = true };
+            var eventExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var eventRepository = new Mock<IEventRepository> { CallBase = true };
+            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
 
             // act
-            evntService.Setup(x => x.Update(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
-            var mockedInstance = evntService.Object;
-            mockedInstance.Update(evntExpected);
+            eventService.Setup(x => x.Update(It.IsAny<Event>())).Returns(1);
+            var actual = eventService.Object.Update(eventExpected);
 
             // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
+            Assert.NotNull(actual);
         }
 
         [TestCase(2)]
         [TestCase(1)]
-        public void Delete_WhenCallbackDelete_ShouldTrue(int id)
+        public void Delete_WhenDeleteEvent_ShouldNotNull(int id)
         {
             // arrange
-            var evntService = new Mock<IService<Event>> { CallBase = true };
+            var eventRepository = new Mock<IEventRepository> { CallBase = true };
+            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
 
             // act
-            evntService.Setup(x => x.Delete(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
-            var mockedInstance = evntService.Object;
-            mockedInstance.Delete(id);
+            eventService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
+            var actual = eventService.Object.Delete(id);
 
             // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
-        }
-
-        [TestCase(-65464)]
-        [TestCase(000033366)]
-        [TestCase(5444)]
-        public void GetById_WhenCallbackGetById_ShouldTrue(int id)
-        {
-            // arrange
-            var evntService = new Mock<IService<Event>> { CallBase = true };
-
-            // act
-            evntService.Setup(x => x.GetById(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
-            var mockedInstance = evntService.Object;
-            mockedInstance.GetById(id);
-
-            // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
+            Assert.NotNull(actual);
         }
 
         [TestCase(-65464)]
@@ -184,31 +153,31 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void GetById_WhenReturnEventById_ShouldNotNull(int id)
         {
             // arrange
-            var evntExpected = new Event(id, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2);
-            var evntService = new Mock<IService<Event>> { CallBase = true };
+            var eventExpected = new Event(id, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2);
+            var eventRepository = new Mock<IEventRepository> { CallBase = true };
+            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
 
             // act
-            evntService.Setup(x => x.GetById(It.IsAny<int>())).Returns(evntExpected);
-            var mockedInstance = evntService.Object;
-            var e = mockedInstance.GetById(id);
+            eventService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventExpected);
+            var actual = eventService.Object.GetById(id);
 
             // assert
-            Assert.NotNull(e);
+            Assert.NotNull(actual);
         }
 
         [Test]
         public void GetAll_WhenReturnEvents_ShouldNotNull()
         {
             // arrange
-            var evntService = new Mock<IService<Event>> { CallBase = true };
+            var eventRepository = new Mock<IEventRepository> { CallBase = true };
+            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
 
             // act
-            evntService.Setup(x => x.GetAll()).Returns(_expectedEvents);
-            var mockedInstance = evntService.Object;
-            var e = mockedInstance.GetAll();
+            eventService.Setup(x => x.GetAll()).Returns(_expectedEvents);
+            var actual = eventService.Object.GetAll();
 
             // assert
-            Assert.NotNull(e);
+            Assert.NotNull(actual);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
@@ -50,25 +49,18 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override EventArea Map(SqlDataReader reader)
         {
-            EventArea eventArea = new EventArea();
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    eventArea = new EventArea(id: int.Parse(reader["Id"].ToString()),
+                reader.Read();
+                return new EventArea(id: int.Parse(reader["Id"].ToString()),
                                               eventId: int.Parse(reader["EventId"].ToString()),
                                               description: reader["Description"].ToString(),
                                               coordX: int.Parse(reader["CoordX"].ToString()),
                                               coordY: int.Parse(reader["CoordY"].ToString()),
                                               price: decimal.Parse(reader["Price"].ToString()));
-                }
-            }
-            else
-            {
-                throw new ValidationException("Don't have eventAreas to show!", "");
             }
 
-            return eventArea;
+            return null;
         }
 
         protected override List<EventArea> Maps(SqlDataReader reader)
@@ -86,10 +78,6 @@ namespace TicketManagement.DataAccess.Repositories
                                                         price: decimal.Parse(reader["Price"].ToString()));
                     eventAreas.Add(eventArea);
                 }
-            }
-            else
-            {
-                throw new ValidationException("Don't have eventAreas to show!", "");
             }
 
             return eventAreas;

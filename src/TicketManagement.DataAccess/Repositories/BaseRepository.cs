@@ -11,10 +11,9 @@ namespace TicketManagement.DataAccess.Repositories
         where T : BaseEntity
     {
         /// <summary>
-        /// Base Method for Insert Data.
+        /// Base method for insert data.
         /// </summary>
         /// <param name="entity">Entity.</param>
-        /// <returns>Count changed columns.</returns>
         public int Insert(T entity)
         {
             int i;
@@ -33,10 +32,9 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Update Data.
+        /// Base method for update data.
         /// </summary>
         /// <param name="entity">Entity.</param>
-        /// <returns>Count changed columns.</returns>
         public int Update(T entity)
         {
             int i;
@@ -55,10 +53,9 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Delete Data.
+        /// Base method for delete data.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>Count changed columns.</returns>
         public int Delete(int id)
         {
             int i;
@@ -77,10 +74,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Populate Data by key.
+        /// Base method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>Get Entity by Id.</returns>
+        /// <returns><see cref="BaseEntity"/>BaseEntity&gt;.</returns>
         public T GetById(int id)
         {
             using var cmd = new DatabaseContext().Connection.CreateCommand();
@@ -92,9 +89,9 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Populate All Data.
+        /// Base method for populate all data.
         /// </summary>
-        /// <returns>Get all.</returns>
+        /// <returns><see cref="BaseEntity"/>List&lt;BaseEntity&gt;.</returns>
         public IEnumerable<T> GetAll()
         {
             using var cmd = new DatabaseContext().Connection.CreateCommand();

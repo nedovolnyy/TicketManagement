@@ -9,32 +9,29 @@ namespace TicketManagement.BusinessLogic.Services
         where T : BaseEntity
     {
         private readonly IRepository<T> _entityRepository;
-        protected BaseService()
-        {
-        }
 
         protected BaseService(IRepository<T> entityRepository)
         {
             _entityRepository = entityRepository;
         }
 
-        public void Insert(T entity)
+        public virtual int Insert(T entity)
         {
             Validate(entity);
-            _entityRepository.Insert(entity);
+            return _entityRepository.Insert(entity);
         }
 
-        public void Update(T entity)
+        public virtual int Update(T entity)
         {
             Validate(entity);
-            _entityRepository.Update(entity);
+            return _entityRepository.Update(entity);
         }
 
-        public void Delete(int id) =>
+        public virtual int Delete(int id) =>
             _entityRepository.Delete(id);
-        public T GetById(int id) =>
+        public virtual T GetById(int id) =>
             _entityRepository.GetById(id);
-        public IEnumerable<T> GetAll() =>
+        public virtual IEnumerable<T> GetAll() =>
             _entityRepository.GetAll();
 
         public abstract void Validate(T entity);

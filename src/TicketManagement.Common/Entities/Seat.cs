@@ -4,10 +4,6 @@ namespace TicketManagement.Common.Entities
 {
     public sealed class Seat : BaseEntity
     {
-        public Seat()
-        {
-        }
-
         public Seat(int id, int areaId, int row, int number)
         {
             Id = id;

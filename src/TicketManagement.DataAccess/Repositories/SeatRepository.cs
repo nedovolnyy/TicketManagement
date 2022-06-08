@@ -2,7 +2,6 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -48,10 +47,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Base Method for Populate Data by key.
+        /// Method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>Get all Entity by AreaId.</returns>
+        /// <returns><see cref="Seat"/>List&lt;Seat&gt;.</returns>
         public IEnumerable<Seat> GetAllByAreaId(int id)
         {
             using var sqlConnection = new DatabaseContext().Connection;
@@ -65,23 +64,16 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override Seat Map(SqlDataReader reader)
         {
-            Seat seat = new Seat();
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    seat = new Seat(id: int.Parse(reader["Id"].ToString()),
+                reader.Read();
+                return new Seat(id: int.Parse(reader["Id"].ToString()),
                                     areaId: int.Parse(reader["AreaId"].ToString()),
                                     row: int.Parse(reader["Row"].ToString()),
                                     number: int.Parse(reader["Number"].ToString()));
-                }
-            }
-            else
-            {
-                throw new ValidationException("Don't have seats to show!", "");
             }
 
-            return seat;
+            return null;
         }
 
         protected override List<Seat> Maps(SqlDataReader reader)
@@ -97,10 +89,6 @@ namespace TicketManagement.DataAccess.Repositories
                                     number: int.Parse(reader["Number"].ToString()));
                     seats.Add(seat);
                 }
-            }
-            else
-            {
-                throw new ValidationException("Don't have seats to show!", "");
             }
 
             return seats;
