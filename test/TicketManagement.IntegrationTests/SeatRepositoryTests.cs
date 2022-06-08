@@ -25,7 +25,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _seatRepository.Insert(new Seat(id: id, areaId: areaId, row: row, number: number));
@@ -43,7 +43,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _seatRepository.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
@@ -60,7 +60,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _seatRepository.Delete(id);
@@ -74,7 +74,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHave6Entry_Should6Entry()
         {
             // arrange
-            int expectedCount = 10;
+            var expectedCount = 10;
 
             // act
             var actualCount = _seatRepository.GetAll().ToList();
@@ -87,7 +87,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            int expectedId = 1;
+            var expectedId = 1;
 
             // act
             var actualId = _seatRepository.GetById(1);
@@ -100,7 +100,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAllByAreaId_WhenHave5Entry_Should5Entry()
         {
             // arrange
-            int expectedCount = 5;
+            var expectedCount = 5;
 
             // act
             var actualCount = _seatRepository.GetAllByAreaId(1).ToList();

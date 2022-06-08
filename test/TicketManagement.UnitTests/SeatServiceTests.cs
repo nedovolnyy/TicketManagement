@@ -23,7 +23,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenSeatFieldNull_ShouldThrow(int id, int areaId, int row, int number)
         {
             // arrange
-            string strException =
+            var strException =
                 "The field of Seat is not allowed to be null!";
             var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
@@ -43,7 +43,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenRowAndNumberNonUniqueForSeat_ShouldTrow(int id, int areaId, int row, int number)
         {
             // arrange
-            string strException =
+            var strException =
                 "Row and number should be unique for area!";
             var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };

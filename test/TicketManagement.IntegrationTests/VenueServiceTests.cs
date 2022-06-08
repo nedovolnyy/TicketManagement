@@ -26,7 +26,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _venueService.Insert(new Venue(id: id, name: name, description: description, address: address, phone: phone));
@@ -44,7 +44,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _venueService.Update(new Venue(id: id, name: name, description: description, address: address, phone: phone));
@@ -79,7 +79,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHave3Entry_Should3Entry()
         {
             // arrange
-            int expectedCount = 3;
+            var expectedCount = 3;
 
             // act
             var actualCount = _venueService.GetAll().ToList();
@@ -92,7 +92,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            int expectedId = 1;
+            var expectedId = 1;
 
             // act
             var actualId = _venueService.GetById(1);

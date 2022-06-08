@@ -23,7 +23,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenVenueFieldNull_ShouldThrow(int id, string name, string description, string address, string phone)
         {
             // arrange
-            string strException =
+            var strException =
                 "The field of Venue is not allowed to be null!";
             var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
@@ -43,7 +43,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenNameNonUnique_ShouldTrow(int id, string name, string description, string address, string phone)
         {
             // arrange
-            string strException =
+            var strException =
                 "The Venue name has not unique!";
             var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };

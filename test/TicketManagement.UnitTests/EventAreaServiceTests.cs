@@ -25,7 +25,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenEventAreaFieldNull_ShouldThrow(int id, int eventId, string description, int coordX, int coordY, decimal price)
         {
             // arrange
-            string strException =
+            var strException =
                 "The field of EventArea is not allowed to be null!";
             var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };

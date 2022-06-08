@@ -25,7 +25,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _eventAreaRepository.Insert(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price));
@@ -42,7 +42,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _eventAreaRepository.Update(new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price));
@@ -77,7 +77,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHave3Entry_Should3Entry()
         {
             // arrange
-            int expectedCount = 3;
+            var expectedCount = 3;
 
             // act
             var actualCount = _eventAreaRepository.GetAll().ToList();
@@ -90,7 +90,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            int expectedId = 1;
+            var expectedId = 1;
 
             // act
             var actualId = _eventAreaRepository.GetById(1);

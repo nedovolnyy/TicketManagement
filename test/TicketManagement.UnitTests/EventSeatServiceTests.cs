@@ -24,7 +24,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenEventSeatFieldNull_ShouldThrow(int id, int eventAreaId, int row, int number, int state)
         {
             // arrange
-            string strException =
+            var strException =
                 "The field of EventSeat is not allowed to be null!";
             var eventSeatExpected = new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };

@@ -78,12 +78,12 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override List<Layout> Maps(SqlDataReader reader)
         {
-            List<Layout> areas = new List<Layout>();
+            var areas = new List<Layout>();
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    Layout layout = new Layout(id: int.Parse(reader["Id"].ToString()),
+                    var layout = new Layout(id: int.Parse(reader["Id"].ToString()),
                                                name: reader["Name"].ToString(),
                                                venueId: int.Parse(reader["VenueId"].ToString()),
                                                description: reader["Description"].ToString());

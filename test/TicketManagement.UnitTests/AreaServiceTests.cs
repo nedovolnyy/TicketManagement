@@ -24,7 +24,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenAreaFieldNull_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
         {
             // arrange
-            string strException =
+            var strException =
                 "The field of Area is not allowed to be null!";
             var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
@@ -44,7 +44,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenDescriptionNonUnique_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
         {
             // arrange
-            string strException =
+            var strException =
                 "Area description should be unique for area!";
             var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };

@@ -24,7 +24,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenEventFieldNull_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             // arrange
-            string strException =
+            var strException =
                 "The field of Event is not allowed to be null!";
             var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
@@ -43,7 +43,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenEventTimeInPast_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             // arrange
-            string strException =
+            var strException =
                 "Event can't be created in the past!";
             var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
@@ -62,7 +62,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenEventInSameTimeForLayout_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             // arrange
-            string strException =
+            var strException =
                 "Do not create event for the same layout in the same time!";
             var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
@@ -82,7 +82,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             // arrange
-            string strException =
+            var strException =
                 "Layout name should be unique in venue!";
             var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };

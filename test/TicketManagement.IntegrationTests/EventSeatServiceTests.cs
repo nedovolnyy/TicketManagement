@@ -68,7 +68,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _eventSeatService.Delete(id);
@@ -82,7 +82,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHave9Entry_Should9Entry()
         {
             // arrange
-            int expectedCount = 9;
+            var expectedCount = 9;
 
             // act
             var actualCount = _eventSeatService.GetAll().ToList();
@@ -95,7 +95,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            int expectedId = 3;
+            var expectedId = 3;
 
             // act
             var actualId = _eventSeatService.GetById(3);

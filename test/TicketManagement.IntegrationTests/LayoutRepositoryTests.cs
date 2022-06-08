@@ -26,7 +26,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _layoutRepository.Insert(new Layout(id: id, name: name, venueId: venueId, description: description));
@@ -44,7 +44,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _layoutRepository.Update(new Layout(id: id, name: name, venueId: venueId, description: description));
@@ -79,7 +79,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHave7Entry_Should7Entry()
         {
             // arrange
-            int expectedCount = 7;
+            var expectedCount = 7;
 
             // act
             var actualCount = _layoutRepository.GetAll().ToList();
@@ -92,7 +92,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            int expectedId = 1;
+            var expectedId = 1;
 
             // act
             var actualId = _layoutRepository.GetById(1);
@@ -105,7 +105,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAllByVenueId_WhenHave2Entry_Should2Entry()
         {
             // arrange
-            int expectedCount = 2;
+            var expectedCount = 2;
 
             // act
             var actualCount = _layoutRepository.GetAllByVenueId(1).ToList();

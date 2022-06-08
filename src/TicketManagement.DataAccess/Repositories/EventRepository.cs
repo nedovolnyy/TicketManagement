@@ -91,12 +91,12 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override List<Event> Maps(SqlDataReader reader)
         {
-            List<Event> evnts = new List<Event>();
+            var evnts = new List<Event>();
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    Event evnt = new Event(id: int.Parse(reader["Id"].ToString()),
+                    var evnt = new Event(id: int.Parse(reader["Id"].ToString()),
                                      name: reader["Name"].ToString(),
                                      eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),

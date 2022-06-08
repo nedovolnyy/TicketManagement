@@ -23,7 +23,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenLayoutFieldNull_ShouldThrow(int id, string name, int venueId, string description)
         {
             // arrange
-            string strException =
+            var strException =
                 "The field of Layout is not allowed to be null!";
             var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
@@ -43,7 +43,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, string name, int venueId, string description)
         {
             // arrange
-            string strException =
+            var strException =
                 "Layout name should be unique in venue!";
             var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };

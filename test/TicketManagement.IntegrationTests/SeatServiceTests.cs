@@ -25,7 +25,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _seatService.Insert(new Seat(id: id, areaId: areaId, row: row, number: number));
@@ -43,7 +43,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _seatService.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
@@ -60,7 +60,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             using (TransactionScope scope = new TransactionScope())
             {
                 // arrange
-                int expectedResponse = 1;
+                var expectedResponse = 1;
 
                 // act
                 var actualResponse = _seatService.Delete(id);
@@ -74,7 +74,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHave6Entry_Should6Entry()
         {
             // arrange
-            int expectedCount = 10;
+            var expectedCount = 10;
 
             // act
             var actualCount = _seatService.GetAll().ToList();
@@ -87,7 +87,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            int expectedId = 1;
+            var expectedId = 1;
 
             // act
             var actualId = _seatService.GetById(1);
