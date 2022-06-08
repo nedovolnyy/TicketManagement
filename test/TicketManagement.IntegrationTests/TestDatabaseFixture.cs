@@ -2,6 +2,7 @@
 using System.Data;
 using NUnit.Framework;
 using TicketManagement.DataAccess.ADO;
+using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.IntegrationTests;
 
 namespace TicketManagement.DataAccess.IntegrationTests
@@ -11,6 +12,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
     {
         private static readonly string _testConnectionString = ConfigurationManager.ConnectionStrings["TestConnection"].ConnectionString;
         private static readonly string _backupConnectionString = ConfigurationManager.ConnectionStrings["BackupConnection"].ConnectionString;
+        public static IDatabaseContext DatabaseContext { get; set; } = new DatabaseContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
 
         [OneTimeSetUp]
         public void Setup()
@@ -32,6 +34,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
                 ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString != _testConnectionString ? _testConnectionString : _backupConnectionString;
             config.Save();
             ConfigurationManager.RefreshSection("connectionStrings");
+            DatabaseContext = new DatabaseContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
         }
 
         public void InitiallizeDatabase()
@@ -55,9 +58,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
                 ChangeConfigFile();
             }
 
-            using var context = new DatabaseContext();
-            using var sqlConnection = context.Connection;
-            using var cmd = sqlConnection.CreateCommand();
+            var cmd = DatabaseContext.Connection.CreateCommand();
             cmd.CommandText = @"IF EXISTS(SELECT * FROM sys.databases WHERE name = 'TestTicketManagement.Database')
                                 BEGIN
                                     ALTER DATABASE [TestTicketManagement.Database] SET OFFLINE WITH ROLLBACK IMMEDIATE;

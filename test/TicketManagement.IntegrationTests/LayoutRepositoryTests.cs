@@ -1,6 +1,5 @@
 ﻿using System.Data.SqlClient;
 using System.Linq;
-using System.Transactions;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -10,82 +9,59 @@ namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class LayoutRepositoryTests
     {
-        private ILayoutRepository _layoutRepository;
+        private readonly ILayoutRepository _layoutRepository = new LayoutRepository(TestDatabaseFixture.DatabaseContext);
 
-        [SetUp]
-        public void Setup()
+        [TestCase("First layout", 1, "description first layout")]
+        public void Insert_WhenInsertLayout_ShouldInt1(string name, int venueId, string description)
         {
-            _layoutRepository = new LayoutRepository();
+            // arrange
+            var expectedResponse = 1;
+
+            // act
+            var actualResponse = _layoutRepository.Insert(new Layout(0, name: name, venueId: venueId, description: description));
+
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1, "First layout", 1, "description first layout")]
-        [TestCase(2, "Second layout", 1, "description second layout")]
-        [TestCase(3, "Second layout", 2, "description second layout")]
-        public void Insert_WhenInsertLayout_ShouldInt1(int id, string name, int venueId, string description)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
-
-                // act
-                var actualResponse = _layoutRepository.Insert(new Layout(id: id, name: name, venueId: venueId, description: description));
-
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
-        }
-
-        [TestCase(1, "First layout", 1, "description first layout")]
-        [TestCase(2, "Second layout", 1, "description second layout")]
         [TestCase(3, "Second layout", 2, "description second layout")]
         public void Update_WhenUpdateLayout_ShouldInt1(int id, string name, int venueId, string description)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
+            // arrange
+            var expectedResponse = 1;
 
-                // act
-                var actualResponse = _layoutRepository.Update(new Layout(id: id, name: name, venueId: venueId, description: description));
+            // act
+            var actualResponse = _layoutRepository.Update(new Layout(id: id, name: name, venueId: venueId, description: description));
 
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
-        public void Delete_WhenReferenceConstraint_ShouldThrowSqlException(int id)
+        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedException =
-                    "The DELETE statement conflicted with the REFERENCE constraint \"FK_Layout_Area\". " +
-                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Area\", column 'LayoutId'.\r\n" +
-                    "The statement has been terminated.";
+            // arrange
+            var expectedException =
+                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Layout_Area\". " +
+                "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Area\", column 'LayoutId'.\r\n" +
+                "The statement has been terminated.";
 
-                // act
-                var actualException = Assert.Throws<SqlException>(
-                                () => _layoutRepository.Delete(id));
+            // act
+            var actualException = Assert.Throws<SqlException>(
+                            () => _layoutRepository.Delete(id));
 
-                // assert
-                Assert.That(actualException.Message, Is.EqualTo(expectedException));
-            }
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(expectedException));
         }
 
         [Test]
-        public void GetAll_WhenHave7Entry_Should7Entry()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
-            // arrange
-            var expectedCount = 7;
-
             // act
             var actualCount = _layoutRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(actualCount.Count, expectedCount);
+            Assert.IsNotNull(actualCount);
         }
 
         [Test]
@@ -98,7 +74,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var actualId = _layoutRepository.GetById(1);
 
             // assert
-            Assert.AreEqual(actualId.Id, expectedId);
+            Assert.AreEqual(expectedId, actualId.Id);
         }
 
         [Test]
@@ -111,7 +87,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var actualCount = _layoutRepository.GetAllByVenueId(1).ToList();
 
             // assert
-            Assert.AreEqual(actualCount.Count, expectedCount);
+            Assert.AreEqual(expectedCount, actualCount.Count);
         }
     }
 }

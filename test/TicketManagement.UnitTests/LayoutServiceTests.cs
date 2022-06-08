@@ -59,8 +59,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [TestCase(1, "First layout", 1, "description first layout")]
-        [TestCase(2, "Second layout", 1, "description second layout")]
-        [TestCase(3, "Second layout", 2, "description second layout")]
         public void Insert_WhenInsertLayout_ShouldNotNull(int id, string name, int venueId, string description)
         {
             // arrange
@@ -76,8 +74,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1, "First layout", 1, "description first layout")]
-        [TestCase(2, "Second layout", 1, "description second layout")]
         [TestCase(3, "Second layout", 2, "description second layout")]
         public void Update_WhenUpdateLayout_ShouldNotNull(int id, string name, int venueId, string description)
         {
@@ -94,7 +90,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenDeleteLayout_ShouldNotNull(int id)
         {
@@ -110,8 +105,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(-65464)]
-        [TestCase(000033366)]
         [TestCase(5444)]
         public void GetById_WhenReturnLayoutById_ShouldNotNull(int id)
         {

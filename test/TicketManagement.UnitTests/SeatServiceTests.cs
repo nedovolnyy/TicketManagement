@@ -58,9 +58,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 0, 1, 1)]
-        [TestCase(2, 1, 0, 2)]
-        [TestCase(3, 2, 1, 0)]
+        [TestCase(3, 2, 1, 6)]
         public void Insert_WhenInsertSeat_ShouldNotNull(int id, int areaId, int row, int number)
         {
             // arrange
@@ -76,9 +74,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1, 0, 1, 1)]
-        [TestCase(2, 1, 0, 2)]
-        [TestCase(3, 2, 1, 0)]
+        [TestCase(1, 6, 1, 1)]
         public void Update_WhenUpdateSeat_ShouldNotNull(int id, int areaId, int row, int number)
         {
             // arrange
@@ -94,7 +90,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenDeleteSeat_ShouldNotNull(int id)
         {
@@ -110,8 +105,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(-65464)]
-        [TestCase(000033366)]
         [TestCase(5444)]
         public void GetById_WhenReturnSeatById_ShouldNotNull(int id)
         {

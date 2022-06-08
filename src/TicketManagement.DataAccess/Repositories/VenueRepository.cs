@@ -2,27 +2,24 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class VenueRepository : BaseRepository<Venue>, IVenueRepository
     {
-        protected override string GetSQLStatement(string action) => action switch
+        private readonly IDatabaseContext _databaseContext;
+
+        internal VenueRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
         {
-            "Insert" => "INSERT INTO Venue (Name, Description, Address, Phone) VALUES (@Name, @Description, @Address, @Phone);" +
-                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            "Update" => "UPDATE Venue SET Name = @Name, Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id",
-            "Delete" => "DELETE FROM Venue WHERE Id = @Id",
-            "GetById" => "SELECT Id, Name, Description, Address, Phone FROM Venue WHERE Id = @Id",
-            "GetAll" => "SELECT Id, Name, Description, Address, Phone FROM Venue",
-            "ActionForValidate" => "SELECT TOP 1 Id, Name, Description, Address, Phone FROM Venue WHERE Name = @Name",
-            _ => ""
-        };
+            _databaseContext = databaseContext;
+        }
 
         protected override void AddParamsForInsert(Venue entity, SqlCommand cmd)
         {
+            cmd.CommandText = "INSERT INTO Venue (Name, Description, Address, Phone) VALUES (@Name, @Description, @Address, @Phone);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)";
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@Address", entity.Address);
@@ -31,6 +28,7 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForUpdate(Venue entity, SqlCommand cmd)
         {
+            cmd.CommandText = "UPDATE Venue SET Name = @Name, Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id";
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -40,12 +38,19 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "DELETE FROM Venue WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "SELECT Id, Name, Description, Address, Phone FROM Venue WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+            cmd.CommandText = "SELECT Id, Name, Description, Address, Phone FROM Venue";
         }
 
         /// <summary>
@@ -55,9 +60,8 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Venue"/>List&lt;Seat&gt;.</returns>
         public Venue GetFirstByName(string name)
         {
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("ActionForValidate");
+            var cmd = _databaseContext.Connection.CreateCommand();
+            cmd.CommandText = "SELECT TOP 1 Id, Name, Description, Address, Phone FROM Venue WHERE Name = @Name";
             cmd.CommandType = CommandType.Text;
             cmd.Parameters.AddWithValue("@Name", name);
             using var reader = cmd.ExecuteReader();
@@ -96,10 +100,6 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return venues;
-        }
-
-        protected override void GetAllCommandParameters(SqlCommand cmd)
-        {
         }
     }
 }

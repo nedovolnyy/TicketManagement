@@ -1,6 +1,4 @@
-﻿using System.Data.SqlClient;
-using System.Linq;
-using System.Transactions;
+﻿using System.Linq;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -10,85 +8,55 @@ namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class EventSeatRepositoryTests
     {
-        private IEventSeatRepository _eventSeatRepository;
+        private readonly IEventSeatRepository _eventSeatRepository = new EventSeatRepository(TestDatabaseFixture.DatabaseContext);
 
-        [SetUp]
-        public void Setup()
+        [TestCase(1, 9, 1, 7)]
+        public void Insert_WhenInsertEventSeat_ShouldInt1(int eventAreaId, int row, int number, int state)
         {
-            _eventSeatRepository = new EventSeatRepository();
+            // arrange
+            var expectedResponse = 1;
+
+            // act
+            var actualResponse = _eventSeatRepository.Insert(new EventSeat(0, eventAreaId: eventAreaId, row: row, number: number, state: state));
+
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1, 6, 56, 2, 4)]
-        [TestCase(2, 7, 3, 3, 2)]
-        [TestCase(3, 5, 9, 1, 7)]
-        public void Insert_WhenFKConstraint_ShouldThrow(int id, int eventAreaId, int row, int number, int state)
+        [TestCase(3, 1, 3, 3, 2)]
+        public void Update_WhenUpdateEventSeat_ShouldInt1(int id, int eventAreaId, int row, int number, int state)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                string expectedException =
-                    "The INSERT statement conflicted with the FOREIGN KEY constraint \"FK_Area_EventSeat\". " +
-                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'Id'.\r\n" +
-                    "The statement has been terminated.";
+            // arrange
+            var expectedResponse = 1;
 
-                // act
-                var actualException = Assert.Throws<SqlException>(
-                                () => _eventSeatRepository.Insert(new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state)));
+            // act
+            var actualResponse = _eventSeatRepository.Update(new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state));
 
-                // assert
-                Assert.That(actualException.Message, Is.EqualTo(expectedException));
-            }
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(2, 6, 3, 3, 2)]
-        [TestCase(3, 5, 9, 1, 7)]
-        public void Update_WhenFKConstraint_ShouldThrow(int id, int eventAreaId, int row, int number, int state)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                string expectedException =
-                    "The UPDATE statement conflicted with the FOREIGN KEY constraint \"FK_Area_EventSeat\". " +
-                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'Id'.\r\n" +
-                    "The statement has been terminated.";
-
-                // act
-                var actualException = Assert.Throws<SqlException>(
-                                () => _eventSeatRepository.Update(new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state)));
-
-                // assert
-                Assert.That(actualException.Message, Is.EqualTo(expectedException));
-            }
-        }
-
-        [TestCase(2)]
         [TestCase(1)]
-        public void Delete_WhenReferenceConstraint_ShouldThrowSqlException(int id)
+        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
+            // arrange
+            var expectedResponse = 1;
 
-                // act
-                var actualResponse = _eventSeatRepository.Delete(id);
+            // act
+            var actualResponse = _eventSeatRepository.Delete(id);
 
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void GetAll_WhenHave9Entry_Should9Entry()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
-            // arrange
-            var expectedCount = 9;
-
             // act
             var actualCount = _eventSeatRepository.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(actualCount.Count, expectedCount);
+            Assert.IsNotNull(actualCount);
         }
 
         [Test]
@@ -101,7 +69,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var actualId = _eventSeatRepository.GetById(3);
 
             // assert
-            Assert.AreEqual(actualId.Id, expectedId);
+            Assert.AreEqual(expectedId, actualId.Id);
         }
     }
 }

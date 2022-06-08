@@ -2,27 +2,24 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
-        protected override string GetSQLStatement(string action) => action switch
+        private readonly IDatabaseContext _databaseContext;
+
+        internal AreaRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
         {
-            "Insert" => "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
-                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            "Update" => "UPDATE Area SET LayoutId = @LayoutId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY WHERE Id = @Id",
-            "Delete" => "DELETE FROM Area WHERE Id = @Id",
-            "GetById" => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE Id = @Id",
-            "GetAll" => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area",
-            "ActionForValidate" => "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE LayoutId = @LayoutId",
-            _ => ""
-        };
+            _databaseContext = databaseContext;
+        }
 
         protected override void AddParamsForInsert(Area entity, SqlCommand cmd)
         {
+            cmd.CommandText = "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)";
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@CoordX", entity.CoordX);
@@ -31,6 +28,7 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForUpdate(Area entity, SqlCommand cmd)
         {
+            cmd.CommandText = "UPDATE Area SET LayoutId = @LayoutId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -40,12 +38,19 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "DELETE FROM Area WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+            cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area";
         }
 
         /// <summary>
@@ -55,9 +60,8 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Area"/>List&lt;Area&gt;.</returns>
         IEnumerable<Area> IAreaRepository.GetAllByLayoutId(int id)
         {
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("ActionForValidate");
+            var cmd = _databaseContext.Connection.CreateCommand();
+            cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE LayoutId = @LayoutId";
             cmd.CommandType = CommandType.Text;
             cmd.Parameters.AddWithValue("@LayoutId", id);
             using var reader = cmd.ExecuteReader();
@@ -96,10 +100,6 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return areas;
-        }
-
-        protected override void GetAllCommandParameters(SqlCommand cmd)
-        {
         }
     }
 }

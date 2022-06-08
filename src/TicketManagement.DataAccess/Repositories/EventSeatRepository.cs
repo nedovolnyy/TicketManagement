@@ -7,19 +7,18 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
     {
-        protected override string GetSQLStatement(string action) => action switch
+        private readonly IDatabaseContext _databaseContext;
+
+        internal EventSeatRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
         {
-            "Insert" => "INSERT INTO EventSeat (EventAreaId, Row, Number, State) VALUES (@EventAreaId, @Row, @Number, @State);" +
-                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            "Update" => "UPDATE EventSeat SET EventAreaId = @EventAreaId, Row = @Row, Number = @Number, State = @State Where Id = @Id",
-            "Delete" => "DELETE FROM EventSeat WHERE Id = @Id",
-            "GetById" => "SELECT Id, EventAreaId, Row, Number, State FROM EventSeat WHERE Id = @Id",
-            "GetAll" => "SELECT Id, EventAreaId, Row, Number, State FROM EventSeat",
-            _ => ""
-        };
+            _databaseContext = databaseContext;
+        }
 
         protected override void AddParamsForInsert(EventSeat entity, SqlCommand cmd)
         {
+            cmd.CommandText = "INSERT INTO EventSeat (EventAreaId, Row, Number, State) VALUES (@EventAreaId, @Row, @Number, @State);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)";
             cmd.Parameters.AddWithValue("@EventAreaId", entity.EventAreaId);
             cmd.Parameters.AddWithValue("@Row", entity.Row);
             cmd.Parameters.AddWithValue("@Number", entity.Number);
@@ -28,6 +27,7 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForUpdate(EventSeat entity, SqlCommand cmd)
         {
+            cmd.CommandText = "UPDATE EventSeat SET EventAreaId = @EventAreaId, Row = @Row, Number = @Number, State = @State Where Id = @Id";
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@EventAreaId", entity.EventAreaId);
             cmd.Parameters.AddWithValue("@Row", entity.Row);
@@ -37,12 +37,19 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "DELETE FROM EventSeat WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "SELECT Id, EventAreaId, Row, Number, State FROM EventSeat WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+            cmd.CommandText = "SELECT Id, EventAreaId, Row, Number, State FROM EventSeat";
         }
 
         protected override EventSeat Map(SqlDataReader reader)
@@ -77,10 +84,6 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return eventSeats;
-        }
-
-        protected override void GetAllCommandParameters(SqlCommand cmd)
-        {
         }
     }
 }

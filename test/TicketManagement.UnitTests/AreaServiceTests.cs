@@ -60,8 +60,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [TestCase(1, 2, "First area of second layout", 2, 4)]
-        [TestCase(2, 1, "First area of first layout", 3, 2)]
-        [TestCase(3, 2, "First area of second layout", 1, 7)]
         public void Insert_WhenInsertArea_ShouldNotNull(int id, int layoutId, string description, int coordX, int coordY)
         {
             // arrange
@@ -78,8 +76,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [TestCase(1, 2, "First area of second layout", 2, 4)]
-        [TestCase(2, 1, "First area of first layout", 3, 2)]
-        [TestCase(3, 2, "First area of second layout", 1, 7)]
         public void Update_WhenUpdateArea_ShouldNotNull(int id, int layoutId, string description, int coordX, int coordY)
         {
             // arrange
@@ -95,7 +91,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenDeleteArea_ShouldNotNull(int id)
         {
@@ -111,8 +106,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(-65464)]
-        [TestCase(000033366)]
         [TestCase(5444)]
         public void GetById_WhenReturnAreaById_ShouldNotNull(int id)
         {

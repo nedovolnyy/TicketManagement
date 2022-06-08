@@ -2,12 +2,8 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public sealed class Event : BaseEntity
+    public class Event : BaseEntity
     {
-        public Event()
-        {
-        }
-
         public Event(int id, string name, DateTimeOffset eventTime, string description, int layoutId)
         {
             Id = id;

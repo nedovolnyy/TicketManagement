@@ -38,9 +38,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 6, 56, 2, 4)]
-        [TestCase(2, 7, 3, 3, 2)]
-        [TestCase(3, 5, 9, 1, 7)]
+        [TestCase(1, 6, 6, 2, 4)]
         public void Insert_WhenInsertEventSeat_ShouldNotNull(int id, int eventAreaId, int row, int number, int state)
         {
             // arrange
@@ -56,8 +54,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1, 6, 56, 2, 4)]
-        [TestCase(2, 7, 3, 3, 2)]
         [TestCase(3, 5, 9, 1, 7)]
         public void Update_WhenUpdateEventSeat_ShouldNotNull(int id, int eventAreaId, int row, int number, int state)
         {
@@ -74,7 +70,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenDeleteEventSeat_ShouldNotNull(int id)
         {
@@ -90,8 +85,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(-65464)]
-        [TestCase(000033366)]
         [TestCase(5444)]
         public void GetById_WhenReturnEventSeatById_ShouldNotNull(int id)
         {

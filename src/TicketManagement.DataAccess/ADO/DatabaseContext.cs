@@ -1,6 +1,4 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -11,9 +9,9 @@ namespace TicketManagement.DataAccess.ADO
         private readonly string _connectionString;
         private SqlConnection _connection;
 
-        internal DatabaseContext()
+        internal DatabaseContext(string connectionString)
         {
-            _connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            _connectionString = connectionString;
         }
 
         public SqlConnection Connection
@@ -27,20 +25,6 @@ namespace TicketManagement.DataAccess.ADO
                 }
 
                 return _connection;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_connection != null && _connection.State == ConnectionState.Open)
-            {
-                _connection.Close();
             }
         }
     }

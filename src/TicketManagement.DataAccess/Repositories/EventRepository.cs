@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventRepository : BaseRepository<Event>, IEventRepository
     {
-        protected override string GetSQLStatement(string action) => "";
+        private readonly IDatabaseContext _databaseContext;
+
+        internal EventRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         private void ForStoredProcedure(SqlCommand cmd)
         {
             cmd.CommandText = "spEvent";
@@ -65,8 +71,7 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Event"/>List&lt;Event&gt;.</returns>
         public IEnumerable<Event> GetAllByLayoutId(int id)
         {
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var cmd = sqlConnection.CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             ForStoredProcedure(cmd);
             cmd.Parameters.AddWithValue("@Action", "ForValidate");
             cmd.Parameters.AddWithValue("@LayoutId", id);

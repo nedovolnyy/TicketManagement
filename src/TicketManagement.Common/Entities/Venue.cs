@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public sealed class Venue : BaseEntity
+    public class Venue : BaseEntity
     {
         public Venue(int id, string name, string description, string address, string phone)
         {

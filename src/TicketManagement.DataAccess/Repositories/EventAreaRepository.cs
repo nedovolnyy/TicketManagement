@@ -7,19 +7,18 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
     {
-        protected override string GetSQLStatement(string action) => action switch
+        private readonly IDatabaseContext _databaseContext;
+
+        internal EventAreaRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
         {
-            "Insert" => "INSERT INTO EventArea (EventId, Description, CoordX, CoordY, Price) VALUES (@EventId, @Description, @CoordX, @CoordY, @Price);" +
-                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            "Update" => "UPDATE EventArea SET EventId = @EventId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY, Price = @Price Where Id = @Id",
-            "Delete" => "DELETE FROM EventArea WHERE Id = @Id",
-            "GetById" => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea WHERE Id = @Id",
-            "GetAll" => "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea",
-            _ => ""
-        };
+            _databaseContext = databaseContext;
+        }
 
         protected override void AddParamsForInsert(EventArea entity, SqlCommand cmd)
         {
+            cmd.CommandText = "INSERT INTO EventArea (EventId, Description, CoordX, CoordY, Price) VALUES (@EventId, @Description, @CoordX, @CoordY, @Price);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)";
             cmd.Parameters.AddWithValue("@EventId", entity.EventId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@CoordX", entity.CoordX);
@@ -29,6 +28,7 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForUpdate(EventArea entity, SqlCommand cmd)
         {
+            cmd.CommandText = "UPDATE EventArea SET EventId = @EventId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY, Price = @Price Where Id = @Id";
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@EventId", entity.EventId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -39,12 +39,19 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "DELETE FROM EventArea WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+            cmd.CommandText = "SELECT Id, EventId, Description, CoordX, CoordY, Price FROM EventArea";
         }
 
         protected override EventArea Map(SqlDataReader reader)
@@ -81,10 +88,6 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return eventAreas;
-        }
-
-        protected override void GetAllCommandParameters(SqlCommand cmd)
-        {
         }
     }
 }

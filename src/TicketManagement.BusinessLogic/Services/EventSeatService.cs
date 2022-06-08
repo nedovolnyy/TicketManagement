@@ -15,7 +15,7 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(EventSeat entity)
         {
-            if ((entity.EventAreaId == 0) | (entity.Row == 0) | (entity.Number == 0) | (entity.State == 0))
+            if (entity.EventAreaId == 0 || entity.Row == 0 || entity.Number == 0 || entity.State == 0)
             {
                 throw new ValidationException("The field of EventSeat is not allowed to be null!");
             }

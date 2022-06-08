@@ -18,7 +18,7 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Event entity)
         {
-            if ((entity.LayoutId == 0) | (entity.EventTime == DateTimeOffset.MinValue) | (entity.Name == "") | (entity.Description == ""))
+            if (entity.LayoutId == 0 || entity.Name == "" || entity.Description == "")
             {
                 throw new ValidationException("The field of Event is not allowed to be null!");
             }
@@ -31,12 +31,12 @@ namespace TicketManagement.BusinessLogic.Services
             var evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
             foreach (var evnt in evntArray)
             {
-                if ((entity.LayoutId == evnt.LayoutId) && (entity.Description == evnt.Description))
+                if (entity.LayoutId == evnt.LayoutId && entity.Description == evnt.Description)
                 {
                     throw new ValidationException("Layout name should be unique in venue!");
                 }
 
-                if ((entity.LayoutId == evnt.LayoutId) && (entity.EventTime == evnt.EventTime))
+                if (entity.LayoutId == evnt.LayoutId && entity.EventTime == evnt.EventTime)
                 {
                     throw new ValidationException("Do not create event for the same layout in the same time!");
                 }

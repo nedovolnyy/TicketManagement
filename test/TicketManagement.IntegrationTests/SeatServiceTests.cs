@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Transactions;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
@@ -9,91 +8,68 @@ namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class SeatServiceTests
     {
-        private SeatService _seatService;
+        private readonly SeatService _seatService = new SeatService(new SeatRepository(TestDatabaseFixture.DatabaseContext));
 
-        [SetUp]
-        public void Setup()
+        [TestCase(2, 6, 5)]
+        public void Insert_WhenInsertSeat_ShouldInt1(int areaId, int row, int number)
         {
-            _seatService = new SeatService(new SeatRepository());
+            // arrange
+            var expectedResponse = 1;
+
+            // act
+            var actualResponse = _seatService.Insert(new Seat(0, areaId: areaId, row: row, number: number));
+
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1, 2, 3, 5)]
-        [TestCase(2, 1, 5, 3)]
-        [TestCase(3, 2, 6, 5)]
-        public void Insert_WhenInsertSeat_ShouldInt1(int id, int areaId, int row, int number)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
-
-                // act
-                var actualResponse = _seatService.Insert(new Seat(id: id, areaId: areaId, row: row, number: number));
-
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
-        }
-
-        [TestCase(1, 2, 3, 5)]
-        [TestCase(2, 1, 5, 3)]
-        [TestCase(3, 2, 6, 5)]
+        [TestCase(5, 2, 3, 5)]
         public void Update_WhenUpdateSeat_ShouldInt1(int id, int areaId, int row, int number)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
+            // arrange
+            var expectedResponse = 1;
 
-                // act
-                var actualResponse = _seatService.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
+            // act
+            var actualResponse = _seatService.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
 
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(2)]
-        [TestCase(1)]
+        [TestCase(3)]
         public void Delete_WhenDeleteSeat_ShouldInt1(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
+            // arrange
+            var expectedResponse = 1;
 
-                // act
-                var actualResponse = _seatService.Delete(id);
+            // act
+            var actualResponse = _seatService.Delete(id);
 
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void GetAll_WhenHave6Entry_Should6Entry()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
-            // arrange
-            var expectedCount = 10;
-
             // act
             var actualCount = _seatService.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(actualCount.Count, expectedCount);
+            Assert.IsNotNull(actualCount);
         }
 
         [Test]
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var expectedId = 5;
 
             // act
-            var actualId = _seatService.GetById(1);
+            var actualId = _seatService.GetById(5);
 
             // assert
-            Assert.AreEqual(actualId.Id, expectedId);
+            Assert.AreEqual(expectedId, actualId.Id);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public sealed class EventArea : BaseEntity
+    public class EventArea : BaseEntity
     {
         public EventArea(int id, int eventId, string description, int coordX, int coordY, decimal price)
         {

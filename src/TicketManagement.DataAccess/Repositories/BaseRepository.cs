@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
@@ -10,6 +8,12 @@ namespace TicketManagement.DataAccess.Repositories
     internal abstract class BaseRepository<T> : IRepository<T>
         where T : BaseEntity
     {
+        private readonly IDatabaseContext _databaseContext;
+        protected BaseRepository(IDatabaseContext databaseContext)
+        {
+            _databaseContext = databaseContext;
+        }
+
         /// <summary>
         /// Base method for insert data.
         /// </summary>
@@ -18,16 +22,9 @@ namespace TicketManagement.DataAccess.Repositories
         {
             int i;
 
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var sqlTransaction = sqlConnection.BeginTransaction();
-            using var cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("Insert");
-            cmd.CommandType = CommandType.Text;
+            var cmd = _databaseContext.Connection.CreateCommand();
             AddParamsForInsert(entity, cmd);
-            cmd.Transaction = sqlTransaction;
             i = cmd.ExecuteNonQuery();
-            sqlTransaction.Commit();
-
             return i;
         }
 
@@ -39,16 +36,9 @@ namespace TicketManagement.DataAccess.Repositories
         {
             int i;
 
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var sqlTransaction = sqlConnection.BeginTransaction();
-            using var cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("Update");
-            cmd.CommandType = CommandType.Text;
+            var cmd = _databaseContext.Connection.CreateCommand();
             AddParamsForUpdate(entity, cmd);
-            cmd.Transaction = sqlTransaction;
             i = cmd.ExecuteNonQuery();
-            sqlTransaction.Commit();
-
             return i;
         }
 
@@ -60,16 +50,9 @@ namespace TicketManagement.DataAccess.Repositories
         {
             int i;
 
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var sqlTransaction = sqlConnection.BeginTransaction();
-            using var cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("Delete");
-            cmd.CommandType = CommandType.Text;
+            var cmd = _databaseContext.Connection.CreateCommand();
             AddParamsForDelete(id, cmd);
-            cmd.Transaction = sqlTransaction;
             i = cmd.ExecuteNonQuery();
-            sqlTransaction.Commit();
-
             return i;
         }
 
@@ -80,9 +63,7 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="BaseEntity"/>BaseEntity&gt;.</returns>
         public T GetById(int id)
         {
-            using var cmd = new DatabaseContext().Connection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("GetById");
-            cmd.CommandType = CommandType.Text;
+            var cmd = _databaseContext.Connection.CreateCommand();
             AddParamsForGetById(id, cmd);
             using var reader = cmd.ExecuteReader();
             return Map(reader);
@@ -94,15 +75,12 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="BaseEntity"/>List&lt;BaseEntity&gt;.</returns>
         public IEnumerable<T> GetAll()
         {
-            using var cmd = new DatabaseContext().Connection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("GetAll");
-            cmd.CommandType = CommandType.Text;
+            var cmd = _databaseContext.Connection.CreateCommand();
             GetAllCommandParameters(cmd);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);
         }
 
-        protected abstract string GetSQLStatement(string action);
         protected abstract void AddParamsForInsert(T entity, SqlCommand cmd);
         protected abstract void AddParamsForUpdate(T entity, SqlCommand cmd);
         protected abstract void AddParamsForDelete(int id, SqlCommand cmd);

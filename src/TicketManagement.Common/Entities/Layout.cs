@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public sealed class Layout : BaseEntity
+    public class Layout : BaseEntity
     {
         public Layout(int id, string name, int venueId, string description)
         {

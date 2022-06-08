@@ -16,7 +16,7 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Area entity)
         {
-            if ((entity.LayoutId == 0) | (entity.CoordX == 0) | (entity.CoordY == 0) | (entity.Description == ""))
+            if (entity.LayoutId == 0 || entity.CoordX == 0 || entity.CoordY == 0 || entity.Description == "")
             {
                 throw new ValidationException("The field of Area is not allowed to be null!");
             }

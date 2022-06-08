@@ -2,27 +2,24 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
-        protected override string GetSQLStatement(string action) => action switch
+        private readonly IDatabaseContext _databaseContext;
+
+        internal SeatRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
         {
-            "Insert" => "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +
-                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            "Update" => "UPDATE Seat SET AreaId = @AreaId, Row = @Row, Number = @Number Where Id = @Id",
-            "Delete" => "DELETE FROM Seat WHERE Id = @Id",
-            "GetById" => "SELECT Id, AreaId, Row, Number FROM Seat WHERE Id = @Id",
-            "GetAll" => "SELECT Id, AreaId, Row, Number FROM Seat",
-            "ActionForValidate" => "SELECT Id, AreaId, Row, Number FROM Seat WHERE AreaId = @AreaId",
-            _ => ""
-        };
+            _databaseContext = databaseContext;
+        }
 
         protected override void AddParamsForInsert(Seat entity, SqlCommand cmd)
         {
+            cmd.CommandText = "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)";
             cmd.Parameters.AddWithValue("@AreaId", entity.AreaId);
             cmd.Parameters.AddWithValue("@Row", entity.Row);
             cmd.Parameters.AddWithValue("@Number", entity.Number);
@@ -30,6 +27,7 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForUpdate(Seat entity, SqlCommand cmd)
         {
+            cmd.CommandText = "UPDATE Seat SET AreaId = @AreaId, Row = @Row, Number = @Number Where Id = @Id";
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@AreaId", entity.AreaId);
             cmd.Parameters.AddWithValue("@Row", entity.Row);
@@ -38,12 +36,19 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "DELETE FROM Seat WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+            cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat";
         }
 
         /// <summary>
@@ -53,9 +58,8 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Seat"/>List&lt;Seat&gt;.</returns>
         public IEnumerable<Seat> GetAllByAreaId(int id)
         {
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("ActionForValidate");
+            var cmd = _databaseContext.Connection.CreateCommand();
+            cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat WHERE AreaId = @AreaId";
             cmd.CommandType = CommandType.Text;
             cmd.Parameters.AddWithValue("@AreaId", id);
             using var reader = cmd.ExecuteReader();
@@ -92,10 +96,6 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return seats;
-        }
-
-        protected override void GetAllCommandParameters(SqlCommand cmd)
-        {
         }
     }
 }

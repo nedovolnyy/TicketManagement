@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Common.Entities
 {
-    public sealed class Area : BaseEntity
+    public class Area : BaseEntity
     {
         public Area(int id, int layoutId, string description, int coordX, int coordY)
         {

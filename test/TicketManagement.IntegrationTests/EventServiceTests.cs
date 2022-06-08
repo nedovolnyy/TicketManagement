@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Transactions;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
@@ -11,80 +10,59 @@ namespace TicketManagement.DataAccess.IntegrationTests
 {
     public class EventServiceTests
     {
-        private EventService _eventService;
+        private readonly EventService _eventService = new EventService(new EventRepository(TestDatabaseFixture.DatabaseContext));
 
-        [SetUp]
-        public void Setup()
+        [TestCase(2, "Kitchegerrthrgn Serie", "07/02/2023", "Kitchertrn Serie")]
+        public void Insert_WhenInsertEvent_ShouldInt1(int layoutId, string name, DateTimeOffset eventTime, string description)
         {
-            _eventService = new EventService(new EventRepository());
+            // arrange
+            var expectedResponse = 1;
+
+            // act
+            var actualResponse = _eventService.Insert(new Event(0, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
+
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2023", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2023", "Stanger Things Serie")]
-        public void Insert_WhenInsertEvent_ShouldInt1(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
-        {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
-
-                // act
-                var actualResponse = _eventService.Insert(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
-
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
-        }
-
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2023", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2023", "Stanger Things Serie")]
+        [TestCase(2, 1, "StanegegerergThings Serie", "06/11/2023", "Stanerger Things Serie")]
         public void Update_WhenUpdateEvent_ShouldInt1(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedResponse = 1;
+            // arrange
+            var expectedResponse = 1;
 
-                // act
-                var actualResponse = _eventService.Update(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
+            // act
+            var actualResponse = _eventService.Update(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
 
-                // assert
-                Assert.AreEqual(expectedResponse, actualResponse);
-            }
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
-        public void Delete_WhenReferenceConstraint_ShouldThrowSqlException(int id)
+        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
         {
-            using (TransactionScope scope = new TransactionScope())
-            {
-                // arrange
-                var expectedException =
-                    "The DELETE statement conflicted with the REFERENCE constraint \"FK_Event_EventArea\". " +
-                    "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'EventId'.\r\n" +
-                    "The statement has been terminated.";
+            // arrange
+            var expectedException =
+                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Event_EventArea\". " +
+                "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'EventId'.\r\n" +
+                "The statement has been terminated.";
 
-                // act
-                var actualException = Assert.Throws<SqlException>(
-                                () => _eventService.Delete(id));
+            // act
+            var actualException = Assert.Throws<SqlException>(
+                            () => _eventService.Delete(id));
 
-                // assert
-                Assert.That(actualException.Message, Is.EqualTo(expectedException));
-            }
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(expectedException));
         }
 
         [Test]
-        public void GetAll_WhenHave3Entry_Should3Entry()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
-            // arrange
-            var expectedCount = 3;
-
             // act
             var actualCount = _eventService.GetAll().ToList();
 
             // assert
-            Assert.AreEqual(actualCount.Count, expectedCount);
+            Assert.IsNotNull(actualCount);
         }
 
         [Test]
@@ -97,7 +75,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var actualId = _eventService.GetById(3);
 
             // assert
-            Assert.AreEqual(actualId.Id, expectedId);
+            Assert.AreEqual(expectedId, actualId.Id);
         }
     }
 }

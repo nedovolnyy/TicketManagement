@@ -19,7 +19,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
         [TestCase(2, 0, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
         [TestCase(1, 2, "", "09/09/2021", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "0001-01-01 12:00:00.0000000 +12:00", "Things Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "")]
         public void Validate_WhenEventFieldNull_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
@@ -97,7 +96,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
         [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
         public void Insert_WhenInsertEvent_ShouldNotNull(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
@@ -115,7 +113,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
         public void Update_WhenUpdateEvent_ShouldNotNull(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
         {
             // arrange
@@ -131,7 +128,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenDeleteEvent_ShouldNotNull(int id)
         {
@@ -147,8 +143,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(-65464)]
-        [TestCase(000033366)]
         [TestCase(5444)]
         public void GetById_WhenReturnEventById_ShouldNotNull(int id)
         {

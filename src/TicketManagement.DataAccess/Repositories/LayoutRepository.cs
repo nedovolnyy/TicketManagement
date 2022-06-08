@@ -2,27 +2,24 @@
 using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.ADO;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
     {
-        protected override string GetSQLStatement(string action) => action switch
+        private readonly IDatabaseContext _databaseContext;
+
+        internal LayoutRepository(IDatabaseContext databaseContext)
+            : base(databaseContext)
         {
-            "Insert" => "INSERT INTO Layout (Name, VenueId, Description) VALUES (@Name, @VenueId, @Description);" +
-                            "SELECT CAST (SCOPE_IDENTITY() AS INT)",
-            "Update" => "UPDATE Layout SET Name = @Name, VenueId = @VenueId, Description = @Description Where Id = @Id",
-            "Delete" => "DELETE FROM Layout WHERE Id = @Id",
-            "GetById" => "SELECT Id, Name, VenueId, Description FROM Layout WHERE Id = @Id",
-            "GetAll" => "SELECT Id, Name, VenueId, Description FROM Layout",
-            "ActionForValidate" => "SELECT Id, Name, VenueId, Description FROM Layout WHERE VenueId = @VenueId",
-            _ => ""
-        };
+            _databaseContext = databaseContext;
+        }
 
         protected override void AddParamsForInsert(Layout entity, SqlCommand cmd)
         {
+            cmd.CommandText = "INSERT INTO Layout (Name, VenueId, Description) VALUES (@Name, @VenueId, @Description);" +
+                            "SELECT CAST (SCOPE_IDENTITY() AS INT)";
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@VenueId", entity.VenueId);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -30,6 +27,7 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForUpdate(Layout entity, SqlCommand cmd)
         {
+            cmd.CommandText = "UPDATE Layout SET Name = @Name, VenueId = @VenueId, Description = @Description Where Id = @Id";
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@VenueId", entity.VenueId);
@@ -38,12 +36,19 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "DELETE FROM Layout WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
+            cmd.CommandText = "SELECT Id, Name, VenueId, Description FROM Layout WHERE Id = @Id";
             cmd.Parameters.AddWithValue("@Id", id);
+        }
+
+        protected override void GetAllCommandParameters(SqlCommand cmd)
+        {
+            cmd.CommandText = "SELECT Id, Name, VenueId, Description FROM Layout";
         }
 
         /// <summary>
@@ -53,9 +58,8 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Layout"/>List&lt;Layout&gt;.</returns>
         public IEnumerable<Layout> GetAllByVenueId(int id)
         {
-            using var sqlConnection = new DatabaseContext().Connection;
-            using var cmd = sqlConnection.CreateCommand();
-            cmd.CommandText = GetSQLStatement("ActionForValidate");
+            var cmd = _databaseContext.Connection.CreateCommand();
+            cmd.CommandText = "SELECT Id, Name, VenueId, Description FROM Layout WHERE VenueId = @VenueId";
             cmd.CommandType = CommandType.Text;
             cmd.Parameters.AddWithValue("@VenueId", id);
             using var reader = cmd.ExecuteReader();
@@ -92,10 +96,6 @@ namespace TicketManagement.DataAccess.Repositories
             }
 
             return areas;
-        }
-
-        protected override void GetAllCommandParameters(SqlCommand cmd)
-        {
         }
     }
 }

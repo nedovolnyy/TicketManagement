@@ -58,8 +58,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, "First venue", "description first venue", "address first venue", "+4988955568")]
-        [TestCase(2, "Second venue", "description second venue", "address second venue", "+58487555")]
         [TestCase(3, "Second venue", "description second venue", "address second venue", "+84845464")]
         public void Insert_WhenInsertVenue_ShouldNotNull(int id, string name, string description, string address, string phone)
         {
@@ -77,8 +75,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [TestCase(1, "First venue", "description first venue", "address first venue", "+4988955568")]
-        [TestCase(2, "Second venue", "description second venue", "address second venue", "+58487555")]
-        [TestCase(3, "Second venue", "description second venue", "address second venue", "+84845464")]
         public void Update_WhenUpdateVenue_ShouldNotNull(int id, string name, string description, string address, string phone)
         {
             // arrange
@@ -94,7 +90,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(2)]
         [TestCase(1)]
         public void Delete_WhenDeleteVenue_ShouldNotNull(int id)
         {
@@ -110,8 +105,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(-65464)]
-        [TestCase(000033366)]
         [TestCase(5444)]
         public void GetById_WhenReturnVenueById_ShouldNotNull(int id)
         {
