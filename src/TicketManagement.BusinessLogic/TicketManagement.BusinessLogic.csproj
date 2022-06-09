@@ -2,7 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Update="SonarAnalyzer.CSharp" Version="8.33.0.40503">
@@ -11,4 +16,21 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>"DynamicProxyGenAssembly2"</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(MSBuildProjectName).UnitTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(MSBuildProjectName.Trim("BusinessLogic"))DataAccess.IntegrationTests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>
