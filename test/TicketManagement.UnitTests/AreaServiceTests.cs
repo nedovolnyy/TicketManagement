@@ -17,16 +17,67 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Area(3, 2, "First area of second layout", 1, 7),
         };
 
-        [TestCase(1, 0, "First area of second layout", 2, 4)]
-        [TestCase(2, 1, "", 3, 2)]
-        [TestCase(3, 2, "First area of second layout", 0, 3)]
-        [TestCase(3, 2, "First area of second layout", 1, 0)]
-        public void Validate_WhenAreaFieldNull_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
+        [Test]
+        public void Validate_WhenAreaFieldLayoutIdNull_ShouldThrow()
         {
             // arrange
             var strException =
-                "The field of Area is not allowed to be null!";
-            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
+                "The field 'LayoutId' of Area is not allowed to be null!";
+            var areaExpected = new Area(1, 0, "First area of second layout", 2, 4);
+            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
+            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => areaService.Object.Validate(areaExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenAreaFieldDescriptionEmpty_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'Description' of Area is not allowed to be empty!";
+            var areaExpected = new Area(2, 1, "", 3, 2);
+            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
+            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => areaService.Object.Validate(areaExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenAreaFieldCoordXNull_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'CoordX' of Area is not allowed to be null!";
+            var areaExpected = new Area(3, 2, "First area of second layout", 0, 3);
+            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
+            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => areaService.Object.Validate(areaExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenAreaFieldCoordYNull_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'CoordY' of Area is not allowed to be null!";
+            var areaExpected = new Area(3, 2, "First area of second layout", 1, 0);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
@@ -59,11 +110,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 2, "First area of second layout", 2, 4)]
-        public void Insert_WhenInsertArea_ShouldNotNull(int id, int layoutId, string description, int coordX, int coordY)
+        [Test]
+        public void Insert_WhenInsertArea_ShouldNotNull()
         {
             // arrange
-            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
+            var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
@@ -75,11 +126,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1, 2, "First area of second layout", 2, 4)]
-        public void Update_WhenUpdateArea_ShouldNotNull(int id, int layoutId, string description, int coordX, int coordY)
+        [Test]
+        public void Update_WhenUpdateArea_ShouldNotNull()
         {
             // arrange
-            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
+            var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
@@ -91,8 +142,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteArea_ShouldNotNull(int id)
+        [Test]
+        public void Delete_WhenDeleteArea_ShouldNotNull()
         {
             // arrange
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
@@ -100,23 +151,23 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             areaService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = areaService.Object.Delete(id);
+            var actual = areaService.Object.Delete(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnAreaById_ShouldNotNull(int id)
+        [Test]
+        public void GetById_WhenReturnAreaById_ShouldNotNull()
         {
             // arrange
-            var areaExpected = new Area(id, 2, "First area of first layout", 3, 2);
+            var areaExpected = new Area(5444, 2, "First area of first layout", 3, 2);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
             areaService.Setup(x => x.GetById(It.IsAny<int>())).Returns(areaExpected);
-            var actual = areaService.Object.GetById(id);
+            var actual = areaService.Object.GetById(5444);
 
             // assert
             Assert.NotNull(actual);

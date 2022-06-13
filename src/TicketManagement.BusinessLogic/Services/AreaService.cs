@@ -16,11 +16,6 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Area entity)
         {
-            if (entity.LayoutId == 0 || entity.CoordX == 0 || entity.CoordY == 0 || entity.Description == "")
-            {
-                throw new ValidationException("The field of Area is not allowed to be null!");
-            }
-
             var areaArray = _areaRepository.GetAllByLayoutId(entity.LayoutId);
             foreach (var area in areaArray)
             {
@@ -28,6 +23,23 @@ namespace TicketManagement.BusinessLogic.Services
                 {
                     throw new ValidationException("Area description should be unique for area!");
                 }
+            }
+
+            if (entity.LayoutId == default)
+            {
+                throw new ValidationException("The field 'LayoutId' of Area is not allowed to be null!");
+            }
+            else if (entity.CoordX == default)
+            {
+                throw new ValidationException("The field 'CoordX' of Area is not allowed to be null!");
+            }
+            else if (entity.CoordY == default)
+            {
+                throw new ValidationException("The field 'CoordY' of Area is not allowed to be null!");
+            }
+            else
+            {
+                throw new ValidationException("The field 'Description' of Area is not allowed to be empty!");
             }
         }
     }

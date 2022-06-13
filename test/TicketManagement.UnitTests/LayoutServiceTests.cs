@@ -17,15 +17,49 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Layout(3, "Second layout", 2, "description second layout"),
         };
 
-        [TestCase(1, "", 1, "description first layout")]
-        [TestCase(2, "Second layout", 0, "description second layout")]
-        [TestCase(3, "Second layout", 2, "")]
-        public void Validate_WhenLayoutFieldNull_ShouldThrow(int id, string name, int venueId, string description)
+        [Test]
+        public void Validate_WhenLayoutFieldNameEmpty_ShouldThrow()
         {
             // arrange
             var strException =
-                "The field of Layout is not allowed to be null!";
-            var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
+                "The field 'Name' of Layout is not allowed to be empty!";
+            var layoutExpected = new Layout(1, "", 1, "description first layout");
+            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
+            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => layoutService.Object.Validate(layoutExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenLayoutFieldVenueIdNull_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'VenueId' of Layout is not allowed to be null!";
+            var layoutExpected = new Layout(2, "Second layout", 0, "description second layout");
+            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
+            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => layoutService.Object.Validate(layoutExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenLayoutFieldDescriptionEmpty_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'Description' of Layout is not allowed to be empty!";
+            var layoutExpected = new Layout(3, "Second layout", 2, "");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
@@ -58,11 +92,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, "First layout", 1, "description first layout")]
-        public void Insert_WhenInsertLayout_ShouldNotNull(int id, string name, int venueId, string description)
+        [Test]
+        public void Insert_WhenInsertLayout_ShouldNotNull()
         {
             // arrange
-            var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
+            var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
@@ -74,11 +108,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(3, "Second layout", 2, "description second layout")]
-        public void Update_WhenUpdateLayout_ShouldNotNull(int id, string name, int venueId, string description)
+        [Test]
+        public void Update_WhenUpdateLayout_ShouldNotNull()
         {
             // arrange
-            var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
+            var layoutExpected = new Layout(3, "Second layout", 2, "description second layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
@@ -90,8 +124,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteLayout_ShouldNotNull(int id)
+        [Test]
+        public void Delete_WhenDeleteLayout_ShouldNotNull()
         {
             // arrange
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
@@ -99,14 +133,14 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             layoutService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = layoutService.Object.Delete(id);
+            var actual = layoutService.Object.Delete(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnLayoutById_ShouldNotNull(int id)
+        [Test]
+        public void GetById_WhenReturnLayoutById_ShouldNotNull()
         {
             // arrange
             var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
@@ -115,7 +149,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             layoutService.Setup(x => x.GetById(It.IsAny<int>())).Returns(layoutExpected);
-            var actual = layoutService.Object.GetById(id);
+            var actual = layoutService.Object.GetById(5444);
 
             // assert
             Assert.NotNull(actual);

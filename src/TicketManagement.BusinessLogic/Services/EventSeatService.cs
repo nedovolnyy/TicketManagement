@@ -2,7 +2,6 @@
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -15,9 +14,21 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(EventSeat entity)
         {
-            if (entity.EventAreaId == 0 || entity.Row == 0 || entity.Number == 0 || entity.State == 0)
+            if (entity.EventAreaId == default)
             {
-                throw new ValidationException("The field of EventSeat is not allowed to be null!");
+                throw new ValidationException("The field 'EventAreaId' of EventSeat is not allowed to be null!");
+            }
+            else if (entity.Row == default)
+            {
+                throw new ValidationException("The field 'Row' of EventSeat is not allowed to be null!");
+            }
+            else if (entity.Number == default)
+            {
+                throw new ValidationException("The field 'Number' of EventSeat is not allowed to be null!");
+            }
+            else
+            {
+                throw new ValidationException("The field 'State' of EventSeat is not allowed to be null!");
             }
         }
     }

@@ -16,11 +16,6 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Layout entity)
         {
-            if (entity.VenueId == 0 || entity.Name == "" || entity.Description == "")
-            {
-                throw new ValidationException("The field of Layout is not allowed to be null!");
-            }
-
             var layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
             foreach (var layout in layoutArray)
             {
@@ -28,6 +23,19 @@ namespace TicketManagement.BusinessLogic.Services
                 {
                     throw new ValidationException("Layout name should be unique in venue!");
                 }
+            }
+
+            if (entity.VenueId == default)
+            {
+                throw new ValidationException("The field 'VenueId' of Layout is not allowed to be null!");
+            }
+            else if (string.IsNullOrEmpty(entity.Name))
+            {
+                throw new ValidationException("The field 'Name' of Layout is not allowed to be empty!");
+            }
+            else
+            {
+                throw new ValidationException("The field 'Description' of Layout is not allowed to be empty!");
             }
         }
     }

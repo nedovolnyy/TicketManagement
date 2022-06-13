@@ -17,16 +17,13 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new EventSeat(3, 5, 9, 1, 7),
         };
 
-        [TestCase(1, 0, 56, 2, 4)]
-        [TestCase(2, 7, 0, 3, 2)]
-        [TestCase(3, 5, 9, 0, 7)]
-        [TestCase(1, 6, 56, 2, 0)]
-        public void Validate_WhenEventSeatFieldNull_ShouldThrow(int id, int eventAreaId, int row, int number, int state)
+        [Test]
+        public void Validate_WhenEventSeatFieldEventAreaIdNull_ShouldThrow()
         {
             // arrange
             var strException =
-                "The field of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state);
+                "The field 'EventAreaId' of EventSeat is not allowed to be null!";
+            var eventSeatExpected = new EventSeat(1, 0, 56, 2, 4);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
@@ -38,11 +35,65 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 6, 6, 2, 4)]
-        public void Insert_WhenInsertEventSeat_ShouldNotNull(int id, int eventAreaId, int row, int number, int state)
+        [Test]
+        public void Validate_WhenEventSeatFieldRowNull_ShouldThrow()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state);
+            var strException =
+                "The field 'Row' of EventSeat is not allowed to be null!";
+            var eventSeatExpected = new EventSeat(2, 7, 0, 3, 2);
+            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
+            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => eventSeatService.Object.Validate(eventSeatExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventSeatFieldNumberNull_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'Number' of EventSeat is not allowed to be null!";
+            var eventSeatExpected = new EventSeat(3, 5, 9, 0, 7);
+            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
+            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => eventSeatService.Object.Validate(eventSeatExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventSeatFieldStateNull_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'State' of EventSeat is not allowed to be null!";
+            var eventSeatExpected = new EventSeat(1, 6, 56, 2, 0);
+            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
+            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => eventSeatService.Object.Validate(eventSeatExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Insert_WhenInsertEventSeat_ShouldNotNull()
+        {
+            // arrange
+            var eventSeatExpected = new EventSeat(1, 6, 6, 2, 4);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
@@ -54,11 +105,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(3, 5, 9, 1, 7)]
-        public void Update_WhenUpdateEventSeat_ShouldNotNull(int id, int eventAreaId, int row, int number, int state)
+        [Test]
+        public void Update_WhenUpdateEventSeat_ShouldNotNull()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state);
+            var eventSeatExpected = new EventSeat(3, 5, 9, 1, 7);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
@@ -70,8 +121,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteEventSeat_ShouldNotNull(int id)
+        [Test]
+        public void Delete_WhenDeleteEventSeat_ShouldNotNull()
         {
             // arrange
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
@@ -79,23 +130,23 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             eventSeatService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = eventSeatService.Object.Delete(id);
+            var actual = eventSeatService.Object.Delete(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnEventSeatById_ShouldNotNull(int id)
+        [Test]
+        public void GetById_WhenReturnEventSeatById_ShouldNotNull()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(id, 6, 56, 2, 4);
+            var eventSeatExpected = new EventSeat(5444, 6, 56, 2, 4);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
             eventSeatService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventSeatExpected);
-            var actual = eventSeatService.Object.GetById(id);
+            var actual = eventSeatService.Object.GetById(5444);
 
             // assert
             Assert.NotNull(actual);

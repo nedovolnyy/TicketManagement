@@ -3,7 +3,6 @@ using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -18,11 +17,6 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Event entity)
         {
-            if (entity.LayoutId == 0 || entity.Name == "" || entity.Description == "")
-            {
-                throw new ValidationException("The field of Event is not allowed to be null!");
-            }
-
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
                 throw new ValidationException("Event can't be created in the past!");
@@ -31,7 +25,7 @@ namespace TicketManagement.BusinessLogic.Services
             var evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
             foreach (var evnt in evntArray)
             {
-                if (entity.LayoutId == evnt.LayoutId && entity.Description == evnt.Description)
+                if (entity.LayoutId == evnt.LayoutId && entity.Name == evnt.Name)
                 {
                     throw new ValidationException("Layout name should be unique in venue!");
                 }
@@ -40,6 +34,19 @@ namespace TicketManagement.BusinessLogic.Services
                 {
                     throw new ValidationException("Do not create event for the same layout in the same time!");
                 }
+            }
+
+            if (entity.LayoutId == default)
+            {
+                throw new ValidationException("The field 'LayoutId' of Event is not allowed to be null!");
+            }
+            else if (string.IsNullOrEmpty(entity.Name))
+            {
+                throw new ValidationException("The field 'Name' of Event is not allowed to be empty!");
+            }
+            else
+            {
+                throw new ValidationException("The field 'Description' of Event is not allowed to be empty!");
             }
         }
     }

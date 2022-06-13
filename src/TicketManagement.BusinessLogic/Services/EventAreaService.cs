@@ -14,14 +14,25 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(EventArea entity)
         {
-            if (entity.EventId == 0 || entity.CoordX == 0 || entity.CoordY == 0)
+            if (entity.EventId == default)
             {
-                throw new ValidationException("The field of EventArea is not allowed to be null!");
+                throw new ValidationException("The field 'LayoutId' of EventArea is not allowed to be null!");
             }
-
-            if (entity.Description == "" || entity.Price == 0m)
+            else if (entity.CoordX == default)
             {
-                throw new ValidationException("The field of EventArea is not allowed to be null!");
+                throw new ValidationException("The field 'CoordX' of EventArea is not allowed to be null!");
+            }
+            else if (entity.CoordY == default)
+            {
+                throw new ValidationException("The field 'CoordY' of EventArea is not allowed to be null!");
+            }
+            else if (entity.Price == default)
+            {
+                throw new ValidationException("The field 'Price' of EventArea is not allowed to be null!");
+            }
+            else
+            {
+                throw new ValidationException("The field 'Description' of EventArea is not allowed to be empty!");
             }
         }
     }

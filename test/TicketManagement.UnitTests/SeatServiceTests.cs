@@ -17,15 +17,49 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Seat(3, 2, 1, 1),
         };
 
-        [TestCase(1, 0, 1, 1)]
-        [TestCase(2, 1, 0, 2)]
-        [TestCase(3, 2, 1, 0)]
-        public void Validate_WhenSeatFieldNull_ShouldThrow(int id, int areaId, int row, int number)
+        [Test]
+        public void Validate_WhenSeatFieldAreaIdNull_ShouldThrow()
         {
             // arrange
             var strException =
-                "The field of Seat is not allowed to be null!";
-            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
+                "The field 'AreaId' of Seat is not allowed to be null!";
+            var seatExpected = new Seat(1, 0, 1, 1);
+            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
+            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => seatService.Object.Validate(seatExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenSeatFieldRowNull_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'Row' of Seat is not allowed to be null!";
+            var seatExpected = new Seat(2, 1, 0, 2);
+            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
+            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
+
+            // act
+            var ex = Assert.Throws<ValidationException>(
+                            () => seatService.Object.Validate(seatExpected));
+
+            // assert
+            Assert.That(ex.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenSeatFieldNumberNull_ShouldThrow()
+        {
+            // arrange
+            var strException =
+                "The field 'Number' of Seat is not allowed to be null!";
+            var seatExpected = new Seat(3, 2, 1, 0);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
 
@@ -58,11 +92,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(ex.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(3, 2, 1, 6)]
-        public void Insert_WhenInsertSeat_ShouldNotNull(int id, int areaId, int row, int number)
+        [Test]
+        public void Insert_WhenInsertSeat_ShouldNotNull()
         {
             // arrange
-            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
+            var seatExpected = new Seat(3, 2, 1, 6);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
 
@@ -74,11 +108,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1, 6, 1, 1)]
-        public void Update_WhenUpdateSeat_ShouldNotNull(int id, int areaId, int row, int number)
+        [Test]
+        public void Update_WhenUpdateSeat_ShouldNotNull()
         {
             // arrange
-            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
+            var seatExpected = new Seat(1, 6, 1, 1);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
 
@@ -90,8 +124,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.NotNull(actual);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldNotNull(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldNotNull()
         {
             // arrange
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
@@ -99,14 +133,14 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             seatService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = seatService.Object.Delete(id);
+            var actual = seatService.Object.Delete(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnSeatById_ShouldNotNull(int id)
+        [Test]
+        public void GetById_WhenReturnSeatById_ShouldNotNull()
         {
             // arrange
             var seatExpected = new Seat(3, 2, 1, 1);
@@ -115,7 +149,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             seatService.Setup(x => x.GetById(It.IsAny<int>())).Returns(seatExpected);
-            var actual = seatService.Object.GetById(id);
+            var actual = seatService.Object.GetById(5444);
 
             // assert
             Assert.NotNull(actual);
