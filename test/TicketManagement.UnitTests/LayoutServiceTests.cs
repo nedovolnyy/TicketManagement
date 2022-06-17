@@ -28,11 +28,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => layoutService.Object.Validate(layoutExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -46,11 +46,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => layoutService.Object.Validate(layoutExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -64,11 +64,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => layoutService.Object.Validate(layoutExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, "First layout", 1, "description first layout")]
@@ -85,11 +85,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => layoutService.Object.Validate(layoutExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -99,9 +99,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+            layoutService.Setup(x => x.Insert(It.IsAny<Layout>())).Returns(1);
 
             // act
-            layoutService.Setup(x => x.Insert(It.IsAny<Layout>())).Returns(1);
             var actual = layoutService.Object.Insert(layoutExpected);
 
             // assert
@@ -115,9 +115,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(3, "Second layout", 2, "description second layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+            layoutService.Setup(x => x.Update(It.IsAny<Layout>())).Returns(1);
 
             // act
-            layoutService.Setup(x => x.Update(It.IsAny<Layout>())).Returns(1);
             var actual = layoutService.Object.Update(layoutExpected);
 
             // assert
@@ -130,9 +130,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+            layoutService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
 
             // act
-            layoutService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
             var actual = layoutService.Object.Delete(1);
 
             // assert
@@ -146,9 +146,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+            layoutService.Setup(x => x.GetById(It.IsAny<int>())).Returns(layoutExpected);
 
             // act
-            layoutService.Setup(x => x.GetById(It.IsAny<int>())).Returns(layoutExpected);
             var actual = layoutService.Object.GetById(5444);
 
             // assert
@@ -161,9 +161,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
+            layoutService.Setup(x => x.GetAll()).Returns(_expectedLayouts);
 
             // act
-            layoutService.Setup(x => x.GetAll()).Returns(_expectedLayouts);
             var actual = layoutService.Object.GetAll();
 
             // assert

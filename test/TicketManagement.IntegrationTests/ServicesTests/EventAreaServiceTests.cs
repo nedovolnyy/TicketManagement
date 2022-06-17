@@ -7,48 +7,48 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
 {
-    public class LayoutServiceTests
+    public class EventAreaServiceTests
     {
-        private readonly LayoutService _layoutService = new LayoutService(new LayoutRepository(TestDatabaseFixture.DatabaseContext));
+        private readonly EventAreaService _eventAreaService = new EventAreaService(new EventAreaRepository(TestDatabaseFixture.DatabaseContext));
 
-        [TestCase("First egdfslayout", 1, "description first layout")]
-        public void Insert_WhenInsertLayout_ShouldInt1(string name, int venueId, string description)
+        [Test]
+        public void Insert_WhenInsertEventArea_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _layoutService.Insert(new Layout(0, name: name, venueId: venueId, description: description));
+            var actualResponse = _eventAreaService.Insert(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(3, "Second ladfsgsdfyout", 2, "description second layout")]
-        public void Update_WhenUpdateLayout_ShouldInt1(int id, string name, int venueId, string description)
+        [Test]
+        public void Update_WhenUpdateEventArea_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _layoutService.Update(new Layout(id: id, name: name, venueId: venueId, description: description));
+            var actualResponse = _eventAreaService.Update(new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedException =
-                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Layout_Area\". " +
-                "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Area\", column 'LayoutId'.\r\n" +
+                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_EventSeat\". " +
+                "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventSeat\", column 'EventAreaId'.\r\n" +
                 "The statement has been terminated.";
 
             // act
             var actualException = Assert.Throws<SqlException>(
-                            () => _layoutService.Delete(id));
+                            () => _eventAreaService.Delete(1));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -58,7 +58,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _layoutService.GetAll().ToList();
+            var actualCount = _eventAreaService.GetAll().ToList();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -71,7 +71,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = _layoutService.GetById(1);
+            var actualId = _eventAreaService.GetById(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

@@ -18,19 +18,23 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 throw new ValidationException("The field 'LayoutId' of EventArea is not allowed to be null!");
             }
-            else if (entity.CoordX == default)
+
+            if (entity.CoordX == default)
             {
                 throw new ValidationException("The field 'CoordX' of EventArea is not allowed to be null!");
             }
-            else if (entity.CoordY == default)
+
+            if (entity.CoordY == default)
             {
                 throw new ValidationException("The field 'CoordY' of EventArea is not allowed to be null!");
             }
-            else if (entity.Price == default)
+
+            if (entity.Price == default)
             {
                 throw new ValidationException("The field 'Price' of EventArea is not allowed to be null!");
             }
-            else
+
+            if (string.IsNullOrEmpty(entity.Description))
             {
                 throw new ValidationException("The field 'Description' of EventArea is not allowed to be empty!");
             }

@@ -28,11 +28,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => eventAreaService.Object.Validate(eventAreaExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -46,11 +46,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => eventAreaService.Object.Validate(eventAreaExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -64,11 +64,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => eventAreaService.Object.Validate(eventAreaExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -82,11 +82,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => eventAreaService.Object.Validate(eventAreaExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -100,11 +100,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => eventAreaService.Object.Validate(eventAreaExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -114,9 +114,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaExpected = new EventArea(3, 2, "First eventArea of second layout", 1, 7, 4.3m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            eventAreaService.Setup(x => x.Insert(It.IsAny<EventArea>())).Returns(1);
 
             // act
-            eventAreaService.Setup(x => x.Insert(It.IsAny<EventArea>())).Returns(1);
             var actual = eventAreaService.Object.Insert(eventAreaExpected);
 
             // assert
@@ -130,9 +130,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaExpected = new EventArea(1, 2, "First eventArea of second layout", 2, 4, 7.5m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).Returns(1);
 
             // act
-            eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).Returns(1);
             var actual = eventAreaService.Object.Update(eventAreaExpected);
 
             // assert
@@ -145,9 +145,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            eventAreaService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
 
             // act
-            eventAreaService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
             var actual = eventAreaService.Object.Delete(1);
 
             // assert
@@ -161,9 +161,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaExpected = new EventArea(5444, 2, "First eventArea of first layout", 3, 2, 8.1m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            eventAreaService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventAreaExpected);
 
             // act
-            eventAreaService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventAreaExpected);
             var actual = eventAreaService.Object.GetById(5444);
 
             // assert
@@ -176,9 +176,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            eventAreaService.Setup(x => x.GetAll()).Returns(_expectedEventAreas);
 
             // act
-            eventAreaService.Setup(x => x.GetAll()).Returns(_expectedEventAreas);
             var actual = eventAreaService.Object.GetAll();
 
             // assert

@@ -10,40 +10,40 @@ namespace TicketManagement.DataAccess.IntegrationTests
     {
         private readonly SeatService _seatService = new SeatService(new SeatRepository(TestDatabaseFixture.DatabaseContext));
 
-        [TestCase(2, 6, 5)]
-        public void Insert_WhenInsertSeat_ShouldInt1(int areaId, int row, int number)
+        [Test]
+        public void Insert_WhenInsertSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _seatService.Insert(new Seat(0, areaId: areaId, row: row, number: number));
+            var actualResponse = _seatService.Insert(new Seat(0, 2, 6, 5));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(5, 2, 3, 5)]
-        public void Update_WhenUpdateSeat_ShouldInt1(int id, int areaId, int row, int number)
+        [Test]
+        public void Update_WhenUpdateSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _seatService.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
+            var actualResponse = _seatService.Update(new Seat(5, 2, 3, 5));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(3)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _seatService.Delete(id);
+            var actualResponse = _seatService.Delete(3);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

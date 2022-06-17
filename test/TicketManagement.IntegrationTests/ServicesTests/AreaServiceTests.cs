@@ -12,34 +12,34 @@ namespace TicketManagement.DataAccess.IntegrationTests
     {
         private readonly IAreaService _areaService = new AreaService(new AreaRepository(TestDatabaseFixture.DatabaseContext));
 
-        [TestCase(2, "First area of qwef layout", 2, 4)]
-        public void Insert_WhenInsertArea_ShouldInt1(int layoutId, string description, int coordX, int coordY)
+        [Test]
+        public void Insert_WhenInsertArea_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _areaService.Insert(new Area(0, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+            var actualResponse = _areaService.Insert(new Area(0, 2, "First area of qwfqwef layout", 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(3, 2, "First area of qwfqwef layout", 1, 7)]
-        public void Update_WhenUpdateArea_ShouldInt1(int id, int layoutId, string description, int coordX, int coordY)
+        [Test]
+        public void Update_WhenUpdateArea_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _areaService.Update(new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY));
+            var actualResponse = _areaService.Update(new Area(3, 2, "First etter of 3ett layout", 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedException =
@@ -49,7 +49,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
 
             // act
             var actualException = Assert.Throws<SqlException>(
-                            () => _areaService.Delete(id));
+                            () => _areaService.Delete(1));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));

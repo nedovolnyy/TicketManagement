@@ -28,11 +28,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => venueService.Object.Validate(venueExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -46,11 +46,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => venueService.Object.Validate(venueExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -64,11 +64,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => venueService.Object.Validate(venueExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, "First venue", "description first venue", "address first venue", "+4988955568")]
@@ -85,11 +85,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => venueService.Object.Validate(venueExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -99,9 +99,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueExpected = new Venue(3, "Second venue", "description second venue", "address second venue", "+84845464");
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            venueService.Setup(x => x.Insert(It.IsAny<Venue>())).Returns(1);
 
             // act
-            venueService.Setup(x => x.Insert(It.IsAny<Venue>())).Returns(1);
             var actual = venueService.Object.Insert(venueExpected);
 
             // assert
@@ -115,9 +115,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueExpected = new Venue(1, "First venue", "description first venue", "address first venue", "+4988955568");
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            venueService.Setup(x => x.Update(It.IsAny<Venue>())).Returns(1);
 
             // act
-            venueService.Setup(x => x.Update(It.IsAny<Venue>())).Returns(1);
             var actual = venueService.Object.Update(venueExpected);
 
             // assert
@@ -130,9 +130,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            venueService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
 
             // act
-            venueService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
             var actual = venueService.Object.Delete(1);
 
             // assert
@@ -146,9 +146,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueExpected = new Venue(3, "Second venue", "description second venue", "address second venue", "+84845464");
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            venueService.Setup(x => x.GetById(It.IsAny<int>())).Returns(venueExpected);
 
             // act
-            venueService.Setup(x => x.GetById(It.IsAny<int>())).Returns(venueExpected);
             var actual = venueService.Object.GetById(5444);
 
             // assert
@@ -161,9 +161,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            venueService.Setup(x => x.GetAll()).Returns(_expectedVenues);
 
             // act
-            venueService.Setup(x => x.GetAll()).Returns(_expectedVenues);
             var actual = venueService.Object.GetAll();
 
             // assert

@@ -10,40 +10,40 @@ namespace TicketManagement.DataAccess.IntegrationTests
     {
         private readonly EventSeatService _eventSeatService = new EventSeatService(new EventSeatRepository(TestDatabaseFixture.DatabaseContext));
 
-        [TestCase(1, 9, 1, 7)]
-        public void Insert_WhenInsertEventSeat_ShouldInt1(int eventAreaId, int row, int number, int state)
+        [Test]
+        public void Insert_WhenInsertEventSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventSeatService.Insert(new EventSeat(0, eventAreaId: eventAreaId, row: row, number: number, state: state));
+            var actualResponse = _eventSeatService.Insert(new EventSeat(0, 1, 9, 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(2, 1, 3, 3, 2)]
-        public void Update_WhenUpdateEventSeat_ShouldInt1(int id, int eventAreaId, int row, int number, int state)
+        [Test]
+        public void Update_WhenUpdateEventSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventSeatService.Update(new EventSeat(id: id, eventAreaId: eventAreaId, row: row, number: number, state: state));
+            var actualResponse = _eventSeatService.Update(new EventSeat(2, 1, 3, 3, 2));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(3)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventSeatService.Delete(id);
+            var actualResponse = _eventSeatService.Delete(3);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

@@ -16,15 +16,6 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Seat entity)
         {
-            var seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
-            foreach (var seat in seatArray)
-            {
-                if (entity.Row == seat.Row && entity.Number == seat.Number)
-                {
-                    throw new ValidationException("Row and number should be unique for area!");
-                }
-            }
-
             if (entity.AreaId == default)
             {
                 throw new ValidationException("The field 'AreaId' of Seat is not allowed to be null!");
@@ -33,9 +24,20 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 throw new ValidationException("The field 'Row' of Seat is not allowed to be null!");
             }
-            else
+            else if (entity.Number == default)
             {
                 throw new ValidationException("The field 'Number' of Seat is not allowed to be null!");
+            }
+            else
+            {
+                var seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
+                foreach (var seat in seatArray)
+                {
+                    if (entity.Row == seat.Row && entity.Number == seat.Number)
+                    {
+                        throw new ValidationException("Row and number should be unique for area!");
+                    }
+                }
             }
         }
     }

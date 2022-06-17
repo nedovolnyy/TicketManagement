@@ -117,9 +117,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+            areaService.Setup(x => x.Insert(It.IsAny<Area>())).Returns(1);
 
             // act
-            areaService.Setup(x => x.Insert(It.IsAny<Area>())).Returns(1);
             var actual = areaService.Object.Insert(areaExpected);
 
             // assert
@@ -133,9 +133,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+            areaService.Setup(x => x.Update(It.IsAny<Area>())).Returns(1);
 
             // act
-            areaService.Setup(x => x.Update(It.IsAny<Area>())).Returns(1);
             var actual = areaService.Object.Update(areaExpected);
 
             // assert
@@ -148,9 +148,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+            areaService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
 
             // act
-            areaService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
             var actual = areaService.Object.Delete(1);
 
             // assert
@@ -164,9 +164,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(5444, 2, "First area of first layout", 3, 2);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+            areaService.Setup(x => x.GetById(It.IsAny<int>())).Returns(areaExpected);
 
             // act
-            areaService.Setup(x => x.GetById(It.IsAny<int>())).Returns(areaExpected);
             var actual = areaService.Object.GetById(5444);
 
             // assert
@@ -179,9 +179,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
+            areaService.Setup(x => x.GetAll()).Returns(_expectedAreas);
 
             // act
-            areaService.Setup(x => x.GetAll()).Returns(_expectedAreas);
             var actual = areaService.Object.GetAll();
 
             // assert

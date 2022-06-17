@@ -7,48 +7,48 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
 {
-    public class VenueRepositoryTests
+    public class EventAreaRepositoryTests
     {
-        private readonly IVenueRepository _venueRepository = new VenueRepository(TestDatabaseFixture.DatabaseContext);
+        private readonly IEventAreaRepository _eventAreaRepository = new EventAreaRepository(TestDatabaseFixture.DatabaseContext);
 
-        [TestCase("Second venue", "description second venue", "address second venue", "+84845464")]
-        public void Insert_WhenInsertVenue_ShouldInt1(string name, string description, string address, string phone)
+        [Test]
+        public void Insert_WhenInsertEventArea_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _venueRepository.Insert(new Venue(0, name: name, description: description, address: address, phone: phone));
+            var actualResponse = _eventAreaRepository.Insert(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1, "First venue", "description first venue", "address first venue", "+4988955568")]
-        public void Update_WhenUpdateVenue_ShouldInt1(int id, string name, string description, string address, string phone)
+        [Test]
+        public void Update_WhenUpdateEventArea_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _venueRepository.Update(new Venue(id: id, name: name, description: description, address: address, phone: phone));
+            var actualResponse = _eventAreaRepository.Update(new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedException =
-                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Venue_Layout\". " +
-                "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Layout\", column 'VenueId'.\r\n" +
+                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_EventSeat\". " +
+                "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventSeat\", column 'EventAreaId'.\r\n" +
                 "The statement has been terminated.";
 
             // act
             var actualException = Assert.Throws<SqlException>(
-                            () => _venueRepository.Delete(id));
+                            () => _eventAreaRepository.Delete(1));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -58,7 +58,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _venueRepository.GetAll().ToList();
+            var actualCount = _eventAreaRepository.GetAll().ToList();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -71,7 +71,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = _venueRepository.GetById(1);
+            var actualId = _eventAreaRepository.GetById(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

@@ -6,44 +6,44 @@ using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
 {
-    public class SeatRepositoryTests
+    public class EventSeatRepositoryTests
     {
-        private readonly ISeatRepository _seatRepository = new SeatRepository(TestDatabaseFixture.DatabaseContext);
+        private readonly IEventSeatRepository _eventSeatRepository = new EventSeatRepository(TestDatabaseFixture.DatabaseContext);
 
-        [TestCase(1, 1, 1)]
-        public void Insert_WhenInsertSeat_ShouldInt1(int areaId, int row, int number)
+        [Test]
+        public void Insert_WhenInsertEventSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _seatRepository.Insert(new Seat(0, areaId: areaId, row: row, number: number));
+            var actualResponse = _eventSeatRepository.Insert(new EventSeat(0, 1, 9, 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(3, 2, 1, 1)]
-        public void Update_WhenUpdateSeat_ShouldInt1(int id, int areaId, int row, int number)
+        [Test]
+        public void Update_WhenUpdateEventSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _seatRepository.Update(new Seat(id: id, areaId: areaId, row: row, number: number));
+            var actualResponse = _eventSeatRepository.Update(new EventSeat(3, 1, 3, 3, 2));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _seatRepository.Delete(id);
+            var actualResponse = _eventSeatRepository.Delete(1);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -53,7 +53,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _seatRepository.GetAll().ToList();
+            var actualCount = _eventSeatRepository.GetAll().ToList();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -63,23 +63,13 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 2;
+            var expectedId = 3;
 
             // act
-            var actualId = _seatRepository.GetById(2);
+            var actualId = _eventSeatRepository.GetById(3);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
-        }
-
-        [Test]
-        public void GetAllByAreaId_WhenHaveEntry_ShouldNotNull()
-        {
-            // act
-            var actualCount = _seatRepository.GetAllByAreaId(1).ToList();
-
-            // assert
-            Assert.IsNotNull(actualCount);
         }
     }
 }

@@ -16,12 +16,6 @@ namespace TicketManagement.BusinessLogic.Services
 
         public override void Validate(Venue entity)
         {
-            var venue = _venueRepository.GetFirstByName(entity.Name);
-            if (venue is not null)
-            {
-            throw new ValidationException("The Venue name is not unique!");
-            }
-
             if (string.IsNullOrEmpty(entity.Name))
             {
                 throw new ValidationException("The field 'Name' of Venue is not allowed to be empty!");
@@ -30,9 +24,17 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 throw new ValidationException("The field 'Address' of Venue is not allowed to be empty!");
             }
-            else
+            else if (string.IsNullOrEmpty(entity.Description))
             {
                 throw new ValidationException("The field 'Description' of Venue is not allowed to be empty!");
+            }
+            else
+            {
+                var venue = _venueRepository.GetFirstByName(entity.Name);
+                if (venue is not null)
+                {
+                    throw new ValidationException("The Venue name is not unique!");
+                }
             }
         }
     }

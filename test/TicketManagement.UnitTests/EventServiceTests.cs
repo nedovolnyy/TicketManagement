@@ -28,11 +28,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => evntService.Object.Validate(evntExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -46,11 +46,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => evntService.Object.Validate(evntExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -64,11 +64,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => evntService.Object.Validate(evntExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
@@ -84,11 +84,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => evntService.Object.Validate(evntExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -103,11 +103,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => evntService.Object.Validate(evntExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
@@ -123,11 +123,11 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
+            var actualException = Assert.Throws<ValidationException>(
                             () => evntService.Object.Validate(evntExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
@@ -137,9 +137,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2022"), "Stanger Things Serie", 1);
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            eventService.Setup(x => x.Insert(It.IsAny<Event>())).Returns(1);
 
             // act
-            eventService.Setup(x => x.Insert(It.IsAny<Event>())).Returns(1);
             var actual = eventService.Object.Insert(eventExpected);
 
             // assert
@@ -153,9 +153,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2);
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            eventService.Setup(x => x.Update(It.IsAny<Event>())).Returns(1);
 
             // act
-            eventService.Setup(x => x.Update(It.IsAny<Event>())).Returns(1);
             var actual = eventService.Object.Update(eventExpected);
 
             // assert
@@ -168,9 +168,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            eventService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
 
             // act
-            eventService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
             var actual = eventService.Object.Delete(1);
 
             // assert
@@ -184,9 +184,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(5444, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2);
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            eventService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventExpected);
 
             // act
-            eventService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventExpected);
             var actual = eventService.Object.GetById(5444);
 
             // assert
@@ -199,9 +199,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            eventService.Setup(x => x.GetAll()).Returns(_expectedEvents);
 
             // act
-            eventService.Setup(x => x.GetAll()).Returns(_expectedEvents);
             var actual = eventService.Object.GetAll();
 
             // assert

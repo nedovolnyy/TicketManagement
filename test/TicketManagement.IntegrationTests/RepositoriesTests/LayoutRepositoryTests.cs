@@ -11,34 +11,34 @@ namespace TicketManagement.DataAccess.IntegrationTests
     {
         private readonly ILayoutRepository _layoutRepository = new LayoutRepository(TestDatabaseFixture.DatabaseContext);
 
-        [TestCase("First layout", 1, "description first layout")]
-        public void Insert_WhenInsertLayout_ShouldInt1(string name, int venueId, string description)
+        [Test]
+        public void Insert_WhenInsertLayout_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _layoutRepository.Insert(new Layout(0, name: name, venueId: venueId, description: description));
+            var actualResponse = _layoutRepository.Insert(new Layout(0, "First layout", 1, "description first layout"));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(3, "Second layout", 2, "description second layout")]
-        public void Update_WhenUpdateLayout_ShouldInt1(int id, string name, int venueId, string description)
+        [Test]
+        public void Update_WhenUpdateLayout_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _layoutRepository.Update(new Layout(id: id, name: name, venueId: venueId, description: description));
+            var actualResponse = _layoutRepository.Update(new Layout(3, "Second layout", 2, "description second layout"));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedException =
@@ -48,7 +48,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
 
             // act
             var actualException = Assert.Throws<SqlException>(
-                            () => _layoutRepository.Delete(id));
+                            () => _layoutRepository.Delete(1));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));

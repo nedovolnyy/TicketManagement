@@ -2,44 +2,44 @@
 using System.Data.SqlClient;
 using System.Linq;
 using NUnit.Framework;
+using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
 {
-    public class EventRepositoryTests
+    public class EventServiceTests
     {
-        private readonly IEventRepository _evntRepository = new EventRepository(TestDatabaseFixture.DatabaseContext);
+        private readonly EventService _eventService = new EventService(new EventRepository(TestDatabaseFixture.DatabaseContext));
 
-        [TestCase(1, "Stanger Things Serie", "09/19/2023", "Stanger Things Serie")]
-        public void Insert_WhenInsertEvent_ShouldInt1(int layoutId, string name, DateTimeOffset eventTime, string description)
+        [Test]
+        public void Insert_WhenInsertEvent_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _evntRepository.Insert(new Event(0, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
+            var actualResponse = _eventService.Insert(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2023", "Kitchen Serie")]
-        public void Update_WhenUpdateEvent_ShouldInt1(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [Test]
+        public void Update_WhenUpdateEvent_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _evntRepository.Update(new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description));
+            var actualResponse = _eventService.Update(new Event(2, "StanegegerergThings Serie", DateTimeOffset.Parse("06/11/2023"), "Stanerger Things Serie", 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedException =
@@ -49,7 +49,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
 
             // act
             var actualException = Assert.Throws<SqlException>(
-                            () => _evntRepository.Delete(id));
+                            () => _eventService.Delete(1));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -59,7 +59,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _evntRepository.GetAll().ToList();
+            var actualCount = _eventService.GetAll().ToList();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -72,23 +72,10 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedId = 3;
 
             // act
-            var actualId = _evntRepository.GetById(3);
+            var actualId = _eventService.GetById(3);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
-        }
-
-        [Test]
-        public void GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
-        {
-            // arrange
-            var expectedCount = 2;
-
-            // act
-            var actualCount = _evntRepository.GetAllByLayoutId(1).ToList();
-
-            // assert
-            Assert.AreEqual(expectedCount, actualCount.Count);
         }
     }
 }

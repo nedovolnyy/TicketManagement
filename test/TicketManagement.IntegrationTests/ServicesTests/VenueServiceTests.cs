@@ -11,34 +11,34 @@ namespace TicketManagement.DataAccess.IntegrationTests
     {
         private readonly VenueService _venueService = new VenueService(new VenueRepository(TestDatabaseFixture.DatabaseContext));
 
-        [TestCase("Second vwergenue", "description second venue", "address second venue", "+84845464")]
-        public void Insert_WhenInsertVenue_ShouldInt1(string name, string description, string address, string phone)
+        [Test]
+        public void Insert_WhenInsertVenue_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _venueService.Insert(new Venue(0, name: name, description: description, address: address, phone: phone));
+            var actualResponse = _venueService.Insert(new Venue(0, "Second vwergenue", "description second venue", "address second venue", "+84845464"));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1, "First wergvenue", "description first venue", "address first venue", "+4988955568")]
-        public void Update_WhenUpdateVenue_ShouldInt1(int id, string name, string description, string address, string phone)
+        [Test]
+        public void Update_WhenUpdateVenue_ShouldInt1()
         {
             // arrange
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _venueService.Update(new Venue(id: id, name: name, description: description, address: address, phone: phone));
+            var actualResponse = _venueService.Update(new Venue(1, "First wergvenue", "description first venue", "address first venue", "+4988955568"));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldInt1(int id)
+        [Test]
+        public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
             var expectedException =
@@ -48,7 +48,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
 
             // act
             var actualException = Assert.Throws<SqlException>(
-                            () => _venueService.Delete(id));
+                            () => _venueService.Delete(1));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
