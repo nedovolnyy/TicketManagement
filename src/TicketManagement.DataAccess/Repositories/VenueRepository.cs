@@ -57,15 +57,21 @@ namespace TicketManagement.DataAccess.Repositories
         /// Method for populate data by name.
         /// </summary>
         /// <param name="name">id.</param>
-        /// <returns><see cref="Venue"/>List&lt;Seat&gt;.</returns>
-        public Venue GetFirstByName(string name)
+        /// <returns><see cref="int"/>First id, if in table Venue have same name.</returns>
+        public int GetIdFirstByName(string name)
         {
             var cmd = _databaseContext.Connection.CreateCommand();
-            cmd.CommandText = "SELECT TOP 1 Id, Name, Description, Address, Phone FROM Venue WHERE Name = @Name";
+            cmd.CommandText = "SELECT TOP 1 Id FROM Venue WHERE Name = @Name";
             cmd.CommandType = CommandType.Text;
             cmd.Parameters.AddWithValue("@Name", name);
             using var reader = cmd.ExecuteReader();
-            return Map(reader);
+            if (reader.HasRows)
+            {
+                reader.Read();
+                return int.Parse(reader["Id"].ToString());
+            }
+
+            return default;
         }
 
         protected override Venue Map(SqlDataReader reader)

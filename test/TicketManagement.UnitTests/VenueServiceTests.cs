@@ -81,7 +81,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "The Venue name is not unique!";
             var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            venueRepository.Setup(x => x.GetFirstByName(name)).Returns(venueExpected);
+            venueRepository.Setup(x => x.GetIdFirstByName(name)).Returns(1);
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
 
             // act

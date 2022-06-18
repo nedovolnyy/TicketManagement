@@ -30,8 +30,8 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                var venue = _venueRepository.GetFirstByName(entity.Name);
-                if (venue is not null)
+                var venueId = _venueRepository.GetIdFirstByName(entity.Name);
+                if (venueId != default)
                 {
                     throw new ValidationException("The Venue name is not unique!");
                 }

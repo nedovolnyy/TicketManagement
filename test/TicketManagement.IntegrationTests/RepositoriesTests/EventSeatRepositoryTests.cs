@@ -17,7 +17,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventSeatRepository.Insert(new EventSeat(0, 1, 9, 1, 7));
+            var actualResponse = _eventSeatRepository.Insert(new EventSeat(0, 2, 9, 1, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -30,7 +30,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventSeatRepository.Update(new EventSeat(3, 1, 3, 3, 2));
+            var actualResponse = _eventSeatRepository.Update(new EventSeat(7, 2, 3, 3, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -43,7 +43,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventSeatRepository.Delete(1);
+            var actualResponse = _eventSeatRepository.Delete(13);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -63,10 +63,10 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 3;
+            var expectedId = 10;
 
             // act
-            var actualId = _eventSeatRepository.GetById(3);
+            var actualId = _eventSeatRepository.GetById(10);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

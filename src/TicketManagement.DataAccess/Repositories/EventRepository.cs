@@ -17,16 +17,10 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        private void ForStoredProcedure(SqlCommand cmd)
-        {
-            cmd.CommandText = "spEvent";
-            cmd.CommandType = CommandType.StoredProcedure;
-        }
-
         protected override void AddParamsForInsert(Event entity, SqlCommand cmd)
         {
-            ForStoredProcedure(cmd);
-            cmd.Parameters.AddWithValue("@Action", "Save");
+            cmd.CommandText = "spEventInsert";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
@@ -35,8 +29,8 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForUpdate(Event entity, SqlCommand cmd)
         {
-            ForStoredProcedure(cmd);
-            cmd.Parameters.AddWithValue("@Action", "Save");
+            cmd.CommandText = "spEventUpdate";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", entity.Id);
             cmd.Parameters.AddWithValue("@Name", entity.Name);
             cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
@@ -46,22 +40,22 @@ namespace TicketManagement.DataAccess.Repositories
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
         {
-            ForStoredProcedure(cmd);
-            cmd.Parameters.AddWithValue("@Action", "Delete");
+            cmd.CommandText = "spEventDelete";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void AddParamsForGetById(int id, SqlCommand cmd)
         {
-            ForStoredProcedure(cmd);
-            cmd.Parameters.AddWithValue("@Action", "GetById");
+            cmd.CommandText = "spEventGetById";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@Id", id);
         }
 
         protected override void GetAllCommandParameters(SqlCommand cmd)
         {
-            ForStoredProcedure(cmd);
-            cmd.Parameters.AddWithValue("@Action", "GetAll");
+            cmd.CommandText = "spEventGetAll";
+            cmd.CommandType = CommandType.StoredProcedure;
         }
 
         /// <summary>
@@ -72,8 +66,8 @@ namespace TicketManagement.DataAccess.Repositories
         public IEnumerable<Event> GetAllByLayoutId(int id)
         {
             var cmd = _databaseContext.Connection.CreateCommand();
-            ForStoredProcedure(cmd);
-            cmd.Parameters.AddWithValue("@Action", "ForValidate");
+            cmd.CommandText = "spEventForValidation";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@LayoutId", id);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);

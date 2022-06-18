@@ -42,7 +42,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         {
             // arrange
             var expectedException =
-                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_EventSeat\". " +
+                "The DELETE statement conflicted with the REFERENCE constraint \"FK_EventArea_EventSeat\". " +
                 "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventSeat\", column 'EventAreaId'.\r\n" +
                 "The statement has been terminated.";
 

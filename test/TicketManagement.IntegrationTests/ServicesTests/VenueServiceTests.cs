@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
@@ -10,6 +11,21 @@ namespace TicketManagement.DataAccess.IntegrationTests
     public class VenueServiceTests
     {
         private readonly VenueService _venueService = new VenueService(new VenueRepository(TestDatabaseFixture.DatabaseContext));
+
+        [Test]
+        public void Validate_WhenNameNonUnique_ShouldTrow()
+        {
+            // arrange
+            var expectedException =
+                "The Venue name is not unique!";
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => _venueService.Insert(new Venue(0, "Second venue", "description second venue", "address second venue", "+84845464")));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+        }
 
         [Test]
         public void Insert_WhenInsertVenue_ShouldInt1()

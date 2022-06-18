@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Linq;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
@@ -16,7 +15,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void Insert_WhenInsertEvent_ShouldInt1()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 10;
 
             // act
             var actualResponse = _evntRepository.Insert(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2023"), "Stanger Things Serie", 1));
@@ -29,10 +28,10 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void Update_WhenUpdateEvent_ShouldInt1()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 23;
 
             // act
-            var actualResponse = _evntRepository.Update(new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2023"), "Kitchen Serie", 2));
+            var actualResponse = _evntRepository.Update(new Event(3, "Kitchen Serie", DateTimeOffset.Parse("09/09/2023"), "Kitchen Serie", 2));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -42,17 +41,13 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void Delete_WhenDeleteSeat_ShouldInt1()
         {
             // arrange
-            var expectedException =
-                "The DELETE statement conflicted with the REFERENCE constraint \"FK_Event_EventArea\". " +
-                "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.EventArea\", column 'EventId'.\r\n" +
-                "The statement has been terminated.";
+            var expectedResponse = 8;
 
             // act
-            var actualException = Assert.Throws<SqlException>(
-                            () => _evntRepository.Delete(1));
+            var actualResponse = _evntRepository.Delete(1);
 
             // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]

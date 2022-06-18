@@ -4,6 +4,6 @@ namespace TicketManagement.DataAccess.Interfaces
 {
     public interface IVenueRepository : IRepository<Venue>
     {
-        Venue GetFirstByName(string name);
+        int GetIdFirstByName(string name);
     }
 }
