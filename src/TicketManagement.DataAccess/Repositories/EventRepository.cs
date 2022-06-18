@@ -25,6 +25,7 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
+            cmd.Parameters.AddWithValue("@EventEndTime", entity.EventEndTime);
         }
 
         protected override void AddParamsForUpdate(Event entity, SqlCommand cmd)
@@ -36,6 +37,7 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
             cmd.Parameters.AddWithValue("@Description", entity.Description);
             cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
+            cmd.Parameters.AddWithValue("@EventEndTime", entity.EventEndTime);
         }
 
         protected override void AddParamsForDelete(int id, SqlCommand cmd)
@@ -122,7 +124,8 @@ namespace TicketManagement.DataAccess.Repositories
                                      name: reader["Name"].ToString(),
                                      eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),
-                                     layoutId: int.Parse(reader["LayoutId"].ToString()));
+                                     layoutId: int.Parse(reader["LayoutId"].ToString()),
+                                     eventEndTime: DateTime.Parse(reader["EventEndTime"].ToString()));
             }
 
             return null;
@@ -139,7 +142,8 @@ namespace TicketManagement.DataAccess.Repositories
                                      name: reader["Name"].ToString(),
                                      eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
                                      description: reader["Description"].ToString(),
-                                     layoutId: int.Parse(reader["LayoutId"].ToString()));
+                                     layoutId: int.Parse(reader["LayoutId"].ToString()),
+                                     eventEndTime: DateTime.Parse(reader["EventEndTime"].ToString()));
                     evnts.Add(evnt);
                 }
             }

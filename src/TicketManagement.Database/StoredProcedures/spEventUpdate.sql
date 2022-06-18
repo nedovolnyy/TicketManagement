@@ -4,17 +4,20 @@
 	@Name NVARCHAR(120) = null,
     @EventTime DATETIMEOFFSET = null,
 	@Description NVARCHAR(max) = null,
-	@LayoutId INT = null
+	@LayoutId INT = null,
+	@EventEndTime DATETIME2 = null
 )
 AS
 BEGIN
 	IF EXISTS (SELECT Id FROM dbo.Event WHERE LayoutId = @LayoutId AND Id = @Id)
-        UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId WHERE Id = @Id
+        UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime WHERE Id = @Id
+	
 	ELSE BEGIN
+
 		DELETE dbo.EventSeat WHERE EventAreaId IN (SELECT Id FROM dbo.EventArea WHERE EventId = @Id)
         DELETE dbo.EventArea WHERE EventId = @Id
 
-		UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId WHERE Id = @Id
+		UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime WHERE Id = @Id
 		
 		DECLARE @Enumerator TABLE (tempId INT)
 

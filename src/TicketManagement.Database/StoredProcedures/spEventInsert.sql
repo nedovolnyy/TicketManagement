@@ -3,12 +3,13 @@
 	@Name NVARCHAR(120) = null,
     @EventTime DATETIMEOFFSET = null,
 	@Description NVARCHAR(max) = null,
-	@LayoutId INT = null
+	@LayoutId INT = null,
+	@EventEndTime DATETIME2 = null
 )
 AS
 BEGIN
-		INSERT INTO dbo.Event (Name, EventTime, Description, LayoutId)
-			VALUES (@Name, @EventTime, @Description, @LayoutId)
+		INSERT INTO dbo.Event (Name, EventTime, Description, LayoutId, EventEndTime)
+			VALUES (@Name, @EventTime, @Description, @LayoutId, @EventEndTime)
 		DECLARE @tempEventId INT = @@IDENTITY
 		DECLARE @Enumerator TABLE (tempId INT)
 

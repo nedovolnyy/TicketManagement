@@ -34,7 +34,22 @@ namespace TicketManagement.DataAccess.IntegrationTests
 
             // act
             var actualException = Assert.Throws<ValidationException>(
-                            () => _eventService.Insert(new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitschertrn Serie", 3)));
+                            () => _eventService.Insert(new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitschertrn Serie", 3, DateTime.Parse("2023-07-02 00:50:00"))));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+        }
+
+        [Test]
+        public void Validate_WhenEventEndTimeLateEventTime_ShouldTrow()
+        {
+            // arrange
+            var expectedException =
+                "EventEndTime cannot be later than EventTime!";
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => _eventService.Insert(new Event(0, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 3, DateTime.Parse("2023-01-01 00:45:00"))));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -47,7 +62,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 23;
 
             // act
-            var actualResponse = _eventService.Insert(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2));
+            var actualResponse = _eventService.Insert(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2, DateTime.Parse("2023-07-02 00:50:00")));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -60,7 +75,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventService.Update(new Event(2, "StanegegerergThings Serie", DateTimeOffset.Parse("06/11/2023"), "Stanerger Things Serie", 1));
+            var actualResponse = _eventService.Update(new Event(2, "StanegegererThings Serie", DateTimeOffset.Parse("06/11/2023"), "Stanerger Things Serie", 1, DateTime.Parse("2023-11-06 00:50:00")));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

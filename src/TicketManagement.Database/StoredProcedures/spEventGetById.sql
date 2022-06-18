@@ -3,5 +3,5 @@
 	@Id INT = null
 )
 AS
-        SELECT Id, Name, EventTime, Description, LayoutId FROM dbo.Event
+        SELECT Id, Name, EventTime, Description, LayoutId, EventEndTime FROM dbo.Event
 			WHERE Id = @Id

@@ -27,6 +27,11 @@ namespace TicketManagement.BusinessLogic.Services
                 throw new ValidationException("Event can't be created in the past!");
             }
 
+            if (entity.EventTime > entity.EventEndTime)
+            {
+                throw new ValidationException("EventEndTime cannot be later than EventTime!");
+            }
+
             var evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
             foreach (var evnt in evntArray)
             {

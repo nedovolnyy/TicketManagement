@@ -13,8 +13,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
     {
         private readonly List<Event> _expectedEvents = new List<Event>
         {
-            new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2),
-            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00.0000000 +03:00"), "Stanger Things Serie", 1),
+            new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00")),
+            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00 +03:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-09 00:50:00")),
         };
 
         [Test]
@@ -38,7 +38,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "Create event is not possible! Haven't seats in Area!";
-            var evntExpected = new Event(2, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitschertrn Serie", 3);
+            var evntExpected = new Event(2, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitschertrn Serie", 3, DateTime.Parse("2023-07-02 00:50:00"));
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
@@ -56,7 +56,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "The field 'Name' of Event is not allowed to be empty!";
-            var evntExpected = new Event(2, "", DateTimeOffset.Parse("09/19/2022"), "Stanger Things Serie", 2);
+            var evntExpected = new Event(2, "", DateTimeOffset.Parse("09/19/2022"), "Stanger Things Serie", 2, DateTime.Parse("2022-09-19 00:50:00"));
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
@@ -74,7 +74,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "The field 'Description' of Event is not allowed to be empty!";
-            var evntExpected = new Event(1, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2022"), "", 2);
+            var evntExpected = new Event(1, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2022"), "", 2, DateTime.Parse("2022-09-19 00:50:00"));
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
@@ -92,7 +92,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "The field 'LayoutId' of Event is not allowed to be null!";
-            var evntExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 0);
+            var evntExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 0, DateTime.Parse("2022-09-09 00:50:00"));
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
@@ -104,16 +104,35 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
-        public void Validate_WhenEventTimeInPast_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie", "2021-09-09 00:50:00")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie", "2021-09-19 00:50:00")]
+        public void Validate_WhenEventTimeInPast_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description, DateTime eventEndTime)
         {
             // arrange
             var strException =
                 "Event can't be created in the past!";
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description, eventEndTime: eventEndTime);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
             evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
+            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => evntService.Object.Validate(evntExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventEndTimeLateEventTime_ShouldTrow()
+        {
+            // arrange
+            var strException =
+                "EventEndTime cannot be later than EventTime!";
+            var evntExpected = new Event(2, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 2, DateTime.Parse("2023-01-01 00:45:00"));
+            var evntRepository = new Mock<IEventRepository> { CallBase = true };
+            evntRepository.Setup(x => x.Insert(evntExpected)).Returns(1);
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
@@ -130,7 +149,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "Do not create event for the same layout in the same time!";
-            var evntExpected = new Event(2, "Stanweger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00.0000000 +03:00"), "Things Serie", 1);
+            var evntExpected = new Event(2, "Stanweger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00 +03:00"), "Things Serie", 1, DateTime.Parse("2022-09-09 00:50:00"));
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
             evntRepository.Setup(x => x.GetAllByLayoutId(1)).Returns(_expectedEvents);
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
@@ -143,14 +162,14 @@ namespace TicketManagement.BusinessLogic.UnitTests
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
-        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie", "2022-09-09 00:50:00")]
+        [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie", "2022-09-19 00:50:00")]
+        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description, DateTime eventEndTime)
         {
             // arrange
             var strException =
                 "Layout name should be unique in venue!";
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
+            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description, eventEndTime: eventEndTime);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
             evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
@@ -167,7 +186,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Insert_WhenInsertEvent_ShouldNotNull()
         {
             // arrange
-            var eventExpected = new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2022"), "Stanger Things Serie", 1);
+            var eventExpected = new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2022"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-19 00:50:00"));
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
             eventService.Setup(x => x.Insert(It.IsAny<Event>())).Returns(1);
@@ -183,7 +202,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Update_WhenUpdateEvent_ShouldNotNull()
         {
             // arrange
-            var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2);
+            var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"));
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
             eventService.Setup(x => x.Update(It.IsAny<Event>())).Returns(1);
@@ -214,7 +233,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void GetById_WhenReturnEventById_ShouldNotNull()
         {
             // arrange
-            var eventExpected = new Event(5444, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2);
+            var eventExpected = new Event(5444, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"));
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
             eventService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventExpected);

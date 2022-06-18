@@ -18,7 +18,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 10;
 
             // act
-            var actualResponse = _evntRepository.Insert(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2023"), "Stanger Things Serie", 1));
+            var actualResponse = _evntRepository.Insert(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2023"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00")));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,7 +31,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 23;
 
             // act
-            var actualResponse = _evntRepository.Update(new Event(3, "Kitchen Serie", DateTimeOffset.Parse("09/09/2023"), "Kitchen Serie", 2));
+            var actualResponse = _evntRepository.Update(new Event(3, "Kitchen Serie", DateTimeOffset.Parse("09/09/2023"), "Kitchen Serie", 2, DateTime.Parse("2023-09-09 00:50:00")));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
