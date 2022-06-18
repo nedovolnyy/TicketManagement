@@ -5,5 +5,7 @@ namespace TicketManagement.BusinessLogic.Interfaces
     public interface IEventService : IService<Event>
     {
         void Validate(Event entity);
+        int GetCountEmptySeats(int id);
+        int GetCountSeats(int layoutId);
     }
 }

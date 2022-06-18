@@ -73,10 +73,12 @@
     <Build Include="ForeignKeys\FK_EventArea_EventSeat.sql" />
     <Build Include="StoredProcedures\spEventInsert.sql" />
     <Build Include="StoredProcedures\spEventDelete.sql" />
-    <Build Include="StoredProcedures\spEventForValidation.sql" />
+    <Build Include="StoredProcedures\spEventForValidationByLayout.sql" />
     <Build Include="StoredProcedures\spEventGetAll.sql" />
     <Build Include="StoredProcedures\spEventGetById.sql" />
     <Build Include="StoredProcedures\spEventUpdate.sql" />
+    <Build Include="StoredProcedures\spEventCountEmptySeats.sql" />
+    <Build Include="StoredProcedures\spEventCountSeats.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Event.sql" />

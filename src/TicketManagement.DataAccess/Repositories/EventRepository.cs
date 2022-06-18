@@ -59,18 +59,58 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         /// <summary>
-        /// Method for populate data by id.
+        /// Method for populate data by layoutId.
         /// </summary>
-        /// <param name="id">id.</param>
+        /// <param name="layoutId">layoutId.</param>
         /// <returns><see cref="Event"/>List&lt;Event&gt;.</returns>
-        public IEnumerable<Event> GetAllByLayoutId(int id)
+        public IEnumerable<Event> GetAllByLayoutId(int layoutId)
         {
             var cmd = _databaseContext.Connection.CreateCommand();
-            cmd.CommandText = "spEventForValidation";
+            cmd.CommandText = "spEventForValidationByLayout";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@LayoutId", id);
+            cmd.Parameters.AddWithValue("@LayoutId", layoutId);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);
+        }
+
+        /// <summary>
+        /// Method for count empty seats.
+        /// </summary>
+        /// <param name="id">id.</param>
+        /// <returns><see cref="int"/>Count empty seats.</returns>
+        public int GetCountEmptySeats(int id)
+        {
+            var cmd = _databaseContext.Connection.CreateCommand();
+            cmd.CommandText = "spEventCountEmptySeats";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@Id", id);
+            var count = cmd.ExecuteScalar();
+            if (count is null)
+            {
+                return default;
+            }
+
+            return int.Parse(count.ToString());
+        }
+
+        /// <summary>
+        /// Method for validation data by seats in Area.
+        /// </summary>
+        /// <param name="layoutId">layoutId.</param>
+        /// <returns><see cref="int"/>Count empty seats.</returns>
+        public int GetCountSeats(int layoutId)
+        {
+            var cmd = _databaseContext.Connection.CreateCommand();
+            cmd.CommandText = "spEventCountSeats";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@LayoutId", layoutId);
+            var count = cmd.ExecuteScalar();
+            if (count is null)
+            {
+                return default;
+            }
+
+            return int.Parse(count.ToString());
         }
 
         protected override Event Map(SqlDataReader reader)

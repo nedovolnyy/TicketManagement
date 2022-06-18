@@ -64,14 +64,13 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.CommandText = "SELECT TOP 1 Id FROM Venue WHERE Name = @Name";
             cmd.CommandType = CommandType.Text;
             cmd.Parameters.AddWithValue("@Name", name);
-            using var reader = cmd.ExecuteReader();
-            if (reader.HasRows)
+            var strId = cmd.ExecuteScalar();
+            if (strId is null)
             {
-                reader.Read();
-                return int.Parse(reader["Id"].ToString());
+                return default;
             }
 
-            return default;
+            return int.Parse(strId.ToString());
         }
 
         protected override Venue Map(SqlDataReader reader)

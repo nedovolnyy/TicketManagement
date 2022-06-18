@@ -18,6 +18,39 @@ namespace TicketManagement.BusinessLogic.UnitTests
         };
 
         [Test]
+        public void GetCountEmptySeats_WhenId2_ShouldInt3()
+        {
+            // arrange
+            var eventRepository = new Mock<IEventRepository> { CallBase = true };
+            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            eventService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
+
+            // act
+            var actual = eventService.Object.GetCountEmptySeats(1);
+
+            // assert
+            Assert.NotNull(actual);
+        }
+
+        [Test]
+        public void Validate_WhenAreaHavntSeats_ShouldTrow()
+        {
+            // arrange
+            var strException =
+                "Create event is not possible! Haven't seats in Area!";
+            var evntExpected = new Event(2, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitschertrn Serie", 3);
+            var evntRepository = new Mock<IEventRepository> { CallBase = true };
+            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => evntService.Object.Validate(evntExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
         public void Validate_WhenEventFieldNameEmpty_ShouldThrow()
         {
             // arrange

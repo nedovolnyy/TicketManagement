@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE dbo.spEventForValidation
+﻿CREATE PROCEDURE dbo.spEventForValidationByLayout
 (
 	@LayoutId INT = null
 )

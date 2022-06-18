@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Linq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.DataAccess.IntegrationTests
@@ -11,6 +11,34 @@ namespace TicketManagement.DataAccess.IntegrationTests
     public class EventServiceTests
     {
         private readonly EventService _eventService = new EventService(new EventRepository(TestDatabaseFixture.DatabaseContext));
+
+        [Test]
+        public void GetCountEmptySeats_WhenId2_ShouldInt3()
+        {
+            // arrange
+            var expectedResponse = 2;
+
+            // act
+            var actualResponse = _eventService.GetCountEmptySeats(2);
+
+            // assert
+            Assert.AreEqual(expectedResponse, actualResponse);
+        }
+
+        [Test]
+        public void Validate_WhenAreaHavntSeats_ShouldTrow()
+        {
+            // arrange
+            var expectedException =
+                "Create event is not possible! Haven't seats in Area!";
+
+            // act
+            var actualException = Assert.Throws<ValidationException>(
+                            () => _eventService.Insert(new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitschertrn Serie", 3)));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+        }
 
         [Test]
         public void Insert_WhenInsertEvent_ShouldInt1()
@@ -29,10 +57,10 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void Update_WhenUpdateEvent_ShouldInt1()
         {
             // arrange
-            var expectedResponse = 24;
+            var expectedResponse = 1;
 
             // act
-            var actualResponse = _eventService.Update(new Event(3, "StanegegerergThings Serie", DateTimeOffset.Parse("06/11/2023"), "Stanerger Things Serie", 1));
+            var actualResponse = _eventService.Update(new Event(2, "StanegegerergThings Serie", DateTimeOffset.Parse("06/11/2023"), "Stanerger Things Serie", 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -45,7 +73,7 @@ namespace TicketManagement.DataAccess.IntegrationTests
             var expectedResponse = 15;
 
             // act
-            var actualResponse = _eventService.Delete(2);
+            var actualResponse = _eventService.Delete(3);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -65,10 +93,10 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 3;
+            var expectedId = 2;
 
             // act
-            var actualId = _eventService.GetById(3);
+            var actualId = _eventService.GetById(2);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
