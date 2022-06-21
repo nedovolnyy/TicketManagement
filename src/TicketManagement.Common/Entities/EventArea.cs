@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace TicketManagement.Common.Entities
 {
@@ -12,6 +12,7 @@ namespace TicketManagement.Common.Entities
             CoordX = coordX;
             CoordY = coordY;
             Price = price;
+            EventSeats = new HashSet<EventSeat>();
         }
 
         public int EventId { get; private set; }
@@ -19,5 +20,7 @@ namespace TicketManagement.Common.Entities
         public int CoordX { get; private set; }
         public int CoordY { get; private set; }
         public decimal Price { get; private set; }
+        public Event Event { get; private set; }
+        public virtual ICollection<EventSeat> EventSeats { get; set; }
     }
 }

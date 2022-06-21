@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TicketManagement.Common.Entities
 {
@@ -12,6 +13,7 @@ namespace TicketManagement.Common.Entities
             Description = description;
             LayoutId = layoutId;
             EventEndTime = eventEndTime;
+            EventAreas = new HashSet<EventArea>();
         }
 
         public string Name { get; private set; }
@@ -19,5 +21,7 @@ namespace TicketManagement.Common.Entities
         public string Description { get; private set; }
         public int LayoutId { get; private set; }
         public DateTime EventEndTime { get; private set; }
+        public Layout Layout { get; private set; }
+        public virtual ICollection<EventArea> EventAreas { get; set; }
     }
 }

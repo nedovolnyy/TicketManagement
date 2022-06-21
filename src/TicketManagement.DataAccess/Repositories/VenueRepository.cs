@@ -1,54 +1,56 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class VenueRepository : BaseRepository<Venue>, IVenueRepository
     {
-        private readonly IDatabaseContext _databaseContext;
+        private readonly DatabaseContext _databaseContext;
 
-        internal VenueRepository(IDatabaseContext databaseContext)
+        internal VenueRepository(DatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
         }
 
-        protected override void AddParamsForInsert(Venue entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(Venue entity, DbCommand cmd)
         {
             cmd.CommandText = "INSERT INTO Venue (Name, Description, Address, Phone) VALUES (@Name, @Description, @Address, @Phone);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)";
-            cmd.Parameters.AddWithValue("@Name", entity.Name);
-            cmd.Parameters.AddWithValue("@Description", entity.Description);
-            cmd.Parameters.AddWithValue("@Address", entity.Address);
-            cmd.Parameters.AddWithValue("@Phone", entity.Phone);
+            cmd.AddWithValue("@Name", entity.Name);
+            cmd.AddWithValue("@Description", entity.Description);
+            cmd.AddWithValue("@Address", entity.Address);
+            cmd.AddWithValue("@Phone", entity.Phone);
         }
 
-        protected override void AddParamsForUpdate(Venue entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(Venue entity, DbCommand cmd)
         {
             cmd.CommandText = "UPDATE Venue SET Name = @Name, Description = @Description, Address = @Address, Phone = @Phone Where Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", entity.Id);
-            cmd.Parameters.AddWithValue("@Name", entity.Name);
-            cmd.Parameters.AddWithValue("@Description", entity.Description);
-            cmd.Parameters.AddWithValue("@Address", entity.Address);
-            cmd.Parameters.AddWithValue("@Phone", entity.Phone);
+            cmd.AddWithValue("@Id", entity.Id);
+            cmd.AddWithValue("@Name", entity.Name);
+            cmd.AddWithValue("@Description", entity.Description);
+            cmd.AddWithValue("@Address", entity.Address);
+            cmd.AddWithValue("@Phone", entity.Phone);
         }
 
-        protected override void AddParamsForDelete(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, DbCommand cmd)
         {
             cmd.CommandText = "DELETE FROM Venue WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void AddParamsForGetById(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, Name, Description, Address, Phone FROM Venue WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void GetAllCommandParameters(SqlCommand cmd)
+        protected override void GetAllCommandParameters(DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, Name, Description, Address, Phone FROM Venue";
         }
@@ -60,10 +62,10 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="int"/>First id, if in table Venue have same name.</returns>
         public int GetIdFirstByName(string name)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "SELECT TOP 1 Id FROM Venue WHERE Name = @Name";
             cmd.CommandType = CommandType.Text;
-            cmd.Parameters.AddWithValue("@Name", name);
+            cmd.AddWithValue("@Name", name);
             var strId = cmd.ExecuteScalar();
             if (strId is null)
             {
@@ -73,7 +75,7 @@ namespace TicketManagement.DataAccess.Repositories
             return int.Parse(strId.ToString());
         }
 
-        protected override Venue Map(SqlDataReader reader)
+        protected override Venue Map(DbDataReader reader)
         {
             if (reader.HasRows)
             {
@@ -88,7 +90,7 @@ namespace TicketManagement.DataAccess.Repositories
             return null;
         }
 
-        protected override List<Venue> Maps(SqlDataReader reader)
+        protected override List<Venue> Maps(DbDataReader reader)
         {
             var venues = new List<Venue>();
             if (reader.HasRows)

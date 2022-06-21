@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TicketManagement.Common.Entities
+﻿namespace TicketManagement.Common.Entities
 {
     public class Seat : BaseEntity
     {
@@ -15,5 +13,6 @@ namespace TicketManagement.Common.Entities
         public int AreaId { get; private set; }
         public int Row { get; private set; }
         public int Number { get; private set; }
+        public Area Area { get; private set; }
     }
 }

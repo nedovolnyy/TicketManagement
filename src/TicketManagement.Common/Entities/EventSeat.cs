@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace TicketManagement.Common.Entities
 {
@@ -17,5 +17,6 @@ namespace TicketManagement.Common.Entities
         public int Row { get; private set; }
         public int Number { get; private set; }
         public int State { get; private set; }
+        public EventArea EventArea { get; private set; }
     }
 }

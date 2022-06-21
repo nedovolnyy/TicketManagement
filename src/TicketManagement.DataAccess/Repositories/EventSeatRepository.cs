@@ -1,58 +1,59 @@
 ﻿using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Data.Common;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventSeatRepository : BaseRepository<EventSeat>, IEventSeatRepository
     {
-        private readonly IDatabaseContext _databaseContext;
+        private readonly DatabaseContext _databaseContext;
 
-        internal EventSeatRepository(IDatabaseContext databaseContext)
+        internal EventSeatRepository(DatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
         }
 
-        protected override void AddParamsForInsert(EventSeat entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(EventSeat entity, DbCommand cmd)
         {
             cmd.CommandText = "INSERT INTO EventSeat (EventAreaId, Row, Number, State) VALUES (@EventAreaId, @Row, @Number, @State);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)";
-            cmd.Parameters.AddWithValue("@EventAreaId", entity.EventAreaId);
-            cmd.Parameters.AddWithValue("@Row", entity.Row);
-            cmd.Parameters.AddWithValue("@Number", entity.Number);
-            cmd.Parameters.AddWithValue("@State", entity.State);
+            cmd.AddWithValue("@EventAreaId", entity.EventAreaId);
+            cmd.AddWithValue("@Row", entity.Row);
+            cmd.AddWithValue("@Number", entity.Number);
+            cmd.AddWithValue("@State", entity.State);
         }
 
-        protected override void AddParamsForUpdate(EventSeat entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(EventSeat entity, DbCommand cmd)
         {
             cmd.CommandText = "UPDATE EventSeat SET EventAreaId = @EventAreaId, Row = @Row, Number = @Number, State = @State Where Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", entity.Id);
-            cmd.Parameters.AddWithValue("@EventAreaId", entity.EventAreaId);
-            cmd.Parameters.AddWithValue("@Row", entity.Row);
-            cmd.Parameters.AddWithValue("@Number", entity.Number);
-            cmd.Parameters.AddWithValue("@State", entity.State);
+            cmd.AddWithValue("@Id", entity.Id);
+            cmd.AddWithValue("@EventAreaId", entity.EventAreaId);
+            cmd.AddWithValue("@Row", entity.Row);
+            cmd.AddWithValue("@Number", entity.Number);
+            cmd.AddWithValue("@State", entity.State);
         }
 
-        protected override void AddParamsForDelete(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, DbCommand cmd)
         {
             cmd.CommandText = "DELETE FROM EventSeat WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void AddParamsForGetById(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, EventAreaId, Row, Number, State FROM EventSeat WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void GetAllCommandParameters(SqlCommand cmd)
+        protected override void GetAllCommandParameters(DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, EventAreaId, Row, Number, State FROM EventSeat";
         }
 
-        protected override EventSeat Map(SqlDataReader reader)
+        protected override EventSeat Map(DbDataReader reader)
         {
             if (reader.HasRows)
             {
@@ -67,7 +68,7 @@ namespace TicketManagement.DataAccess.Repositories
             return null;
         }
 
-        protected override List<EventSeat> Maps(SqlDataReader reader)
+        protected override List<EventSeat> Maps(DbDataReader reader)
         {
             var eventSeats = new List<EventSeat>();
             if (reader.HasRows)

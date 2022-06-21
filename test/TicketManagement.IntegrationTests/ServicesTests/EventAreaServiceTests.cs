@@ -1,5 +1,5 @@
-﻿using System.Data.SqlClient;
-using System.Linq;
+﻿using System.Linq;
+using Microsoft.Data.SqlClient;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;

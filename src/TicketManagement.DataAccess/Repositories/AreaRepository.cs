@@ -1,54 +1,57 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
-        private readonly IDatabaseContext _databaseContext;
+        private readonly DatabaseContext _databaseContext;
 
-        internal AreaRepository(IDatabaseContext databaseContext)
+        internal AreaRepository(DatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
+            _databaseContext.Database.OpenConnection();
         }
 
-        protected override void AddParamsForInsert(Area entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(Area entity, DbCommand cmd)
         {
             cmd.CommandText = "INSERT INTO Area (LayoutId, Description, CoordX, CoordY) VALUES (@LayoutId, @Description, @CoordX, @CoordY);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)";
-            cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
-            cmd.Parameters.AddWithValue("@Description", entity.Description);
-            cmd.Parameters.AddWithValue("@CoordX", entity.CoordX);
-            cmd.Parameters.AddWithValue("@CoordY", entity.CoordY);
+            cmd.AddWithValue("@LayoutId", entity.LayoutId);
+            cmd.AddWithValue("@Description", entity.Description);
+            cmd.AddWithValue("@CoordX", entity.CoordX);
+            cmd.AddWithValue("@CoordY", entity.CoordY);
         }
 
-        protected override void AddParamsForUpdate(Area entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(Area entity, DbCommand cmd)
         {
             cmd.CommandText = "UPDATE Area SET LayoutId = @LayoutId, Description = @Description, CoordX = @CoordX, CoordY = @CoordY WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", entity.Id);
-            cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
-            cmd.Parameters.AddWithValue("@Description", entity.Description);
-            cmd.Parameters.AddWithValue("@CoordX", entity.CoordX);
-            cmd.Parameters.AddWithValue("@CoordY", entity.CoordY);
+            cmd.AddWithValue("@Id", entity.Id);
+            cmd.AddWithValue("@LayoutId", entity.LayoutId);
+            cmd.AddWithValue("@Description", entity.Description);
+            cmd.AddWithValue("@CoordX", entity.CoordX);
+            cmd.AddWithValue("@CoordY", entity.CoordY);
         }
 
-        protected override void AddParamsForDelete(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, DbCommand cmd)
         {
             cmd.CommandText = "DELETE FROM Area WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void AddParamsForGetById(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void GetAllCommandParameters(SqlCommand cmd)
+        protected override void GetAllCommandParameters(DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area";
         }
@@ -60,15 +63,14 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Area"/>List&lt;Area&gt;.</returns>
         IEnumerable<Area> IAreaRepository.GetAllByLayoutId(int id)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE LayoutId = @LayoutId";
-            cmd.CommandType = CommandType.Text;
-            cmd.Parameters.AddWithValue("@LayoutId", id);
+            cmd.AddWithValue("@LayoutId", id);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);
         }
 
-        protected override Area Map(SqlDataReader reader)
+        protected override Area Map(DbDataReader reader)
         {
             if (reader.HasRows)
             {
@@ -83,7 +85,7 @@ namespace TicketManagement.DataAccess.Repositories
             return null;
         }
 
-        protected override List<Area> Maps(SqlDataReader reader)
+        protected override List<Area> Maps(DbDataReader reader)
         {
             var areas = new List<Area>();
             if (reader.HasRows)

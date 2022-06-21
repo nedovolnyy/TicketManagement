@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace TicketManagement.Common.Entities
 {
@@ -11,11 +11,13 @@ namespace TicketManagement.Common.Entities
             Description = description;
             Address = address;
             Phone = phone;
+            Layouts = new HashSet<Layout>();
         }
 
         public string Name { get; private set; }
         public string Description { get; private set; }
         public string Address { get; private set; }
         public string Phone { get; private set; }
+        public virtual ICollection<Layout> Layouts { get; set; }
     }
 }

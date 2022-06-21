@@ -1,52 +1,54 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
-        private readonly IDatabaseContext _databaseContext;
+        private readonly DatabaseContext _databaseContext;
 
-        internal SeatRepository(IDatabaseContext databaseContext)
+        internal SeatRepository(DatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
         }
 
-        protected override void AddParamsForInsert(Seat entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(Seat entity, DbCommand cmd)
         {
             cmd.CommandText = "INSERT INTO Seat (AreaId, Row, Number) VALUES (@AreaId, @Row, @Number);" +
                             "SELECT CAST (SCOPE_IDENTITY() AS INT)";
-            cmd.Parameters.AddWithValue("@AreaId", entity.AreaId);
-            cmd.Parameters.AddWithValue("@Row", entity.Row);
-            cmd.Parameters.AddWithValue("@Number", entity.Number);
+            cmd.AddWithValue("@AreaId", entity.AreaId);
+            cmd.AddWithValue("@Row", entity.Row);
+            cmd.AddWithValue("@Number", entity.Number);
         }
 
-        protected override void AddParamsForUpdate(Seat entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(Seat entity, DbCommand cmd)
         {
             cmd.CommandText = "UPDATE Seat SET AreaId = @AreaId, Row = @Row, Number = @Number Where Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", entity.Id);
-            cmd.Parameters.AddWithValue("@AreaId", entity.AreaId);
-            cmd.Parameters.AddWithValue("@Row", entity.Row);
-            cmd.Parameters.AddWithValue("@Number", entity.Number);
+            cmd.AddWithValue("@Id", entity.Id);
+            cmd.AddWithValue("@AreaId", entity.AreaId);
+            cmd.AddWithValue("@Row", entity.Row);
+            cmd.AddWithValue("@Number", entity.Number);
         }
 
-        protected override void AddParamsForDelete(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, DbCommand cmd)
         {
             cmd.CommandText = "DELETE FROM Seat WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void AddParamsForGetById(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat WHERE Id = @Id";
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void GetAllCommandParameters(SqlCommand cmd)
+        protected override void GetAllCommandParameters(DbCommand cmd)
         {
             cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat";
         }
@@ -58,15 +60,15 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Seat"/>List&lt;Seat&gt;.</returns>
         public IEnumerable<Seat> GetAllByAreaId(int id)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat WHERE AreaId = @AreaId";
             cmd.CommandType = CommandType.Text;
-            cmd.Parameters.AddWithValue("@AreaId", id);
+            cmd.AddWithValue("@AreaId", id);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);
         }
 
-        protected override Seat Map(SqlDataReader reader)
+        protected override Seat Map(DbDataReader reader)
         {
             if (reader.HasRows)
             {
@@ -80,7 +82,7 @@ namespace TicketManagement.DataAccess.Repositories
             return null;
         }
 
-        protected override List<Seat> Maps(SqlDataReader reader)
+        protected override List<Seat> Maps(DbDataReader reader)
         {
             var seats = new List<Seat>();
             if (reader.HasRows)

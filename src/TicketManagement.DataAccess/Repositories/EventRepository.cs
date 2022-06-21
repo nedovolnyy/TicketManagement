@@ -1,60 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventRepository : BaseRepository<Event>, IEventRepository
     {
-        private readonly IDatabaseContext _databaseContext;
+        private readonly DatabaseContext _databaseContext;
 
-        internal EventRepository(IDatabaseContext databaseContext)
+        internal EventRepository(DatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
         }
 
-        protected override void AddParamsForInsert(Event entity, SqlCommand cmd)
+        protected override void AddParamsForInsert(Event entity, DbCommand cmd)
         {
             cmd.CommandText = "spEventInsert";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Name", entity.Name);
-            cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
-            cmd.Parameters.AddWithValue("@Description", entity.Description);
-            cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
-            cmd.Parameters.AddWithValue("@EventEndTime", entity.EventEndTime);
+            cmd.AddWithValue("@Name", entity.Name);
+            cmd.AddWithValue("@EventTime", entity.EventTime);
+            cmd.AddWithValue("@Description", entity.Description);
+            cmd.AddWithValue("@LayoutId", entity.LayoutId);
+            cmd.AddWithValue("@EventEndTime", entity.EventEndTime);
         }
 
-        protected override void AddParamsForUpdate(Event entity, SqlCommand cmd)
+        protected override void AddParamsForUpdate(Event entity, DbCommand cmd)
         {
             cmd.CommandText = "spEventUpdate";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Id", entity.Id);
-            cmd.Parameters.AddWithValue("@Name", entity.Name);
-            cmd.Parameters.AddWithValue("@EventTime", entity.EventTime);
-            cmd.Parameters.AddWithValue("@Description", entity.Description);
-            cmd.Parameters.AddWithValue("@LayoutId", entity.LayoutId);
-            cmd.Parameters.AddWithValue("@EventEndTime", entity.EventEndTime);
+            cmd.AddWithValue("@Id", entity.Id);
+            cmd.AddWithValue("@Name", entity.Name);
+            cmd.AddWithValue("@EventTime", entity.EventTime);
+            cmd.AddWithValue("@Description", entity.Description);
+            cmd.AddWithValue("@LayoutId", entity.LayoutId);
+            cmd.AddWithValue("@EventEndTime", entity.EventEndTime);
         }
 
-        protected override void AddParamsForDelete(int id, SqlCommand cmd)
+        protected override void AddParamsForDelete(int id, DbCommand cmd)
         {
             cmd.CommandText = "spEventDelete";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void AddParamsForGetById(int id, SqlCommand cmd)
+        protected override void AddParamsForGetById(int id, DbCommand cmd)
         {
             cmd.CommandText = "spEventGetById";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
         }
 
-        protected override void GetAllCommandParameters(SqlCommand cmd)
+        protected override void GetAllCommandParameters(DbCommand cmd)
         {
             cmd.CommandText = "spEventGetAll";
             cmd.CommandType = CommandType.StoredProcedure;
@@ -67,10 +69,10 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="Event"/>List&lt;Event&gt;.</returns>
         public IEnumerable<Event> GetAllByLayoutId(int layoutId)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "spEventForValidationByLayout";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@LayoutId", layoutId);
+            cmd.AddWithValue("@LayoutId", layoutId);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);
         }
@@ -82,10 +84,10 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="int"/>Count empty seats.</returns>
         public int GetCountEmptySeats(int id)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "spEventCountEmptySeats";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.AddWithValue("@Id", id);
             var count = cmd.ExecuteScalar();
             if (count is null)
             {
@@ -102,10 +104,10 @@ namespace TicketManagement.DataAccess.Repositories
         /// <returns><see cref="int"/>Count empty seats.</returns>
         public int GetCountSeats(int layoutId)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "spEventCountSeats";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@LayoutId", layoutId);
+            cmd.AddWithValue("@LayoutId", layoutId);
             var count = cmd.ExecuteScalar();
             if (count is null)
             {
@@ -115,7 +117,7 @@ namespace TicketManagement.DataAccess.Repositories
             return int.Parse(count.ToString());
         }
 
-        protected override Event Map(SqlDataReader reader)
+        protected override Event Map(DbDataReader reader)
         {
             if (reader.HasRows)
             {
@@ -131,7 +133,7 @@ namespace TicketManagement.DataAccess.Repositories
             return null;
         }
 
-        protected override List<Event> Maps(SqlDataReader reader)
+        protected override List<Event> Maps(DbDataReader reader)
         {
             var evnts = new List<Event>();
             if (reader.HasRows)

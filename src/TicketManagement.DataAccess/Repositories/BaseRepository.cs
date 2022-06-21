@@ -1,6 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
+using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
@@ -8,8 +13,8 @@ namespace TicketManagement.DataAccess.Repositories
     internal abstract class BaseRepository<T> : IRepository<T>
         where T : BaseEntity
     {
-        private readonly IDatabaseContext _databaseContext;
-        protected BaseRepository(IDatabaseContext databaseContext)
+        private readonly DatabaseContext _databaseContext;
+        protected BaseRepository(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
@@ -22,7 +27,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             int i;
 
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             AddParamsForInsert(entity, cmd);
             i = cmd.ExecuteNonQuery();
             return i;
@@ -36,7 +41,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             int i;
 
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             AddParamsForUpdate(entity, cmd);
             i = cmd.ExecuteNonQuery();
             return i;
@@ -50,7 +55,7 @@ namespace TicketManagement.DataAccess.Repositories
         {
             int i;
 
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             AddParamsForDelete(id, cmd);
             i = cmd.ExecuteNonQuery();
             return i;
@@ -60,10 +65,10 @@ namespace TicketManagement.DataAccess.Repositories
         /// Base method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns><see cref="BaseEntity"/>BaseEntity&gt;.</returns>
+        /// <returns><see cref="BaseEntity"/>&lt;BaseEntity&gt;.</returns>
         public T GetById(int id)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             AddParamsForGetById(id, cmd);
             using var reader = cmd.ExecuteReader();
             return Map(reader);
@@ -72,21 +77,21 @@ namespace TicketManagement.DataAccess.Repositories
         /// <summary>
         /// Base method for populate all data.
         /// </summary>
-        /// <returns><see cref="BaseEntity"/>List&lt;BaseEntity&gt;.</returns>
+        /// <returns><see cref="BaseEntity"/>&lt;BaseEntity&gt;.</returns>
         public IEnumerable<T> GetAll()
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
+            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
             GetAllCommandParameters(cmd);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);
         }
 
-        protected abstract void AddParamsForInsert(T entity, SqlCommand cmd);
-        protected abstract void AddParamsForUpdate(T entity, SqlCommand cmd);
-        protected abstract void AddParamsForDelete(int id, SqlCommand cmd);
-        protected abstract void AddParamsForGetById(int id, SqlCommand cmd);
-        protected abstract void GetAllCommandParameters(SqlCommand cmd);
-        protected abstract T Map(SqlDataReader reader);
-        protected abstract List<T> Maps(SqlDataReader reader);
+        protected abstract void AddParamsForInsert(T entity, DbCommand cmd);
+        protected abstract void AddParamsForUpdate(T entity, DbCommand cmd);
+        protected abstract void AddParamsForDelete(int id, DbCommand cmd);
+        protected abstract void AddParamsForGetById(int id, DbCommand cmd);
+        protected abstract void GetAllCommandParameters(DbCommand cmd);
+        protected abstract T Map(DbDataReader reader);
+        protected abstract List<T> Maps(DbDataReader reader);
     }
 }
