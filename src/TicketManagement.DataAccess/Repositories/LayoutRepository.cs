@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class LayoutRepository : BaseRepository<Layout>, ILayoutRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IDatabaseContext _databaseContext;
 
-        internal LayoutRepository(DatabaseContext databaseContext)
+        internal LayoutRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
@@ -53,16 +50,10 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.CommandText = "SELECT Id, Name, VenueId, Description FROM Layout";
         }
 
-        /// <summary>
-        /// Method for populate data by id.
-        /// </summary>
-        /// <param name="id">id.</param>
-        /// <returns><see cref="Layout"/>List&lt;Layout&gt;.</returns>
         public IEnumerable<Layout> GetAllByVenueId(int id)
         {
-            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             cmd.CommandText = "SELECT Id, Name, VenueId, Description FROM Layout WHERE VenueId = @VenueId";
-            cmd.CommandType = CommandType.Text;
             cmd.AddWithValue("@VenueId", id);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);

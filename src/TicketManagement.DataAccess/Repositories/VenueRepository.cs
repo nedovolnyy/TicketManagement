@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class VenueRepository : BaseRepository<Venue>, IVenueRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IDatabaseContext _databaseContext;
 
-        internal VenueRepository(DatabaseContext databaseContext)
+        internal VenueRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
@@ -55,16 +52,10 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.CommandText = "SELECT Id, Name, Description, Address, Phone FROM Venue";
         }
 
-        /// <summary>
-        /// Method for populate data by name.
-        /// </summary>
-        /// <param name="name">id.</param>
-        /// <returns><see cref="int"/>First id, if in table Venue have same name.</returns>
         public int GetIdFirstByName(string name)
         {
-            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             cmd.CommandText = "SELECT TOP 1 Id FROM Venue WHERE Name = @Name";
-            cmd.CommandType = CommandType.Text;
             cmd.AddWithValue("@Name", name);
             var strId = cmd.ExecuteScalar();
             if (strId is null)

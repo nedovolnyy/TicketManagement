@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventAreaRepository : BaseRepository<EventArea>, IEventAreaRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IDatabaseContext _databaseContext;
 
-        internal EventAreaRepository(DatabaseContext databaseContext)
+        internal EventAreaRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;

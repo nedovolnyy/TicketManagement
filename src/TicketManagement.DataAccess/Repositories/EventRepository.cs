@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventRepository : BaseRepository<Event>, IEventRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IDatabaseContext _databaseContext;
 
-        internal EventRepository(DatabaseContext databaseContext)
+        internal EventRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
@@ -62,14 +60,9 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.CommandType = CommandType.StoredProcedure;
         }
 
-        /// <summary>
-        /// Method for populate data by layoutId.
-        /// </summary>
-        /// <param name="layoutId">layoutId.</param>
-        /// <returns><see cref="Event"/>List&lt;Event&gt;.</returns>
         public IEnumerable<Event> GetAllByLayoutId(int layoutId)
         {
-            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             cmd.CommandText = "spEventForValidationByLayout";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.AddWithValue("@LayoutId", layoutId);
@@ -77,14 +70,9 @@ namespace TicketManagement.DataAccess.Repositories
             return Maps(reader);
         }
 
-        /// <summary>
-        /// Method for count empty seats.
-        /// </summary>
-        /// <param name="id">id.</param>
-        /// <returns><see cref="int"/>Count empty seats.</returns>
         public int GetCountEmptySeats(int id)
         {
-            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             cmd.CommandText = "spEventCountEmptySeats";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.AddWithValue("@Id", id);
@@ -97,14 +85,9 @@ namespace TicketManagement.DataAccess.Repositories
             return int.Parse(count.ToString());
         }
 
-        /// <summary>
-        /// Method for validation data by seats in Area.
-        /// </summary>
-        /// <param name="layoutId">layoutId.</param>
-        /// <returns><see cref="int"/>Count empty seats.</returns>
         public int GetCountSeats(int layoutId)
         {
-            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             cmd.CommandText = "spEventCountSeats";
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.AddWithValue("@LayoutId", layoutId);

@@ -1,22 +1,18 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class AreaRepository : BaseRepository<Area>, IAreaRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IDatabaseContext _databaseContext;
 
-        internal AreaRepository(DatabaseContext databaseContext)
+        internal AreaRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
-            _databaseContext.Database.OpenConnection();
         }
 
         protected override void AddParamsForInsert(Area entity, DbCommand cmd)
@@ -56,14 +52,9 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area";
         }
 
-        /// <summary>
-        /// Base Method for populate data by id.
-        /// </summary>
-        /// <param name="id">id.</param>
-        /// <returns><see cref="Area"/>List&lt;Area&gt;.</returns>
         IEnumerable<Area> IAreaRepository.GetAllByLayoutId(int id)
         {
-            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             cmd.CommandText = "SELECT Id, LayoutId, Description, CoordX, CoordY FROM Area WHERE LayoutId = @LayoutId";
             cmd.AddWithValue("@LayoutId", id);
             using var reader = cmd.ExecuteReader();

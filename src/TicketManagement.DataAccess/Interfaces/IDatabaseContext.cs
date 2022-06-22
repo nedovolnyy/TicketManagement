@@ -1,10 +1,11 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace TicketManagement.DataAccess.Interfaces
 {
     public interface IDatabaseContext
     {
-        SqlConnection Connection { get; }
+        DbContext Instance { get; }
+        DbConnection Connection { get; }
     }
 }

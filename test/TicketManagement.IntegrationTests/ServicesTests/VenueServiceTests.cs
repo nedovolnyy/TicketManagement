@@ -6,7 +6,7 @@ using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.DataAccess.IntegrationTests
+namespace TicketManagement.IntegrationTests
 {
     public class VenueServiceTests
     {

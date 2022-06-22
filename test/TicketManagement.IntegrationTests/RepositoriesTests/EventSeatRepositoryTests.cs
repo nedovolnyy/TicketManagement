@@ -4,7 +4,7 @@ using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.DataAccess.IntegrationTests
+namespace TicketManagement.IntegrationTests
 {
     public class EventSeatRepositoryTests
     {

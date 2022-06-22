@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketManagement.Common.Entities
 {
+    [Table("Event")]
     public class Event : BaseEntity
     {
         public Event(int id, string name, DateTimeOffset eventTime, string description, int layoutId, DateTime eventEndTime)
@@ -13,15 +15,23 @@ namespace TicketManagement.Common.Entities
             Description = description;
             LayoutId = layoutId;
             EventEndTime = eventEndTime;
-            EventAreas = new HashSet<EventArea>();
         }
 
+        [Required]
+        [MaxLength(120)]
         public string Name { get; private set; }
+
+        [Required]
         public DateTimeOffset EventTime { get; private set; }
+
+        [Required]
         public string Description { get; private set; }
+
+        [Required]
+        [ForeignKey("Layout")]
         public int LayoutId { get; private set; }
+
+        [Required]
         public DateTime EventEndTime { get; private set; }
-        public Layout Layout { get; private set; }
-        public virtual ICollection<EventArea> EventAreas { get; set; }
     }
 }

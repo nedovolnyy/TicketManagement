@@ -1,20 +1,16 @@
 ﻿using System.Configuration;
-using System.Data;
-using System.Data.Common;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.DataAccess.EF;
-using TicketManagement.IntegrationTests;
+using TicketManagement.DataAccess.Interfaces;
 
-namespace TicketManagement.DataAccess.IntegrationTests
+namespace TicketManagement.IntegrationTests
 {
     [SetUpFixture]
     public class TestDatabaseFixture
     {
         private static readonly string _testConnectionString = ConfigurationManager.ConnectionStrings["TestConnection"].ConnectionString;
         private static readonly string _backupConnectionString = ConfigurationManager.ConnectionStrings["BackupConnection"].ConnectionString;
-        public static DatabaseContext DatabaseContext { get; set; } = new DatabaseContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+        public static IDatabaseContext DatabaseContext { get; set; } = new DatabaseContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
 
         [OneTimeSetUp]
         public void Setup()
@@ -26,7 +22,6 @@ namespace TicketManagement.DataAccess.IntegrationTests
         public void TearDown()
         {
             DropDatabase();
-            DatabaseContext.Dispose();
         }
 
         public void ChangeConfigFile()
@@ -57,13 +52,12 @@ namespace TicketManagement.DataAccess.IntegrationTests
 
         public void DropDatabase()
         {
-            if (ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString == _backupConnectionString)
+            if (string.Equals(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString, _backupConnectionString))
             {
                 ChangeConfigFile();
             }
 
-            DatabaseContext.Database.OpenConnection();
-            var cmd = DatabaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = DatabaseContext.Connection.CreateCommand();
             cmd.CommandText = @"IF EXISTS(SELECT * FROM sys.databases WHERE name = 'TestTicketManagement.Database')
                                 BEGIN
                                     ALTER DATABASE [TestTicketManagement.Database] SET OFFLINE WITH ROLLBACK IMMEDIATE;

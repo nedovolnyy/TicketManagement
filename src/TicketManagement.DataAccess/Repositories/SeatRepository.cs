@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
     internal class SeatRepository : BaseRepository<Seat>, ISeatRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IDatabaseContext _databaseContext;
 
-        internal SeatRepository(DatabaseContext databaseContext)
+        internal SeatRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;
@@ -53,16 +50,10 @@ namespace TicketManagement.DataAccess.Repositories
             cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat";
         }
 
-        /// <summary>
-        /// Method for populate data by id.
-        /// </summary>
-        /// <param name="id">id.</param>
-        /// <returns><see cref="Seat"/>List&lt;Seat&gt;.</returns>
         public IEnumerable<Seat> GetAllByAreaId(int id)
         {
-            var cmd = _databaseContext.Database.GetDbConnection().CreateCommand();
+            var cmd = _databaseContext.Connection.CreateCommand();
             cmd.CommandText = "SELECT Id, AreaId, Row, Number FROM Seat WHERE AreaId = @AreaId";
-            cmd.CommandType = CommandType.Text;
             cmd.AddWithValue("@AreaId", id);
             using var reader = cmd.ExecuteReader();
             return Maps(reader);
