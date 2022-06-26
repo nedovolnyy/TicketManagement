@@ -1,8 +1,9 @@
 ﻿CREATE PROCEDURE dbo.spEventCountSeats
 (
-	@LayoutId INT = null
+	@LayoutId INT = null,
+	@CountSeats INT = null OUTPUT
 )
 AS
 
-SELECT COUNT(Id) FROM dbo.Seat
+SELECT @CountSeats = COUNT(Id) FROM dbo.Seat
 	WHERE AreaId IN (SELECT Id FROM dbo.Area WHERE LayoutId = @LayoutId)

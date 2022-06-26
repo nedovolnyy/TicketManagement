@@ -13,30 +13,31 @@ BEGIN
         UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime WHERE Id = @Id
 	
 	ELSE BEGIN
-
+		
+		--DELETE EVENT AREA, EVENT SEAT
 		DELETE dbo.EventSeat WHERE EventAreaId IN (SELECT Id FROM dbo.EventArea WHERE EventId = @Id)
         DELETE dbo.EventArea WHERE EventId = @Id
 
+		--UPDATE EVENT
 		UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime WHERE Id = @Id
 		
-		DECLARE @Enumerator TABLE (tempId INT)
+		--INSERT INTO EVENT AREA
+		INSERT INTO dbo.EventArea (EventId, Description, CoordX, CoordY, Price)
+			SELECT @Id, areaTable.areaDescription, areaTable.CoordX, areaTable.CoordY, 0.00 FROM
+				(SELECT A.Description AS areaDescription, A.CoordX, A.CoordY FROM Layout L
+					Join Area A ON A.LayoutId=L.Id                  
+					WHERE L.Id = @LayoutId
+				)  as areaTable
 
-		INSERT INTO @Enumerator SELECT Id FROM dbo.Area WHERE LayoutId = @LayoutId
-		DECLARE @tempId INT
-		
-		WHILE EXISTS (SELECT tempId from @Enumerator) BEGIN
-			SELECT TOP 1 @tempId = tempId FROM @Enumerator
+		--INSERT INTO EVENT SEAT
+		INSERT INTO dbo.EventSeat (EventAreaId, Row, Number, State)
+			SELECT tempTable.EventAreaId,  tempTable.Row, tempTable.Number, 0 FROM
+				(SELECT DISTINCT E.Id AS EventId, EA.Id AS EventAreaId, S.Row, S.Number FROM (SELECT Id, LayoutId FROM dbo.Event) E 
+					join (SELECT Id, LayoutId FROM dbo.Area) A ON E.LayoutId = A.LayoutId
+					join (SELECT Id, EventId FROM dbo.EventArea) EA ON E.Id = EA.EventId
+					join (SELECT AreaId, Row, Number FROM dbo.Seat) S ON A.Id = S.AreaId
+					WHERE E.LayoutId = @LayoutId AND E.Id = @Id
+				) as tempTable
 
-			INSERT INTO dbo.EventArea (EventId, Description, CoordX, CoordY, Price)
-				SELECT @Id, Description, CoordX, CoordY, 0.00 FROM dbo.Area
-					WHERE Id = @tempId
-			DECLARE @tempEventAreaId INT = @@IDENTITY
-
-			INSERT INTO dbo.EventSeat (EventAreaId, Row, Number, State)
-				SELECT @tempEventAreaId, Row, Number, 0 FROM dbo.Seat
-					WHERE AreaId = @tempId
-		
-			DELETE FROM @Enumerator WHERE tempId = @tempId
-		END
 	END
 END
