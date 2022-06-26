@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -11,62 +12,62 @@ namespace TicketManagement.IntegrationTests
         private readonly IEventSeatRepository _eventSeatRepository = new EventSeatRepository(TestDatabaseFixture.DatabaseContext);
 
         [Test]
-        public void Insert_WhenInsertEventSeat_ShouldInt1()
+        public async Task Insert_WhenInsertEventSeat_ShouldInt4()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 4;
 
             // act
-            var actualResponse = _eventSeatRepository.Insert(new EventSeat(0, 2, 9, 1, 1));
+            var actualResponse = await _eventSeatRepository.Insert(new EventSeat(0, 2, 9, 1, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Update_WhenUpdateEventSeat_ShouldInt1()
+        public async Task Update_WhenUpdateEventSeat_ShouldInt3()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 3;
 
             // act
-            var actualResponse = _eventSeatRepository.Update(new EventSeat(7, 2, 3, 3, 1));
+            var actualResponse = await _eventSeatRepository.Update(new EventSeat(7, 2, 3, 3, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Delete_WhenDeleteSeat_ShouldInt1()
+        public async Task Delete_WhenDeleteSeat_ShouldInt2()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 2;
 
             // act
-            var actualResponse = _eventSeatRepository.Delete(13);
+            var actualResponse = await _eventSeatRepository.Delete(13);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
+        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _eventSeatRepository.GetAll().ToList();
+            var actualCount = (await _eventSeatRepository.GetAll()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
         }
 
         [Test]
-        public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
+        public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
             var expectedId = 10;
 
             // act
-            var actualId = _eventSeatRepository.GetById(10);
+            var actualId = await _eventSeatRepository.GetById(10);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

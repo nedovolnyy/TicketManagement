@@ -1,9 +1,10 @@
-﻿using TicketManagement.Common.Entities;
+﻿using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.BusinessLogic.Interfaces
 {
     public interface IEventAreaService : IService<EventArea>
     {
-        void Validate(EventArea entity);
+        Task Validate(EventArea entity);
     }
 }

@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
@@ -28,8 +31,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => areaService.Object.Validate(areaExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await areaService.Object.Validate(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -46,8 +49,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => areaService.Object.Validate(areaExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await areaService.Object.Validate(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -64,8 +67,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => areaService.Object.Validate(areaExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await areaService.Object.Validate(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -82,8 +85,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => areaService.Object.Validate(areaExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await areaService.Object.Validate(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -99,12 +102,12 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "Area description should be unique for area!";
             var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            areaRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedAreas);
+            areaRepository.Setup(x => x.GetAllByLayoutId(layoutId)).ReturnsAsync(_expectedAreas);
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => areaService.Object.Validate(areaExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await areaService.Object.Validate(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -117,7 +120,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.Insert(It.IsAny<Area>())).Returns(1);
+            areaService.Setup(x => x.Insert(It.IsAny<Area>())).ReturnsAsync(1);
 
             // act
             var actual = areaService.Object.Insert(areaExpected);
@@ -133,7 +136,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.Update(It.IsAny<Area>())).Returns(1);
+            areaService.Setup(x => x.Update(It.IsAny<Area>())).ReturnsAsync(1);
 
             // act
             var actual = areaService.Object.Update(areaExpected);
@@ -148,7 +151,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
+            areaService.Setup(x => x.Delete(It.IsAny<int>())).ReturnsAsync(1);
 
             // act
             var actual = areaService.Object.Delete(1);
@@ -164,7 +167,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(5444, 2, "First area of first layout", 3, 2);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.GetById(It.IsAny<int>())).Returns(areaExpected);
+            areaService.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(areaExpected);
 
             // act
             var actual = areaService.Object.GetById(5444);
@@ -179,7 +182,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.GetAll()).Returns(_expectedAreas);
+            areaService.Setup(x => x.GetAll()).ReturnsAsync(_expectedAreas);
 
             // act
             var actual = areaService.Object.GetAll();

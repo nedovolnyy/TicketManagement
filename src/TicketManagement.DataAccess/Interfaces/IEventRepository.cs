@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TicketManagement.Common.Entities;
 
 namespace TicketManagement.DataAccess.Interfaces
@@ -10,20 +11,20 @@ namespace TicketManagement.DataAccess.Interfaces
         /// </summary>
         /// <param name="layoutId">layoutId.</param>
         /// <returns>List&lt;<see cref="Event"/>&gt;.</returns>
-        IEnumerable<Event> GetAllByLayoutId(int layoutId);
+        Task<IEnumerable<Event>> GetAllByLayoutId(int layoutId);
 
         /// <summary>
         /// Count empty seats.
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns><see cref="int"/>.</returns>
-        int GetCountEmptySeats(int id);
+        Task<int> GetSeatsAvailableCount(int id);
 
         /// <summary>
         /// Method for validation data by seats in Area.
         /// </summary>
         /// <param name="layoutId">layoutId.</param>
         /// <returns><see cref="int"/>.</returns>
-        int GetCountSeats(int layoutId);
+        Task<int> GetSeatsCount(int layoutId);
     }
 }

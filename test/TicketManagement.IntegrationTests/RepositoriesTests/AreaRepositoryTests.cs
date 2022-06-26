@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using Microsoft.Data.SqlClient;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -12,26 +13,26 @@ namespace TicketManagement.IntegrationTests
         private readonly IAreaRepository _areaRepository = new AreaRepository(TestDatabaseFixture.DatabaseContext);
 
         [Test]
-        public void Insert_WhenInsertArea_ShouldInt1()
+        public async Task Insert_WhenInsertArea_ShouldInt4()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 4;
 
             // act
-            var actualResponse = _areaRepository.Insert(new Area(0, 2, "First area of second layout", 1, 7));
+            var actualResponse = await _areaRepository.Insert(new Area(0, 2, "First area of second layout", 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Update_WhenUpdateArea_ShouldInt1()
+        public async Task Update_WhenUpdateArea_ShouldInt3()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 3;
 
             // act
-            var actualResponse = _areaRepository.Update(new Area(1, 2, "First area of second layout", 2, 4));
+            var actualResponse = await _areaRepository.Update(new Area(1, 2, "First area of second layout", 2, 4));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -42,46 +43,44 @@ namespace TicketManagement.IntegrationTests
         {
             // arrange
             var expectedException =
-            "The DELETE statement conflicted with the REFERENCE constraint \"FK_Area_Seat\". " +
-            "The conflict occurred in database \"TestTicketManagement.Database\", table \"dbo.Seat\", column 'AreaId'.\r\n" +
-            "The statement has been terminated.";
+            "An error occurred while saving the entity changes. See the inner exception for details.";
 
             // act
-            var actualException = Assert.Throws<SqlException>(
-                            () => _areaRepository.Delete(1));
+            var actualException = Assert.ThrowsAsync<DbUpdateException>(
+                             async () => await _areaRepository.Delete(1));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
         }
 
         [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
+        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _areaRepository.GetAll().ToList();
+            var actualCount = (await _areaRepository.GetAll()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
         }
 
         [Test]
-        public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
+        public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
             var expectedId = 1;
 
             // act
-            var actualId = _areaRepository.GetById(1);
+            var actualId = await _areaRepository.GetById(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
         }
 
         [Test]
-        public void GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
+        public async Task GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _areaRepository.GetAllByLayoutId(1).ToList();
+            var actualCount = (await _areaRepository.GetAllByLayoutId(1)).Count();
 
             // assert
             Assert.IsNotNull(actualCount);

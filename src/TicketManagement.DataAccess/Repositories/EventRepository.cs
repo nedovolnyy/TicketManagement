@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 
@@ -17,123 +18,71 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        protected override void AddParamsForInsert(Event entity, DbCommand cmd)
+        public new async Task<int> Insert(Event evnt)
         {
-            cmd.CommandText = "spEventInsert";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.AddWithValue("@Name", entity.Name);
-            cmd.AddWithValue("@EventTime", entity.EventTime);
-            cmd.AddWithValue("@Description", entity.Description);
-            cmd.AddWithValue("@LayoutId", entity.LayoutId);
-            cmd.AddWithValue("@EventEndTime", entity.EventEndTime);
+            var paramName = new SqlParameter("@Name", evnt.Name);
+            var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);
+            var paramDescription = new SqlParameter("@Description", evnt.Description);
+            var paramLayoutId = new SqlParameter("@LayoutId", evnt.LayoutId);
+            var paramEventEndTime = new SqlParameter("@EventEndTime", evnt.EventEndTime);
+            return await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventInsert @Name, @EventTime, @Description, @LayoutId, @EventEndTime", paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime);
         }
 
-        protected override void AddParamsForUpdate(Event entity, DbCommand cmd)
+        public new async Task<int> Update(Event evnt)
         {
-            cmd.CommandText = "spEventUpdate";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.AddWithValue("@Id", entity.Id);
-            cmd.AddWithValue("@Name", entity.Name);
-            cmd.AddWithValue("@EventTime", entity.EventTime);
-            cmd.AddWithValue("@Description", entity.Description);
-            cmd.AddWithValue("@LayoutId", entity.LayoutId);
-            cmd.AddWithValue("@EventEndTime", entity.EventEndTime);
+            var paramId = new SqlParameter("@Id", evnt.Id);
+            var paramName = new SqlParameter("@Name", evnt.Name);
+            var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);
+            var paramDescription = new SqlParameter("@Description", evnt.Description);
+            var paramLayoutId = new SqlParameter("@LayoutId", evnt.LayoutId);
+            var paramEventEndTime = new SqlParameter("@EventEndTime", evnt.EventEndTime);
+            return await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventUpdate @Id, @Name, @EventTime, @Description, @LayoutId, @EventEndTime",
+                    paramId, paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime);
         }
 
-        protected override void AddParamsForDelete(int id, DbCommand cmd)
+        public new async Task<int> Delete(int id)
         {
-            cmd.CommandText = "spEventDelete";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.AddWithValue("@Id", id);
+            var paramId = new SqlParameter("@Id", id);
+            return await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventDelete @Id", paramId);
         }
 
-        protected override void AddParamsForGetById(int id, DbCommand cmd)
+        public async Task<IEnumerable<Event>> GetAllByLayoutId(int layoutId)
         {
-            cmd.CommandText = "spEventGetById";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.AddWithValue("@Id", id);
+            var paramLayoutId = new SqlParameter("@LayoutId", layoutId);
+            return await _databaseContext.Events.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).ToListAsync();
         }
 
-        protected override void GetAllCommandParameters(DbCommand cmd)
+        public async Task<int> GetSeatsAvailableCount(int id)
         {
-            cmd.CommandText = "spEventGetAll";
-            cmd.CommandType = CommandType.StoredProcedure;
-        }
-
-        public IEnumerable<Event> GetAllByLayoutId(int layoutId)
-        {
-            var cmd = _databaseContext.Connection.CreateCommand();
-            cmd.CommandText = "spEventForValidationByLayout";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.AddWithValue("@LayoutId", layoutId);
-            using var reader = cmd.ExecuteReader();
-            return Maps(reader);
-        }
-
-        public int GetCountEmptySeats(int id)
-        {
-            var cmd = _databaseContext.Connection.CreateCommand();
-            cmd.CommandText = "spEventCountEmptySeats";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.AddWithValue("@Id", id);
-            var count = cmd.ExecuteScalar();
-            if (count is null)
+            var paramId = new SqlParameter("@Id", id);
+            var paramCountEmptySeats = new SqlParameter
             {
-                return default;
-            }
+                ParameterName = "@CountEmptySeats",
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.Output,
+            };
 
-            return int.Parse(count.ToString());
+            await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventCountEmptySeats @Id, @CountEmptySeats OUT", paramId, paramCountEmptySeats);
+            return (int)paramCountEmptySeats.Value;
         }
 
-        public int GetCountSeats(int layoutId)
+        public async Task<int> GetSeatsCount(int layoutId)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
-            cmd.CommandText = "spEventCountSeats";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.AddWithValue("@LayoutId", layoutId);
-            var count = cmd.ExecuteScalar();
-            if (count is null)
+            var paramLayoutId = new SqlParameter("@LayoutId", layoutId);
+            var paramCountSeats = new SqlParameter
             {
-                return default;
-            }
+                ParameterName = "@CountSeats",
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.Output,
+            };
 
-            return int.Parse(count.ToString());
-        }
-
-        protected override Event Map(DbDataReader reader)
-        {
-            if (reader.HasRows)
-            {
-                reader.Read();
-                return new Event(id: int.Parse(reader["Id"].ToString()),
-                                     name: reader["Name"].ToString(),
-                                     eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
-                                     description: reader["Description"].ToString(),
-                                     layoutId: int.Parse(reader["LayoutId"].ToString()),
-                                     eventEndTime: DateTime.Parse(reader["EventEndTime"].ToString()));
-            }
-
-            return null;
-        }
-
-        protected override List<Event> Maps(DbDataReader reader)
-        {
-            var evnts = new List<Event>();
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    var evnt = new Event(id: int.Parse(reader["Id"].ToString()),
-                                     name: reader["Name"].ToString(),
-                                     eventTime: DateTimeOffset.Parse(reader["EventTime"].ToString()),
-                                     description: reader["Description"].ToString(),
-                                     layoutId: int.Parse(reader["LayoutId"].ToString()),
-                                     eventEndTime: DateTime.Parse(reader["EventEndTime"].ToString()));
-                    evnts.Add(evnt);
-                }
-            }
-
-            return evnts;
+            await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventCountSeats @LayoutId, @CountSeats OUT", paramLayoutId, paramCountSeats);
+            return (int)paramCountSeats.Value;
         }
     }
 }

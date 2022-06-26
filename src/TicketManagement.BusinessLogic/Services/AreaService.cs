@@ -1,4 +1,5 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Threading.Tasks;
+using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
@@ -14,7 +15,7 @@ namespace TicketManagement.BusinessLogic.Services
             _areaRepository = areaRepository;
         }
 
-        public override void Validate(Area entity)
+        public override async Task Validate(Area entity)
         {
             if (entity.LayoutId == default)
             {
@@ -34,7 +35,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                var areaArray = _areaRepository.GetAllByLayoutId(entity.LayoutId);
+                var areaArray = await _areaRepository.GetAllByLayoutId(entity.LayoutId);
                 foreach (var area in areaArray)
                 {
                     if (entity.Description == area.Description)

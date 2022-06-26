@@ -1,4 +1,5 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Threading.Tasks;
+using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
@@ -12,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
         {
         }
 
-        public override void Validate(EventSeat entity)
+        public override async Task Validate(EventSeat entity)
         {
             if (entity.EventAreaId == default)
             {
@@ -33,6 +34,8 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 throw new ValidationException("The field 'State' of EventSeat is not allowed to be null!");
             }
+
+            await Task.Delay(100);
         }
     }
 }

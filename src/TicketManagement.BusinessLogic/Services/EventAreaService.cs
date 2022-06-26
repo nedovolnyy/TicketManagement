@@ -1,4 +1,5 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Threading.Tasks;
+using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
@@ -12,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
         {
         }
 
-        public override void Validate(EventArea entity)
+        public override async Task Validate(EventArea entity)
         {
             if (entity.EventId == default)
             {
@@ -38,6 +39,8 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 throw new ValidationException("The field 'Description' of EventArea is not allowed to be empty!");
             }
+
+            await Task.Delay(100);
         }
     }
 }

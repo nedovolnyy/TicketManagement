@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TicketManagement.Common.Entities;
 
 namespace TicketManagement.DataAccess.Interfaces
@@ -10,6 +11,6 @@ namespace TicketManagement.DataAccess.Interfaces
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns>List&lt;<see cref="Area"/>&gt;.</returns>
-        IEnumerable<Area> GetAllByLayoutId(int id);
+        Task<IEnumerable<Area>> GetAllByLayoutId(int id);
     }
 }

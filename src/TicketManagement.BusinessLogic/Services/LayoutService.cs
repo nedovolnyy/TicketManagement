@@ -1,4 +1,5 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Threading.Tasks;
+using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
@@ -14,7 +15,7 @@ namespace TicketManagement.BusinessLogic.Services
             _layoutRepository = layoutRepository;
         }
 
-        public override void Validate(Layout entity)
+        public override async Task Validate(Layout entity)
         {
             if (entity.VenueId == default)
             {
@@ -30,7 +31,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                var layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
+                var layoutArray = await _layoutRepository.GetAllByVenueId(entity.VenueId);
                 foreach (var layout in layoutArray)
                 {
                     if (entity.Name == layout.Name)

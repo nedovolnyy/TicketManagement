@@ -1,4 +1,5 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Threading.Tasks;
+using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 using TicketManagement.DataAccess.Interfaces;
@@ -14,7 +15,7 @@ namespace TicketManagement.BusinessLogic.Services
             _venueRepository = venueRepository;
         }
 
-        public override void Validate(Venue entity)
+        public override async Task Validate(Venue entity)
         {
             if (string.IsNullOrEmpty(entity.Name))
             {
@@ -30,7 +31,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                var venueId = _venueRepository.GetIdFirstByName(entity.Name);
+                var venueId = await _venueRepository.GetIdFirstByName(entity.Name);
                 if (venueId != default)
                 {
                     throw new ValidationException("The Venue name is not unique!");

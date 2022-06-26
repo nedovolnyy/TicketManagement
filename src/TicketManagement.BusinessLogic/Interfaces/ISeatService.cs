@@ -1,9 +1,10 @@
-﻿using TicketManagement.Common.Entities;
+﻿using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.BusinessLogic.Interfaces
 {
     public interface ISeatService : IService<Seat>
     {
-        void Validate(Seat entity);
+        Task Validate(Seat entity);
     }
 }

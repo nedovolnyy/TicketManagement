@@ -1,4 +1,5 @@
-﻿using TicketManagement.Common.Entities;
+﻿using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.DataAccess.Interfaces
 {
@@ -9,6 +10,6 @@ namespace TicketManagement.DataAccess.Interfaces
         /// </summary>
         /// <param name="name">id.</param>
         /// <returns>First id(<see cref="int"/>), if in table Venue have same name.</returns>
-        int GetIdFirstByName(string name);
+        Task<int> GetIdFirstByName(string name);
     }
 }

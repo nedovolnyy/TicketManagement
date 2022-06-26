@@ -44,7 +44,13 @@ namespace TicketManagement.DataAccess.EF
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(_connectionString).LogTo(message => System.Diagnostics.Debug.WriteLine(message), LogLevel.Trace);
+                optionsBuilder.UseSqlServer(_connectionString).UseLoggerFactory(
+                    LoggerFactory.Create(
+                        b => b
+                            .AddProvider(new SqlLoggerProvider())
+                            .AddFilter(level => level >= LogLevel.Information)))
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors();
             }
         }
     }

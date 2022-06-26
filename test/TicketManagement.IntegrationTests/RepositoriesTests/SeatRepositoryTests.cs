@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -11,72 +12,72 @@ namespace TicketManagement.IntegrationTests
         private readonly ISeatRepository _seatRepository = new SeatRepository(TestDatabaseFixture.DatabaseContext);
 
         [Test]
-        public void Insert_WhenInsertSeat_ShouldInt1()
+        public async Task Insert_WhenInsertSeat_ShouldInt4()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 4;
 
             // act
-            var actualResponse = _seatRepository.Insert(new Seat(0, 1, 1, 1));
+            var actualResponse = await _seatRepository.Insert(new Seat(0, 1, 1, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Update_WhenUpdateSeat_ShouldInt1()
+        public async Task Update_WhenUpdateSeat_ShouldInt3()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 3;
 
             // act
-            var actualResponse = _seatRepository.Update(new Seat(3, 2, 1, 1));
+            var actualResponse = await _seatRepository.Update(new Seat(3, 2, 1, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Delete_WhenDeleteSeat_ShouldInt1()
+        public async Task Delete_WhenDeleteSeat_ShouldInt2()
         {
             // arrange
-            var expectedResponse = 1;
+            var expectedResponse = 2;
 
             // act
-            var actualResponse = _seatRepository.Delete(1);
+            var actualResponse = await _seatRepository.Delete(1);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
+        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _seatRepository.GetAll().ToList();
+            var actualCount = (await _seatRepository.GetAll()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
         }
 
         [Test]
-        public void GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
+        public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
             var expectedId = 2;
 
             // act
-            var actualId = _seatRepository.GetById(2);
+            var actualId = await _seatRepository.GetById(2);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
         }
 
         [Test]
-        public void GetAllByAreaId_WhenHaveEntry_ShouldNotNull()
+        public async Task GetAllByAreaId_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = _seatRepository.GetAllByAreaId(1).ToList();
+            var actualCount = (await _seatRepository.GetAllByAreaId(1)).Count();
 
             // assert
             Assert.IsNotNull(actualCount);

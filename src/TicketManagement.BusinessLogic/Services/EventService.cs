@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
@@ -15,12 +16,12 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        public int GetCountEmptySeats(int id)
-            => _eventRepository.GetCountEmptySeats(id);
-        public int GetCountSeats(int layoutId)
-            => _eventRepository.GetCountSeats(layoutId);
+        public virtual async Task<int> GetSeatsAvailableCount(int id)
+            => await _eventRepository.GetSeatsAvailableCount(id);
+        public virtual async Task<int> GetSeatsCount(int layoutId)
+            => await _eventRepository.GetSeatsCount(layoutId);
 
-        private void EventValidation(Event entity)
+        private async Task EventValidate(Event entity)
         {
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
@@ -32,7 +33,7 @@ namespace TicketManagement.BusinessLogic.Services
                 throw new ValidationException("EventEndTime cannot be later than EventTime!");
             }
 
-            var evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
+            var evntArray = await _eventRepository.GetAllByLayoutId(entity.LayoutId);
             foreach (var evnt in evntArray)
             {
                 if (entity.LayoutId == evnt.LayoutId && entity.Name == evnt.Name)
@@ -46,13 +47,13 @@ namespace TicketManagement.BusinessLogic.Services
                 }
             }
 
-            if (GetCountSeats(entity.LayoutId) == default)
+            if (await GetSeatsCount(entity.LayoutId) == default)
             {
                 throw new ValidationException("Create event is not possible! Haven't seats in Area!");
             }
         }
 
-        public override void Validate(Event entity)
+        public override async Task Validate(Event entity)
         {
             if (entity.LayoutId == default)
             {
@@ -68,7 +69,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                EventValidation(entity);
+                await EventValidate(entity);
             }
         }
     }

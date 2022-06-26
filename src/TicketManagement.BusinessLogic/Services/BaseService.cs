@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -15,25 +16,25 @@ namespace TicketManagement.BusinessLogic.Services
             _entityRepository = entityRepository;
         }
 
-        public virtual int Insert(T entity)
+        public virtual async Task<int> Insert(T entity)
         {
-            Validate(entity);
-            return _entityRepository.Insert(entity);
+            await Validate(entity);
+            return await _entityRepository.Insert(entity);
         }
 
-        public virtual int Update(T entity)
+        public virtual async Task<int> Update(T entity)
         {
-            Validate(entity);
-            return _entityRepository.Update(entity);
+            await Validate(entity);
+            return await _entityRepository.Update(entity);
         }
 
-        public virtual int Delete(int id) =>
-            _entityRepository.Delete(id);
-        public virtual T GetById(int id) =>
-            _entityRepository.GetById(id);
-        public virtual IEnumerable<T> GetAll() =>
-            _entityRepository.GetAll();
+        public virtual async Task<int> Delete(int id) =>
+            await _entityRepository.Delete(id);
+        public virtual async Task<T> GetById(int id) =>
+            await _entityRepository.GetById(id);
+        public virtual async Task<IEnumerable<T>> GetAll() =>
+            await _entityRepository.GetAll();
 
-        public abstract void Validate(T entity);
+        public abstract Task Validate(T entity);
     }
 }

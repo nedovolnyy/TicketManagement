@@ -28,8 +28,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => eventSeatService.Object.Validate(eventSeatExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await eventSeatService.Object.Validate(eventSeatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -46,8 +46,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => eventSeatService.Object.Validate(eventSeatExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await eventSeatService.Object.Validate(eventSeatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -64,8 +64,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => eventSeatService.Object.Validate(eventSeatExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await eventSeatService.Object.Validate(eventSeatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -82,8 +82,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
-            var actualException = Assert.Throws<ValidationException>(
-                            () => eventSeatService.Object.Validate(eventSeatExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await eventSeatService.Object.Validate(eventSeatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -96,7 +96,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatExpected = new EventSeat(1, 6, 6, 2, 4);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.Insert(It.IsAny<EventSeat>())).Returns(1);
+            eventSeatService.Setup(x => x.Insert(It.IsAny<EventSeat>())).ReturnsAsync(1);
 
             // act
             var actual = eventSeatService.Object.Insert(eventSeatExpected);
@@ -112,7 +112,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatExpected = new EventSeat(3, 5, 9, 1, 7);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.Update(It.IsAny<EventSeat>())).Returns(1);
+            eventSeatService.Setup(x => x.Update(It.IsAny<EventSeat>())).ReturnsAsync(1);
 
             // act
             var actual = eventSeatService.Object.Update(eventSeatExpected);
@@ -127,7 +127,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
+            eventSeatService.Setup(x => x.Delete(It.IsAny<int>())).ReturnsAsync(1);
 
             // act
             var actual = eventSeatService.Object.Delete(1);
@@ -143,7 +143,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatExpected = new EventSeat(5444, 6, 56, 2, 4);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventSeatExpected);
+            eventSeatService.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(eventSeatExpected);
 
             // act
             var actual = eventSeatService.Object.GetById(5444);
@@ -158,7 +158,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.GetAll()).Returns(_expectedEventSeats);
+            eventSeatService.Setup(x => x.GetAll()).ReturnsAsync(_expectedEventSeats);
 
             // act
             var actual = eventSeatService.Object.GetAll();

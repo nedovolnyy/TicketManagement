@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TicketManagement.Common.Entities;
 
 namespace TicketManagement.DataAccess.Interfaces
@@ -10,6 +12,6 @@ namespace TicketManagement.DataAccess.Interfaces
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns>List&lt;<see cref="Layout"/>&gt;.</returns>
-        IEnumerable<Layout> GetAllByVenueId(int id);
+        Task<IEnumerable<Layout>> GetAllByVenueId(int id);
     }
 }

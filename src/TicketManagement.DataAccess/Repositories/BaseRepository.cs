@@ -1,71 +1,60 @@
 ﻿using System.Collections.Generic;
-using System.Data.Common;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
 using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal abstract class BaseRepository<T> : IRepository<T>
+    internal class BaseRepository<T> : IRepository<T>
         where T : BaseEntity
     {
         private readonly IDatabaseContext _databaseContext;
+        private readonly DbSet<T> _dbSet;
         protected BaseRepository(IDatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
+            _dbSet = _databaseContext.Instance.Set<T>();
         }
 
-        public int Insert(T entity)
+        public async Task<int> Insert(T entity)
         {
-            int i;
+            await _dbSet.AddAsync(entity);
+            await _databaseContext.Instance.SaveChangesAsync();
+            return 4;
+        }
 
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForInsert(entity, cmd);
-            i = cmd.ExecuteNonQuery();
+        public async Task<int> Update(T entity)
+        {
+            if (entity.Id is not 0)
+            {
+                var updateEntity = _dbSet.Find(entity.Id);
+                if (updateEntity is not null)
+                {
+                    _dbSet.Update(updateEntity);
+                    await _databaseContext.Instance.SaveChangesAsync();
+                    return (int)EntityState.Modified;
+                }
+            }
+
+            return default;
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var i = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
+            await _databaseContext.Instance.SaveChangesAsync();
             return i;
         }
 
-        public int Update(T entity)
+        public async Task<T> GetById(int id)
         {
-            int i;
-
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForUpdate(entity, cmd);
-            i = cmd.ExecuteNonQuery();
-            return i;
+            return await _dbSet.FindAsync(id);
         }
 
-        public int Delete(int id)
+        public async Task<IEnumerable<T>> GetAll()
         {
-            int i;
-
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForDelete(id, cmd);
-            i = cmd.ExecuteNonQuery();
-            return i;
+            return await _dbSet.ToListAsync();
         }
-
-        public T GetById(int id)
-        {
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForGetById(id, cmd);
-            using var reader = cmd.ExecuteReader();
-            return Map(reader);
-        }
-
-        public IEnumerable<T> GetAll()
-        {
-            var cmd = _databaseContext.Connection.CreateCommand();
-            GetAllCommandParameters(cmd);
-            using var reader = cmd.ExecuteReader();
-            return Maps(reader);
-        }
-
-        protected abstract void AddParamsForInsert(T entity, DbCommand cmd);
-        protected abstract void AddParamsForUpdate(T entity, DbCommand cmd);
-        protected abstract void AddParamsForDelete(int id, DbCommand cmd);
-        protected abstract void AddParamsForGetById(int id, DbCommand cmd);
-        protected abstract void GetAllCommandParameters(DbCommand cmd);
-        protected abstract T Map(DbDataReader reader);
-        protected abstract List<T> Maps(DbDataReader reader);
     }
 }
