@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class EventAreaServiceTests
     {
-        private readonly EventAreaService _eventAreaService = new EventAreaService(new EventAreaRepository(TestDatabaseFixture.DatabaseContext));
+        private readonly IEventAreaService _eventAreaService = TestDatabaseFixture.Configuration.Container.GetInstance<IEventAreaService>();
 
         [Test]
         public async Task Insert_WhenInsertEventArea_ShouldInt4()
@@ -32,25 +31,23 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = 3;
 
             // act
-            var actualResponse = await _eventAreaService.Update(new EventArea(2, 1, "Cinema Hall #2", 2, 1, 5.20m));
+            var actualResponse = await _eventAreaService.Update(new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Delete_WhenDeleteSeat_ShouldInt1()
+        public async Task Delete_WhenDeleteEventArea_ShouldInt2()
         {
             // arrange
-            var expectedException =
-            "An error occurred while saving the entity changes. See the inner exception for details.";
+            var expectedResponse = 2;
 
             // act
-            var actualException = Assert.ThrowsAsync<DbUpdateException>(
-                            async () => await _eventAreaService.Delete(1));
+            var actualResponse = await _eventAreaService.Delete(4);
 
             // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]

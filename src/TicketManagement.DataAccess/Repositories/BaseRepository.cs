@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
+using TicketManagement.DI;
 
 namespace TicketManagement.DataAccess.Repositories
 {
@@ -21,23 +21,14 @@ namespace TicketManagement.DataAccess.Repositories
         {
             await _dbSet.AddAsync(entity);
             await _databaseContext.Instance.SaveChangesAsync();
-            return 4;
+            return (int)EntityState.Added;
         }
 
         public async Task<int> Update(T entity)
         {
-            if (entity.Id is not 0)
-            {
-                var updateEntity = _dbSet.Find(entity.Id);
-                if (updateEntity is not null)
-                {
-                    _dbSet.Update(updateEntity);
-                    await _databaseContext.Instance.SaveChangesAsync();
-                    return (int)EntityState.Modified;
-                }
-            }
-
-            return default;
+            _databaseContext.Instance.Entry(entity).State = EntityState.Modified;
+            await _databaseContext.Instance.SaveChangesAsync();
+            return (int)EntityState.Modified;
         }
 
         public async Task<int> Delete(int id)

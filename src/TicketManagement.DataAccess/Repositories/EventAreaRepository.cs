@@ -1,5 +1,5 @@
 ﻿using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
+using TicketManagement.DI;
 
 namespace TicketManagement.DataAccess.Repositories
 {
@@ -7,7 +7,7 @@ namespace TicketManagement.DataAccess.Repositories
     {
         private readonly IDatabaseContext _databaseContext;
 
-        internal EventAreaRepository(IDatabaseContext databaseContext)
+        public EventAreaRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;

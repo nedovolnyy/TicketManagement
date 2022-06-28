@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class LayoutServiceTests
     {
-        private readonly LayoutService _layoutService = new LayoutService(new LayoutRepository(TestDatabaseFixture.DatabaseContext));
+        private readonly ILayoutService _layoutService = TestDatabaseFixture.Configuration.Container.GetInstance<ILayoutService>();
 
         [Test]
         public async Task Insert_WhenInsertLayout_ShouldInt4()
@@ -39,18 +38,16 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public void Delete_WhenDeleteSeat_ShouldInt1()
+        public async Task Delete_WhenDeleteLayout_ShouldInt2()
         {
             // arrange
-            var expectedException =
-            "An error occurred while saving the entity changes. See the inner exception for details.";
+            var expectedResponse = 2;
 
             // act
-            var actualException = Assert.ThrowsAsync<DbUpdateException>(
-                            async () => await _layoutService.Delete(1));
+            var actualResponse = await _layoutService.Delete(4);
 
             // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]

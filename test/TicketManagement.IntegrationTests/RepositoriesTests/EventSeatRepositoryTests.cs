@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class EventSeatRepositoryTests
     {
-        private readonly IEventSeatRepository _eventSeatRepository = new EventSeatRepository(TestDatabaseFixture.DatabaseContext);
+        private readonly IEventSeatRepository _eventSeatRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IEventSeatRepository>();
 
         [Test]
         public async Task Insert_WhenInsertEventSeat_ShouldInt4()
@@ -38,13 +37,13 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public async Task Delete_WhenDeleteSeat_ShouldInt2()
+        public async Task Delete_WhenDeleteEventSeat_ShouldInt2()
         {
             // arrange
             var expectedResponse = 2;
 
             // act
-            var actualResponse = await _eventSeatRepository.Delete(13);
+            var actualResponse = await _eventSeatRepository.Delete(1);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

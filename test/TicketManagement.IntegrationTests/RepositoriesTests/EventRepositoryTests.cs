@@ -3,66 +3,53 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class EventRepositoryTests
     {
-        private readonly IEventRepository _evntRepository = new EventRepository(TestDatabaseFixture.DatabaseContext);
+        private readonly IEventRepository _evntRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IEventRepository>();
 
         [Test]
-        public async Task GetCountEmptySeats_WhenId2_ShouldInt3()
+        public async Task GetCountEmptySeats_WhenId2_ShouldNotNull()
         {
-            // arrange
-            var expectedResponse = 3;
-
             // act
             var actualResponse = await _evntRepository.GetSeatsAvailableCount(2);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.NotNull(actualResponse);
         }
 
         [Test]
-        public async Task Insert_WhenInsertEvent_ShouldInt15()
+        public async Task Insert_WhenInsertEvent_ShouldNotNull()
         {
-            // arrange
-            var expectedResponse = 15;
-
             // act
             var actualResponse =
                 await _evntRepository.Insert(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2023"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00")));
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.NotNull(actualResponse);
         }
 
         [Test]
-        public async Task Update_WhenUpdateEvent_ShouldInt11()
+        public async Task Update_WhenUpdateEvent_ShouldNotNull()
         {
-            // arrange
-            var expectedResponse = 11;
-
             // act
             var actualResponse = await _evntRepository.Update(new Event(3, "Kitchen Serie", DateTimeOffset.Parse("09/09/2023"), "Kitchen Serie", 2, DateTime.Parse("2023-09-09 00:50:00")));
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.NotNull(actualResponse);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteSeat_ShouldInt8()
+        public async Task Delete_WhenDeleteSeat_ShouldNotNull()
         {
-            // arrange
-            var expectedResponse = 8;
-
             // act
             var actualResponse = await _evntRepository.Delete(1);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.NotNull(actualResponse);
         }
 
         [Test]

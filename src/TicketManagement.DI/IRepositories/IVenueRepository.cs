@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
+﻿using TicketManagement.Common.Entities;
 
-namespace TicketManagement.DataAccess.Interfaces
+namespace TicketManagement.DI
 {
     public interface IVenueRepository : IRepository<Venue>
     {

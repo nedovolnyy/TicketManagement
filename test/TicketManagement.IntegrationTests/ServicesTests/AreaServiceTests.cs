@@ -2,16 +2,14 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Interfaces;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class AreaServiceTests
     {
-        private readonly IAreaService _areaService = new AreaService(new AreaRepository(TestDatabaseFixture.DatabaseContext));
+        private readonly IAreaService _areaService = TestDatabaseFixture.Configuration.Container.GetInstance<IAreaService>();
 
         [Test]
         public async Task Insert_WhenInsertArea_ShouldInt4()
@@ -33,25 +31,23 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = 3;
 
             // act
-            var actualResponse = await _areaService.Update(new Area(3, 2, "First etter of 3ett layout", 1, 7));
+            var actualResponse = await _areaService.Update(new Area(1, 2, "First etter of 3ett layout", 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Delete_WhenDeleteSeat_ShouldInt1()
+        public async Task Delete_WhenDeleteArea_ShouldInt2()
         {
             // arrange
-            var expectedException =
-            "An error occurred while saving the entity changes. See the inner exception for details.";
+            var expectedResponse = 2;
 
             // act
-            var actualException = Assert.ThrowsAsync<DbUpdateException>(
-                            async () => await _areaService.Delete(1));
+            var actualResponse = await _areaService.Delete(5);
 
             // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
@@ -68,10 +64,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var expectedId = 3;
 
             // act
-            var actualId = await _areaService.GetById(1);
+            var actualId = await _areaService.GetById(3);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

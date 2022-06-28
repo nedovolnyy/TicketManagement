@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
+﻿using TicketManagement.Common.Entities;
 
-namespace TicketManagement.BusinessLogic.Interfaces
+namespace TicketManagement.DI
 {
     public interface IService<T>
         where T : BaseEntity

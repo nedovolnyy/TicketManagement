@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
+using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {

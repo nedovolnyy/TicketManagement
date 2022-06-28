@@ -2,16 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class EventServiceTests
     {
-        private readonly EventService _eventService = new EventService(new EventRepository(TestDatabaseFixture.DatabaseContext));
+        private readonly IEventService _eventService = TestDatabaseFixture.Configuration.Container.GetInstance<IEventService>();
 
         [Test]
         public async Task GetSeatsAvaibleCount_WhenId2_ShouldInt3()
@@ -36,7 +35,7 @@ namespace TicketManagement.IntegrationTests
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
                 async () => await _eventService.Insert(
-                    new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 3, DateTime.Parse("2023-07-02 00:50:00"))));
+                    new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 8, DateTime.Parse("2023-07-02 00:50:00"))));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -58,44 +57,35 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public async Task Insert_WhenInsertEvent_ShouldInt15()
+        public async Task Insert_WhenInsertEvent_ShouldNotNull()
         {
-            // arrange
-            var expectedResponse = 15;
-
             // act
             var actualResponse =
                 await _eventService.Insert(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2, DateTime.Parse("2023-07-02 00:50:00")));
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.NotNull(actualResponse);
         }
 
         [Test]
-        public async Task Update_WhenUpdateEvent_ShouldInt11()
+        public async Task Update_WhenUpdateEvent_ShouldNotNull()
         {
-            // arrange
-            var expectedResponse = 11;
-
             // act
             var actualResponse =
                 await _eventService.Update(new Event(2, "StanegegererThings Serie", DateTimeOffset.Parse("06/11/2023"), "Stanerger Things Serie", 1, DateTime.Parse("2023-11-06 00:50:00")));
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.NotNull(actualResponse);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteSeat_ShouldInt7()
+        public async Task Delete_WhenDeleteSeat_ShouldNotNull()
         {
-            // arrange
-            var expectedResponse = 7;
-
             // act
             var actualResponse = await _eventService.Delete(3);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.NotNull(actualResponse);
         }
 
         [Test]

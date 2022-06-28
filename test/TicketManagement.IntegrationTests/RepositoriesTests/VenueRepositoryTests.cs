@@ -3,14 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class VenueRepositoryTests
     {
-        private readonly IVenueRepository _venueRepository = new VenueRepository(TestDatabaseFixture.DatabaseContext);
+        private readonly IVenueRepository _venueRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IVenueRepository>();
 
         [Test]
         public async Task Insert_WhenInsertVenue_ShouldInt4()
@@ -39,18 +38,16 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public void Delete_WhenDeleteSeat_ShouldInt1()
+        public async Task Delete_WhenDeleteVenue_ShouldInt2()
         {
             // arrange
-            var expectedException =
-            "An error occurred while saving the entity changes. See the inner exception for details.";
+            var expectedResponse = 2;
 
             // act
-            var actualException = Assert.ThrowsAsync<DbUpdateException>(
-                            async () => await _venueRepository.Delete(1));
+            var actualResponse = await _venueRepository.Delete(2);
 
             // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
@@ -67,10 +64,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var expectedId = 3;
 
             // act
-            var actualId = await _venueRepository.GetById(1);
+            var actualId = await _venueRepository.GetById(3);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

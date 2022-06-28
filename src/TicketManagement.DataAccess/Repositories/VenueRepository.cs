@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
+using TicketManagement.DI;
 
 namespace TicketManagement.DataAccess.Repositories
 {
@@ -10,7 +10,7 @@ namespace TicketManagement.DataAccess.Repositories
     {
         private readonly IDatabaseContext _databaseContext;
 
-        internal VenueRepository(IDatabaseContext databaseContext)
+        public VenueRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
             _databaseContext = databaseContext;

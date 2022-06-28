@@ -1,6 +1,6 @@
 ﻿using TicketManagement.Common.Entities;
 
-namespace TicketManagement.DataAccess.Interfaces
+namespace TicketManagement.DI
 {
     public interface IEventSeatRepository : IRepository<EventSeat>
     {

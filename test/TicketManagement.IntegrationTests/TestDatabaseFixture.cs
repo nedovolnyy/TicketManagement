@@ -1,70 +1,40 @@
-﻿using System.Configuration;
+﻿using System.Threading.Tasks;
 using NUnit.Framework;
-using TicketManagement.DataAccess.EF;
-using TicketManagement.DataAccess.Interfaces;
+using TicketManagement.DI;
+using TicketManagement.Settings;
 
 namespace TicketManagement.IntegrationTests
 {
     [SetUpFixture]
     public class TestDatabaseFixture
     {
-        private static readonly string _testConnectionString = ConfigurationManager.ConnectionStrings["TestConnection"].ConnectionString;
-        private static readonly string _backupConnectionString = ConfigurationManager.ConnectionStrings["BackupConnection"].ConnectionString;
-        public static IDatabaseContext DatabaseContext { get; set; } = new DatabaseContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+        public static Configuration Configuration { get; } = new Configuration();
 
         [OneTimeSetUp]
-        public void Setup()
+        public async Task Setup()
         {
-            InitiallizeDatabase();
+            await InitiallizeDatabase();
         }
 
         [OneTimeTearDown]
-        public void TearDown()
+        public async Task TearDown()
         {
-            DropDatabase();
+            await DropDatabase();
         }
 
-        public void ChangeConfigFile()
+        public async Task InitiallizeDatabase()
         {
-            var config = ConfigurationManager.OpenExeConfiguration("");
-            var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
-            connectionStringsSection.ConnectionStrings["DefaultConnection"].ConnectionString =
-                ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString != _testConnectionString ? _testConnectionString : _backupConnectionString;
-            config.Save();
-            ConfigurationManager.RefreshSection("connectionStrings");
-
-            DatabaseContext = new DatabaseContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-        }
-
-        public void InitiallizeDatabase()
-        {
-            DropDatabase();
+            await DropDatabase();
 
             var target = new DacpacService();
-            target.ProcessDacPac(_testConnectionString,
+            target.ProcessDacPac(Configuration.ConnectionString,
                                  "TestTicketManagement.Database",
                                  "TestTicketManagement.Database.dacpac");
-            if (ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString == _testConnectionString)
-            {
-                ChangeConfigFile();
-            }
         }
 
-        public void DropDatabase()
+        public async Task DropDatabase()
         {
-            if (string.Equals(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString, _backupConnectionString))
-            {
-                ChangeConfigFile();
-            }
-
-            var cmd = DatabaseContext.Connection.CreateCommand();
-            cmd.CommandText = @"IF EXISTS(SELECT * FROM sys.databases WHERE name = 'TestTicketManagement.Database')
-                                BEGIN
-                                    ALTER DATABASE [TestTicketManagement.Database] SET OFFLINE WITH ROLLBACK IMMEDIATE;
-                                    ALTER DATABASE [TestTicketManagement.Database] SET ONLINE;
-                                    DROP DATABASE [TestTicketManagement.Database]
-                                END;";
-            cmd.ExecuteNonQuery();
+            await Configuration.Container.GetInstance<IDatabaseContext>().Instance.Database.EnsureDeletedAsync();
         }
     }
 }

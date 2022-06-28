@@ -6,7 +6,7 @@ namespace TicketManagement.Common.Entities
     [Table("Venue")]
     public class Venue : BaseEntity
     {
-        public Venue(int id, string name, string description, string address, string phone)
+        public Venue(int id, string name, string description, string address, string phone = null)
         {
             Id = id;
             Name = name;

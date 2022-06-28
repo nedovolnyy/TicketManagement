@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TicketManagement.BusinessLogic.Interfaces;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
+using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.Services
 {

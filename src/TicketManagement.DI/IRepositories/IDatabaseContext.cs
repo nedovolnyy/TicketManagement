@@ -1,8 +1,7 @@
-﻿using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
 
-namespace TicketManagement.DataAccess.Interfaces
+namespace TicketManagement.DI
 {
     public interface IDatabaseContext
     {
@@ -14,6 +13,5 @@ namespace TicketManagement.DataAccess.Interfaces
         DbSet<Layout> Layouts { get; set; }
         DbSet<Seat> Seats { get; set; }
         DbSet<Venue> Venues { get; set; }
-        DbConnection Connection { get; }
     }
 }

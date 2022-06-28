@@ -1,15 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class SeatServiceTests
     {
-        private readonly SeatService _seatService = new SeatService(new SeatRepository(TestDatabaseFixture.DatabaseContext));
+        private readonly ISeatService _seatService = TestDatabaseFixture.Configuration.Container.GetInstance<ISeatService>();
 
         [Test]
         public async Task Insert_WhenInsertSeat_ShouldInt4()
@@ -44,7 +43,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = 2;
 
             // act
-            var actualResponse = await _seatService.Delete(3);
+            var actualResponse = await _seatService.Delete(1);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -64,10 +63,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 5;
+            var expectedId = 3;
 
             // act
-            var actualId = await _seatService.GetById(5);
+            var actualId = await _seatService.GetById(3);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

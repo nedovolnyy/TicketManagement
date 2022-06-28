@@ -3,14 +3,13 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
+using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {
     public class AreaRepositoryTests
     {
-        private readonly IAreaRepository _areaRepository = new AreaRepository(TestDatabaseFixture.DatabaseContext);
+        private readonly IAreaRepository _areaRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IAreaRepository>();
 
         [Test]
         public async Task Insert_WhenInsertArea_ShouldInt4()
@@ -32,25 +31,23 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = 3;
 
             // act
-            var actualResponse = await _areaRepository.Update(new Area(1, 2, "First area of second layout", 2, 4));
+            var actualResponse = await _areaRepository.Update(new Area(3, 2, "First area of second layout", 2, 4));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public void Delete_WhenDeleteSeat_ShouldInt1()
+        public async Task Delete_WhenDeleteArea_ShouldInt2()
         {
             // arrange
-            var expectedException =
-            "An error occurred while saving the entity changes. See the inner exception for details.";
+            var expectedResponse = 2;
 
             // act
-            var actualException = Assert.ThrowsAsync<DbUpdateException>(
-                             async () => await _areaRepository.Delete(1));
+            var actualResponse = await _areaRepository.Delete(1);
 
             // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
+            Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
@@ -67,10 +64,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var expectedId = 3;
 
             // act
-            var actualId = await _areaRepository.GetById(1);
+            var actualId = await _areaRepository.GetById(3);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
