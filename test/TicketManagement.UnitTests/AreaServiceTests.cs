@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
@@ -16,6 +17,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Area(2, 1, "First area of first layout", 3, 2),
             new Area(3, 2, "First area of second layout", 1, 7),
         };
+        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenAreaFieldLayoutIdNull_ShouldThrow()
@@ -127,19 +129,20 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [Test]
-        public void Update_WhenUpdateArea_ShouldNotNull()
+        public async Task Update_WhenUpdateArea_ShouldNotNull()
         {
             // arrange
             var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.Update(It.IsAny<Area>())).ReturnsAsync(1);
+            areaService.Setup(x => x.Update(It.IsAny<Area>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            var actual = areaService.Object.Update(areaExpected);
+            await areaService.Object.Update(areaExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [Test]

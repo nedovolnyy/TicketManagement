@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
@@ -17,7 +16,7 @@ namespace TicketManagement.Common.DI
         /// Base method for update data.
         /// </summary>
         /// <param name="entity">Entity.</param>
-        Task<int> Update(T entity);
+        Task Update(T entity);
 
         /// <summary>
         /// Base method for delete data.
@@ -29,13 +28,13 @@ namespace TicketManagement.Common.DI
         /// Base method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns><see cref="BaseEntity"/>&lt;BaseEntity&gt;.</returns>
+        /// <returns><see cref="IBaseEntity"/>&lt;BaseEntity&gt;.</returns>
         Task<T> GetById(int id);
 
         /// <summary>
         /// Base method for populate all data.
         /// </summary>
-        /// <returns><see cref="BaseEntity"/>&lt;BaseEntity&gt;.</returns>
+        /// <returns><see cref="IBaseEntity"/>&lt;BaseEntity&gt;.</returns>
         Task<IEnumerable<T>> GetAll();
     }
 }

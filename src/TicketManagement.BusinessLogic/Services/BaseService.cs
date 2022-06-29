@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TicketManagement.Common.DI;
-using TicketManagement.Common.Entities;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -21,10 +20,10 @@ namespace TicketManagement.BusinessLogic.Services
             return await _entityRepository.Insert(entity);
         }
 
-        public virtual async Task<int> Update(T entity)
+        public virtual async Task Update(T entity)
         {
             await Validate(entity);
-            return await _entityRepository.Update(entity);
+            await _entityRepository.Update(entity);
         }
 
         public virtual async Task<int> Delete(int id) =>

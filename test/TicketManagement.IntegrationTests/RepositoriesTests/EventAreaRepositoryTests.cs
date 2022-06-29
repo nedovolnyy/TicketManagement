@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -11,10 +12,10 @@ namespace TicketManagement.IntegrationTests
         private readonly IEventAreaRepository _eventAreaRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IEventAreaRepository>();
 
         [Test]
-        public async Task Insert_WhenInsertEventArea_ShouldInt4()
+        public async Task Insert_WhenInsertEventArea_ShouldStateAdded()
         {
             // arrange
-            var expectedResponse = 4;
+            var expectedResponse = (int)EntityState.Added;
 
             // act
             var actualResponse = await _eventAreaRepository.Insert(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
@@ -24,26 +25,27 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public async Task Update_WhenUpdateEventArea_ShouldInt3()
+        public async Task Update_WhenUpdateEventArea_ShouldUpdatedEventArea()
         {
             // arrange
-            var expectedResponse = 3;
+            var expectedEventArea = new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m);
 
             // act
-            var actualResponse = await _eventAreaRepository.Update(new EventArea(3, 1, "Cinema Hall #2", 2, 1, 5.20m));
+            await _eventAreaRepository.Update(expectedEventArea);
+            var actualResponse = await _eventAreaRepository.GetById(expectedEventArea.Id);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.AreEqual(expectedEventArea, actualResponse);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteEventArea_ShouldInt2()
+        public async Task Delete_WhenDeleteEventArea_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = 2;
+            var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _eventAreaRepository.Delete(5);
+            var actualResponse = await _eventAreaRepository.Delete(9);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

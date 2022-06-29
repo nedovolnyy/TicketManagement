@@ -20,15 +20,16 @@ namespace TicketManagement.DataAccess.Repositories
 
         public override async Task<int> Insert(IArea entity)
         {
-            await _dbSet.AddAsync((Area)entity);
-            return await base.Insert(entity);
+            var state = (int)(await _dbSet.AddAsync((Area)entity)).State;
+            await _databaseContext.Instance.SaveChangesAsync();
+            return state;
         }
 
         public override async Task<int> Delete(int id)
         {
-            var i = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
-            await base.Delete(i);
-            return i;
+            var state = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
+            await _databaseContext.Instance.SaveChangesAsync();
+            return state;
         }
 
         public override async Task<IArea> GetById(int id)

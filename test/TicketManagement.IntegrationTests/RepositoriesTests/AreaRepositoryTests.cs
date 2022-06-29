@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -11,10 +12,10 @@ namespace TicketManagement.IntegrationTests
         private readonly IAreaRepository _areaRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IAreaRepository>();
 
         [Test]
-        public async Task Insert_WhenInsertArea_ShouldInt4()
+        public async Task Insert_WhenInsertArea_ShouldStateAdded()
         {
             // arrange
-            var expectedResponse = 4;
+            var expectedResponse = (int)EntityState.Added;
 
             // act
             var actualResponse = await _areaRepository.Insert(new Area(0, 2, "First area of second layout", 1, 7));
@@ -24,26 +25,27 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public async Task Update_WhenUpdateArea_ShouldInt3()
+        public async Task Update_WhenUpdateArea_ShouldUpdatedArea()
         {
             // arrange
-            var expectedResponse = 3;
+            var expectedArea = new Area(1, 1, "Firs456547t etter of 3ett layout", 1, 7);
 
             // act
-            var actualResponse = await _areaRepository.Update(new Area(3, 2, "First area of second layout", 2, 4));
+            await _areaRepository.Update(expectedArea);
+            var actualResponse = await _areaRepository.GetById(expectedArea.Id);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.AreEqual(expectedArea, actualResponse);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteArea_ShouldInt2()
+        public async Task Delete_WhenDeleteArea_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = 2;
+            var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _areaRepository.Delete(1);
+            var actualResponse = await _areaRepository.Delete(12);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -63,10 +65,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 3;
+            var expectedId = 1;
 
             // act
-            var actualId = await _areaRepository.GetById(3);
+            var actualId = await _areaRepository.GetById(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

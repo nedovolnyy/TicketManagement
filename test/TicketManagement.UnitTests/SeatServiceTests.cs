@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
@@ -16,6 +17,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Seat(2, 1, 2, 2),
             new Seat(3, 2, 1, 1),
         };
+        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenSeatFieldAreaIdNull_ShouldThrow()
@@ -109,19 +111,20 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [Test]
-        public void Update_WhenUpdateSeat_ShouldNotNull()
+        public async Task Update_WhenUpdateSeat_ShouldNotNull()
         {
             // arrange
             var seatExpected = new Seat(1, 6, 1, 1);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.Update(It.IsAny<Seat>())).ReturnsAsync(1);
+            seatService.Setup(x => x.Update(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            var actual = seatService.Object.Update(seatExpected);
+            await seatService.Object.Update(seatExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [Test]

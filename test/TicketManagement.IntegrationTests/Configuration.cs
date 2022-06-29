@@ -5,7 +5,7 @@ using TicketManagement.Common.DI;
 using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Repositories;
 
-namespace TicketManagement.Settings
+namespace TicketManagement.IntegrationTests
 {
 #pragma warning disable S1200 // Classes should not be coupled to too many other classes (Single Responsibility Principle)
     public class Configuration
@@ -29,43 +29,43 @@ namespace TicketManagement.Settings
             {
                 var options = new AreaRepository(_databaseContext);
                 return new AreaService(options);
-            }, Lifestyle.Transient);
+            }, Lifestyle.Singleton);
 
             Container.Register<IEventAreaService>(() =>
             {
                 var options = new EventAreaRepository(_databaseContext);
                 return new EventAreaService(options);
-            }, Lifestyle.Transient);
+            }, Lifestyle.Singleton);
 
             Container.Register<IEventSeatService>(() =>
             {
                 var options = new EventSeatRepository(_databaseContext);
                 return new EventSeatService(options);
-            }, Lifestyle.Transient);
+            }, Lifestyle.Singleton);
 
             Container.Register<IEventService>(() =>
             {
                 var options = new EventRepository(_databaseContext);
                 return new EventService(options);
-            }, Lifestyle.Transient);
+            }, Lifestyle.Singleton);
 
             Container.Register<ILayoutService>(() =>
             {
                 var options = new LayoutRepository(_databaseContext);
                 return new LayoutService(options);
-            }, Lifestyle.Transient);
+            }, Lifestyle.Singleton);
 
             Container.Register<ISeatService>(() =>
             {
                 var options = new SeatRepository(_databaseContext);
                 return new SeatService(options);
-            }, Lifestyle.Transient);
+            }, Lifestyle.Singleton);
 
             Container.Register<IVenueService>(() =>
             {
                 var options = new VenueRepository(_databaseContext);
                 return new VenueService(options);
-            }, Lifestyle.Transient);
+            }, Lifestyle.Singleton);
 
             Container.Register<IDatabaseContext>(() =>
             {

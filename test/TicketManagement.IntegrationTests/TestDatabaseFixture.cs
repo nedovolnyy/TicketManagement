@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
-using TicketManagement.Settings;
 
 namespace TicketManagement.IntegrationTests
 {

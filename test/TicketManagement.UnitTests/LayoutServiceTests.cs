@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
@@ -16,6 +17,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Layout(2, "Second layout", 1, "description second layout"),
             new Layout(3, "Second layout", 2, "description second layout"),
         };
+        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenLayoutFieldNameEmpty_ShouldThrow()
@@ -109,19 +111,20 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [Test]
-        public void Update_WhenUpdateLayout_ShouldNotNull()
+        public async Task Update_WhenUpdateLayout_ShouldNotNull()
         {
             // arrange
             var layoutExpected = new Layout(3, "Second layout", 2, "description second layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.Update(It.IsAny<Layout>())).ReturnsAsync(1);
+            layoutService.Setup(x => x.Update(It.IsAny<Layout>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            var actual = layoutService.Object.Update(layoutExpected);
+            await layoutService.Object.Update(layoutExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [Test]

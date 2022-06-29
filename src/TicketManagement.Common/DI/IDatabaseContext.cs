@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -26,27 +27,46 @@ namespace TicketManagement.IntegrationTests
         {
             // act
             var actualResponse =
-                await _evntRepository.Insert(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("09/19/2023"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00")));
+                await _evntRepository.Insert(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00")));
 
             // assert
             Assert.NotNull(actualResponse);
         }
 
         [Test]
-        public async Task Update_WhenUpdateEvent_ShouldNotNull()
+        public async Task Update_WhenUpdateEvent_ShouldUpdatedEvent()
         {
+            // arrange
+            var expectedEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"));
+            string expectedString =
+                expectedEvent.Id.ToString() +
+                expectedEvent.Name +
+                expectedEvent.EventTime.ToString() +
+                expectedEvent.Description +
+                expectedEvent.LayoutId.ToString() +
+                expectedEvent.EventEndTime.ToString();
+
             // act
-            var actualResponse = await _evntRepository.Update(new Event(3, "Kitchen Serie", DateTimeOffset.Parse("09/09/2023"), "Kitchen Serie", 2, DateTime.Parse("2023-09-09 00:50:00")));
+            await _evntRepository.Update(expectedEvent);
+            var actualResponse = await _evntRepository.GetById(expectedEvent.Id);
+
+            string actualString =
+                actualResponse.Id.ToString() +
+                actualResponse.Name +
+                actualResponse.EventTime.ToString() +
+                actualResponse.Description +
+                actualResponse.LayoutId.ToString() +
+                actualResponse.EventEndTime.ToString();
 
             // assert
-            Assert.NotNull(actualResponse);
+            Assert.AreEqual(expectedString, actualString);
         }
 
         [Test]
         public async Task Delete_WhenDeleteSeat_ShouldNotNull()
         {
             // act
-            var actualResponse = await _evntRepository.Delete(1);
+            var actualResponse = await _evntRepository.Delete(10);
 
             // assert
             Assert.NotNull(actualResponse);
@@ -66,10 +86,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 3;
+            var expectedId = 1;
 
             // act
-            var actualId = await _evntRepository.GetById(3);
+            var actualId = await _evntRepository.GetById(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
@@ -79,7 +99,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
         {
             // arrange
-            var expectedCount = 2;
+            var expectedCount = 1;
 
             // act
             var actualCount = (await _evntRepository.GetAllByLayoutId(1)).Count();

@@ -31,8 +31,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.Common", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.MVC", "src\TicketManagement.MVC\TicketManagement.MVC.csproj", "{91CE7081-AB1C-4607-9934-AE57767D96A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.Settings", "src\TicketManagement.Settings\TicketManagement.Settings.csproj", "{1391AF94-24E3-42A4-83CA-8208D68D7AE7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,10 +67,6 @@ Global
 		{91CE7081-AB1C-4607-9934-AE57767D96A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91CE7081-AB1C-4607-9934-AE57767D96A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91CE7081-AB1C-4607-9934-AE57767D96A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1391AF94-24E3-42A4-83CA-8208D68D7AE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1391AF94-24E3-42A4-83CA-8208D68D7AE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1391AF94-24E3-42A4-83CA-8208D68D7AE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1391AF94-24E3-42A4-83CA-8208D68D7AE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,7 +79,6 @@ Global
 		{5AE85D83-54C3-48FD-BB86-0EE15DC1B2C7} = {9C280FDA-A325-4950-B4A6-33CE274C6EC2}
 		{16E7A392-F4DD-4E70-94E6-929CDFF2CF96} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 		{91CE7081-AB1C-4607-9934-AE57767D96A1} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
-		{1391AF94-24E3-42A4-83CA-8208D68D7AE7} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCBA386-043C-4C32-82A6-14ABB78C7FEC}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
@@ -16,6 +17,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Venue(2, "Second venue", "description second venue", "address second venue", "+58487555"),
             new Venue(3, "Second venue", "description second venue", "address second venue", "+84845464"),
         };
+        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenVenueFieldNameEmpty_ShouldThrow()
@@ -109,19 +111,20 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [Test]
-        public void Update_WhenUpdateVenue_ShouldNotNull()
+        public async Task Update_WhenUpdateVenue_ShouldNotNull()
         {
             // arrange
             var venueExpected = new Venue(1, "First venue", "description first venue", "address first venue", "+4988955568");
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
-            venueService.Setup(x => x.Update(It.IsAny<Venue>())).ReturnsAsync(1);
+            venueService.Setup(x => x.Update(It.IsAny<Venue>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            var actual = venueService.Object.Update(venueExpected);
+            await venueService.Object.Update(venueExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [Test]

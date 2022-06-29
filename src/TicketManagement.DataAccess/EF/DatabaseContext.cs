@@ -16,33 +16,28 @@ namespace TicketManagement.DataAccess.EF
         }
 
         public DbContext Instance => this;
-        public virtual DbSet<Area> Areas { get; set; } = null!;
-        public virtual DbSet<Event> Events { get; set; } = null!;
-        public virtual DbSet<EventArea> EventAreas { get; set; } = null!;
-        public virtual DbSet<EventSeat> EventSeats { get; set; } = null!;
-        public virtual DbSet<Layout> Layouts { get; set; } = null!;
-        public virtual DbSet<Seat> Seats { get; set; } = null!;
-        public virtual DbSet<Venue> Venues { get; set; } = null!;
+        public DbSet<Area> Areas { get; set; } = null!;
+        public DbSet<Event> Events { get; set; } = null!;
+        public DbSet<EventArea> EventAreas { get; set; } = null!;
+        public DbSet<EventSeat> EventSeats { get; set; } = null!;
+        public DbSet<Layout> Layouts { get; set; } = null!;
+        public DbSet<Seat> Seats { get; set; } = null!;
+        public DbSet<Venue> Venues { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-#pragma warning disable S125 // Sections of code should not be commented out
-#pragma warning disable SA1005 // Single line comments should begin with single space
-#pragma warning disable SA1515 // Single-line comment should be preceded by blank line
             {
-                optionsBuilder.UseSqlServer(_connectionString);
-                //.UseLoggerFactory(
-                //    LoggerFactory.Create(
-                //        b => b
-                //            .AddProvider(new SqlLoggerProvider())
-                //            .AddFilter(level => level >= LogLevel.Information)))
-                //.EnableSensitiveDataLogging()
-                //.EnableDetailedErrors();
+                optionsBuilder.UseSqlServer(_connectionString)
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .UseLoggerFactory(
+                        LoggerFactory.Create(
+                            b => b
+                                .AddProvider(new SqlLoggerProvider())
+                                .AddFilter(level => level >= LogLevel.Information)))
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors();
             }
-#pragma warning restore SA1515 // Single-line comment should be preceded by blank line
-#pragma warning restore SA1005 // Single line comments should begin with single space
-#pragma warning restore S125 // Sections of code should not be commented out
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

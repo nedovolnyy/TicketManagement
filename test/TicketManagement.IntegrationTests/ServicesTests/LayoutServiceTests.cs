@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -11,10 +12,10 @@ namespace TicketManagement.IntegrationTests
         private readonly ILayoutService _layoutService = TestDatabaseFixture.Configuration.Container.GetInstance<ILayoutService>();
 
         [Test]
-        public async Task Insert_WhenInsertLayout_ShouldInt4()
+        public async Task Insert_WhenInsertLayout_ShouldStateAdded()
         {
             // arrange
-            var expectedResponse = 4;
+            var expectedResponse = (int)EntityState.Added;
 
             // act
             var actualResponse = await _layoutService.Insert(new Layout(0, "First egdfslayout", 1, "description first layout"));
@@ -24,26 +25,27 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public async Task Update_WhenUpdateLayout_ShouldInt3()
+        public async Task Update_WhenUpdateLayout_ShouldUpdatedLayout()
         {
             // arrange
-            var expectedResponse = 3;
+            var expectedLayout = new Layout(1, "Second ladfsgsdfyout", 1, "description second layout");
 
             // act
-            var actualResponse = await _layoutService.Update(new Layout(3, "Second ladfsgsdfyout", 2, "description second layout"));
+            await _layoutService.Update(expectedLayout);
+            var actualResponse = await _layoutService.GetById(expectedLayout.Id);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.AreEqual(expectedLayout, actualResponse);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteLayout_ShouldInt2()
+        public async Task Delete_WhenDeleteLayout_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = 2;
+            var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _layoutService.Delete(4);
+            var actualResponse = await _layoutService.Delete(8);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

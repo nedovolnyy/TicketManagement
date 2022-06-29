@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -11,10 +12,10 @@ namespace TicketManagement.IntegrationTests
         private readonly ISeatService _seatService = TestDatabaseFixture.Configuration.Container.GetInstance<ISeatService>();
 
         [Test]
-        public async Task Insert_WhenInsertSeat_ShouldInt4()
+        public async Task Insert_WhenInsertSeat_ShouldStateAdded()
         {
             // arrange
-            var expectedResponse = 4;
+            var expectedResponse = (int)EntityState.Added;
 
             // act
             var actualResponse = await _seatService.Insert(new Seat(0, 2, 6, 5));
@@ -24,26 +25,27 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public async Task Update_WhenUpdateSeat_ShouldInt3()
+        public async Task Update_WhenUpdateSeat_ShouldUpdatedSeat()
         {
             // arrange
-            var expectedResponse = 3;
+            var expectedSeat = new Seat(5, 5, 3, 5);
 
             // act
-            var actualResponse = await _seatService.Update(new Seat(5, 2, 3, 5));
+            await _seatService.Update(expectedSeat);
+            var actualResponse = await _seatService.GetById(expectedSeat.Id);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.AreEqual(expectedSeat, actualResponse);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteSeat_ShouldInt2()
+        public async Task Delete_WhenDeleteSeat_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = 2;
+            var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _seatService.Delete(1);
+            var actualResponse = await _seatService.Delete(3);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -63,10 +65,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 3;
+            var expectedId = 1;
 
             // act
-            var actualId = await _seatService.GetById(3);
+            var actualId = await _seatService.GetById(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

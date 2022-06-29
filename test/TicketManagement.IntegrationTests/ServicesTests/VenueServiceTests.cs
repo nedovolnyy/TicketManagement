@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -20,46 +21,47 @@ namespace TicketManagement.IntegrationTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _venueService.Insert(new Venue(0, "Second venue", "description second venue", "address second venue", "+84845464")));
+                            async () => await _venueService.Insert(new Venue(0, "Second venue", "description of second venue", "address second venue", "+84845464")));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
         }
 
         [Test]
-        public async Task Insert_WhenInsertVenue_ShouldInt4()
+        public async Task Insert_WhenInsertVenue_ShouldStateAdded()
         {
             // arrange
-            var expectedResponse = 4;
+            var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _venueService.Insert(new Venue(0, "Second vwergenue", "description second venue", "address second venue", "+84845464"));
+            var actualResponse = await _venueService.Insert(new Venue(0, "Sixteen venue", "description secodnd venue", "address secondd venue", "+84845464"));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public async Task Update_WhenUpdateVenue_ShouldInt3()
+        public async Task Update_WhenUpdateVenue_ShouldUpdatedVenue()
         {
             // arrange
-            var expectedResponse = 3;
+            var expectedVenue = new Venue(4, "4th venue", "description 4th venue", "address 4th venue", "+444444444444");
 
             // act
-            var actualResponse = await _venueService.Update(new Venue(1, "First wergvenue", "description first venue", "address first venue", "+4988955568"));
+            await _venueService.Update(expectedVenue);
+            var actualResponse = await _venueService.GetById(expectedVenue.Id);
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            Assert.AreEqual(expectedVenue, actualResponse);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteVenue_ShouldInt2()
+        public async Task Delete_WhenDeleteVenue_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = 2;
+            var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _venueService.Delete(2);
+            var actualResponse = await _venueService.Delete(12);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
@@ -16,6 +17,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new EventArea(2, 1, "First eventArea of first layout", 3, 2, 8.6m),
             new EventArea(3, 2, "First eventArea of second layout", 1, 7, 4.6m),
         };
+        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenEventAreaFieldLayoutIdNull_ShouldThrow()
@@ -124,19 +126,20 @@ namespace TicketManagement.BusinessLogic.UnitTests
         }
 
         [Test]
-        public void Update_WhenUpdateEventArea_ShouldNotNull()
+        public async Task Update_WhenUpdateEventArea_ShouldNotNull()
         {
             // arrange
             var eventAreaExpected = new EventArea(1, 2, "First eventArea of second layout", 2, 4, 7.5m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).ReturnsAsync(1);
+            eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            var actual = eventAreaService.Object.Update(eventAreaExpected);
+            await eventAreaService.Object.Update(eventAreaExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = 0;
         }
 
         [Test]

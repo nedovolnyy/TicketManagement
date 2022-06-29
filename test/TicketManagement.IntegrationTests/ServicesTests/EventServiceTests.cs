@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -13,13 +14,13 @@ namespace TicketManagement.IntegrationTests
         private readonly IEventService _eventService = TestDatabaseFixture.Configuration.Container.GetInstance<IEventService>();
 
         [Test]
-        public async Task GetSeatsAvaibleCount_WhenId2_ShouldInt3()
+        public async Task GetSeatsAvaibleCount_WhenId2_ShouldIn1()
         {
             // arrange
-            var expectedResponse = 3;
+            var expectedResponse = 1;
 
             // act
-            var actualResponse = await _eventService.GetSeatsAvailableCount(2);
+            var actualResponse = await _eventService.GetSeatsAvailableCount(1);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -35,7 +36,7 @@ namespace TicketManagement.IntegrationTests
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
                 async () => await _eventService.Insert(
-                    new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 8, DateTime.Parse("2023-07-02 00:50:00"))));
+                    new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 18, DateTime.Parse("2023-07-02 00:50:00"))));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -68,21 +69,39 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public async Task Update_WhenUpdateEvent_ShouldNotNull()
+        public async Task Update_WhenUpdateEvent_ShouldUpdatedEvent()
         {
+            // arrange
+            var expectedEvent = new Event(9, "StanegegerfgferThings Serie", DateTimeOffset.Parse("2023-11-06 00:45:00"), "Stanerger Thinegs Serie", 9, DateTime.Parse("2023-11-06 00:50:00"));
+            string expectedString =
+                expectedEvent.Id.ToString() +
+                expectedEvent.Name +
+                expectedEvent.EventTime.ToString() +
+                expectedEvent.Description +
+                expectedEvent.LayoutId.ToString() +
+                expectedEvent.EventEndTime.ToString();
+
             // act
-            var actualResponse =
-                await _eventService.Update(new Event(2, "StanegegererThings Serie", DateTimeOffset.Parse("06/11/2023"), "Stanerger Things Serie", 1, DateTime.Parse("2023-11-06 00:50:00")));
+            await _eventService.Update(expectedEvent);
+            var actualResponse = await _eventService.GetById(expectedEvent.Id);
+
+            string actualString =
+                actualResponse.Id.ToString() +
+                actualResponse.Name +
+                actualResponse.EventTime.ToString() +
+                actualResponse.Description +
+                actualResponse.LayoutId.ToString() +
+                actualResponse.EventEndTime.ToString();
 
             // assert
-            Assert.NotNull(actualResponse);
+            Assert.AreEqual(expectedString, actualString);
         }
 
         [Test]
         public async Task Delete_WhenDeleteSeat_ShouldNotNull()
         {
             // act
-            var actualResponse = await _eventService.Delete(3);
+            var actualResponse = await _eventService.Delete(11);
 
             // assert
             Assert.NotNull(actualResponse);
@@ -102,10 +121,10 @@ namespace TicketManagement.IntegrationTests
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 2;
+            var expectedId = 1;
 
             // act
-            var actualId = await _eventService.GetById(2);
+            var actualId = await _eventService.GetById(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

@@ -7,7 +7,7 @@ namespace TicketManagement.Common.DI
         where T : class, IBaseEntity
     {
         Task<int> Insert(T entity);
-        Task<int> Update(T entity);
+        Task Update(T entity);
         Task<int> Delete(int id);
         Task<T> GetById(int id);
         Task<IEnumerable<T>> GetAll();

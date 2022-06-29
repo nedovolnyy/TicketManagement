@@ -9,25 +9,28 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal class SeatRepository : BaseRepository<ISeat>, ISeatRepository
     {
+        private readonly IDatabaseContext _databaseContext;
         private readonly DbSet<Seat> _dbSet;
 
         public SeatRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
-            _dbSet = databaseContext.Seats;
+            _databaseContext = databaseContext;
+            _dbSet = _databaseContext.Seats;
         }
 
         public override async Task<int> Insert(ISeat entity)
         {
-            await _dbSet.AddAsync((Seat)entity);
-            return await base.Insert(entity);
+            var state = (int)(await _dbSet.AddAsync((Seat)entity)).State;
+            await _databaseContext.Instance.SaveChangesAsync();
+            return state;
         }
 
         public override async Task<int> Delete(int id)
         {
-            var i = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
-            await base.Delete(i);
-            return i;
+            var state = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
+            await _databaseContext.Instance.SaveChangesAsync();
+            return state;
         }
 
         public override async Task<ISeat> GetById(int id)

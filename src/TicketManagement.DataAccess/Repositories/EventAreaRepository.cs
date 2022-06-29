@@ -8,25 +8,28 @@ namespace TicketManagement.DataAccess.Repositories
 {
     internal class EventAreaRepository : BaseRepository<IEventArea>, IEventAreaRepository
     {
+        private readonly IDatabaseContext _databaseContext;
         private readonly DbSet<EventArea> _dbSet;
 
         public EventAreaRepository(IDatabaseContext databaseContext)
             : base(databaseContext)
         {
-            _dbSet = databaseContext.EventAreas;
+            _databaseContext = databaseContext;
+            _dbSet = _databaseContext.EventAreas;
         }
 
         public override async Task<int> Insert(IEventArea entity)
         {
-            await _dbSet.AddAsync((EventArea)entity);
-            return await base.Insert(entity);
+            var state = (int)(await _dbSet.AddAsync((EventArea)entity)).State;
+            await _databaseContext.Instance.SaveChangesAsync();
+            return state;
         }
 
         public override async Task<int> Delete(int id)
         {
-            var i = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
-            await base.Delete(i);
-            return i;
+            var state = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
+            await _databaseContext.Instance.SaveChangesAsync();
+            return state;
         }
 
         public override async Task<IEventArea> GetById(int id)
