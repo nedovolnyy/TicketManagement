@@ -1,9 +1,11 @@
-﻿using TicketManagement.Common.Entities;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
-namespace TicketManagement.DI
+namespace TicketManagement.Common.DI
 {
     public interface IRepository<T>
-        where T : BaseEntity
+        where T : class, IBaseEntity
     {
         /// <summary>
         /// Base method for insert data.

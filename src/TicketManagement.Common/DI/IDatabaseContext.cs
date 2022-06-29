@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.Entities;
 
-namespace TicketManagement.DI
+namespace TicketManagement.Common.DI
 {
     public interface IDatabaseContext
     {

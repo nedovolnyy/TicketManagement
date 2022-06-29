@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Validation;
-using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class LayoutService : BaseService<Layout>, ILayoutService
+    internal class LayoutService : BaseService<ILayout>, ILayoutService
     {
         private readonly ILayoutRepository _layoutRepository;
         public LayoutService(ILayoutRepository layoutRepository)
@@ -14,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
             _layoutRepository = layoutRepository;
         }
 
-        public override async Task Validate(Layout entity)
+        public override async Task Validate(ILayout entity)
         {
             if (entity.VenueId == default)
             {

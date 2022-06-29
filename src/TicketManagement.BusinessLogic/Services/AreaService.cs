@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class AreaService : BaseService<Area>, IAreaService
+    internal class AreaService : BaseService<IArea>, IAreaService
     {
         private readonly IAreaRepository _areaRepository;
         public AreaService(IAreaRepository areaRepository)
@@ -14,7 +14,7 @@ namespace TicketManagement.BusinessLogic.Services
             _areaRepository = areaRepository;
         }
 
-        public override async Task Validate(Area entity)
+        public override async Task Validate(IArea entity)
         {
             if (entity.LayoutId == default)
             {

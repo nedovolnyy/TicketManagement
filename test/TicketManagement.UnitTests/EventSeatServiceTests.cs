@@ -2,9 +2,9 @@
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {

@@ -1,18 +1,17 @@
 ﻿using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Validation;
-using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class EventAreaService : BaseService<EventArea>, IEventAreaService
+    internal class EventAreaService : BaseService<IEventArea>, IEventAreaService
     {
         public EventAreaService(IEventAreaRepository eventAreaRepository)
             : base(eventAreaRepository)
         {
         }
 
-        public override async Task Validate(EventArea entity)
+        public override async Task Validate(IEventArea entity)
         {
             if (entity.EventId == default)
             {

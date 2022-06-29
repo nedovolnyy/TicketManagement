@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     internal abstract class BaseService<T> : IService<T>
-        where T : BaseEntity
+        where T : class, IBaseEntity
     {
         private readonly IRepository<T> _entityRepository;
 

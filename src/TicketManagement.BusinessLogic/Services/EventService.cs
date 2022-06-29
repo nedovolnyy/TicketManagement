@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Validation;
-using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class EventService : BaseService<Event>, IEventService
+    internal class EventService : BaseService<IEvent>, IEventService
     {
         private readonly IEventRepository _eventRepository;
         public EventService(IEventRepository eventRepository)
@@ -20,7 +19,7 @@ namespace TicketManagement.BusinessLogic.Services
         public virtual async Task<int> GetSeatsCount(int layoutId)
             => await _eventRepository.GetSeatsCount(layoutId);
 
-        private async Task EventValidate(Event entity)
+        private async Task EventValidate(IEvent entity)
         {
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
@@ -52,7 +51,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
         }
 
-        public override async Task Validate(Event entity)
+        public override async Task Validate(IEvent entity)
         {
             if (entity.LayoutId == default)
             {

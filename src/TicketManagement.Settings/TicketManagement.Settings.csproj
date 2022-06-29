@@ -13,7 +13,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TicketManagement.BusinessLogic\TicketManagement.BusinessLogic.csproj" />
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
-    <ProjectReference Include="..\TicketManagement.DI\TicketManagement.DI.csproj" />
   </ItemGroup>
 
 </Project>

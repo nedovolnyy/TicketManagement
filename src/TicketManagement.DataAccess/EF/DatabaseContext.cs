@@ -1,9 +1,8 @@
-﻿using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.DI;
 
 namespace TicketManagement.DataAccess.EF
 {

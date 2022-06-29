@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {

@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DI;
 
 namespace TicketManagement.IntegrationTests
 {

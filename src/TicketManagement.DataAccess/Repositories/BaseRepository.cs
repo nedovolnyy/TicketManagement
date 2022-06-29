@@ -1,25 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.DI;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal class BaseRepository<T> : IRepository<T>
-        where T : BaseEntity
+    internal abstract class BaseRepository<T> : IRepository<T>
+        where T : class, IBaseEntity
     {
         private readonly IDatabaseContext _databaseContext;
-        private readonly DbSet<T> _dbSet;
         protected BaseRepository(IDatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
-            _dbSet = _databaseContext.Instance.Set<T>();
         }
 
-        public async Task<int> Insert(T entity)
+        public virtual async Task<int> Insert(T entity)
         {
-            await _dbSet.AddAsync(entity);
             await _databaseContext.Instance.SaveChangesAsync();
             return (int)EntityState.Added;
         }
@@ -31,21 +28,14 @@ namespace TicketManagement.DataAccess.Repositories
             return (int)EntityState.Modified;
         }
 
-        public async Task<int> Delete(int id)
+        public virtual async Task<int> Delete(int id)
         {
-            var i = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
             await _databaseContext.Instance.SaveChangesAsync();
-            return i;
+            return default;
         }
 
-        public async Task<T> GetById(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
+        public abstract Task<T> GetById(int id);
 
-        public async Task<IEnumerable<T>> GetAll()
-        {
-            return await _dbSet.ToListAsync();
-        }
+        public abstract Task<IEnumerable<T>> GetAll();
     }
 }

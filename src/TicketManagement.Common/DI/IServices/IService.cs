@@ -1,9 +1,10 @@
-﻿using TicketManagement.Common.Entities;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace TicketManagement.DI
+namespace TicketManagement.Common.DI
 {
     public interface IService<T>
-        where T : BaseEntity
+        where T : class, IBaseEntity
     {
         Task<int> Insert(T entity);
         Task<int> Update(T entity);

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TicketManagement.Common.DI;
 
 namespace TicketManagement.Common.Entities
 {
     [Table("Venue")]
-    public class Venue : BaseEntity
+    public class Venue : BaseEntity, IVenue
     {
         public Venue(int id, string name, string description, string address, string phone = null)
         {
@@ -17,17 +18,17 @@ namespace TicketManagement.Common.Entities
 
         [Required]
         [MaxLength(120)]
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         [Required]
         [MaxLength(120)]
-        public string Description { get; private set; }
+        public string Description { get; set; }
 
         [Required]
         [MaxLength(200)]
-        public string Address { get; private set; }
+        public string Address { get; set; }
 
         [MaxLength(30)]
-        public string Phone { get; private set; }
+        public string Phone { get; set; }
     }
 }

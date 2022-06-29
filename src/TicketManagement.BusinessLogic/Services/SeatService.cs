@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Validation;
-using TicketManagement.DI;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class SeatService : BaseService<Seat>, ISeatService
+    internal class SeatService : BaseService<ISeat>, ISeatService
     {
         private readonly ISeatRepository _seatRepository;
         public SeatService(ISeatRepository seatRepository)
@@ -14,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
             _seatRepository = seatRepository;
         }
 
-        public override async Task Validate(Seat entity)
+        public override async Task Validate(ISeat entity)
         {
             if (entity.AreaId == default)
             {

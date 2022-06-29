@@ -1,15 +1,17 @@
-﻿using TicketManagement.Common.Entities;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
-namespace TicketManagement.DI
+namespace TicketManagement.Common.DI
 {
-    public interface IEventRepository : IRepository<Event>
+    public interface IEventRepository : IRepository<IEvent>
     {
         /// <summary>
         /// Method for populate data by layoutId.
         /// </summary>
         /// <param name="layoutId">layoutId.</param>
-        /// <returns>List&lt;<see cref="Event"/>&gt;.</returns>
-        Task<IEnumerable<Event>> GetAllByLayoutId(int layoutId);
+        /// <returns>List&lt;<see cref="IEvent"/>&gt;.</returns>
+        Task<IEnumerable<IEvent>> GetAllByLayoutId(int layoutId);
 
         /// <summary>
         /// Count empty seats.
