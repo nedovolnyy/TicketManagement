@@ -1,18 +1,25 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.IdentityEntities;
 
 namespace TicketManagement.DataAccess.EF
 {
-    public partial class DatabaseContext : DbContext, IDatabaseContext
+    public partial class DatabaseContext : IdentityDbContext, IDatabaseContext
     {
         private readonly string _connectionString;
 
         public DatabaseContext(string connectionString)
         {
             _connectionString = connectionString;
+        }
+
+        public DatabaseContext(DbContextOptions<DatabaseContext> options)
+            : base(options)
+        {
         }
 
         public DbContext Instance => this;
@@ -37,17 +44,6 @@ namespace TicketManagement.DataAccess.EF
                                 .AddFilter(level => level >= LogLevel.Information)))
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors();
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            // Global turn off delete behaviour on foreign keys
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
-            {
-                relationship.DeleteBehavior = DeleteBehavior.Cascade;
             }
         }
     }
