@@ -11,7 +11,7 @@ namespace TicketManagement.BusinessLogic.Services
         {
         }
 
-        public override async Task Validate(IEventArea entity)
+        public override async Task ValidateAsync(IEventArea entity)
         {
             if (entity.EventId == default)
             {

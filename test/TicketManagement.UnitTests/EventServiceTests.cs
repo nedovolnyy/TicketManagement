@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -47,7 +48,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventService.Object.Validate(eventExpected));
+                            async () => await eventService.Object.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -65,7 +66,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await evntService.Object.Validate(evntExpected));
+                            async () => await evntService.Object.ValidateAsync(evntExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -83,7 +84,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await evntService.Object.Validate(evntExpected));
+                            async () => await evntService.Object.ValidateAsync(evntExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -101,7 +102,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await evntService.Object.Validate(evntExpected));
+                            async () => await evntService.Object.ValidateAsync(evntExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -116,12 +117,12 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "Event can't be created in the past!";
             var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description, eventEndTime: eventEndTime);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).ReturnsAsync(_expectedEvents);
+            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents.AsQueryable());
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await evntService.Object.Validate(evntExpected));
+                            async () => await evntService.Object.ValidateAsync(evntExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -135,12 +136,12 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "EventEndTime cannot be later than EventTime!";
             var evntExpected = new Event(2, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 2, DateTime.Parse("2023-01-01 00:45:00"));
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.Insert(evntExpected)).ReturnsAsync(1);
+            evntRepository.Setup(x => x.InsertAsync(evntExpected)).ReturnsAsync(1);
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await evntService.Object.Validate(evntExpected));
+                            async () => await evntService.Object.ValidateAsync(evntExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -154,12 +155,12 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "Do not create event for the same layout in the same time!";
             var evntExpected = new Event(2, "Stanweger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00 +03:00"), "Things Serie", 1, DateTime.Parse("2022-09-09 00:50:00"));
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.GetAllByLayoutId(1)).ReturnsAsync(_expectedEvents);
+            evntRepository.Setup(x => x.GetAllByLayoutId(1)).Returns(_expectedEvents.AsQueryable());
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await evntService.Object.Validate(evntExpected));
+                            async () => await evntService.Object.ValidateAsync(evntExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -174,12 +175,12 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "Layout name should be unique in venue!";
             var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description, eventEndTime: eventEndTime);
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).ReturnsAsync(_expectedEvents);
+            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents.AsQueryable());
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await evntService.Object.Validate(evntExpected));
+                            async () => await evntService.Object.ValidateAsync(evntExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -192,10 +193,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-19 00:50:00"));
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.Insert(It.IsAny<Event>())).ReturnsAsync(1);
+            eventService.Setup(x => x.InsertAsync(It.IsAny<Event>())).ReturnsAsync(1);
 
             // act
-            var actual = eventService.Object.Insert(eventExpected);
+            var actual = eventService.Object.InsertAsync(eventExpected);
 
             // assert
             Assert.NotNull(actual);
@@ -209,10 +210,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
             eventService.Setup(x => x.GetSeatsCount(It.IsAny<int>())).ReturnsAsync(5);
-            eventService.Setup(x => x.Update(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
+            eventService.Setup(x => x.UpdateAsync(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            await eventService.Object.Update(eventExpected);
+            await eventService.Object.UpdateAsync(eventExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -225,10 +226,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.Delete(It.IsAny<int>())).ReturnsAsync(1);
+            eventService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
 
             // act
-            var actual = eventService.Object.Delete(1);
+            var actual = eventService.Object.DeleteAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -241,10 +242,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(5444, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"));
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(eventExpected);
+            eventService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(eventExpected);
 
             // act
-            var actual = eventService.Object.GetById(5444);
+            var actual = eventService.Object.GetByIdAsync(5444);
 
             // assert
             Assert.NotNull(actual);
@@ -256,10 +257,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.GetAll()).ReturnsAsync(_expectedEvents);
+            eventService.Setup(x => x.GetAllAsync()).ReturnsAsync(_expectedEvents);
 
             // act
-            var actual = eventService.Object.GetAll();
+            var actual = eventService.Object.GetAllAsync();
 
             // assert
             Assert.NotNull(actual);

@@ -13,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
             _seatRepository = seatRepository;
         }
 
-        public override async Task Validate(ISeat entity)
+        public override async Task ValidateAsync(ISeat entity)
         {
             if (entity.AreaId == default)
             {
@@ -29,7 +29,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                var seatArray = await _seatRepository.GetAllByAreaId(entity.AreaId);
+                var seatArray = await _seatRepository.GetAllByAreaId(entity.AreaId).ToListAsyncSafe();
                 foreach (var seat in seatArray)
                 {
                     if (entity.Row == seat.Row && entity.Number == seat.Number)

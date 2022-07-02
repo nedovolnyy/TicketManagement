@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _areaService.Insert(new Area(0, 2, "First area of qwfqwef layout", 1, 7));
+            var actualResponse = await _areaService.InsertAsync(new Area(0, 2, "First area of qwfqwef layout", 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedArea = new Area(11, 2, "First etter of 3ett layout", 1, 7);
 
             // act
-            await _areaService.Update(expectedArea);
-            var actualResponse = await _areaService.GetById(expectedArea.Id);
+            await _areaService.UpdateAsync(expectedArea);
+            var actualResponse = await _areaService.GetByIdAsync(expectedArea.Id);
 
             // assert
             Assert.AreEqual(expectedArea, actualResponse);
@@ -45,7 +45,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _areaService.Delete(13);
+            var actualResponse = await _areaService.DeleteAsync(13);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -55,7 +55,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _areaService.GetAll()).Count();
+            var actualCount = (await _areaService.GetAllAsync()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,7 +68,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _areaService.GetById(1);
+            var actualId = await _areaService.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

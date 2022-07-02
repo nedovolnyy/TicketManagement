@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _seatRepository.Insert(new Seat(0, 1, 1, 1));
+            var actualResponse = await _seatRepository.InsertAsync(new Seat(0, 1, 1, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedSeat = new Seat(1, 1, 1, 1);
 
             // act
-            await _seatRepository.Update(expectedSeat);
-            var actualResponse = await _seatRepository.GetById(expectedSeat.Id);
+            await _seatRepository.UpdateAsync(expectedSeat);
+            var actualResponse = await _seatRepository.GetByIdAsync(expectedSeat.Id);
 
             // assert
             Assert.AreEqual(expectedSeat, actualResponse);
@@ -45,17 +45,17 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _seatRepository.Delete(2);
+            var actualResponse = await _seatRepository.DeleteAsync(2);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _seatRepository.GetAll()).Count();
+            var actualCount = _seatRepository.GetAll().Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,17 +68,17 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _seatRepository.GetById(1);
+            var actualId = await _seatRepository.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
         }
 
         [Test]
-        public async Task GetAllByAreaId_WhenHaveEntry_ShouldNotNull()
+        public void GetAllByAreaId_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _seatRepository.GetAllByAreaId(1)).Count();
+            var actualCount = _seatRepository.GetAllByAreaId(1).Count();
 
             // assert
             Assert.IsNotNull(actualCount);

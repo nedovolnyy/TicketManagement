@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -31,7 +32,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.Validate(layoutExpected));
+                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -49,7 +50,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.Validate(layoutExpected));
+                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -67,7 +68,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.Validate(layoutExpected));
+                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -83,12 +84,12 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "Layout name should be unique in venue!";
             var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            layoutRepository.Setup(x => x.GetAllByVenueId(venueId)).ReturnsAsync(_expectedLayouts);
+            layoutRepository.Setup(x => x.GetAllByVenueId(venueId)).Returns(_expectedLayouts.AsQueryable());
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.Validate(layoutExpected));
+                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -101,10 +102,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.Insert(It.IsAny<Layout>())).ReturnsAsync(1);
+            layoutService.Setup(x => x.InsertAsync(It.IsAny<Layout>())).ReturnsAsync(1);
 
             // act
-            var actual = layoutService.Object.Insert(layoutExpected);
+            var actual = layoutService.Object.InsertAsync(layoutExpected);
 
             // assert
             Assert.NotNull(actual);
@@ -117,10 +118,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(3, "Second layout", 2, "description second layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.Update(It.IsAny<Layout>())).Callback(() => _timesApplyRuleCalled++);
+            layoutService.Setup(x => x.UpdateAsync(It.IsAny<Layout>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            await layoutService.Object.Update(layoutExpected);
+            await layoutService.Object.UpdateAsync(layoutExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -133,10 +134,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.Delete(It.IsAny<int>())).ReturnsAsync(1);
+            layoutService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
 
             // act
-            var actual = layoutService.Object.Delete(1);
+            var actual = layoutService.Object.DeleteAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -149,10 +150,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(layoutExpected);
+            layoutService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(layoutExpected);
 
             // act
-            var actual = layoutService.Object.GetById(5444);
+            var actual = layoutService.Object.GetByIdAsync(5444);
 
             // assert
             Assert.NotNull(actual);
@@ -164,10 +165,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.GetAll()).ReturnsAsync(_expectedLayouts);
+            layoutService.Setup(x => x.GetAllAsync()).ReturnsAsync(_expectedLayouts);
 
             // act
-            var actual = layoutService.Object.GetAll();
+            var actual = layoutService.Object.GetAllAsync();
 
             // assert
             Assert.NotNull(actual);

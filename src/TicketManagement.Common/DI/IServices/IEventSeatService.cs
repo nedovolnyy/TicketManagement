@@ -4,6 +4,6 @@ namespace TicketManagement.Common.DI
 {
     public interface IEventSeatService : IService<IEventSeat>
     {
-        Task Validate(IEventSeat entity);
+        Task ValidateAsync(IEventSeat entity);
     }
 }

@@ -35,7 +35,7 @@ namespace TicketManagement.IntegrationTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                async () => await _eventService.Insert(
+                async () => await _eventService.InsertAsync(
                     new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 18, DateTime.Parse("2023-07-02 00:50:00"))));
 
             // assert
@@ -51,7 +51,8 @@ namespace TicketManagement.IntegrationTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                async () => await _eventService.Insert(new Event(0, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 3, DateTime.Parse("2023-01-01 00:45:00"))));
+                async () => await _eventService.InsertAsync(
+                    new Event(0, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 3, DateTime.Parse("2023-01-01 00:45:00"))));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -62,7 +63,7 @@ namespace TicketManagement.IntegrationTests
         {
             // act
             var actualResponse =
-                await _eventService.Insert(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2, DateTime.Parse("2023-07-02 00:50:00")));
+                await _eventService.InsertAsync(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2, DateTime.Parse("2023-07-02 00:50:00")));
 
             // assert
             Assert.NotNull(actualResponse);
@@ -82,8 +83,8 @@ namespace TicketManagement.IntegrationTests
                 expectedEvent.EventEndTime.ToString();
 
             // act
-            await _eventService.Update(expectedEvent);
-            var actualResponse = await _eventService.GetById(expectedEvent.Id);
+            await _eventService.UpdateAsync(expectedEvent);
+            var actualResponse = await _eventService.GetByIdAsync(expectedEvent.Id);
 
             string actualString =
                 actualResponse.Id.ToString() +
@@ -101,7 +102,7 @@ namespace TicketManagement.IntegrationTests
         public async Task Delete_WhenDeleteSeat_ShouldNotNull()
         {
             // act
-            var actualResponse = await _eventService.Delete(11);
+            var actualResponse = await _eventService.DeleteAsync(11);
 
             // assert
             Assert.NotNull(actualResponse);
@@ -111,7 +112,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _eventService.GetAll()).Count();
+            var actualCount = (await _eventService.GetAllAsync()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -124,7 +125,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _eventService.GetById(1);
+            var actualId = await _eventService.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

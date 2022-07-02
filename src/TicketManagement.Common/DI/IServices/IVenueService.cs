@@ -4,6 +4,6 @@ namespace TicketManagement.Common.DI
 {
     public interface IVenueService : IService<IVenue>
     {
-        Task Validate(IVenue entity);
+        Task ValidateAsync(IVenue entity);
     }
 }

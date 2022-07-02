@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -31,7 +32,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await seatService.Object.Validate(seatExpected));
+                            async () => await seatService.Object.ValidateAsync(seatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -49,7 +50,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await seatService.Object.Validate(seatExpected));
+                            async () => await seatService.Object.ValidateAsync(seatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -67,7 +68,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await seatService.Object.Validate(seatExpected));
+                            async () => await seatService.Object.ValidateAsync(seatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -83,12 +84,12 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "Row and number should be unique for area!";
             var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            seatRepository.Setup(x => x.GetAllByAreaId(areaId)).ReturnsAsync(_expectedSeats);
+            seatRepository.Setup(x => x.GetAllByAreaId(areaId)).Returns(_expectedSeats.AsQueryable());
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await seatService.Object.Validate(seatExpected));
+                            async () => await seatService.Object.ValidateAsync(seatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -101,10 +102,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var seatExpected = new Seat(3, 2, 1, 6);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.Insert(It.IsAny<Seat>())).ReturnsAsync(1);
+            seatService.Setup(x => x.InsertAsync(It.IsAny<Seat>())).ReturnsAsync(1);
 
             // act
-            var actual = seatService.Object.Insert(seatExpected);
+            var actual = seatService.Object.InsertAsync(seatExpected);
 
             // assert
             Assert.NotNull(actual);
@@ -117,10 +118,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var seatExpected = new Seat(1, 6, 1, 1);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.Update(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
+            seatService.Setup(x => x.UpdateAsync(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            await seatService.Object.Update(seatExpected);
+            await seatService.Object.UpdateAsync(seatExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -133,10 +134,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.Delete(It.IsAny<int>())).ReturnsAsync(1);
+            seatService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
 
             // act
-            var actual = seatService.Object.Delete(1);
+            var actual = seatService.Object.DeleteAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -149,10 +150,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var seatExpected = new Seat(3, 2, 1, 1);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(seatExpected);
+            seatService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(seatExpected);
 
             // act
-            var actual = seatService.Object.GetById(5444);
+            var actual = seatService.Object.GetByIdAsync(5444);
 
             // assert
             Assert.NotNull(actual);
@@ -164,10 +165,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.GetAll()).ReturnsAsync(_expectedSeats);
+            seatService.Setup(x => x.GetAllAsync()).ReturnsAsync(_expectedSeats);
 
             // act
-            var actual = seatService.Object.GetAll();
+            var actual = seatService.Object.GetAllAsync();
 
             // assert
             Assert.NotNull(actual);

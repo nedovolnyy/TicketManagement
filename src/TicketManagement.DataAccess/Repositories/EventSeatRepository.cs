@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.DI;
@@ -18,28 +19,28 @@ namespace TicketManagement.DataAccess.Repositories
             _dbSet = _databaseContext.EventSeats;
         }
 
-        public override async Task<int> Insert(IEventSeat entity)
+        public override async Task<int> InsertAsync(IEventSeat entity)
         {
             var state = (int)(await _dbSet.AddAsync((EventSeat)entity)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<int> Delete(int id)
+        public override async Task<int> DeleteAsync(int id)
         {
             var state = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<IEventSeat> GetById(int id)
+        public override async Task<IEventSeat> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public override async Task<IEnumerable<IEventSeat>> GetAll()
+        public override IQueryable<IEventSeat> GetAll()
         {
-            return await _dbSet.ToListAsync();
+            return _dbSet.AsNoTracking();
         }
     }
 }

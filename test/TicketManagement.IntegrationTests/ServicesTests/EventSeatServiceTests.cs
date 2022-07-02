@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _eventSeatService.Insert(new EventSeat(0, 3, 9, 1, 1));
+            var actualResponse = await _eventSeatService.InsertAsync(new EventSeat(0, 3, 9, 1, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedEventSeat = new EventSeat(4, 1, 3, 3, 2);
 
             // act
-            await _eventSeatService.Update(expectedEventSeat);
-            var actualResponse = await _eventSeatService.GetById(expectedEventSeat.Id);
+            await _eventSeatService.UpdateAsync(expectedEventSeat);
+            var actualResponse = await _eventSeatService.GetByIdAsync(expectedEventSeat.Id);
 
             // assert
             Assert.AreEqual(expectedEventSeat, actualResponse);
@@ -45,7 +45,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _eventSeatService.Delete(3);
+            var actualResponse = await _eventSeatService.DeleteAsync(3);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -55,7 +55,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _eventSeatService.GetAll()).Count();
+            var actualCount = (await _eventSeatService.GetAllAsync()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,7 +68,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _eventSeatService.GetById(1);
+            var actualId = await _eventSeatService.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

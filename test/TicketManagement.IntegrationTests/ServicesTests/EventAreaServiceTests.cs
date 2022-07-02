@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _eventAreaService.Insert(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
+            var actualResponse = await _eventAreaService.InsertAsync(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedEventArea = new EventArea(8, 8, "Cinema Hall #2", 2, 1, 5.20m);
 
             // act
-            await _eventAreaService.Update(expectedEventArea);
-            var actualResponse = await _eventAreaService.GetById(expectedEventArea.Id);
+            await _eventAreaService.UpdateAsync(expectedEventArea);
+            var actualResponse = await _eventAreaService.GetByIdAsync(expectedEventArea.Id);
 
             // assert
             Assert.AreEqual(expectedEventArea, actualResponse);
@@ -45,7 +45,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _eventAreaService.Delete(10);
+            var actualResponse = await _eventAreaService.DeleteAsync(10);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -55,7 +55,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _eventAreaService.GetAll()).Count();
+            var actualCount = (await _eventAreaService.GetAllAsync()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,7 +68,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _eventAreaService.GetById(1);
+            var actualId = await _eventAreaService.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

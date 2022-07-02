@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
 namespace TicketManagement.Common.DI
@@ -9,8 +9,8 @@ namespace TicketManagement.Common.DI
         /// Method for populate data by layoutId.
         /// </summary>
         /// <param name="layoutId">layoutId.</param>
-        /// <returns>List&lt;<see cref="IEvent"/>&gt;.</returns>
-        Task<IEnumerable<IEvent>> GetAllByLayoutId(int layoutId);
+        /// <returns>IQueryable&lt;<see cref="IEvent"/>&gt;.</returns>
+        IQueryable<IEvent> GetAllByLayoutId(int layoutId);
 
         /// <summary>
         /// Count empty seats.

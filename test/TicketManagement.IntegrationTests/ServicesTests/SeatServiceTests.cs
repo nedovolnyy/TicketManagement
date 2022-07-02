@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _seatService.Insert(new Seat(0, 2, 6, 5));
+            var actualResponse = await _seatService.InsertAsync(new Seat(0, 2, 6, 5));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedSeat = new Seat(5, 5, 3, 5);
 
             // act
-            await _seatService.Update(expectedSeat);
-            var actualResponse = await _seatService.GetById(expectedSeat.Id);
+            await _seatService.UpdateAsync(expectedSeat);
+            var actualResponse = await _seatService.GetByIdAsync(expectedSeat.Id);
 
             // assert
             Assert.AreEqual(expectedSeat, actualResponse);
@@ -45,7 +45,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _seatService.Delete(3);
+            var actualResponse = await _seatService.DeleteAsync(3);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -55,7 +55,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _seatService.GetAll()).Count();
+            var actualCount = (await _seatService.GetAllAsync()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,7 +68,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _seatService.GetById(1);
+            var actualId = await _seatService.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

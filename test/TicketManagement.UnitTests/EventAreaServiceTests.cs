@@ -31,7 +31,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventAreaService.Object.Validate(eventAreaExpected));
+                            async () => await eventAreaService.Object.ValidateAsync(eventAreaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -49,7 +49,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventAreaService.Object.Validate(eventAreaExpected));
+                            async () => await eventAreaService.Object.ValidateAsync(eventAreaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -67,7 +67,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventAreaService.Object.Validate(eventAreaExpected));
+                            async () => await eventAreaService.Object.ValidateAsync(eventAreaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -85,7 +85,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventAreaService.Object.Validate(eventAreaExpected));
+                            async () => await eventAreaService.Object.ValidateAsync(eventAreaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -103,7 +103,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventAreaService.Object.Validate(eventAreaExpected));
+                            async () => await eventAreaService.Object.ValidateAsync(eventAreaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -116,10 +116,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaExpected = new EventArea(3, 2, "First eventArea of second layout", 1, 7, 4.3m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.Insert(It.IsAny<EventArea>())).ReturnsAsync(1);
+            eventAreaService.Setup(x => x.InsertAsync(It.IsAny<EventArea>())).ReturnsAsync(1);
 
             // act
-            var actual = eventAreaService.Object.Insert(eventAreaExpected);
+            var actual = eventAreaService.Object.InsertAsync(eventAreaExpected);
 
             // assert
             Assert.NotNull(actual);
@@ -132,10 +132,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaExpected = new EventArea(1, 2, "First eventArea of second layout", 2, 4, 7.5m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
+            eventAreaService.Setup(x => x.UpdateAsync(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
 
             // act
-            await eventAreaService.Object.Update(eventAreaExpected);
+            await eventAreaService.Object.UpdateAsync(eventAreaExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -148,10 +148,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.Delete(It.IsAny<int>())).ReturnsAsync(1);
+            eventAreaService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
 
             // act
-            var actual = eventAreaService.Object.Delete(1);
+            var actual = eventAreaService.Object.DeleteAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -164,10 +164,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaExpected = new EventArea(5444, 2, "First eventArea of first layout", 3, 2, 8.1m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(eventAreaExpected);
+            eventAreaService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(eventAreaExpected);
 
             // act
-            var actual = eventAreaService.Object.GetById(5444);
+            var actual = eventAreaService.Object.GetByIdAsync(5444);
 
             // assert
             Assert.NotNull(actual);
@@ -179,10 +179,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.GetAll()).ReturnsAsync(_expectedEventAreas);
+            eventAreaService.Setup(x => x.GetAllAsync()).ReturnsAsync(_expectedEventAreas);
 
             // act
-            var actual = eventAreaService.Object.GetAll();
+            var actual = eventAreaService.Object.GetAllAsync();
 
             // assert
             Assert.NotNull(actual);

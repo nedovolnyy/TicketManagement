@@ -13,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
             _venueRepository = venueRepository;
         }
 
-        public override async Task Validate(IVenue entity)
+        public override async Task ValidateAsync(IVenue entity)
         {
             if (string.IsNullOrEmpty(entity.Name))
             {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using TicketManagement.Common.Entities;
+﻿using System.Linq;
 
 namespace TicketManagement.Common.DI
 {
@@ -10,7 +8,7 @@ namespace TicketManagement.Common.DI
         /// Base Method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>List&lt;<see cref="IArea"/>&gt;.</returns>
-        Task<IEnumerable<IArea>> GetAllByLayoutId(int id);
+        /// <returns>IQueryable&lt;<see cref="IArea"/>&gt;.</returns>
+        IQueryable<IArea> GetAllByLayoutId(int id);
     }
 }

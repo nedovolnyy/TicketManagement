@@ -21,7 +21,7 @@ namespace TicketManagement.IntegrationTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _venueService.Insert(new Venue(0, "Second venue", "description of second venue", "address second venue", "+84845464")));
+                            async () => await _venueService.InsertAsync(new Venue(0, "Second venue", "description of second venue", "address second venue", "+84845464")));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -34,7 +34,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _venueService.Insert(new Venue(0, "Sixteen venue", "description secodnd venue", "address secondd venue", "+84845464"));
+            var actualResponse = await _venueService.InsertAsync(new Venue(0, "Sixteen venue", "description secodnd venue", "address secondd venue", "+84845464"));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -47,8 +47,8 @@ namespace TicketManagement.IntegrationTests
             var expectedVenue = new Venue(4, "4th venue", "description 4th venue", "address 4th venue", "+444444444444");
 
             // act
-            await _venueService.Update(expectedVenue);
-            var actualResponse = await _venueService.GetById(expectedVenue.Id);
+            await _venueService.UpdateAsync(expectedVenue);
+            var actualResponse = await _venueService.GetByIdAsync(expectedVenue.Id);
 
             // assert
             Assert.AreEqual(expectedVenue, actualResponse);
@@ -61,7 +61,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _venueService.Delete(12);
+            var actualResponse = await _venueService.DeleteAsync(12);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -71,7 +71,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _venueService.GetAll()).Count();
+            var actualCount = (await _venueService.GetAllAsync()).Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -84,7 +84,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 3;
 
             // act
-            var actualId = await _venueService.GetById(3);
+            var actualId = await _venueService.GetByIdAsync(3);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

@@ -13,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
             _layoutRepository = layoutRepository;
         }
 
-        public override async Task Validate(ILayout entity)
+        public override async Task ValidateAsync(ILayout entity)
         {
             if (entity.VenueId == default)
             {
@@ -29,7 +29,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                var layoutArray = await _layoutRepository.GetAllByVenueId(entity.VenueId);
+                var layoutArray = await _layoutRepository.GetAllByVenueId(entity.VenueId).ToListAsyncSafe();
                 foreach (var layout in layoutArray)
                 {
                     if (entity.Name == layout.Name)

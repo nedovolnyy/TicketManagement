@@ -19,31 +19,31 @@ namespace TicketManagement.DataAccess.Repositories
             _dbSet = _databaseContext.Seats;
         }
 
-        public override async Task<int> Insert(ISeat entity)
+        public override async Task<int> InsertAsync(ISeat entity)
         {
             var state = (int)(await _dbSet.AddAsync((Seat)entity)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<int> Delete(int id)
+        public override async Task<int> DeleteAsync(int id)
         {
             var state = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<ISeat> GetById(int id)
+        public override async Task<ISeat> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public override async Task<IEnumerable<ISeat>> GetAll()
+        public override IQueryable<ISeat> GetAll()
         {
-            return await _dbSet.ToListAsync();
+            return _dbSet.AsNoTracking();
         }
 
-        async Task<IEnumerable<ISeat>> ISeatRepository.GetAllByAreaId(int id)
-            => await _dbSet.Where(p => p.AreaId == id).ToListAsync();
+        public IQueryable<ISeat> GetAllByAreaId(int id)
+            => _dbSet.Where(p => p.AreaId == id).AsNoTracking();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ namespace TicketManagement.DataAccess.Repositories
             _dbSet = _databaseContext.Events;
         }
 
-        public override async Task<int> Insert(IEvent evnt)
+        public override async Task<int> InsertAsync(IEvent evnt)
         {
             var paramName = new SqlParameter("@Name", evnt.Name);
             var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);
@@ -31,7 +32,7 @@ namespace TicketManagement.DataAccess.Repositories
                 .ExecuteSqlRawAsync("spEventInsert @Name, @EventTime, @Description, @LayoutId, @EventEndTime", paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime);
         }
 
-        public new async Task Update(IEvent evnt)
+        public new async Task UpdateAsync(IEvent evnt)
         {
             var paramId = new SqlParameter("@Id", evnt.Id);
             var paramName = new SqlParameter("@Name", evnt.Name);
@@ -44,28 +45,28 @@ namespace TicketManagement.DataAccess.Repositories
                     paramId, paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime);
         }
 
-        public override async Task<int> Delete(int id)
+        public override async Task<int> DeleteAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
             return await _databaseContext.Instance.Database
                 .ExecuteSqlRawAsync("spEventDelete @Id", paramId);
         }
 
-        public override async Task<IEvent> GetById(int id)
+        public override async Task<IEvent> GetByIdAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
             return (await _dbSet.FromSqlRaw("spEventGetById @Id", paramId).ToListAsync())[0];
         }
 
-        public override async Task<IEnumerable<IEvent>> GetAll()
+        public override IQueryable<IEvent> GetAll()
         {
-            return await _dbSet.FromSqlRaw("spEventGetAll").ToListAsync();
+            return _dbSet.FromSqlRaw("spEventGetAll").AsNoTracking();
         }
 
-        public async Task<IEnumerable<IEvent>> GetAllByLayoutId(int layoutId)
+        public IQueryable<IEvent> GetAllByLayoutId(int layoutId)
         {
             var paramLayoutId = new SqlParameter("@LayoutId", layoutId);
-            return await _dbSet.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).ToListAsync();
+            return _dbSet.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).AsNoTracking();
         }
 
         public async Task<int> GetSeatsAvailableCount(int id)

@@ -4,6 +4,6 @@ namespace TicketManagement.Common.DI
 {
     public interface ILayoutService : IService<ILayout>
     {
-        Task Validate(ILayout entity);
+        Task ValidateAsync(ILayout entity);
     }
 }

@@ -27,7 +27,7 @@ namespace TicketManagement.IntegrationTests
         {
             // act
             var actualResponse =
-                await _evntRepository.Insert(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00")));
+                await _evntRepository.InsertAsync(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00")));
 
             // assert
             Assert.NotNull(actualResponse);
@@ -47,8 +47,8 @@ namespace TicketManagement.IntegrationTests
                 expectedEvent.EventEndTime.ToString();
 
             // act
-            await _evntRepository.Update(expectedEvent);
-            var actualResponse = await _evntRepository.GetById(expectedEvent.Id);
+            await _evntRepository.UpdateAsync(expectedEvent);
+            var actualResponse = await _evntRepository.GetByIdAsync(expectedEvent.Id);
 
             string actualString =
                 actualResponse.Id.ToString() +
@@ -66,17 +66,17 @@ namespace TicketManagement.IntegrationTests
         public async Task Delete_WhenDeleteSeat_ShouldNotNull()
         {
             // act
-            var actualResponse = await _evntRepository.Delete(10);
+            var actualResponse = await _evntRepository.DeleteAsync(10);
 
             // assert
             Assert.NotNull(actualResponse);
         }
 
         [Test]
-        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _evntRepository.GetAll()).Count();
+            var actualCount = _evntRepository.GetAll().AsEnumerable().Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -89,20 +89,20 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _evntRepository.GetById(1);
+            var actualId = await _evntRepository.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
         }
 
         [Test]
-        public async Task GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
+        public void GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
         {
             // arrange
             var expectedCount = 1;
 
             // act
-            var actualCount = (await _evntRepository.GetAllByLayoutId(1)).Count();
+            var actualCount = _evntRepository.GetAllByLayoutId(1).AsEnumerable().Count();
 
             // assert
             Assert.AreEqual(expectedCount, actualCount);

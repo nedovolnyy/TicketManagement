@@ -7,6 +7,14 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+a.navbar-time {
+    color: #ff6a00;
+    white-space: normal;
+    text-align: center;
+    word-break: keep-all;
+    text-decoration: none;
+}
+
 a {
   color: #0077cc;
 }

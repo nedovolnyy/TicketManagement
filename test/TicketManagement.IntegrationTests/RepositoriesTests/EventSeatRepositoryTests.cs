@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _eventSeatRepository.Insert(new EventSeat(0, 2, 9, 1, 1));
+            var actualResponse = await _eventSeatRepository.InsertAsync(new EventSeat(0, 2, 9, 1, 1));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedEventSeat = new EventSeat(1, 1, 3, 3, 1);
 
             // act
-            await _eventSeatRepository.Update(expectedEventSeat);
-            var actualResponse = await _eventSeatRepository.GetById(expectedEventSeat.Id);
+            await _eventSeatRepository.UpdateAsync(expectedEventSeat);
+            var actualResponse = await _eventSeatRepository.GetByIdAsync(expectedEventSeat.Id);
 
             // assert
             Assert.AreEqual(expectedEventSeat, actualResponse);
@@ -45,17 +45,17 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _eventSeatRepository.Delete(2);
+            var actualResponse = await _eventSeatRepository.DeleteAsync(2);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _eventSeatRepository.GetAll()).Count();
+            var actualCount = _eventSeatRepository.GetAll().Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,7 +68,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _eventSeatRepository.GetById(1);
+            var actualId = await _eventSeatRepository.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

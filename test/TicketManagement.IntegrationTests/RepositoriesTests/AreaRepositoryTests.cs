@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _areaRepository.Insert(new Area(0, 2, "First area of second layout", 1, 7));
+            var actualResponse = await _areaRepository.InsertAsync(new Area(0, 2, "First area of second layout", 1, 7));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedArea = new Area(1, 1, "Firs456547t etter of 3ett layout", 1, 7);
 
             // act
-            await _areaRepository.Update(expectedArea);
-            var actualResponse = await _areaRepository.GetById(expectedArea.Id);
+            await _areaRepository.UpdateAsync(expectedArea);
+            var actualResponse = await _areaRepository.GetByIdAsync(expectedArea.Id);
 
             // assert
             Assert.AreEqual(expectedArea, actualResponse);
@@ -45,17 +45,17 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _areaRepository.Delete(12);
+            var actualResponse = await _areaRepository.DeleteAsync(12);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _areaRepository.GetAll()).Count();
+            var actualCount = _areaRepository.GetAll().Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,17 +68,17 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _areaRepository.GetById(1);
+            var actualId = await _areaRepository.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);
         }
 
         [Test]
-        public async Task GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
+        public void GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _areaRepository.GetAllByLayoutId(1)).Count();
+            var actualCount = _areaRepository.GetAllByLayoutId(1).Count();
 
             // assert
             Assert.IsNotNull(actualCount);

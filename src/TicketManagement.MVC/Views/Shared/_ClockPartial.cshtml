@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Localization
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+}
+
+@if (requestCulture is not null)
+                    {
+                        <script type="text/javascript">
+                            var serverTime = new Date(@Json.Serialize(@System.DateTime.Now))
+
+                            function DisplayTime() {
+                                serverTime.setSeconds(serverTime.getSeconds() + 1)
+                                document.getElementById("serverTime").innerHTML = new Intl.DateTimeFormat(@Json.Serialize(requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName), { dateStyle: 'medium', timeStyle: 'long' }).format(serverTime)
+                            }
+
+                            window.onload = function() {
+                                setInterval("DisplayTime()", 1000)
+                            }
+                        </script>
+
+                        <a id="serverTime" class="navbar-time"></a>
+                    }

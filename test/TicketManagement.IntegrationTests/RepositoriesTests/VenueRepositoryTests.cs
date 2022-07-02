@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _venueRepository.Insert(new Venue(0, "Second venue", "description second venue", "address second venue", "+84845464"));
+            var actualResponse = await _venueRepository.InsertAsync(new Venue(0, "Second venue", "description second venue", "address second venue", "+84845464"));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedVenue = new Venue(1, "First venue", "description first venue", "address first venue", "+4988955568");
 
             // act
-            await _venueRepository.Update(expectedVenue);
-            var actualResponse = await _venueRepository.GetById(expectedVenue.Id);
+            await _venueRepository.UpdateAsync(expectedVenue);
+            var actualResponse = await _venueRepository.GetByIdAsync(expectedVenue.Id);
 
             // assert
             Assert.AreEqual(expectedVenue, actualResponse);
@@ -45,17 +45,17 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _venueRepository.Delete(11);
+            var actualResponse = await _venueRepository.DeleteAsync(11);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _venueRepository.GetAll()).Count();
+            var actualCount = _venueRepository.GetAll().Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,7 +68,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 2;
 
             // act
-            var actualId = await _venueRepository.GetById(2);
+            var actualId = await _venueRepository.GetByIdAsync(2);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

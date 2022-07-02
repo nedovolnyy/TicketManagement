@@ -19,31 +19,31 @@ namespace TicketManagement.DataAccess.Repositories
             _dbSet = _databaseContext.Layouts;
         }
 
-        public override async Task<int> Insert(ILayout entity)
+        public override async Task<int> InsertAsync(ILayout entity)
         {
             var state = (int)(await _dbSet.AddAsync((Layout)entity)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<int> Delete(int id)
+        public override async Task<int> DeleteAsync(int id)
         {
             var state = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<ILayout> GetById(int id)
+        public override async Task<ILayout> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public override async Task<IEnumerable<ILayout>> GetAll()
+        public override IQueryable<ILayout> GetAll()
         {
-            return await _dbSet.ToListAsync();
+            return _dbSet.AsNoTracking();
         }
 
-        async Task<IEnumerable<ILayout>> ILayoutRepository.GetAllByVenueId(int id)
-            => await _databaseContext.Layouts.Where(p => p.VenueId == id).ToListAsync();
+        public IQueryable<ILayout> GetAllByVenueId(int id)
+            => _databaseContext.Layouts.Where(p => p.VenueId == id).AsNoTracking();
     }
 }

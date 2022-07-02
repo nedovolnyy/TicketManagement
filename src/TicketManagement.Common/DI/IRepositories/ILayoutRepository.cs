@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace TicketManagement.Common.DI
 {
@@ -9,7 +8,7 @@ namespace TicketManagement.Common.DI
         /// Method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns>List&lt;<see cref="ILayout"/>&gt;.</returns>
-        Task<IEnumerable<ILayout>> GetAllByVenueId(int id);
+        /// <returns>IQueryable&lt;<see cref="ILayout"/>&gt;.</returns>
+        IQueryable<ILayout> GetAllByVenueId(int id);
     }
 }

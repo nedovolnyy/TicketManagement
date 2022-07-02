@@ -13,7 +13,7 @@ namespace TicketManagement.BusinessLogic.Services
             _areaRepository = areaRepository;
         }
 
-        public override async Task Validate(IArea entity)
+        public override async Task ValidateAsync(IArea entity)
         {
             if (entity.LayoutId == default)
             {
@@ -33,7 +33,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
             else
             {
-                var areaArray = await _areaRepository.GetAllByLayoutId(entity.LayoutId);
+                var areaArray = await _areaRepository.GetAllByLayoutId(entity.LayoutId).ToListAsyncSafe();
                 foreach (var area in areaArray)
                 {
                     if (entity.Description == area.Description)

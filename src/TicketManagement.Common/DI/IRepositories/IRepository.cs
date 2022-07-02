@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TicketManagement.Common.DI
@@ -10,31 +11,31 @@ namespace TicketManagement.Common.DI
         /// Base method for insert data.
         /// </summary>
         /// <param name="entity">Entity.</param>
-        Task<int> Insert(T entity);
+        Task<int> InsertAsync(T entity);
 
         /// <summary>
         /// Base method for update data.
         /// </summary>
         /// <param name="entity">Entity.</param>
-        Task Update(T entity);
+        Task UpdateAsync(T entity);
 
         /// <summary>
         /// Base method for delete data.
         /// </summary>
         /// <param name="id">id.</param>
-        Task<int> Delete(int id);
+        Task<int> DeleteAsync(int id);
 
         /// <summary>
         /// Base method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns><see cref="IBaseEntity"/>&lt;BaseEntity&gt;.</returns>
-        Task<T> GetById(int id);
+        Task<T> GetByIdAsync(int id);
 
         /// <summary>
         /// Base method for populate all data.
         /// </summary>
-        /// <returns><see cref="IBaseEntity"/>&lt;BaseEntity&gt;.</returns>
-        Task<IEnumerable<T>> GetAll();
+        /// <returns><see cref="IQueryable"/>&lt;BaseEntity&gt;.</returns>
+        IQueryable<T> GetAll();
     }
 }

@@ -19,28 +19,28 @@ namespace TicketManagement.DataAccess.Repositories
             _dbSet = _databaseContext.Venues;
         }
 
-        public override async Task<int> Insert(IVenue entity)
+        public override async Task<int> InsertAsync(IVenue entity)
         {
             var state = (int)(await _dbSet.AddAsync((Venue)entity)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<int> Delete(int id)
+        public override async Task<int> DeleteAsync(int id)
         {
             var state = (int)_dbSet.Remove(await _dbSet.FindAsync(id)).State;
             await _databaseContext.Instance.SaveChangesAsync();
             return state;
         }
 
-        public override async Task<IVenue> GetById(int id)
+        public override async Task<IVenue> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public override async Task<IEnumerable<IVenue>> GetAll()
+        public override IQueryable<IVenue> GetAll()
         {
-            return await _dbSet.ToListAsync();
+            return _dbSet.AsNoTracking();
         }
 
         public async Task<int> GetIdFirstByName(string name)

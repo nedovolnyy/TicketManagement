@@ -31,7 +31,7 @@ namespace TicketManagement.BusinessLogic.Services
                 throw new ValidationException("EventEndTime cannot be later than EventTime!");
             }
 
-            var evntArray = await _eventRepository.GetAllByLayoutId(entity.LayoutId);
+            var evntArray = await _eventRepository.GetAllByLayoutId(entity.LayoutId).ToListAsyncSafe();
             foreach (var evnt in evntArray)
             {
                 if (entity.LayoutId == evnt.LayoutId && entity.Name == evnt.Name)
@@ -51,7 +51,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
         }
 
-        public override async Task Validate(IEvent entity)
+        public override async Task ValidateAsync(IEvent entity)
         {
             if (entity.LayoutId == default)
             {

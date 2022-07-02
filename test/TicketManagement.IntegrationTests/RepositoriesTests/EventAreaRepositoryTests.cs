@@ -18,7 +18,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _eventAreaRepository.Insert(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
+            var actualResponse = await _eventAreaRepository.InsertAsync(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -31,8 +31,8 @@ namespace TicketManagement.IntegrationTests
             var expectedEventArea = new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m);
 
             // act
-            await _eventAreaRepository.Update(expectedEventArea);
-            var actualResponse = await _eventAreaRepository.GetById(expectedEventArea.Id);
+            await _eventAreaRepository.UpdateAsync(expectedEventArea);
+            var actualResponse = await _eventAreaRepository.GetByIdAsync(expectedEventArea.Id);
 
             // assert
             Assert.AreEqual(expectedEventArea, actualResponse);
@@ -45,17 +45,17 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Deleted;
 
             // act
-            var actualResponse = await _eventAreaRepository.Delete(9);
+            var actualResponse = await _eventAreaRepository.DeleteAsync(9);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
         }
 
         [Test]
-        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
+        public void GetAll_WhenHaveEntry_ShouldNotNull()
         {
             // act
-            var actualCount = (await _eventAreaRepository.GetAll()).Count();
+            var actualCount = _eventAreaRepository.GetAll().Count();
 
             // assert
             Assert.IsNotNull(actualCount);
@@ -68,7 +68,7 @@ namespace TicketManagement.IntegrationTests
             var expectedId = 1;
 
             // act
-            var actualId = await _eventAreaRepository.GetById(1);
+            var actualId = await _eventAreaRepository.GetByIdAsync(1);
 
             // assert
             Assert.AreEqual(expectedId, actualId.Id);

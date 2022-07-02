@@ -14,25 +14,25 @@ namespace TicketManagement.BusinessLogic.Services
             _entityRepository = entityRepository;
         }
 
-        public virtual async Task<int> Insert(T entity)
+        public virtual async Task<int> InsertAsync(T entity)
         {
-            await Validate(entity);
-            return await _entityRepository.Insert(entity);
+            await ValidateAsync(entity);
+            return await _entityRepository.InsertAsync(entity);
         }
 
-        public virtual async Task Update(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
-            await Validate(entity);
-            await _entityRepository.Update(entity);
+            await ValidateAsync(entity);
+            await _entityRepository.UpdateAsync(entity);
         }
 
-        public virtual async Task<int> Delete(int id) =>
-            await _entityRepository.Delete(id);
-        public virtual async Task<T> GetById(int id) =>
-            await _entityRepository.GetById(id);
-        public virtual async Task<IEnumerable<T>> GetAll() =>
-            await _entityRepository.GetAll();
+        public virtual async Task<int> DeleteAsync(int id) =>
+            await _entityRepository.DeleteAsync(id);
+        public virtual async Task<T> GetByIdAsync(int id) =>
+            await _entityRepository.GetByIdAsync(id);
+        public virtual async Task<IEnumerable<T>> GetAllAsync() =>
+            await _entityRepository.GetAll().ToListAsyncSafe();
 
-        public abstract Task Validate(T entity);
+        public abstract Task ValidateAsync(T entity);
     }
 }
