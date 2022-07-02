@@ -36,7 +36,7 @@ namespace TicketManagement.IntegrationTests
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
                 async () => await _eventService.InsertAsync(
-                    new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 18, DateTime.Parse("2023-07-02 00:50:00"))));
+                    new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 18, DateTime.Parse("2023-07-02 00:50:00"), "image")));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -52,7 +52,7 @@ namespace TicketManagement.IntegrationTests
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
                 async () => await _eventService.InsertAsync(
-                    new Event(0, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 3, DateTime.Parse("2023-01-01 00:45:00"))));
+                    new Event(0, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 3, DateTime.Parse("2023-01-01 00:45:00"), "image")));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(expectedException));
@@ -63,7 +63,7 @@ namespace TicketManagement.IntegrationTests
         {
             // act
             var actualResponse =
-                await _eventService.InsertAsync(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2, DateTime.Parse("2023-07-02 00:50:00")));
+                await _eventService.InsertAsync(new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("07/02/2023"), "Kitchertrn Serie", 2, DateTime.Parse("2023-07-02 00:50:00"), "image"));
 
             // assert
             Assert.NotNull(actualResponse);
@@ -73,7 +73,7 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateEvent_ShouldUpdatedEvent()
         {
             // arrange
-            var expectedEvent = new Event(9, "StanegegerfgferThings Serie", DateTimeOffset.Parse("2023-11-06 00:45:00"), "Stanerger Thinegs Serie", 9, DateTime.Parse("2023-11-06 00:50:00"));
+            var expectedEvent = new Event(9, "StanegegerfgferThings Serie", DateTimeOffset.Parse("2023-11-06 00:45:00"), "Stanerger Thinegs Serie", 9, DateTime.Parse("2023-11-06 00:50:00"), "image");
             string expectedString =
                 expectedEvent.Id.ToString() +
                 expectedEvent.Name +

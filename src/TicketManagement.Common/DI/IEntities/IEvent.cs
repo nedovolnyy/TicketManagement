@@ -9,5 +9,6 @@ namespace TicketManagement.Common.DI
         string Description { get; set; }
         int LayoutId { get; set; }
         DateTime EventEndTime { get; set; }
+        string EventLogoImage { get; set; }
     }
 }

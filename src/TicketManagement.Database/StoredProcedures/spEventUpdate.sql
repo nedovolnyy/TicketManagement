@@ -5,12 +5,13 @@
     @EventTime DATETIMEOFFSET = null,
 	@Description NVARCHAR(max) = null,
 	@LayoutId INT = null,
-	@EventEndTime DATETIME2 = null
+	@EventEndTime DATETIME2 = null,
+	@EventLogoImage NVARCHAR(max) = null
 )
 AS
 BEGIN
 	IF EXISTS (SELECT Id FROM dbo.Event WHERE LayoutId = @LayoutId AND Id = @Id)
-        UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime WHERE Id = @Id
+        UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime, EventLogoImage = @EventLogoImage WHERE Id = @Id
 	
 	ELSE BEGIN
 		
@@ -19,7 +20,7 @@ BEGIN
         DELETE dbo.EventArea WHERE EventId = @Id
 
 		--UPDATE EVENT
-		UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime WHERE Id = @Id
+		UPDATE dbo.Event SET Name = @Name, EventTime = @EventTime, Description = @Description, LayoutId = @LayoutId, EventEndTime = @EventEndTime, EventLogoImage = @EventLogoImage WHERE Id = @Id
 		
 		--INSERT INTO EVENT AREA
 		INSERT INTO dbo.EventArea (EventId, Description, CoordX, CoordY, Price)

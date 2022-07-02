@@ -8,7 +8,7 @@ namespace TicketManagement.Common.Entities
     [Table("Event")]
     public class Event : BaseEntity, IEvent
     {
-        public Event(int id, string name, DateTimeOffset eventTime, string description, int layoutId, DateTime eventEndTime)
+        public Event(int id, string name, DateTimeOffset eventTime, string description, int layoutId, DateTime eventEndTime, string eventLogoImage)
         {
             Id = id;
             Name = name;
@@ -16,6 +16,7 @@ namespace TicketManagement.Common.Entities
             Description = description;
             LayoutId = layoutId;
             EventEndTime = eventEndTime;
+            EventLogoImage = eventLogoImage;
         }
 
         [Required]
@@ -34,5 +35,8 @@ namespace TicketManagement.Common.Entities
 
         [Required]
         public DateTime EventEndTime { get; set; }
+
+        [Required]
+        public string EventLogoImage { get; set; }
     }
 }

@@ -4,13 +4,14 @@
     @EventTime DATETIMEOFFSET = null,
 	@Description NVARCHAR(max) = null,
 	@LayoutId INT = null,
-	@EventEndTime DATETIME2 = null
+	@EventEndTime DATETIME2 = null,
+	@EventLogoImage NVARCHAR(max) = null
 )
 AS
 BEGIN
 		--INSERT INTO EVENT
-		INSERT INTO dbo.Event (Name, EventTime, Description, LayoutId, EventEndTime)
-			VALUES (@Name, @EventTime, @Description, @LayoutId, @EventEndTime)
+		INSERT INTO dbo.Event (Name, EventTime, Description, LayoutId, EventEndTime, EventLogoImage)
+			VALUES (@Name, @EventTime, @Description, @LayoutId, @EventEndTime, @EventLogoImage)
 		DECLARE @eventId INT = @@IDENTITY
 
 		--INSERT INTO EVENT AREA

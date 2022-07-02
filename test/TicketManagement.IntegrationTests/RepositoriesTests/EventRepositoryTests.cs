@@ -27,7 +27,8 @@ namespace TicketManagement.IntegrationTests
         {
             // act
             var actualResponse =
-                await _evntRepository.InsertAsync(new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00")));
+                await _evntRepository.InsertAsync(
+                    new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00"), "image"));
 
             // assert
             Assert.NotNull(actualResponse);
@@ -37,7 +38,7 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateEvent_ShouldUpdatedEvent()
         {
             // arrange
-            var expectedEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"));
+            var expectedEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
             string expectedString =
                 expectedEvent.Id.ToString() +
                 expectedEvent.Name +

@@ -28,8 +28,10 @@ namespace TicketManagement.DataAccess.Repositories
             var paramDescription = new SqlParameter("@Description", evnt.Description);
             var paramLayoutId = new SqlParameter("@LayoutId", evnt.LayoutId);
             var paramEventEndTime = new SqlParameter("@EventEndTime", evnt.EventEndTime);
+            var paramEventLogoImage = new SqlParameter("@EventLogoImage", evnt.EventLogoImage);
             return await _databaseContext.Instance.Database
-                .ExecuteSqlRawAsync("spEventInsert @Name, @EventTime, @Description, @LayoutId, @EventEndTime", paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime);
+                .ExecuteSqlRawAsync("spEventInsert @Name, @EventTime, @Description, @LayoutId, @EventEndTime, @EventLogoImage",
+                                               paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage);
         }
 
         public new async Task UpdateAsync(IEvent evnt)
@@ -40,9 +42,10 @@ namespace TicketManagement.DataAccess.Repositories
             var paramDescription = new SqlParameter("@Description", evnt.Description);
             var paramLayoutId = new SqlParameter("@LayoutId", evnt.LayoutId);
             var paramEventEndTime = new SqlParameter("@EventEndTime", evnt.EventEndTime);
+            var paramEventLogoImage = new SqlParameter("@EventLogoImage", evnt.EventLogoImage);
             await _databaseContext.Instance.Database
-                .ExecuteSqlRawAsync("spEventUpdate @Id, @Name, @EventTime, @Description, @LayoutId, @EventEndTime",
-                    paramId, paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime);
+                .ExecuteSqlRawAsync("spEventUpdate @Id, @Name, @EventTime, @Description, @LayoutId, @EventEndTime, @EventLogoImage",
+                    paramId, paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage);
         }
 
         public override async Task<int> DeleteAsync(int id)
