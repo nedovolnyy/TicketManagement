@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TicketManagement.Common.DI;
-using TicketManagement.DataAccess.EF;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,13 +32,6 @@ builder.Services
 builder.Services.AddMvc();
 builder.Services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddBLLServices();
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    // Default Lockout settings.
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-});
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.MVC.Models;
 
 namespace TicketManagement.MVC.Controllers
@@ -24,7 +22,7 @@ namespace TicketManagement.MVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _serviceProvider.GetRequiredService<EventService>().GetAllAsync());
+            return View(await _serviceProvider.GetRequiredService<IEventService>().GetAllAsync());
         }
 
         public IActionResult Create()
@@ -35,7 +33,7 @@ namespace TicketManagement.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(IEvent evnt)
         {
-            await _serviceProvider.GetRequiredService<EventService>().InsertAsync(evnt);
+            await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(evnt);
             return RedirectToAction("Index");
         }
 

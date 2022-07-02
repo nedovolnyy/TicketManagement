@@ -12,49 +12,34 @@ namespace Microsoft.Extensions.DependencyInjection
         ////private IConfiguration Configuration { get; set; } = null!;
         public static void AddRepositories(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<DatabaseContext>(options =>
+            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
                 options.UseSqlServer(connectionString)
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
             services.AddIdentity<IdentityUser, IdentityRole>(
-                options => options.SignIn.RequireConfirmedAccount = false)
+                options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                    options.Lockout.MaxFailedAccessAttempts = 5;
+                    options.Lockout.AllowedForNewUsers = true;
+                })
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<DatabaseContext>();
 
-            services.AddTransient<IAreaRepository>(provider =>
-            {
-                return new AreaRepository(provider.GetRequiredService<DatabaseContext>());
-            });
+            services.AddTransient<IAreaRepository, AreaRepository>(provider => new AreaRepository(provider.GetRequiredService<IDatabaseContext>()));
 
-            services.AddTransient<IEventAreaRepository>(provider =>
-            {
-                return new EventAreaRepository(provider.GetRequiredService<DatabaseContext>());
-            });
+            services.AddTransient<IEventAreaRepository, EventAreaRepository>(provider => new EventAreaRepository(provider.GetRequiredService<IDatabaseContext>()));
 
-            services.AddTransient<IEventSeatRepository>(provider =>
-            {
-                return new EventSeatRepository(provider.GetRequiredService<DatabaseContext>());
-            });
+            services.AddTransient<IEventSeatRepository, EventSeatRepository>(provider => new EventSeatRepository(provider.GetRequiredService<IDatabaseContext>()));
 
-            services.AddTransient<EventRepository>(provider =>
-            {
-                return new EventRepository(provider.GetRequiredService<DatabaseContext>());
-            });
+            services.AddTransient<IEventRepository, EventRepository>(provider => new EventRepository(provider.GetRequiredService<IDatabaseContext>()));
 
-            services.AddTransient<ILayoutRepository>(provider =>
-            {
-                return new LayoutRepository(provider.GetRequiredService<DatabaseContext>());
-            });
+            services.AddTransient<ILayoutRepository, LayoutRepository>(provider => new LayoutRepository(provider.GetRequiredService<IDatabaseContext>()));
 
-            services.AddTransient<ISeatRepository>(provider =>
-            {
-                return new SeatRepository(provider.GetRequiredService<DatabaseContext>());
-            });
+            services.AddTransient<ISeatRepository, SeatRepository>(provider => new SeatRepository(provider.GetRequiredService<IDatabaseContext>()));
 
-            services.AddTransient<IVenueRepository>(provider =>
-            {
-                return new VenueRepository(provider.GetRequiredService<DatabaseContext>());
-            });
+            services.AddTransient<IVenueRepository, VenueRepository>(provider => new VenueRepository(provider.GetRequiredService<IDatabaseContext>()));
         }
     }
 }
