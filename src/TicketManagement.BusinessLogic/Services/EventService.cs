@@ -14,10 +14,10 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        public virtual async Task<int> GetSeatsAvailableCount(int id)
-            => await _eventRepository.GetSeatsAvailableCount(id);
-        public virtual async Task<int> GetSeatsCount(int layoutId)
-            => await _eventRepository.GetSeatsCount(layoutId);
+        public virtual async Task<int> GetSeatsAvailableCountAsync(int id)
+            => await _eventRepository.GetSeatsAvailableCountAsync(id);
+        public virtual async Task<int> GetSeatsCountAsync(int layoutId)
+            => await _eventRepository.GetSeatsCountAsync(layoutId);
 
         private async Task EventValidate(IEvent entity)
         {
@@ -45,7 +45,7 @@ namespace TicketManagement.BusinessLogic.Services
                 }
             }
 
-            if (await GetSeatsCount(entity.LayoutId) == default)
+            if (await GetSeatsCountAsync(entity.LayoutId) == default)
             {
                 throw new ValidationException("Create event is not possible! Haven't seats in Area!");
             }

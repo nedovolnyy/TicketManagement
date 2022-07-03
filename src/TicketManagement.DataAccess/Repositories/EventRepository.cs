@@ -72,7 +72,7 @@ namespace TicketManagement.DataAccess.Repositories
             return _dbSet.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).AsNoTracking();
         }
 
-        public async Task<int> GetSeatsAvailableCount(int id)
+        public async Task<int> GetSeatsAvailableCountAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
             var paramCountEmptySeats = new SqlParameter
@@ -87,7 +87,7 @@ namespace TicketManagement.DataAccess.Repositories
             return (int)paramCountEmptySeats.Value;
         }
 
-        public async Task<int> GetSeatsCount(int layoutId)
+        public async Task<int> GetSeatsCountAsync(int layoutId)
         {
             var paramLayoutId = new SqlParameter("@LayoutId", layoutId);
             var paramCountSeats = new SqlParameter

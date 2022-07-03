@@ -7,7 +7,7 @@
 @if (requestCulture is not null)
                     {
                         <script type="text/javascript">
-                            var serverTime = new Date(@Json.Serialize(@System.DateTime.Now))
+                            var serverTime = new Date()
 
                             function DisplayTime() {
                                 serverTime.setSeconds(serverTime.getSeconds() + 1)

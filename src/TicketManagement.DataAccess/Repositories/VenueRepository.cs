@@ -43,7 +43,7 @@ namespace TicketManagement.DataAccess.Repositories
             return _dbSet.AsNoTracking();
         }
 
-        public async Task<int> GetIdFirstByName(string name)
+        public async Task<int> GetIdFirstByNameAsync(string name)
         {
             var tmpVenue = await _databaseContext.Venues.Where(p => p.Name == name).FirstOrDefaultAsync();
             if (tmpVenue is null)

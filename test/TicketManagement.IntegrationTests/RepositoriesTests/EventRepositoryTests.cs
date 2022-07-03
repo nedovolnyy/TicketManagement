@@ -16,7 +16,7 @@ namespace TicketManagement.IntegrationTests
         public async Task GetCountEmptySeats_WhenId2_ShouldNotNull()
         {
             // act
-            var actualResponse = await _evntRepository.GetSeatsAvailableCount(2);
+            var actualResponse = await _evntRepository.GetSeatsAvailableCountAsync(2);
 
             // assert
             Assert.NotNull(actualResponse);

@@ -26,10 +26,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.GetSeatsAvailableCount(It.IsAny<int>())).ReturnsAsync(1);
+            eventService.Setup(x => x.GetSeatsAvailableCountAsync(It.IsAny<int>())).ReturnsAsync(1);
 
             // act
-            var actual = eventService.Object.GetSeatsAvailableCount(1);
+            var actual = eventService.Object.GetSeatsAvailableCountAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -44,7 +44,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-19 00:05:00"), "Stanger Things Serie", 2, DateTime.Parse("2022-09-19 00:50:00"), "image");
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.GetSeatsCount(It.IsAny<int>())).ReturnsAsync((int)default);
+            eventService.Setup(x => x.GetSeatsCountAsync(It.IsAny<int>())).ReturnsAsync((int)default);
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
@@ -227,7 +227,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("2022-09-09 00:05:00"), "Kitchen Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image");
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.GetSeatsCount(It.IsAny<int>())).ReturnsAsync(5);
+            eventService.Setup(x => x.GetSeatsCountAsync(It.IsAny<int>())).ReturnsAsync(5);
             eventService.Setup(x => x.UpdateAsync(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
 
             // act

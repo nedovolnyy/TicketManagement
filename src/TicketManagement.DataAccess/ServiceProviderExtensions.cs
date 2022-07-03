@@ -24,6 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.Lockout.MaxFailedAccessAttempts = 5;
                     options.Lockout.AllowedForNewUsers = true;
                 })
+                .AddRoles<IdentityRole>()
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<DatabaseContext>();
 

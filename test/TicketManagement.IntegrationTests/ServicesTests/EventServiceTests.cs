@@ -20,7 +20,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = 1;
 
             // act
-            var actualResponse = await _eventService.GetSeatsAvailableCount(1);
+            var actualResponse = await _eventService.GetSeatsAvailableCountAsync(1);
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);

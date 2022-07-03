@@ -17,13 +17,13 @@ namespace TicketManagement.Common.DI
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns><see cref="int"/>.</returns>
-        Task<int> GetSeatsAvailableCount(int id);
+        Task<int> GetSeatsAvailableCountAsync(int id);
 
         /// <summary>
         /// Method for validation data by seats in Area.
         /// </summary>
         /// <param name="layoutId">layoutId.</param>
         /// <returns><see cref="int"/>.</returns>
-        Task<int> GetSeatsCount(int layoutId);
+        Task<int> GetSeatsCountAsync(int layoutId);
     }
 }

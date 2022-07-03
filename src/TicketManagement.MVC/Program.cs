@@ -33,6 +33,11 @@ builder.Services.AddMvc();
 builder.Services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddBLLServices();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("role-policy", x => { x.RequireClaim("role"); });
+});
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddControllersWithViews();
