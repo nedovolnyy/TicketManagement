@@ -15,7 +15,7 @@
     ViewBag.Title = @Localizer["General page"];
 }
 
-@if ((await AuthorizationService.AuthorizeAsync(User, "role-policy")).Succeeded)
+@if ((await AuthorizationService.AuthorizeAsync(User, "Administrator")).Succeeded)
 {
     <div class="text-center">
         <h1 class="display-4">@Localizer["Welcome"]</h1>

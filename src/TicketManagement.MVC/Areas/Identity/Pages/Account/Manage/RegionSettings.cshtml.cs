@@ -7,18 +7,19 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TicketManagement.Common.Identity;
 
 namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
 {
-    public class IndexModel : PageModel
+    public class RegionSettingsModel : PageModel
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public IndexModel(
+        public RegionSettingsModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager)
         {
@@ -26,9 +27,10 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string Username { get; set; }
-        public string FirstName { get; set; }
-        public string SurName { get; set; }
+        public static string TimeZoneCookieName { get; } = "TimeZone";
+
+        public string Language { get; set; }
+        public string TimeZone { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -36,18 +38,12 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
-        private async Task LoadAsync(User user)
+        private void Load(User user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
-
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber,
-                FirstName = user.FirstName,
-                SurName = user.SurName,
+                Language = user.Language,
+                TimeZone = user.TimeZone,
             };
         }
 
@@ -59,11 +55,11 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            Load(user);
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string culture, string timeZone)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -73,42 +69,36 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                Load(user);
                 return Page();
             }
 
-            user.FirstName = Input.FirstName;
-            user.SurName = Input.SurName;
-
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
+            user.Language = culture;
+            user.TimeZone = timeZone;
 
             await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
+
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });
+
+            Response.Cookies.Append(TimeZoneCookieName, timeZone,
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });
+
             return RedirectToPage();
         }
 
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "Language")]
+            public string Language { get; set; }
 
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-
-            [Display(Name = "Sur Name")]
-            public string SurName { get; set; }
+            [Display(Name = "Time zone")]
+            public string TimeZone { get; set; }
         }
     }
 }

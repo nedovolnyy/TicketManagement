@@ -1,0 +1,32 @@
+﻿@model TicketManagement.Common.Identity.CreateUser
+
+@{
+    ViewBag.Title = "Add user";
+}
+
+<form asp-action="Create" asp-controller="UserManagement">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">Email</label>
+        <input type="text" asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label">Password</label>
+        <input type="password" asp-for="Password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="FirstName" class="control-label">First Name</label>
+        <input type="text" asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="SurName" class="control-label">Sur Name</label>
+        <input type="text" asp-for="SurName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
+        <input type="text" asp-for="PhoneNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Add" class="btn btn-outline-secondary" />
+    </div>
+</form>

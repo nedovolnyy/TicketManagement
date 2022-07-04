@@ -1,10 +1,12 @@
 using System.Configuration;
 using System.Globalization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TicketManagement.Common.DI;
+using TicketManagement.MVC;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,16 +28,36 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
 builder.Services
     .AddControllersWithViews()
-    .AddDataAnnotationsLocalization()
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResource));
+    })
     .AddViewLocalization();
 
 builder.Services.AddMvc();
 builder.Services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddBLLServices();
 
+builder.Services.AddAuthentication();
+
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("role-policy", x => { x.RequireClaim("role"); });
+    options.AddPolicy("Administrator", builder =>
+    {
+        builder.RequireClaim(ClaimTypes.Role, "Administrator");
+    });
+
+    options.AddPolicy("Manager", builder =>
+    {
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "Manager")
+                                      || x.User.HasClaim(ClaimTypes.Role, "Administrator"));
+    });
+
+    options.AddPolicy("User", builder =>
+    {
+        builder.RequireClaim(ClaimTypes.Role, "User");
+    });
 });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

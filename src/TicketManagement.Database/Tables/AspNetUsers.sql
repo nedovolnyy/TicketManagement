@@ -15,5 +15,12 @@
         [LockoutEnd] datetimeoffset NULL,
         [LockoutEnabled] bit NOT NULL,
         [AccessFailedCount] int NOT NULL,
-        CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
+        [FirstName] nvarchar(256) NULL,
+        [SurName] nvarchar(256) NULL,
+        [Language] nvarchar(256) NULL,
+        [TimeZone] nvarchar(256) NULL,
+        [CartCount] INT NOT NULL DEFAULT 0 , 
+    [Balance] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
+    [PayHistory] NVARCHAR(MAX) NULL, 
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
 )

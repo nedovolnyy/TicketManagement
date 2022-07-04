@@ -170,3 +170,45 @@ insert into dbo.EventSeat
 		(10, 2, 1, 0),
 		(10, 2, 2, 1)
 	
+--- Identity Users
+insert into dbo.AspNetUsers
+	values
+	('1509fd70-c234-46fc-bdad-1d4ed54e4cb4',
+	'admin@admin.com',
+	'ADMIN@ADMIN.COM',
+	'ADMIN@ADMIN.COM',
+	'ADMIN@ADMIN.COM',
+	1,
+	'AQAAAAEAACcQAAAAEPidQQ5v29XgEYFtooIu3T4aEzhhx0KwvoUOrTD3bJcQj7aJuX2d2KRPpFoWN+Ogdw==',
+	'T26LD5TYXYZTWA5XKZHJMONRWRS7E3JE',
+	'2f2240f5-12c9-493c-8589-28e4f8aaac7f',
+	'+333333333333',
+	1,
+	0,
+	null,
+	1,
+	0,
+	'Artsiom',
+	'Krot',
+	'be-BY',
+	'03:00:00',
+	0,
+	CAST(0.0 AS Decimal(18, 2)),
+	null)
+		
+--- Identity Roles
+insert into dbo.AspNetRoles
+	values
+	('6b7d276e-e5a9-401b-b054-57e24b404efb', 'EventManager', 'EVENTMANAGER', '0e9af52f-3ae4-44ac-b18e-64f7e3c23dd8'),
+	('716718e7-6f17-4e58-8b38-b1bd53759266', 'User', 'USER', 'c16e01ab-b27e-4a5b-a651-b63b5a8b7aea'),
+	('f1a9cad5-ecdc-455b-8be7-2c2ebd3b82d8', 'Administrator', 'ADMINISTRATOR', '97a23f02-b402-44ff-ad7c-42ab2a0e35b5')
+
+--- Identity UserRoles
+insert into dbo.AspNetUserRoles
+	values
+	('1509fd70-c234-46fc-bdad-1d4ed54e4cb4', 'f1a9cad5-ecdc-455b-8be7-2c2ebd3b82d8')
+		
+--- Identity UserClaims
+insert into dbo.AspNetUserClaims
+	values
+	('1509fd70-c234-46fc-bdad-1d4ed54e4cb4', 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role', 'Administrator')

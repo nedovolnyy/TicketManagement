@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.DI;
+using TicketManagement.Common.Identity;
 using TicketManagement.DataAccess.EF;
 using TicketManagement.DataAccess.Repositories;
 
@@ -12,21 +13,23 @@ namespace Microsoft.Extensions.DependencyInjection
         ////private IConfiguration Configuration { get; set; } = null!;
         public static void AddRepositories(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options =>
-                options.UseSqlServer(connectionString)
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-
-            services.AddIdentity<IdentityUser, IdentityRole>(
-                options =>
-                {
-                    options.SignIn.RequireConfirmedAccount = false;
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                    options.Lockout.MaxFailedAccessAttempts = 5;
-                    options.Lockout.AllowedForNewUsers = true;
-                })
-                .AddRoles<IdentityRole>()
-                .AddDefaultUI()
-                .AddEntityFrameworkStores<DatabaseContext>();
+            services.AddDbContext<IDatabaseContext, DatabaseContext>(options => options.UseSqlServer(connectionString).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
+                    .AddIdentity<User, Role>(
+                        options =>
+                        {
+                            options.Password.RequireDigit = false;
+                            options.Password.RequireLowercase = false;
+                            options.Password.RequireNonAlphanumeric = false;
+                            options.Password.RequireUppercase = false;
+                            options.Password.RequiredLength = 4;
+                            options.SignIn.RequireConfirmedAccount = false;
+                            ////options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                            ////options.Lockout.MaxFailedAccessAttempts = 5;
+                            ////options.Lockout.AllowedForNewUsers = true;
+                        })
+                    .AddRoles<Role>()
+                    .AddDefaultUI()
+                    .AddEntityFrameworkStores<DatabaseContext>();
 
             services.AddTransient<IAreaRepository, AreaRepository>(provider => new AreaRepository(provider.GetRequiredService<IDatabaseContext>()));
 

@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Identity;
 
 namespace TicketManagement.DataAccess.EF
 {
-    public partial class DatabaseContext : IdentityDbContext, IDatabaseContext
+    public partial class DatabaseContext : IdentityDbContext<User, Role, string>, IDatabaseContext
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
