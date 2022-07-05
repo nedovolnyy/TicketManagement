@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TicketManagement.Common.DI;
+using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 
 namespace TicketManagement.BusinessLogic.Services
@@ -12,6 +13,12 @@ namespace TicketManagement.BusinessLogic.Services
             : base(eventRepository)
         {
             _eventRepository = eventRepository;
+        }
+
+        public virtual async Task<int> InsertAsync(IEvent evnt, decimal price)
+        {
+            await ValidateAsync(evnt);
+            return await _eventRepository.InsertAsync(evnt, price);
         }
 
         public virtual async Task<int> GetSeatsAvailableCountAsync(int id)

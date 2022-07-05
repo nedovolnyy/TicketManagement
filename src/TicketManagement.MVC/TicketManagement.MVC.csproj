@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <MvcBuildViews>false</MvcBuildViews>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-TicketManagement.MVC-7069A376-156F-40CC-8D29-193440E1B5A2</UserSecretsId>
   </PropertyGroup>

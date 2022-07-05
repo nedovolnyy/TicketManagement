@@ -6,6 +6,13 @@ namespace TicketManagement.Common.DI
     public interface IEventRepository : IRepository<IEvent>
     {
         /// <summary>
+        /// Special method for create Event.
+        /// </summary>
+        /// <param name="evnt">Entity.</param>
+        /// <param name="price">Price.</param>
+        Task<int> InsertAsync(IEvent evnt, decimal price);
+
+        /// <summary>
         /// Method for populate data by layoutId.
         /// </summary>
         /// <param name="layoutId">layoutId.</param>

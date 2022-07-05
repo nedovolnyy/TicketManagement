@@ -6,7 +6,8 @@
 	@Description NVARCHAR(max) = null,
 	@LayoutId INT = null,
 	@EventEndTime DATETIME2 = null,
-	@EventLogoImage NVARCHAR(max) = null
+	@EventLogoImage NVARCHAR(max) = null,
+	@Price DECIMAL(18,2) = null
 )
 AS
 BEGIN
@@ -24,7 +25,7 @@ BEGIN
 		
 		--INSERT INTO EVENT AREA
 		INSERT INTO dbo.EventArea (EventId, Description, CoordX, CoordY, Price)
-			SELECT @Id, areaTable.areaDescription, areaTable.CoordX, areaTable.CoordY, 0.00 FROM
+			SELECT @Id, areaTable.areaDescription, areaTable.CoordX, areaTable.CoordY, @Price FROM
 				(SELECT A.Description AS areaDescription, A.CoordX, A.CoordY FROM Layout L
 					Join Area A ON A.LayoutId=L.Id                  
 					WHERE L.Id = @LayoutId
