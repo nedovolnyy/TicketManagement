@@ -34,13 +34,12 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override async Task<IEventArea> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
+            => await _dbSet.FindAsync(id);
 
         public override IQueryable<IEventArea> GetAll()
-        {
-            return _dbSet.AsNoTracking();
-        }
+            => _dbSet.AsNoTracking();
+
+        public virtual IQueryable<IEventArea> GetAllByEventId(int eventId)
+            => _databaseContext.EventAreas.Where(p => p.EventId == eventId).AsQueryable();
     }
 }

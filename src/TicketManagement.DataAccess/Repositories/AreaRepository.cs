@@ -33,16 +33,12 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override async Task<IArea> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
+            => await _dbSet.FindAsync(id);
 
         public override IQueryable<IArea> GetAll()
-        {
-            return _dbSet.AsQueryable();
-        }
+            => _dbSet.AsQueryable();
 
         public virtual IQueryable<IArea> GetAllByLayoutId(int id)
-                => _databaseContext.Areas.Where(p => p.LayoutId == id).AsQueryable();
+            => _databaseContext.Areas.Where(p => p.LayoutId == id).AsQueryable();
     }
 }

@@ -34,14 +34,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override async Task<ISeat> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
+            => await _dbSet.FindAsync(id);
 
         public override IQueryable<ISeat> GetAll()
-        {
-            return _dbSet.AsNoTracking();
-        }
+            => _dbSet.AsNoTracking();
 
         public IQueryable<ISeat> GetAllByAreaId(int id)
             => _dbSet.Where(p => p.AreaId == id).AsNoTracking();

@@ -34,11 +34,11 @@
                     <select name="culture" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="culturesList" class="form-select"></select>
                     <label asp-for="Input.Language"></label>
                 </div>
+            }
             <div class="form-floating">
-                <select name="timeZone" asp-for="Input.TimeZone" aria-label="@DateTimeOffset.Now.Offset.ToString()" asp-items="timezoneList" class="form-select"></select>
+                <select name="timeZone" asp-for="Input.TimeZone" asp-items="timezoneList" class="form-select"></select>
                 <label asp-for="Input.TimeZone" class="form-label"></label>
             </div>
-            }
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">@Localizer["Save"]</button>
         </form>
     </div>

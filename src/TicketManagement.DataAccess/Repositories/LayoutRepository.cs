@@ -34,14 +34,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override async Task<ILayout> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
+            => await _dbSet.FindAsync(id);
 
         public override IQueryable<ILayout> GetAll()
-        {
-            return _dbSet.AsNoTracking();
-        }
+            => _dbSet.AsNoTracking();
 
         public IQueryable<ILayout> GetAllByVenueId(int id)
             => _databaseContext.Layouts.Where(p => p.VenueId == id).AsNoTracking();

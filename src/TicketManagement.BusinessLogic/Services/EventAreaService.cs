@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Validation;
 
@@ -6,10 +7,15 @@ namespace TicketManagement.BusinessLogic.Services
 {
     internal class EventAreaService : BaseService<IEventArea>, IEventAreaService
     {
+        private readonly IEventAreaRepository _eventAreaRepository;
         public EventAreaService(IEventAreaRepository eventAreaRepository)
             : base(eventAreaRepository)
         {
+            _eventAreaRepository = eventAreaRepository;
         }
+
+        public virtual async Task<IEnumerable<IEventArea>> GetAllByEventIdAsync(int eventId)
+            => await _eventAreaRepository.GetAllByEventId(eventId).ToListAsyncSafe();
 
         public override async Task ValidateAsync(IEventArea entity)
         {

@@ -13,7 +13,7 @@ namespace TicketManagement.Common.DI
         IQueryable<IEvent> GetAllByLayoutId(int layoutId);
 
         /// <summary>
-        /// Count empty seats.
+        /// Count available seats.
         /// </summary>
         /// <param name="id">id.</param>
         /// <returns><see cref="int"/>.</returns>

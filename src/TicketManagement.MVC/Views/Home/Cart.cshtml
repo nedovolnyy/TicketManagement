@@ -1,0 +1,23 @@
+﻿@using TicketManagement.Common.Identity
+
+@model TicketManagement.Common.Identity.User
+
+<tr>
+    <td><h1>To up balance: </h1></td>
+    <td>
+        <form asp-action="GetMoney" asp-controller="Home">
+            <div class="form-group">
+                <label asp-for="Balance" class="control-label" />
+                <input asp-for="Balance" name="money" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-success">Add money</button>
+            </div>
+        </form>
+    </td>
+</tr>
+
+<h2>Total purchase: @Model.CartCount</h2>
+<h1>Purchase history:</h1>
+
+<h7>@Model.PayHistory</h7>

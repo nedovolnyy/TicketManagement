@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TicketManagement.Common.Identity;
-using TicketManagement.MVC.Areas.Identity.Pages.Account.Manage;
+using TicketManagement.MVC.Helpers;
 
 namespace TicketManagement.MVC.Areas.Identity.Pages.Account
 {
@@ -70,13 +70,7 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     var user = await _userManager.FindByEmailAsync(Input.Email);
 
-                    Response.Cookies.Append(
-                        CookieRequestCultureProvider.DefaultCookieName,
-                        CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(user.Language)),
-                        new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });
-
-                    Response.Cookies.Append(RegionSettingsModel.TimeZoneCookieName, user.TimeZone,
-                        new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });
+                    HtmlHelperExtensions.SaveUserCookies(Response, user);
 
                     return LocalRedirect(returnUrl);
                 }

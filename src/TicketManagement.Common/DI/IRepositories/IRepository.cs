@@ -29,13 +29,13 @@ namespace TicketManagement.Common.DI
         /// Base method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns><see cref="IBaseEntity"/>&lt;BaseEntity&gt;.</returns>
+        /// <returns><see cref="IBaseEntity"/>.</returns>
         Task<T> GetByIdAsync(int id);
 
         /// <summary>
         /// Base method for populate all data.
         /// </summary>
-        /// <returns><see cref="IQueryable"/>&lt;BaseEntity&gt;.</returns>
+        /// <returns>List&lt;<see cref="IBaseEntity"/>&gt;.</returns>
         IQueryable<T> GetAll();
     }
 }

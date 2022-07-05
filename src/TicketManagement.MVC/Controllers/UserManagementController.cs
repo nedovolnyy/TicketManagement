@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using TicketManagement.Common.Identity;
-using TicketManagement.DataAccess.EF;
 using TicketManagement.MVC.Areas.Identity.Pages.Account;
 
 namespace TicketManagement.MVC.Controllers

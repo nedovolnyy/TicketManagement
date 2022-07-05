@@ -13,9 +13,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
     {
         private readonly List<EventSeat> _expectedEventSeats = new List<EventSeat>
         {
-            new EventSeat(1, 6, 56, 2, 4),
-            new EventSeat(2, 7, 3, 3, 2),
-            new EventSeat(3, 5, 9, 1, 7),
+            new EventSeat(1, 6, 56, 2, true),
+            new EventSeat(2, 7, 3, 3, false),
+            new EventSeat(3, 5, 9, 1, true),
         };
         private int _timesApplyRuleCalled;
 
@@ -25,7 +25,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "The field 'EventAreaId' of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(1, 0, 56, 2, 4);
+            var eventSeatExpected = new EventSeat(1, 0, 56, 2, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
@@ -43,7 +43,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "The field 'Row' of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(2, 7, 0, 3, 2);
+            var eventSeatExpected = new EventSeat(2, 7, 0, 3, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
@@ -61,25 +61,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var strException =
                 "The field 'Number' of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(3, 5, 9, 0, 7);
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-
-            // act
-            var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventSeatService.Object.ValidateAsync(eventSeatExpected));
-
-            // assert
-            Assert.That(actualException.Message, Is.EqualTo(strException));
-        }
-
-        [Test]
-        public void Validate_WhenEventSeatFieldStateNull_ShouldThrow()
-        {
-            // arrange
-            var strException =
-                "The field 'State' of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(1, 6, 56, 2, 0);
+            var eventSeatExpected = new EventSeat(3, 5, 9, 0, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
@@ -95,7 +77,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Insert_WhenInsertEventSeat_ShouldNotNull()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(1, 6, 6, 2, 4);
+            var eventSeatExpected = new EventSeat(1, 6, 6, 2, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
             eventSeatService.Setup(x => x.InsertAsync(It.IsAny<EventSeat>())).ReturnsAsync(1);
@@ -111,7 +93,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Update_WhenUpdateEventSeat_ShouldNotNull()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(3, 5, 9, 1, 7);
+            var eventSeatExpected = new EventSeat(3, 5, 9, 1, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
             eventSeatService.Setup(x => x.UpdateAsync(It.IsAny<EventSeat>())).Callback(() => _timesApplyRuleCalled++);
@@ -143,7 +125,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void GetById_WhenReturnEventSeatById_ShouldNotNull()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(5444, 6, 56, 2, 4);
+            var eventSeatExpected = new EventSeat(5444, 6, 56, 2, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
             eventSeatService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(eventSeatExpected);

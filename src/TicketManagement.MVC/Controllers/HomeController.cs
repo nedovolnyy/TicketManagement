@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -27,8 +28,6 @@ namespace TicketManagement.MVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Name = User.Identity?.Name;
-            ViewBag.IsAuthenticated = User.Identity?.IsAuthenticated;
             return View(await _serviceProvider.GetRequiredService<IEventService>().GetAllAsync());
         }
 
@@ -44,9 +43,28 @@ namespace TicketManagement.MVC.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Event()
+        public async Task<IActionResult> Cart()
         {
-            return View();
+            return View(await _userManager.GetUserAsync(User));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Cart(string money)
+        {
+            if (User is not null && money is not null)
+            {
+                User user = await _userManager.GetUserAsync(User);
+                user.Balance += decimal.Parse(Regex.Replace(money, @"[^\d.,]", ""));
+                user.PayHistory += "AddMoney" + " : " + user.Balance + Environment.NewLine;
+                await _userManager.UpdateAsync(user);
+            }
+
+            return RedirectToAction("GetMoney");
+        }
+
+        public async Task<IActionResult> GetMoney()
+        {
+            return View(await _userManager.GetUserAsync(User));
         }
 
         public IActionResult AccessDenied()

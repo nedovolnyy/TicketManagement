@@ -5,6 +5,6 @@
         int EventAreaId { get; set; }
         int Row { get; set; }
         int Number { get; set; }
-        int State { get; set; }
+        bool State { get; set; }
     }
 }

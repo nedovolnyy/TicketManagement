@@ -1,40 +1,14 @@
-﻿@using System.Security.Claims;
-@using Microsoft.AspNetCore.Identity
-@using TicketManagement.Common.Identity;
+﻿@using Microsoft.AspNetCore.Identity
+@using TicketManagement.Common.Identity
 
 @inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
 
 <ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
+    @if (User is not null && SignInManager.IsSignedIn(User))
     {
-        @if (User is not null)
-        {
-            if (User.IsInRole("Administrator"))
-            {
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="Identity" asp-controller="VenueManagement" asp-action="Index" title="Venue management">Venues manage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="Identity" asp-controller="UserManagement" asp-action="Index" title="Users management">Users manage</a>
-                </li>
-            }
-            if (User.IsInRole("EventManager"))
-            {
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="Identity" asp-controller="EventManagement" asp-action="Index" title="Event management">Events manage</a>
-                </li>
-            }
-            if (User.IsInRole("User"))
-            {
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="Identity" asp-controller="Cart" asp-action="Index" title="Cart">Cart</a>
-                </li>
-            }
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage personal profile">Hello @User.Identity?.Name!</a>
-            </li>
-        }
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage personal profile">Hello @User.Identity?.Name!</a>
+        </li>
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>

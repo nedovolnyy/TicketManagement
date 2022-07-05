@@ -34,14 +34,10 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override async Task<IVenue> GetByIdAsync(int id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
+            => await _dbSet.FindAsync(id);
 
         public override IQueryable<IVenue> GetAll()
-        {
-            return _dbSet.AsNoTracking();
-        }
+            => _dbSet.AsNoTracking();
 
         public async Task<int> GetIdFirstByNameAsync(string name)
         {

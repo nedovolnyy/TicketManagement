@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TicketManagement.Common.Identity;
+using TicketManagement.MVC.Helpers;
 
 namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
 {
@@ -26,8 +27,6 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
-        public static string TimeZoneCookieName { get; } = "TimeZone";
 
         public string Language { get; set; }
         public string TimeZone { get; set; }
@@ -81,13 +80,7 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
 
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });
-
-            Response.Cookies.Append(TimeZoneCookieName, timeZone,
-                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });
+            HtmlHelperExtensions.SaveUserCookies(Response, user);
 
             return RedirectToPage();
         }

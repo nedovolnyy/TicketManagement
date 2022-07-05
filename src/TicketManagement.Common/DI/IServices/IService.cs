@@ -10,6 +10,11 @@ namespace TicketManagement.Common.DI
         Task UpdateAsync(T entity);
         Task<int> DeleteAsync(int id);
         Task<T> GetByIdAsync(int id);
+
+        /// <summary>
+        /// Base method for populate all data.
+        /// </summary>
+        /// <returns>List&lt;<see cref="IBaseEntity"/>&gt;.</returns>
         Task<IEnumerable<T>> GetAllAsync();
     }
 }

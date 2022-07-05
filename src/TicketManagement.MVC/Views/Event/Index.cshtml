@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.DI
+@using TicketManagement.MVC.Helpers
+
+@inject IAuthorizationService AuthorizationService
+@inject IServiceProvider ServiceProvider
+@inject IViewLocalizer Localizer
+
+@model IEnumerable<TicketManagement.Common.DI.IEventArea>
+
+@{
+    ViewData["Title"] = Localizer["EventPage"];
+}
+
+@{
+    var evnt = await ServiceProvider.GetRequiredService<IEventService>().GetByIdAsync(Model.First().EventId);
+}
+
+<div class="text-center">
+    <h1 class="display-4">@Localizer["Welcome to, "]@evnt.Name</h1>
+
+    <div class="img__container">
+        <img class="image shadow-lg" alt="" src="@Url.Content(evnt.EventLogoImage)" />
+        <div class="img__description">
+            <div class="img__header"><h2 style="text-decoration: none;">@evnt.Name</h2></div>
+            <div class="text">
+                <div class="left">
+                    <p>@evnt.Description</p>
+                </div>
+                <div class="right">
+                    <p>@(await ServiceProvider.GetRequiredService<IEventService>().GetSeatsAvailableCountAsync(evnt.Id)) / @(await ServiceProvider.GetRequiredService<IEventService>().GetSeatsCountAsync(evnt.LayoutId))</p>
+                </div>
+            </div>
+            <div class="text">
+                <div class="right">
+                    <p style="font-size: 0.75em;">@Localizer["Avalaible"]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>@evnt.Description</p>
+</div>
+
+<div class="row">
+    <table class="table">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <div class="text">
+                        <div class="container">
+                            <div class="container text-right">
+                                @await Html.PartialAsync("_SelectEventSeat",item)
+                            </div>
+                        </div>
+
+                        <div class="right">
+                            <p>@item.Description</p>
+                        </div>
+                    </div>
+                    <div class="text">
+                        <div class="right">
+                            <p style="font-size: 0.75em;">@Html.ModifyDateTime(evnt.EventTime)</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

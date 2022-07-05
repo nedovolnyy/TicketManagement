@@ -7,7 +7,7 @@ namespace TicketManagement.Common.Entities
     [Table("EventSeat")]
     public class EventSeat : BaseEntity, IEventSeat
     {
-        public EventSeat(int id, int eventAreaId, int row, int number, int state)
+        public EventSeat(int id, int eventAreaId, int row, int number, bool state)
         {
             Id = id;
             EventAreaId = eventAreaId;
@@ -27,6 +27,6 @@ namespace TicketManagement.Common.Entities
         public int Number { get; set; }
 
         [Required]
-        public int State { get; set; }
+        public bool State { get; set; }
     }
 }

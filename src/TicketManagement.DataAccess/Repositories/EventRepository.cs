@@ -62,9 +62,7 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override IQueryable<IEvent> GetAll()
-        {
-            return _dbSet.FromSqlRaw("spEventGetAll").AsNoTracking();
-        }
+            => _dbSet.FromSqlRaw("spEventGetAll").AsNoTracking();
 
         public IQueryable<IEvent> GetAllByLayoutId(int layoutId)
         {
