@@ -1,44 +1,60 @@
-﻿@page
-@using TicketManagement.MVC.Views.EventManagement
-@model CreateEventModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.DI
+
+@inject IViewLocalizer Localizer
+
+@model IEnumerable<IVenue>
 
 @{
-    ViewData["Title"] = "Create Event";
+    ViewData["Title"] = Localizer["Event Management"];
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <input asp-for="Input.Name" class="form-control" />
-                <label asp-for="Input.Name" class="form-label"></label>
-            </div>
-            <div class="form-floating">
-                <input asp-for="Input.EventTime" class="form-control" />
-                <label asp-for="Input.EventTime" class="form-label"></label>
-                <span asp-validation-for="Input.EventTime" class="text-danger"></span>
-            </div>
-            <div class="form-floating">
-                <input asp-for="Input.Description" class="form-control"/>
-                <label asp-for="Input.Description" class="form-label"></label>
-            </div>
-            <div class="form-floating">
-                <input asp-for="Input.EventEndTime" class="form-control" />
-                <label asp-for="Input.EventEndTime" class="form-label"></label>
-                <span asp-validation-for="Input.EventTime" class="text-danger"></span>
-            </div>
-            <div class="form-floating">
-                <input asp-for="Input.EventLogoImage" class="form-control"/>
-                <label asp-for="Input.EventLogoImage" class="form-label"></label>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </form>
+<div class="form-group">
+    <div class="wrap">
+        <div class="left">
+            <table class="table">
+                <tr><th>Name</th><th>Description</th><th>Address</th><th>Phone</th></tr>
+                @foreach (var venue in Model)
+                {
+                    <tr>
+                        <td>
+                            @venue.Name;
+                            <br />
+                        </td>
+                        <td>
+                            @venue.Description;
+                            <br />
+                        </td>
+                        <td>
+                            @venue.Address;
+                            <br />
+                        </td>
+                        <td>
+                            @venue.Phone;
+                            <br />
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div><div class="right">
+            <table class="table">
+                <tr><th></th></tr>
+                <tr>
+                    <td>
+                        <form asp-action="SelectLayouts" asp-controller="EventManagement" method="post">
+                            <input type="hidden" />
+                            <div class="table-active">
+                                @foreach (var venue in Model)
+                                {
+                                    <input type="checkbox" name="venuesId" value="@venue.Id" />
+                                    <hr />
+                                }
+                            </div>
+                            <button type="submit" class="btn btn-primary">Select</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

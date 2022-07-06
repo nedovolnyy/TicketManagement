@@ -19,7 +19,6 @@ namespace TicketManagement.MVC.Controllers
     {
         private readonly RoleManager<Role> _roleManager;
         private readonly IStringLocalizer<UserManagementController> _localizer;
-        private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IUserStore<User> _userStore;
         private readonly IUserEmailStore<User> _emailStore;
@@ -30,7 +29,6 @@ namespace TicketManagement.MVC.Controllers
             IStringLocalizer<UserManagementController> localizer,
             UserManager<User> userManager,
             IUserStore<User> userStore,
-            SignInManager<User> signInManager,
             ILogger<RoleManager<Role>> logger)
         {
             _logger = logger;
@@ -38,7 +36,6 @@ namespace TicketManagement.MVC.Controllers
             _localizer = localizer;
             _userManager = userManager;
             _userStore = userStore;
-            _signInManager = signInManager;
             _emailStore = GetEmailStore();
         }
 

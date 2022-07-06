@@ -4,7 +4,19 @@
         @if (User.IsInRole("EventManager"))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="EventManagement" asp-action="Index" title="Event management">Events manage</a>
+                <a class="nav-link text-dark" asp-controller="EventManagement" asp-action="CreateEvent" title="Create Event">Create event</a>
+            </li>
+        }
+        @if (User.IsInRole("EventManager"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="EventManagement" asp-action="EditEvent" title="Edit Event">Edit Event</a>
+            </li>
+        }
+        @if (User.IsInRole("EventManager"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="EventManagement" asp-action="DeleteEvent" title="Delete Event">Delete Event</a>
             </li>
         }
         @if (User.IsInRole("Administrator"))

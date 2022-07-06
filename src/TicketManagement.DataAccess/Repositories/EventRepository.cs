@@ -31,7 +31,7 @@ namespace TicketManagement.DataAccess.Repositories
             var paramEventLogoImage = new SqlParameter("@EventLogoImage", evnt.EventLogoImage);
             return await _databaseContext.Instance.Database
                 .ExecuteSqlRawAsync("spEventInsert @Name, @EventTime, @Description, @LayoutId, @EventEndTime, @EventLogoImage, @Price",
-                                               paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage, decimal.Zero);
+                                               paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage, decimal.One);
         }
 
         public async Task<int> InsertAsync(IEvent evnt, decimal price)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TicketManagement.Common.DI;
-using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 
 namespace TicketManagement.BusinessLogic.Services

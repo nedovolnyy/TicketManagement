@@ -1,34 +1,38 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.DI;
-using TicketManagement.Common.Identity;
-using TicketManagement.MVC.Views.EventManagement;
+using TicketManagement.Common.Entities;
+using TicketManagement.MVC.Models;
 
 namespace TicketManagement.MVC.Controllers
 {
     [Authorize(Roles = "EventManager")]
     public class EventManagementController : Controller
     {
-        private readonly UserManager<User> _userManager;
         private readonly ILogger<HomeController> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public EventManagementController(UserManager<User> userManager, ILogger<HomeController> logger, IServiceProvider serviceProvider)
+        public EventManagementController(ILogger<HomeController> logger, IServiceProvider serviceProvider)
         {
-            _userManager = userManager;
             _logger = logger;
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> CreateEvent()
         {
             IEnumerable<IVenue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
             if (venues != null)
+            {
+                return View(venues);
+            }
+
+            return RedirectToRoute(new { controller = "Home", action = "Index" });
+        }
+
+        public async Task<IActionResult> EditEvent()
+        {
+            IEnumerable<IVenue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
+            if (venues is not null)
             {
                 return View(venues);
             }
@@ -49,24 +53,35 @@ namespace TicketManagement.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaningEventAreas(List<string> layoutsId)
+        public async Task<IActionResult> PublishEvent(EventModel eventModel, string layoutId, string timeZone)
         {
-            List<IArea> areas = new List<IArea>();
-            foreach (var layoutId in layoutsId)
-            {
-                areas.Add(await _serviceProvider.GetRequiredService<IAreaService>().GetByIdAsync(int.Parse(layoutId)));
-            }
+            await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(
+                new Event(
+                id: 1,
+                name: eventModel.Name,
+                eventTime: DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
+                description: eventModel.Description,
+                eventEndTime: eventModel.EventEndTime,
+                eventLogoImage: eventModel.EventLogoImage,
+                layoutId: int.Parse(layoutId)),
+                price: decimal.Parse(eventModel.Price!));
 
-            return View(areas);
+            return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
 
         [HttpPost]
-        public IActionResult CreateEvent(List<string> layoutsId)
+        public IActionResult InsertEvent(List<string> layoutsId)
         {
-            CreateEventModel createEventModel = new CreateEventModel(_serviceProvider);
-            createEventModel.LayoutId = layoutsId;
+            EventModel initEventModel = new EventModel(
+                name: "sgdrgdr",
+                description: "dffdbd",
+                eventTime: DateTime.Now,
+                eventLogoImage: "sgsdg",
+                eventEndTime: DateTime.Now,
+                price: decimal.One.ToString(),
+                layoutsId: layoutsId);
 
-            return View(createEventModel);
+            return View(initEventModel);
         }
     }
 }
