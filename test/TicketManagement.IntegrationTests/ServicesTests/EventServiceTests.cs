@@ -28,38 +28,6 @@ namespace TicketManagement.IntegrationTests
         }
 
         [Test]
-        public void Validate_WhenAreaHavntSeats_ShouldTrow()
-        {
-            // arrange
-            var expectedException =
-                "Create event is not possible! Haven't seats in Area!";
-
-            // act
-            var actualException = Assert.ThrowsAsync<ValidationException>(
-                async () => await _eventService.InsertAsync(
-                    new Event(0, "Kitchegwcserrthrgn Serie", DateTimeOffset.Parse("2023-07-02 00:05:00"), "Kitschertrn Serie", 18, DateTime.Parse("2023-07-02 00:50:00"), "image")));
-
-            // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
-        }
-
-        [Test]
-        public void Validate_WhenEventEndTimeLateEventTime_ShouldTrow()
-        {
-            // arrange
-            var expectedException =
-                "EventEndTime cannot be later than EventTime!";
-
-            // act
-            var actualException = Assert.ThrowsAsync<ValidationException>(
-                async () => await _eventService.InsertAsync(
-                    new Event(0, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 3, DateTime.Parse("2023-01-01 00:45:00"), "image")));
-
-            // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
-        }
-
-        [Test]
         public async Task Insert_WhenInsertEvent_ShouldNotNull()
         {
             // act

@@ -14,21 +14,6 @@ namespace TicketManagement.IntegrationTests
         private readonly IVenueService _venueService = TestDatabaseFixture.ServiceProvider.GetRequiredService<IVenueService>();
 
         [Test]
-        public void Validate_WhenNameNonUnique_ShouldTrow()
-        {
-            // arrange
-            var expectedException =
-                "The Venue name is not unique!";
-
-            // act
-            var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _venueService.InsertAsync(new Venue(0, "Second venue", "description of second venue", "address second venue", "+84845464")));
-
-            // assert
-            Assert.That(actualException.Message, Is.EqualTo(expectedException));
-        }
-
-        [Test]
         public async Task Insert_WhenInsertVenue_ShouldStateAdded()
         {
             // arrange
