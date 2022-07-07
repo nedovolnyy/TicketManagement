@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="$(MSBuildProjectName.Trim('MVC'))IntegrationTests" />
+    <InternalsVisibleTo Include="TicketManagement.IntegrationTests" />
   </ItemGroup>
 
   <ItemGroup>
