@@ -19,23 +19,23 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 throw new ValidationException("The field 'AreaId' of Seat is not allowed to be null!");
             }
-            else if (entity.Row == default)
+
+            if (entity.Row == default)
             {
                 throw new ValidationException("The field 'Row' of Seat is not allowed to be null!");
             }
-            else if (entity.Number == default)
+
+            if (entity.Number == default)
             {
                 throw new ValidationException("The field 'Number' of Seat is not allowed to be null!");
             }
-            else
+
+            var seatArray = await _seatRepository.GetAllByAreaId(entity.AreaId).ToListAsyncSafe();
+            foreach (var seat in seatArray)
             {
-                var seatArray = await _seatRepository.GetAllByAreaId(entity.AreaId).ToListAsyncSafe();
-                foreach (var seat in seatArray)
+                if (entity.Row == seat.Row && entity.Number == seat.Number)
                 {
-                    if (entity.Row == seat.Row && entity.Number == seat.Number)
-                    {
-                        throw new ValidationException("Row and number should be unique for area!");
-                    }
+                    throw new ValidationException("Row and number should be unique for area!");
                 }
             }
         }

@@ -63,22 +63,23 @@ namespace TicketManagement.BusinessLogic.Services
             {
                 throw new ValidationException("The field 'LayoutId' of Event is not allowed to be null!");
             }
-            else if (string.IsNullOrEmpty(entity.Name))
+
+            if (string.IsNullOrEmpty(entity.Name))
             {
                 throw new ValidationException("The field 'Name' of Event is not allowed to be empty!");
             }
-            else if (string.IsNullOrEmpty(entity.Description))
+
+            if (string.IsNullOrEmpty(entity.Description))
             {
                 throw new ValidationException("The field 'Description' of Event is not allowed to be empty!");
             }
-            else if (string.IsNullOrEmpty(entity.EventLogoImage))
+
+            if (string.IsNullOrEmpty(entity.EventLogoImage))
             {
                 throw new ValidationException("The field 'EventLogoImage' of Event is not allowed to be empty!");
             }
-            else
-            {
-                await EventValidate(entity);
-            }
+
+            await EventValidate(entity);
         }
     }
 }
