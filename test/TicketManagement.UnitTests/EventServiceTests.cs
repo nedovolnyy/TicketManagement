@@ -211,7 +211,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-19 00:50:00"), "image");
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.InsertAsync(It.IsAny<Event>())).ReturnsAsync(1);
+            eventService.Setup(x => x.InsertAsync(It.IsAny<Event>(), It.IsAny<decimal>())).ReturnsAsync(1);
 
             // act
             var actual = eventService.Object.InsertAsync(eventExpected);

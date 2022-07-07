@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -9,7 +10,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class EventAreaRepositoryTests
     {
-        private readonly IEventAreaRepository _eventAreaRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IEventAreaRepository>();
+        private readonly IEventAreaRepository _eventAreaRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventAreaRepository>();
 
         [Test]
         public async Task Insert_WhenInsertEventArea_ShouldStateAdded()

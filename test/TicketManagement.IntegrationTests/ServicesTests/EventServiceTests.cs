@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -11,7 +12,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class EventServiceTests
     {
-        private readonly IEventService _eventService = TestDatabaseFixture.Configuration.Container.GetInstance<IEventService>();
+        private readonly IEventService _eventService = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventService>();
 
         [Test]
         public async Task GetSeatsAvaibleCount_WhenId2_ShouldIn1()

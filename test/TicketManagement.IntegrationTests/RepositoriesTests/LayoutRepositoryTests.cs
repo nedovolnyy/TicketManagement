@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -9,7 +10,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class LayoutRepositoryTests
     {
-        private readonly ILayoutRepository _layoutRepository = TestDatabaseFixture.Configuration.Container.GetInstance<ILayoutRepository>();
+        private readonly ILayoutRepository _layoutRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<ILayoutRepository>();
 
         [Test]
         public async Task Insert_WhenInsertLayout_ShouldStateAdded()

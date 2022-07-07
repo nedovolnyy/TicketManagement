@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -10,7 +11,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class VenueServiceTests
     {
-        private readonly IVenueService _venueService = TestDatabaseFixture.Configuration.Container.GetInstance<IVenueService>();
+        private readonly IVenueService _venueService = TestDatabaseFixture.ServiceProvider.GetRequiredService<IVenueService>();
 
         [Test]
         public void Validate_WhenNameNonUnique_ShouldTrow()

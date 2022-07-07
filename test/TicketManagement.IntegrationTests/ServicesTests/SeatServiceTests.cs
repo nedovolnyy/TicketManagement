@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -9,7 +10,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class SeatServiceTests
     {
-        private readonly ISeatService _seatService = TestDatabaseFixture.Configuration.Container.GetInstance<ISeatService>();
+        private readonly ISeatService _seatService = TestDatabaseFixture.ServiceProvider.GetRequiredService<ISeatService>();
 
         [Test]
         public async Task Insert_WhenInsertSeat_ShouldStateAdded()

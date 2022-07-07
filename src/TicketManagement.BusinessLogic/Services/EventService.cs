@@ -14,7 +14,7 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        public virtual async Task<int> InsertAsync(IEvent evnt, decimal price)
+        public virtual async Task<int> InsertAsync(IEvent evnt, decimal price = decimal.Zero)
         {
             await ValidateAsync(evnt);
             return await _eventRepository.InsertAsync(evnt, price);

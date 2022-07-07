@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -9,7 +10,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class VenueRepositoryTests
     {
-        private readonly IVenueRepository _venueRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IVenueRepository>();
+        private readonly IVenueRepository _venueRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IVenueRepository>();
 
         [Test]
         public async Task Insert_WhenInsertVenue_ShouldStateAdded()

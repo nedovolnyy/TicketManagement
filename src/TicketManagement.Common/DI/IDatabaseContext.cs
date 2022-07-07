@@ -6,6 +6,7 @@ namespace TicketManagement.Common.DI
 {
     public interface IDatabaseContext
     {
+        string ConnectionString { get; }
         DbContext Instance { get; }
         DbSet<Area> Areas { get; set; }
         DbSet<EventArea> EventAreas { get; set; }

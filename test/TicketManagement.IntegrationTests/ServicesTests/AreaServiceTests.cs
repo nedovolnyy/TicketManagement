@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -9,7 +10,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class AreaServiceTests
     {
-        private readonly IAreaService _areaService = TestDatabaseFixture.Configuration.Container.GetInstance<IAreaService>();
+        private readonly IAreaService _areaService = TestDatabaseFixture.ServiceProvider.GetRequiredService<IAreaService>();
 
         [Test]
         public async Task Insert_WhenInsertArea_ShouldStateAdded()

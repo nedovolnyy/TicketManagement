@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -9,7 +10,7 @@ namespace TicketManagement.IntegrationTests
 {
     public class EventSeatRepositoryTests
     {
-        private readonly IEventSeatRepository _eventSeatRepository = TestDatabaseFixture.Configuration.Container.GetInstance<IEventSeatRepository>();
+        private readonly IEventSeatRepository _eventSeatRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventSeatRepository>();
 
         [Test]
         public async Task Insert_WhenInsertEventSeat_ShouldStateAdded()
@@ -18,7 +19,7 @@ namespace TicketManagement.IntegrationTests
             var expectedResponse = (int)EntityState.Added;
 
             // act
-            var actualResponse = await _eventSeatRepository.InsertAsync(new EventSeat(0, 2, 9, 1, 1));
+            var actualResponse = await _eventSeatRepository.InsertAsync(new EventSeat(0, 2, 9, 1, true));
 
             // assert
             Assert.AreEqual(expectedResponse, actualResponse);
@@ -28,7 +29,7 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateEventSeat_ShouldUpdatedEventSeat()
         {
             // arrange
-            var expectedEventSeat = new EventSeat(1, 1, 3, 3, 1);
+            var expectedEventSeat = new EventSeat(1, 1, 3, 3, true);
 
             // act
             await _eventSeatRepository.UpdateAsync(expectedEventSeat);

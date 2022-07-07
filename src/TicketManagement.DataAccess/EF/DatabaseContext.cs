@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Identity;
@@ -13,8 +11,10 @@ namespace TicketManagement.DataAccess.EF
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
         {
+            ConnectionString = Database.GetConnectionString();
         }
 
+        public string ConnectionString { get; private set; }
         public DbContext Instance => this;
         public virtual DbSet<Area> Areas { get; set; } = null!;
         public DbSet<Event> Events { get; set; } = null!;

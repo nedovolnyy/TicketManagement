@@ -8,7 +8,14 @@ namespace TicketManagement.Common.Entities
     [Table("Event")]
     public class Event : BaseEntity, IEvent
     {
-        public Event(int id, string name, DateTimeOffset eventTime, string description, int layoutId, DateTime eventEndTime, string eventLogoImage)
+        public Event(
+            int id,
+            string name,
+            DateTimeOffset eventTime,
+            string description,
+            int layoutId,
+            DateTime eventEndTime,
+            string eventLogoImage)
         {
             Id = id;
             Name = name;

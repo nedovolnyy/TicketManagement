@@ -22,19 +22,9 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override async Task<int> InsertAsync(IEvent evnt)
-        {
-            var paramName = new SqlParameter("@Name", evnt.Name);
-            var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);
-            var paramDescription = new SqlParameter("@Description", evnt.Description);
-            var paramLayoutId = new SqlParameter("@LayoutId", evnt.LayoutId);
-            var paramEventEndTime = new SqlParameter("@EventEndTime", evnt.EventEndTime);
-            var paramEventLogoImage = new SqlParameter("@EventLogoImage", evnt.EventLogoImage);
-            return await _databaseContext.Instance.Database
-                .ExecuteSqlRawAsync("spEventInsert @Name, @EventTime, @Description, @LayoutId, @EventEndTime, @EventLogoImage, @Price",
-                                               paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage, decimal.One);
-        }
+            => await InsertAsync(evnt);
 
-        public async Task<int> InsertAsync(IEvent evnt, decimal price)
+        public async Task<int> InsertAsync(IEvent evnt, decimal price = decimal.Zero)
         {
             var paramName = new SqlParameter("@Name", evnt.Name);
             var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);
