@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
@@ -10,79 +10,91 @@ namespace TicketManagement.IntegrationTests
 {
     public class SeatRepositoryTests
     {
-        private readonly ISeatRepository _seatRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<ISeatRepository>();
+        private static readonly ISeatRepository _seatRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<ISeatRepository>();
 
         [Test]
-        public async Task Insert_WhenInsertSeat_ShouldStateAdded()
+        public async Task Insert_WhenInsertSeat_ShouldBeEqualSameSeat()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Added;
+            var expectedSeat = new Seat(0, 1, 33, 39);
 
             // act
-            var actualResponse = await _seatRepository.InsertAsync(new Seat(0, 1, 1, 1));
+            await _seatRepository.InsertAsync(expectedSeat);
+            var actualDbSet = TestDatabaseFixture.DatabaseContext.Seats;
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            actualDbSet.Should().ContainEquivalentOf(expectedSeat, op => op.ExcludingMissingMembers());
         }
 
         [Test]
-        public async Task Update_WhenUpdateSeat_ShouldUpdatedSeat()
+        public async Task Update_WhenUpdateSeat_ShouldBeEqualSameSeat()
         {
             // arrange
-            var expectedSeat = new Seat(1, 1, 1, 1);
+            var upgradeSeat = new Seat(1, 2, 55, 68);
+            var expectedSeat = await _seatRepository.GetByIdAsync(upgradeSeat.Id);
 
             // act
             await _seatRepository.UpdateAsync(expectedSeat);
-            var actualResponse = await _seatRepository.GetByIdAsync(expectedSeat.Id);
+            var actualSeat = await _seatRepository.GetByIdAsync(upgradeSeat.Id);
 
             // assert
-            Assert.AreEqual(expectedSeat, actualResponse);
+            actualSeat.Should().BeEquivalentTo(expectedSeat);
         }
 
         [Test]
         public async Task Delete_WhenDeleteSeat_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Deleted;
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Seats.Count() - 1;
 
             // act
-            var actualResponse = await _seatRepository.DeleteAsync(2);
-
-            // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
-        }
-
-        [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
-        {
-            // act
+            await _seatRepository.DeleteAsync(2);
             var actualCount = _seatRepository.GetAll().Count();
 
             // assert
-            Assert.IsNotNull(actualCount);
+            actualCount.Should().Be(expectedCount);
+        }
+
+        [Test]
+        public void GetAll_WhenHaveEntry_ShouldSameSeats()
+        {
+            // arrange
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Seats;
+
+            // act
+            var actualCount = _seatRepository.GetAll();
+
+            // assert
+            actualCount.Should().BeEquivalentTo(expectedCount);
         }
 
         [Test]
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var actualSeatDbSet = TestDatabaseFixture.DatabaseContext.Seats;
 
             // act
-            var actualId = await _seatRepository.GetByIdAsync(1);
+            var expectedSeat = await _seatRepository.GetByIdAsync(1);
 
             // assert
-            Assert.AreEqual(expectedId, actualId.Id);
+            actualSeatDbSet.Should().ContainEquivalentOf(expectedSeat);
         }
 
         [Test]
-        public void GetAllByAreaId_WhenHaveEntry_ShouldNotNull()
+        public void GetAllByAreaId_WhenHaveEntry_ShouldContainThisSeats()
         {
+            // arrange
+            var actualSeats = TestDatabaseFixture.DatabaseContext.Seats.ToList();
+
             // act
-            var actualCount = _seatRepository.GetAllByAreaId(1).Count();
+            var expectedSeats = _seatRepository.GetAllByAreaId(1).ToList();
 
             // assert
-            Assert.IsNotNull(actualCount);
+            foreach (var seat in expectedSeats)
+            {
+                actualSeats.Should().ContainEquivalentOf(seat);
+            }
         }
     }
 }

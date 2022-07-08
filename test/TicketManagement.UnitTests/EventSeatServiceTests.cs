@@ -80,7 +80,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventSeatExpected = new EventSeat(1, 6, 6, 2, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.InsertAsync(It.IsAny<EventSeat>())).ReturnsAsync(1);
+            eventSeatService.Setup(x => x.InsertAsync(It.IsAny<EventSeat>()));
 
             // act
             var actual = eventSeatService.Object.InsertAsync(eventSeatExpected);
@@ -112,7 +112,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
+            eventSeatService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
 
             // act
             var actual = eventSeatService.Object.DeleteAsync(1);

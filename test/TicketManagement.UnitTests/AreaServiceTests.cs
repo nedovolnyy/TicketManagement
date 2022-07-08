@@ -120,7 +120,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.InsertAsync(It.IsAny<Area>())).ReturnsAsync(1);
+            areaService.Setup(x => x.InsertAsync(It.IsAny<Area>()));
 
             // act
             var actual = areaService.Object.InsertAsync(areaExpected);
@@ -152,7 +152,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var areaRepository = new Mock<IAreaRepository> { CallBase = true };
             var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
+            areaService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
 
             // act
             var actual = areaService.Object.DeleteAsync(1);

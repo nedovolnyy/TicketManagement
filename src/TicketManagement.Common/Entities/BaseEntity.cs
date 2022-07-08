@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TicketManagement.Common.DI;
 
 namespace TicketManagement.Common.Entities
 {
-    public class BaseEntity : IBaseEntity
+    public class BaseEntity
     {
         [Key]
         [Required]

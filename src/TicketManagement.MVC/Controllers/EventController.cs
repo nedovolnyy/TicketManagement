@@ -30,7 +30,7 @@ namespace TicketManagement.MVC.Controllers
         {
             if (eventId != default)
             {
-                IEnumerable<IEventArea> eventAreas = await _serviceProvider.GetRequiredService<IEventAreaService>().GetAllByEventIdAsync(eventId);
+                IEnumerable<EventArea> eventAreas = await _serviceProvider.GetRequiredService<IEventAreaService>().GetAllByEventIdAsync(eventId);
                 if (eventAreas != null)
                 {
                     return View(eventAreas);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,7 @@ namespace TicketManagement.IntegrationTests
     {
         private IServiceScope _scope;
         internal static IServiceProvider ServiceProvider { get; private set; }
-        internal IDatabaseContext DatabaseContext { get; private set; }
+        internal static IDatabaseContext DatabaseContext { get; private set; }
         private WebApplicationFactory<Program> WebApplicationFactory { get; set; } = null!;
         protected HttpClient Client { get; private set; } = null!;
 
@@ -37,6 +38,8 @@ namespace TicketManagement.IntegrationTests
             _scope = WebApplicationFactory.Services.CreateScope();
             ServiceProvider = _scope.ServiceProvider;
             DatabaseContext = ServiceProvider.GetRequiredService<IDatabaseContext>();
+
+            AssertionOptions.FormattingOptions.MaxLines = 500;
             await InitiallizeDatabase();
         }
 

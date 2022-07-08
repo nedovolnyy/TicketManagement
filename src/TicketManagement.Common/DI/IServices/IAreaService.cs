@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
-    public interface IAreaService : IService<IArea>
+    public interface IAreaService : IService<Area>
     {
-        Task ValidateAsync(IArea entity);
+        Task ValidateAsync(Area entity);
     }
 }

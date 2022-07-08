@@ -20,7 +20,7 @@ namespace TicketManagement.MVC.Controllers
 
         public async Task<IActionResult> CreateEvent()
         {
-            IEnumerable<IVenue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
+            IEnumerable<Venue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
             if (venues != null)
             {
                 return View(venues);
@@ -31,7 +31,7 @@ namespace TicketManagement.MVC.Controllers
 
         public async Task<IActionResult> EditEvent()
         {
-            IEnumerable<IVenue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
+            IEnumerable<Venue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
             if (venues is not null)
             {
                 return View(venues);
@@ -43,7 +43,7 @@ namespace TicketManagement.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> SelectLayouts(List<string> venuesId)
         {
-            List<ILayout> layouts = new List<ILayout>();
+            List<Layout> layouts = new List<Layout>();
             foreach (var venueId in venuesId)
             {
                 layouts.Add(await _serviceProvider.GetRequiredService<ILayoutService>().GetByIdAsync(int.Parse(venueId)));

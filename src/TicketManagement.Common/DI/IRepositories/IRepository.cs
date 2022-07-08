@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
     public interface IRepository<T>
-        where T : class, IBaseEntity
+        where T : BaseEntity
     {
         /// <summary>
         /// Base method for insert data.
         /// </summary>
         /// <param name="entity">Entity.</param>
-        Task<int> InsertAsync(T entity);
+        Task InsertAsync(T entity);
 
         /// <summary>
         /// Base method for update data.
@@ -23,19 +23,19 @@ namespace TicketManagement.Common.DI
         /// Base method for delete data.
         /// </summary>
         /// <param name="id">id.</param>
-        Task<int> DeleteAsync(int id);
+        Task DeleteAsync(int id);
 
         /// <summary>
         /// Base method for populate data by id.
         /// </summary>
         /// <param name="id">id.</param>
-        /// <returns><see cref="IBaseEntity"/>.</returns>
+        /// <returns><see cref="BaseEntity"/>.</returns>
         Task<T> GetByIdAsync(int id);
 
         /// <summary>
         /// Base method for populate all data.
         /// </summary>
-        /// <returns>List&lt;<see cref="IBaseEntity"/>&gt;.</returns>
+        /// <returns>List&lt;<see cref="BaseEntity"/>&gt;.</returns>
         IQueryable<T> GetAll();
     }
 }

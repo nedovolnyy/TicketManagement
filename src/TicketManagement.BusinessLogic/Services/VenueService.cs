@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using TicketManagement.Common.DI;
+using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class VenueService : BaseService<IVenue>, IVenueService
+    internal class VenueService : BaseService<Venue>, IVenueService
     {
         private readonly IVenueRepository _venueRepository;
         public VenueService(IVenueRepository venueRepository)
@@ -13,7 +14,7 @@ namespace TicketManagement.BusinessLogic.Services
             _venueRepository = venueRepository;
         }
 
-        public override async Task ValidateAsync(IVenue entity)
+        public override async Task ValidateAsync(Venue entity)
         {
             if (string.IsNullOrEmpty(entity.Name))
             {

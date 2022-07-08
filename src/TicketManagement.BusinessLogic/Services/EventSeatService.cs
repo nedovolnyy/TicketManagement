@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using TicketManagement.Common.DI;
+using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class EventSeatService : BaseService<IEventSeat>, IEventSeatService
+    internal class EventSeatService : BaseService<EventSeat>, IEventSeatService
     {
         private readonly IEventSeatRepository _eventSeatRepository;
         public EventSeatService(IEventSeatRepository eventSeatRepository)
@@ -15,18 +15,13 @@ namespace TicketManagement.BusinessLogic.Services
             _eventSeatRepository = eventSeatRepository;
         }
 
-        public async Task<int> ChangeEventSeatStatusAsync(int eventSeatId)
-        {
-            var eventSeat = await GetByIdAsync(eventSeatId);
-            eventSeat.State = !eventSeat.State;
-            await UpdateAsync(eventSeat);
-            return (int)EntityState.Modified;
-        }
+        public async Task ChangeEventSeatStatusAsync(int eventSeatId)
+            => await _eventSeatRepository.ChangeEventSeatStatusAsync(eventSeatId);
 
-        public virtual async Task<IEnumerable<IEventSeat>> GetAllByEventAreaIdAsync(int eventAreaId)
+        public virtual async Task<IEnumerable<EventSeat>> GetAllByEventAreaIdAsync(int eventAreaId)
             => await _eventSeatRepository.GetAllByEventAreaId(eventAreaId).ToListAsyncSafe();
 
-        public override async Task ValidateAsync(IEventSeat entity)
+        public override async Task ValidateAsync(EventSeat entity)
         {
             if (entity.EventAreaId == default)
             {

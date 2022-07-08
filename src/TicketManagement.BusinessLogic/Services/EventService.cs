@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TicketManagement.Common.DI;
+using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
 
 namespace TicketManagement.BusinessLogic.Services
 {
-    internal class EventService : BaseService<IEvent>, IEventService
+    internal class EventService : BaseService<Event>, IEventService
     {
         private readonly IEventRepository _eventRepository;
         public EventService(IEventRepository eventRepository)
@@ -14,18 +16,21 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        public virtual async Task<int> InsertAsync(IEvent evnt, decimal price = decimal.Zero)
+        public virtual async Task InsertAsync(Event evnt, decimal price = decimal.Zero)
         {
             await ValidateAsync(evnt);
-            return await _eventRepository.InsertAsync(evnt, price);
+            await _eventRepository.InsertAsync(evnt, price);
         }
+
+        public virtual async Task<IEnumerable<Event>> GetAllByLayoutIdAsync(int layoutId)
+            => await _eventRepository.GetAllByLayoutId(layoutId).ToListAsyncSafe();
 
         public virtual async Task<int> GetSeatsAvailableCountAsync(int id)
             => await _eventRepository.GetSeatsAvailableCountAsync(id);
         public virtual async Task<int> GetSeatsCountAsync(int layoutId)
             => await _eventRepository.GetSeatsCountAsync(layoutId);
 
-        private async Task EventValidate(IEvent entity)
+        private async Task EventValidate(Event entity)
         {
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
@@ -57,7 +62,7 @@ namespace TicketManagement.BusinessLogic.Services
             }
         }
 
-        public override async Task ValidateAsync(IEvent entity)
+        public override async Task ValidateAsync(Event entity)
         {
             if (entity.LayoutId == default)
             {

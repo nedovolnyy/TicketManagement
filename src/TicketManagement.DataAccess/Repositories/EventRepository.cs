@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
@@ -9,7 +8,7 @@ using TicketManagement.Common.Entities;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal class EventRepository : BaseRepository<IEvent>, IEventRepository
+    internal class EventRepository : BaseRepository<Event>, IEventRepository
     {
         private readonly IDatabaseContext _databaseContext;
         private readonly DbSet<Event> _dbSet;
@@ -21,10 +20,10 @@ namespace TicketManagement.DataAccess.Repositories
             _dbSet = _databaseContext.Events;
         }
 
-        public override async Task<int> InsertAsync(IEvent evnt)
+        public override async Task InsertAsync(Event evnt)
             => await InsertAsync(evnt);
 
-        public async Task<int> InsertAsync(IEvent evnt, decimal price = decimal.Zero)
+        public async Task InsertAsync(Event evnt, decimal price = decimal.Zero)
         {
             var paramName = new SqlParameter("@Name", evnt.Name);
             var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);
@@ -33,12 +32,12 @@ namespace TicketManagement.DataAccess.Repositories
             var paramEventEndTime = new SqlParameter("@EventEndTime", evnt.EventEndTime);
             var paramEventLogoImage = new SqlParameter("@EventLogoImage", evnt.EventLogoImage);
             var paramPrice = new SqlParameter("@Price", price);
-            return await _databaseContext.Instance.Database
+            await _databaseContext.Instance.Database
                 .ExecuteSqlRawAsync("spEventInsert @Name, @EventTime, @Description, @LayoutId, @EventEndTime, @EventLogoImage, @Price",
                                                paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage, paramPrice);
         }
 
-        public new async Task UpdateAsync(IEvent evnt)
+        public override async Task UpdateAsync(Event evnt)
         {
             var paramId = new SqlParameter("@Id", evnt.Id);
             var paramName = new SqlParameter("@Name", evnt.Name);
@@ -52,23 +51,23 @@ namespace TicketManagement.DataAccess.Repositories
                     paramId, paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage);
         }
 
-        public override async Task<int> DeleteAsync(int id)
+        public new async Task DeleteAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
-            return await _databaseContext.Instance.Database
+            await _databaseContext.Instance.Database
                 .ExecuteSqlRawAsync("spEventDelete @Id", paramId);
         }
 
-        public override async Task<IEvent> GetByIdAsync(int id)
+        public override async Task<Event> GetByIdAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
-            return (await _dbSet.FromSqlRaw("spEventGetById @Id", paramId).ToListAsync())[0];
+            return await _dbSet.FromSqlRaw("spEventGetById @Id", paramId).FirstAsync();
         }
 
-        public override IQueryable<IEvent> GetAll()
+        public override IQueryable<Event> GetAll()
             => _dbSet.FromSqlRaw("spEventGetAll").AsNoTracking();
 
-        public IQueryable<IEvent> GetAllByLayoutId(int layoutId)
+        public IQueryable<Event> GetAllByLayoutId(int layoutId)
         {
             var paramLayoutId = new SqlParameter("@LayoutId", layoutId);
             return _dbSet.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).AsNoTracking();

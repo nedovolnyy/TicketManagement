@@ -37,7 +37,7 @@ namespace TicketManagement.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(IEvent evnt)
+        public async Task<IActionResult> Create(Event evnt)
         {
             await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(evnt);
             return RedirectToAction("Index");

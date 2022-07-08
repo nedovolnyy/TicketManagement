@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
-    public interface IVenueService : IService<IVenue>
+    public interface IVenueService : IService<Venue>
     {
-        Task ValidateAsync(IVenue entity);
+        Task ValidateAsync(Venue entity);
     }
 }

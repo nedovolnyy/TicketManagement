@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
@@ -10,69 +10,75 @@ namespace TicketManagement.IntegrationTests
 {
     public class VenueRepositoryTests
     {
-        private readonly IVenueRepository _venueRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IVenueRepository>();
+        private static readonly IVenueRepository _venueRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IVenueRepository>();
 
         [Test]
-        public async Task Insert_WhenInsertVenue_ShouldStateAdded()
+        public async Task Insert_WhenInsertVenue_ShouldBeEqualSameVenue()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Added;
+            var expectedVenue = new Venue(0, "Seceond venfue", "description second venue", "address second venue", "+84845464");
 
             // act
-            var actualResponse = await _venueRepository.InsertAsync(new Venue(0, "Second venue", "description second venue", "address second venue", "+84845464"));
+            await _venueRepository.InsertAsync(expectedVenue);
+            var actualDbSet = TestDatabaseFixture.DatabaseContext.Venues;
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            actualDbSet.Should().ContainEquivalentOf(expectedVenue, op => op.ExcludingMissingMembers());
         }
 
         [Test]
-        public async Task Update_WhenUpdateVenue_ShouldUpdatedVenue()
+        public async Task Update_WhenUpdateVenue_ShouldBeEqualSameVenue()
         {
             // arrange
-            var expectedVenue = new Venue(1, "First venue", "description first venue", "address first venue", "+4988955568");
+            var upgradeVenue = new Venue(1, "Fjirst veejenue", "description first venue", "address first venue", "+4988955568");
+            var expectedVenue = await _venueRepository.GetByIdAsync(upgradeVenue.Id);
 
             // act
             await _venueRepository.UpdateAsync(expectedVenue);
-            var actualResponse = await _venueRepository.GetByIdAsync(expectedVenue.Id);
+            var actualVenue = await _venueRepository.GetByIdAsync(upgradeVenue.Id);
 
             // assert
-            Assert.AreEqual(expectedVenue, actualResponse);
+            actualVenue.Should().BeEquivalentTo(expectedVenue);
         }
 
         [Test]
         public async Task Delete_WhenDeleteVenue_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Deleted;
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Venues.Count() - 1;
 
             // act
-            var actualResponse = await _venueRepository.DeleteAsync(11);
-
-            // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
-        }
-
-        [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
-        {
-            // act
+            await _venueRepository.DeleteAsync(11);
             var actualCount = _venueRepository.GetAll().Count();
 
             // assert
-            Assert.IsNotNull(actualCount);
+            actualCount.Should().Be(expectedCount);
+        }
+
+        [Test]
+        public void GetAll_WhenHaveEntry_ShouldSameVenues()
+        {
+            // arrange
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Venues;
+
+            // act
+            var actualCount = _venueRepository.GetAll();
+
+            // assert
+            actualCount.Should().BeEquivalentTo(expectedCount);
         }
 
         [Test]
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 2;
+            var actualVenueDbSet = TestDatabaseFixture.DatabaseContext.Venues;
 
             // act
-            var actualId = await _venueRepository.GetByIdAsync(2);
+            var expectedVenue = await _venueRepository.GetByIdAsync(1);
 
             // assert
-            Assert.AreEqual(expectedId, actualId.Id);
+            actualVenueDbSet.Should().ContainEquivalentOf(expectedVenue);
         }
     }
 }

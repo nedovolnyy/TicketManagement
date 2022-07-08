@@ -1,17 +1,26 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
-    public interface IEventService : IService<IEvent>
+    public interface IEventService : IService<Event>
     {
         /// <summary>
         /// Special method for create Event.
         /// </summary>
         /// <param name="evnt">Entity.</param>
         /// <param name="price">Price.</param>
-        Task<int> InsertAsync(IEvent evnt, decimal price);
+        Task InsertAsync(Event evnt, decimal price);
 
-        Task ValidateAsync(IEvent entity);
+        Task ValidateAsync(Event entity);
+
+        /// <summary>
+        /// Method for populate data by layoutId.
+        /// </summary>
+        /// <param name="layoutId">layoutId.</param>
+        /// <returns>IEnumerable&lt;<see cref="Event"/>&gt;.</returns>
+        Task<IEnumerable<Event>> GetAllByLayoutIdAsync(int layoutId);
 
         /// <summary>
         /// Count available seats.

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
@@ -10,82 +10,91 @@ namespace TicketManagement.IntegrationTests
 {
     public class LayoutRepositoryTests
     {
-        private readonly ILayoutRepository _layoutRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<ILayoutRepository>();
+        private static readonly ILayoutRepository _layoutRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<ILayoutRepository>();
 
         [Test]
-        public async Task Insert_WhenInsertLayout_ShouldStateAdded()
+        public async Task Insert_WhenInsertLayout_ShouldBeEqualSameLayout()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Added;
+            var expectedLayout = new Layout(0, "Fir5t lajyout", 1, "description first layout");
 
             // act
-            var actualResponse = await _layoutRepository.InsertAsync(new Layout(0, "First layout", 1, "description first layout"));
+            await _layoutRepository.InsertAsync(expectedLayout);
+            var actualDbSet = TestDatabaseFixture.DatabaseContext.Layouts;
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            actualDbSet.Should().ContainEquivalentOf(expectedLayout, op => op.ExcludingMissingMembers());
         }
 
         [Test]
-        public async Task Update_WhenUpdateLayout_ShouldUpdatedLayout()
+        public async Task Update_WhenUpdateLayout_ShouldBeEqualSameLayout()
         {
             // arrange
-            var expectedLayout = new Layout(2, "Second layout", 2, "description second layout");
+            var upgradeLayout = new Layout(2, "Sec0nd lahyout", 2, "description second layout");
+            var expectedLayout = await _layoutRepository.GetByIdAsync(upgradeLayout.Id);
 
             // act
             await _layoutRepository.UpdateAsync(expectedLayout);
-            var actualResponse = await _layoutRepository.GetByIdAsync(expectedLayout.Id);
+            var actualLayout = await _layoutRepository.GetByIdAsync(upgradeLayout.Id);
 
             // assert
-            Assert.AreEqual(expectedLayout, actualResponse);
+            actualLayout.Should().BeEquivalentTo(expectedLayout);
         }
 
         [Test]
         public async Task Delete_WhenDeleteLayout_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Deleted;
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Layouts.Count() - 1;
 
             // act
-            var actualResponse = await _layoutRepository.DeleteAsync(7);
-
-            // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
-        }
-
-        [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
-        {
-            // act
+            await _layoutRepository.DeleteAsync(7);
             var actualCount = _layoutRepository.GetAll().Count();
 
             // assert
-            Assert.IsNotNull(actualCount);
+            actualCount.Should().Be(expectedCount);
+        }
+
+        [Test]
+        public void GetAll_WhenHaveEntry_ShouldSameLayouts()
+        {
+            // arrange
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Layouts;
+
+            // act
+            var actualCount = _layoutRepository.GetAll();
+
+            // assert
+            actualCount.Should().BeEquivalentTo(expectedCount);
         }
 
         [Test]
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var actualLayoutDbSet = TestDatabaseFixture.DatabaseContext.Layouts;
 
             // act
-            var actualId = await _layoutRepository.GetByIdAsync(1);
+            var expectedLayout = await _layoutRepository.GetByIdAsync(1);
 
             // assert
-            Assert.AreEqual(expectedId, actualId.Id);
+            actualLayoutDbSet.Should().ContainEquivalentOf(expectedLayout);
         }
 
         [Test]
-        public void GetAllByVenueId_WhenHave2Entry_Should2Entry()
+        public void GetAllByVenueId_WhenHaveEntry_ShouldContainThisLayouts()
         {
             // arrange
-            var expectedCount = 1;
+            var actualLayouts = TestDatabaseFixture.DatabaseContext.Layouts.ToList();
 
             // act
-            var actualCount = _layoutRepository.GetAllByVenueId(1).Count();
+            var expectedLayouts = _layoutRepository.GetAllByVenueId(1).ToList();
 
             // assert
-            Assert.AreEqual(expectedCount, actualCount);
+            foreach (var layout in expectedLayouts)
+            {
+                actualLayouts.Should().ContainEquivalentOf(layout);
+            }
         }
     }
 }

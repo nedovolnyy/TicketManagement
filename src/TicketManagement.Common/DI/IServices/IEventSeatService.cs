@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
-    public interface IEventSeatService : IService<IEventSeat>
+    public interface IEventSeatService : IService<EventSeat>
     {
-        Task ValidateAsync(IEventSeat entity);
+        Task ValidateAsync(EventSeat entity);
 
         /// <summary>
         /// Method for change EventSeat.Status after purchase seat.
         /// </summary>
         /// <param name="eventSeatId">eventAreaId.</param>
-        /// <returns><see cref="int"/>.</returns>
-        Task<int> ChangeEventSeatStatusAsync(int eventSeatId);
+        Task ChangeEventSeatStatusAsync(int eventSeatId);
 
         /// <summary>
         /// Count all EventSeat by EventAreaId.
         /// </summary>
         /// <param name="eventAreaId">eventAreaId.</param>
-        /// <returns>List&lt;<see cref="IEventSeat"/>&gt;.</returns>
-        Task<IEnumerable<IEventSeat>> GetAllByEventAreaIdAsync(int eventAreaId);
+        /// <returns>List&lt;<see cref="EventSeat"/>&gt;.</returns>
+        Task<IEnumerable<EventSeat>> GetAllByEventAreaIdAsync(int eventAreaId);
     }
 }

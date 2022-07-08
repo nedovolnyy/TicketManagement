@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TicketManagement.Common.DI;
 
 namespace TicketManagement.Common.Entities
 {
     [Table("Layout")]
-    public class Layout : BaseEntity, ILayout
+    public class Layout : BaseEntity
     {
         public Layout(int id, string name, int venueId, string description)
         {

@@ -102,7 +102,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var seatExpected = new Seat(3, 2, 1, 6);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.InsertAsync(It.IsAny<Seat>())).ReturnsAsync(1);
+            seatService.Setup(x => x.InsertAsync(It.IsAny<Seat>()));
 
             // act
             var actual = seatService.Object.InsertAsync(seatExpected);
@@ -134,7 +134,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
+            seatService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
 
             // act
             var actual = seatService.Object.DeleteAsync(1);

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TicketManagement.Common.DI;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     internal abstract class BaseService<T> : IService<T>
-        where T : class, IBaseEntity
+        where T : BaseEntity
     {
         private readonly IRepository<T> _entityRepository;
 
@@ -14,10 +15,10 @@ namespace TicketManagement.BusinessLogic.Services
             _entityRepository = entityRepository;
         }
 
-        public virtual async Task<int> InsertAsync(T entity)
+        public virtual async Task InsertAsync(T entity)
         {
             await ValidateAsync(entity);
-            return await _entityRepository.InsertAsync(entity);
+            await _entityRepository.InsertAsync(entity);
         }
 
         public virtual async Task UpdateAsync(T entity)
@@ -26,7 +27,7 @@ namespace TicketManagement.BusinessLogic.Services
             await _entityRepository.UpdateAsync(entity);
         }
 
-        public virtual async Task<int> DeleteAsync(int id) =>
+        public virtual async Task DeleteAsync(int id) =>
             await _entityRepository.DeleteAsync(id);
         public virtual async Task<T> GetByIdAsync(int id) =>
             await _entityRepository.GetByIdAsync(id);

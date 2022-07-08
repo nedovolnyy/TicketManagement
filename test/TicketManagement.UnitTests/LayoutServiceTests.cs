@@ -102,7 +102,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.InsertAsync(It.IsAny<Layout>())).ReturnsAsync(1);
+            layoutService.Setup(x => x.InsertAsync(It.IsAny<Layout>()));
 
             // act
             var actual = layoutService.Object.InsertAsync(layoutExpected);
@@ -134,7 +134,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
+            layoutService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
 
             // act
             var actual = layoutService.Object.DeleteAsync(1);

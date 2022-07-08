@@ -116,7 +116,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventAreaExpected = new EventArea(3, 2, "First eventArea of second layout", 1, 7, 4.3m);
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.InsertAsync(It.IsAny<EventArea>())).ReturnsAsync(1);
+            eventAreaService.Setup(x => x.InsertAsync(It.IsAny<EventArea>()));
 
             // act
             var actual = eventAreaService.Object.InsertAsync(eventAreaExpected);
@@ -148,7 +148,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
             var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-            eventAreaService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
+            eventAreaService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
 
             // act
             var actual = eventAreaService.Object.DeleteAsync(1);

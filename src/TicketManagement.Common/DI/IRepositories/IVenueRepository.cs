@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
-    public interface IVenueRepository : IRepository<IVenue>
+    public interface IVenueRepository : IRepository<Venue>
     {
         /// <summary>
         /// Method for populate data by name.

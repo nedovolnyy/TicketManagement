@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
@@ -11,103 +11,91 @@ namespace TicketManagement.IntegrationTests
 {
     public class EventRepositoryTests
     {
-        private readonly IEventRepository _evntRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventRepository>();
+        private static readonly IEventRepository _evntRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventRepository>();
 
         [Test]
-        public async Task GetCountEmptySeats_WhenId2_ShouldNotNull()
-        {
-            // act
-            var actualResponse = await _evntRepository.GetSeatsAvailableCountAsync(2);
-
-            // assert
-            Assert.NotNull(actualResponse);
-        }
-
-        [Test]
-        public async Task Insert_WhenInsertEvent_ShouldNotNull()
-        {
-            // act
-            var actualResponse =
-                await _evntRepository.InsertAsync(
-                    new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00"), "image"));
-
-            // assert
-            Assert.NotNull(actualResponse);
-        }
-
-        [Test]
-        public async Task Update_WhenUpdateEvent_ShouldUpdatedEvent()
+        public async Task Insert_WhenInsertEvent_ShouldBeEqualSameEvent()
         {
             // arrange
-            var expectedEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
-            string expectedString =
-                expectedEvent.Id.ToString() +
-                expectedEvent.Name +
-                expectedEvent.EventTime.ToString() +
-                expectedEvent.Description +
-                expectedEvent.LayoutId.ToString() +
-                expectedEvent.EventEndTime.ToString();
+            var expectedEvent = new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00"), "image");
+
+            // act
+            await _evntRepository.InsertAsync(expectedEvent);
+            var actualDbSet = TestDatabaseFixture.DatabaseContext.Events;
+
+            // assert
+            actualDbSet.Should().ContainEquivalentOf(expectedEvent, op => op.ExcludingMissingMembers());
+        }
+
+        [Test]
+        public async Task Update_WhenUpdateEvent_ShouldBeEqualSameEvent()
+        {
+            // arrange
+            var upgradeEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
+            var expectedEvent = await _evntRepository.GetByIdAsync(upgradeEvent.Id);
 
             // act
             await _evntRepository.UpdateAsync(expectedEvent);
-            var actualResponse = await _evntRepository.GetByIdAsync(expectedEvent.Id);
-
-            string actualString =
-                actualResponse.Id.ToString() +
-                actualResponse.Name +
-                actualResponse.EventTime.ToString() +
-                actualResponse.Description +
-                actualResponse.LayoutId.ToString() +
-                actualResponse.EventEndTime.ToString();
+            var actualEvent = await _evntRepository.GetByIdAsync(upgradeEvent.Id);
 
             // assert
-            Assert.AreEqual(expectedString, actualString);
+            actualEvent.Should().BeEquivalentTo(expectedEvent);
         }
 
         [Test]
-        public async Task Delete_WhenDeleteSeat_ShouldNotNull()
+        public async Task Delete_WhenDeleteEvent_ShouldStateDeleted()
         {
+            // arrange
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Events.Count();
+
             // act
-            var actualResponse = await _evntRepository.DeleteAsync(10);
+            await _evntRepository.DeleteAsync(10);
+            var actualCount = _evntRepository.GetAll().Count();
 
             // assert
-            Assert.NotNull(actualResponse);
+            actualCount.Should().Be(expectedCount);
         }
 
         [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
+        public void GetAll_WhenHaveEntry_ShouldSameEvents()
         {
+            // arrange
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Events;
+
             // act
-            var actualCount = _evntRepository.GetAll().AsEnumerable().Count();
+            var actualCount = _evntRepository.GetAll();
 
             // assert
-            Assert.IsNotNull(actualCount);
+            actualCount.Should().BeEquivalentTo(expectedCount);
         }
 
         [Test]
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var actualEventDbSet = TestDatabaseFixture.DatabaseContext.Events;
 
             // act
-            var actualId = await _evntRepository.GetByIdAsync(1);
+            var expectedEvent = await _evntRepository.GetByIdAsync(1);
 
             // assert
-            Assert.AreEqual(expectedId, actualId.Id);
+            actualEventDbSet.Should().ContainEquivalentOf(expectedEvent);
         }
 
         [Test]
-        public void GetAllByLayoutId_WhenHaveEntry_ShouldNotNull()
+        public void GetAllByLayoutId_WhenHaveEntry_ShouldContainThisEvents()
         {
             // arrange
-            var expectedCount = 1;
+            var actualEvents = TestDatabaseFixture.DatabaseContext.Events.ToList();
 
             // act
-            var actualCount = _evntRepository.GetAllByLayoutId(1).AsEnumerable().Count();
+            var expectedEvents = _evntRepository.GetAllByLayoutId(1).ToList();
 
             // assert
-            Assert.AreEqual(expectedCount, actualCount);
+            foreach (var evnt in expectedEvents)
+            {
+                actualEvents.Should().ContainEquivalentOf(evnt);
+            }
         }
     }
 }

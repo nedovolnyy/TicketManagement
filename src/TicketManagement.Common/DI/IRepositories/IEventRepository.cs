@@ -1,23 +1,24 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using TicketManagement.Common.Entities;
 
 namespace TicketManagement.Common.DI
 {
-    public interface IEventRepository : IRepository<IEvent>
+    public interface IEventRepository : IRepository<Event>
     {
         /// <summary>
         /// Special method for create Event.
         /// </summary>
         /// <param name="evnt">Entity.</param>
         /// <param name="price">Price.</param>
-        Task<int> InsertAsync(IEvent evnt, decimal price);
+        Task InsertAsync(Event evnt, decimal price);
 
         /// <summary>
         /// Method for populate data by layoutId.
         /// </summary>
         /// <param name="layoutId">layoutId.</param>
-        /// <returns>IQueryable&lt;<see cref="IEvent"/>&gt;.</returns>
-        IQueryable<IEvent> GetAllByLayoutId(int layoutId);
+        /// <returns>IQueryable&lt;<see cref="Event"/>&gt;.</returns>
+        IQueryable<Event> GetAllByLayoutId(int layoutId);
 
         /// <summary>
         /// Count available seats.

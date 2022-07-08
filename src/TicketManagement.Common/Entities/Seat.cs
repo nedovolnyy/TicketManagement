@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TicketManagement.Common.DI;
 
 namespace TicketManagement.Common.Entities
 {
     [Table("Seat")]
-    public class Seat : BaseEntity, ISeat
+    public class Seat : BaseEntity
     {
         public Seat(int id, int areaId, int row, int number)
         {

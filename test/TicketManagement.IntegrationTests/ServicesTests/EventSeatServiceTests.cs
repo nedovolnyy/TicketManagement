@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
@@ -10,69 +10,91 @@ namespace TicketManagement.IntegrationTests
 {
     public class EventSeatServiceTests
     {
-        private readonly IEventSeatService _eventSeatService = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventSeatService>();
+        private static readonly IEventSeatService _eventSeatService = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventSeatService>();
 
         [Test]
-        public async Task Insert_WhenInsertEventSeat_ShouldStateAdded()
+        public async Task Insert_WhenInsertEventSeat_ShouldBeEqualSameEventSeat()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Added;
+            var expectedEventSeat = new EventSeat(0, 3, 9, 1, true);
 
             // act
-            var actualResponse = await _eventSeatService.InsertAsync(new EventSeat(0, 3, 9, 1, true));
+            await _eventSeatService.InsertAsync(expectedEventSeat);
+            var actualDbSet = TestDatabaseFixture.DatabaseContext.EventSeats;
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            actualDbSet.Should().ContainEquivalentOf(expectedEventSeat, op => op.ExcludingMissingMembers());
         }
 
         [Test]
-        public async Task Update_WhenUpdateEventSeat_ShouldUpdatedEventSeat()
+        public async Task Update_WhenUpdateEventSeat_ShouldBeEqualSameEventSeat()
         {
             // arrange
-            var expectedEventSeat = new EventSeat(4, 1, 3, 3, true);
+            var upgradeEventSeat = new EventSeat(4, 1, 3, 3, true);
+            var expectedEventSeat = await _eventSeatService.GetByIdAsync(upgradeEventSeat.Id);
 
             // act
             await _eventSeatService.UpdateAsync(expectedEventSeat);
-            var actualResponse = await _eventSeatService.GetByIdAsync(expectedEventSeat.Id);
+            var actualEventSeat = await _eventSeatService.GetByIdAsync(upgradeEventSeat.Id);
 
             // assert
-            Assert.AreEqual(expectedEventSeat, actualResponse);
+            actualEventSeat.Should().BeEquivalentTo(expectedEventSeat);
         }
 
         [Test]
         public async Task Delete_WhenDeleteEventSeat_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Deleted;
+            var expectedCount = TestDatabaseFixture.DatabaseContext.EventSeats.Count() - 1;
 
             // act
-            var actualResponse = await _eventSeatService.DeleteAsync(3);
-
-            // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
-        }
-
-        [Test]
-        public async Task GetAll_WhenHaveEntry_ShouldNotNull()
-        {
-            // act
+            await _eventSeatService.DeleteAsync(3);
             var actualCount = (await _eventSeatService.GetAllAsync()).Count();
 
             // assert
-            Assert.IsNotNull(actualCount);
+            actualCount.Should().Be(expectedCount);
+        }
+
+        [Test]
+        public async Task GetAll_WhenHaveEntry_ShouldSameEventSeats()
+        {
+            // arrange
+            var expectedCount = TestDatabaseFixture.DatabaseContext.EventSeats;
+
+            // act
+            var actualCount = await _eventSeatService.GetAllAsync();
+
+            // assert
+            actualCount.Should().BeEquivalentTo(expectedCount);
         }
 
         [Test]
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var actualEventSeatDbSet = TestDatabaseFixture.DatabaseContext.EventSeats;
 
             // act
-            var actualId = await _eventSeatService.GetByIdAsync(1);
+            var expectedEventSeat = await _eventSeatService.GetByIdAsync(1);
 
             // assert
-            Assert.AreEqual(expectedId, actualId.Id);
+            actualEventSeatDbSet.Should().ContainEquivalentOf(expectedEventSeat);
+        }
+
+        [Test]
+        public async Task GetAllByEventAreaId_WhenHaveEntry_ShouldContainThisEventSeats()
+        {
+            // arrange
+            var actualEventSeats = TestDatabaseFixture.DatabaseContext.EventSeats.ToList();
+
+            // act
+            var expectedEventSeats = await _eventSeatService.GetAllByEventAreaIdAsync(1);
+
+            // assert
+            foreach (var eventSeat in expectedEventSeats)
+            {
+                actualEventSeats.Should().ContainEquivalentOf(eventSeat);
+            }
         }
     }
 }

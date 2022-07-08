@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using TicketManagement.Common.DI
+@using TicketManagement.Common.Entities
 
 @inject IViewLocalizer Localizer
 
-@model IEnumerable<ILayout>
+@model IEnumerable<Layout>
 
 @{
     ViewData["Title"] = Localizer["Select layout"];

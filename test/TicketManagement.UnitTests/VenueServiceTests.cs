@@ -101,7 +101,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueExpected = new Venue(3, "Second venue", "description second venue", "address second venue", "+84845464");
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
-            venueService.Setup(x => x.InsertAsync(It.IsAny<Venue>())).ReturnsAsync(1);
+            venueService.Setup(x => x.InsertAsync(It.IsAny<Venue>()));
 
             // act
             var actual = venueService.Object.InsertAsync(venueExpected);
@@ -133,7 +133,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var venueRepository = new Mock<IVenueRepository> { CallBase = true };
             var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
-            venueService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
+            venueService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
 
             // act
             var actual = venueService.Object.DeleteAsync(1);

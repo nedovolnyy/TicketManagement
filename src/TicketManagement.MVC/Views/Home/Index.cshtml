@@ -1,13 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TicketManagement.Common.DI
+@using TicketManagement.Common.Entities
 @using TicketManagement.MVC.Helpers
 
 @inject IAuthorizationService AuthorizationService
 @inject IServiceProvider ServiceProvider
 @inject IViewLocalizer Localizer
 
-@model IEnumerable<TicketManagement.Common.DI.IEvent>
+@model IEnumerable<Event>
 
 @{
     ViewBag.Title = @Localizer["Home Page"];

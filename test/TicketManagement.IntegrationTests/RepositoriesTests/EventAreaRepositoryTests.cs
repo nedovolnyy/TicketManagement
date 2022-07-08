@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
@@ -10,69 +10,75 @@ namespace TicketManagement.IntegrationTests
 {
     public class EventAreaRepositoryTests
     {
-        private readonly IEventAreaRepository _eventAreaRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventAreaRepository>();
+        private static readonly IEventAreaRepository _eventAreaRepository = TestDatabaseFixture.ServiceProvider.GetRequiredService<IEventAreaRepository>();
 
         [Test]
-        public async Task Insert_WhenInsertEventArea_ShouldStateAdded()
+        public async Task Insert_WhenInsertEventArea_ShouldBeEqualSameEventArea()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Added;
+            var expectedEventArea = new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m);
 
             // act
-            var actualResponse = await _eventAreaRepository.InsertAsync(new EventArea(0, 2, "Cinema Hall #1", 2, 1, 8.20m));
+            await _eventAreaRepository.InsertAsync(expectedEventArea);
+            var actualDbSet = TestDatabaseFixture.DatabaseContext.EventAreas;
 
             // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
+            actualDbSet.Should().ContainEquivalentOf(expectedEventArea, op => op.ExcludingMissingMembers());
         }
 
         [Test]
-        public async Task Update_WhenUpdateEventArea_ShouldUpdatedEventArea()
+        public async Task Update_WhenUpdateEventArea_ShouldBeEqualSameEventArea()
         {
             // arrange
-            var expectedEventArea = new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m);
+            var upgradeEventArea = new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m);
+            var expectedEventArea = await _eventAreaRepository.GetByIdAsync(upgradeEventArea.Id);
 
             // act
             await _eventAreaRepository.UpdateAsync(expectedEventArea);
-            var actualResponse = await _eventAreaRepository.GetByIdAsync(expectedEventArea.Id);
+            var actualEventArea = await _eventAreaRepository.GetByIdAsync(upgradeEventArea.Id);
 
             // assert
-            Assert.AreEqual(expectedEventArea, actualResponse);
+            actualEventArea.Should().BeEquivalentTo(expectedEventArea);
         }
 
         [Test]
         public async Task Delete_WhenDeleteEventArea_ShouldStateDeleted()
         {
             // arrange
-            var expectedResponse = (int)EntityState.Deleted;
+            var expectedCount = TestDatabaseFixture.DatabaseContext.EventAreas.Count() - 1;
 
             // act
-            var actualResponse = await _eventAreaRepository.DeleteAsync(9);
-
-            // assert
-            Assert.AreEqual(expectedResponse, actualResponse);
-        }
-
-        [Test]
-        public void GetAll_WhenHaveEntry_ShouldNotNull()
-        {
-            // act
+            await _eventAreaRepository.DeleteAsync(9);
             var actualCount = _eventAreaRepository.GetAll().Count();
 
             // assert
-            Assert.IsNotNull(actualCount);
+            actualCount.Should().Be(expectedCount);
+        }
+
+        [Test]
+        public void GetAll_WhenHaveEntry_ShouldSameEventAreas()
+        {
+            // arrange
+            var expectedCount = TestDatabaseFixture.DatabaseContext.EventAreas;
+
+            // act
+            var actualCount = _eventAreaRepository.GetAll();
+
+            // assert
+            actualCount.Should().BeEquivalentTo(expectedCount);
         }
 
         [Test]
         public async Task GetById_WhenHaveIdEntry_ShouldEntryWithThisId()
         {
             // arrange
-            var expectedId = 1;
+            var actualEventAreaDbSet = TestDatabaseFixture.DatabaseContext.EventAreas;
 
             // act
-            var actualId = await _eventAreaRepository.GetByIdAsync(1);
+            var expectedEventArea = await _eventAreaRepository.GetByIdAsync(1);
 
             // assert
-            Assert.AreEqual(expectedId, actualId.Id);
+            actualEventAreaDbSet.Should().ContainEquivalentOf(expectedEventArea);
         }
     }
 }

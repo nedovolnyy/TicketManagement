@@ -154,7 +154,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
                 "EventEndTime cannot be later than EventTime!";
             var evntExpected = new Event(2, "Kitchegrgn Serie", DateTimeOffset.Parse("2023-01-01 00:50:00"), "Kitschertrn Serie", 2, DateTime.Parse("2023-01-01 00:45:00"), "image");
             var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.InsertAsync(evntExpected)).ReturnsAsync(1);
+            evntRepository.Setup(x => x.InsertAsync(evntExpected));
             var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
@@ -211,7 +211,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-19 00:50:00"), "image");
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.InsertAsync(It.IsAny<Event>(), It.IsAny<decimal>())).ReturnsAsync(1);
+            eventService.Setup(x => x.InsertAsync(It.IsAny<Event>(), It.IsAny<decimal>()));
 
             // act
             var actual = eventService.Object.InsertAsync(eventExpected);
@@ -244,7 +244,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             // arrange
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-            eventService.Setup(x => x.DeleteAsync(It.IsAny<int>())).ReturnsAsync(1);
+            eventService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
 
             // act
             var actual = eventService.Object.DeleteAsync(1);
