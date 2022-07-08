@@ -20,7 +20,7 @@ namespace TicketManagement.MVC.Helpers
                     DateTimeFormatInfo.CurrentInfo.ShortTimePattern + " " + DateTimeFormatInfo.CurrentInfo.ShortDatePattern));
             }
 
-            throw new ValidationException("Haven't 'TimeZone' cookie.");
+            return new HtmlString(string.Empty);
         }
 
         public static void SaveUserCookies(HttpResponse response, User user)
