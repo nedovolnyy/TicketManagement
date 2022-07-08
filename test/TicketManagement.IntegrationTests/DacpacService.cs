@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.SqlServer.Dac;
+﻿using Microsoft.SqlServer.Dac;
 
 namespace TicketManagement.IntegrationTests
 {

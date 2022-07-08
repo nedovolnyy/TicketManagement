@@ -17,26 +17,26 @@ namespace TicketManagement.IntegrationTests
         public async Task Insert_WhenInsertEvent_ShouldBeEqualSameEvent()
         {
             // arrange
-            var expectedEvent = new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("2023-07-03 00:35:00"), "Kitchertrn Serie", 2, DateTime.Parse("2023-07-03 00:50:00"), "image");
+            var expectedEvent = new Event(0, "Kitchegerrthrgn Serie", DateTimeOffset.Parse("2023-07-03 00:35:00"), "Kitchertrn Serie", 5, DateTime.Parse("2023-07-03 00:50:00"), "image");
 
             // act
             await _evntService.InsertAsync(expectedEvent);
             var actualDbSet = TestDatabaseFixture.DatabaseContext.Events;
 
             // assert
-            actualDbSet.Should().ContainEquivalentOf(expectedEvent, op => op.ExcludingMissingMembers().ComparingByMembers<Event>());
+            actualDbSet.Should().Contain(e => (e.EventTime == expectedEvent.EventTime) && (e.LayoutId == expectedEvent.LayoutId))
+                .Which.Should().BeEquivalentTo(expectedEvent, opt => opt.Excluding(a => a.Path == "Id"));
         }
 
         [Test]
         public async Task Update_WhenUpdateEvent_ShouldBeEqualSameEvent()
         {
             // arrange
-            var upgradeEvent = new Event(9, "StanegegerfgferThings Serie", DateTimeOffset.Parse("2023-11-06 00:45:00"), "Stanerger Thinegs Serie", 9, DateTime.Parse("2023-11-06 06:50:00"), "image");
-            var expectedEvent = await _evntService.GetByIdAsync(upgradeEvent.Id);
+            var expectedEvent = new Event(9, "StanegegerfgferThings Serie", DateTimeOffset.Parse("2023-11-06 00:45:00"), "Stanerger Thinegs Serie", 9, DateTime.Parse("2023-11-06 06:50:00"), "image");
 
             // act
             await _evntService.UpdateAsync(expectedEvent);
-            var actualEvent = await _evntService.GetByIdAsync(upgradeEvent.Id);
+            var actualEvent = await _evntService.GetByIdAsync(expectedEvent.Id);
 
             // assert
             actualEvent.Should().BeEquivalentTo(expectedEvent);

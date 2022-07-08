@@ -30,12 +30,11 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateLayout_ShouldBeEqualSameLayout()
         {
             // arrange
-            var upgradeLayout = new Layout(2, "Sec0nd lahyout", 2, "description second layout");
-            var expectedLayout = await _layoutRepository.GetByIdAsync(upgradeLayout.Id);
+            var expectedLayout = new Layout(2, "Sec0nd lahyout", 2, "description second layout");
 
             // act
             await _layoutRepository.UpdateAsync(expectedLayout);
-            var actualLayout = await _layoutRepository.GetByIdAsync(upgradeLayout.Id);
+            var actualLayout = await _layoutRepository.GetByIdAsync(expectedLayout.Id);
 
             // assert
             actualLayout.Should().BeEquivalentTo(expectedLayout);

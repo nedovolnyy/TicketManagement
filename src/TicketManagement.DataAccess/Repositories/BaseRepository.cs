@@ -11,6 +11,7 @@ namespace TicketManagement.DataAccess.Repositories
     {
         private readonly IDatabaseContext _databaseContext;
         private readonly DbSet<T> _dbSet;
+
         protected BaseRepository(IDatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;

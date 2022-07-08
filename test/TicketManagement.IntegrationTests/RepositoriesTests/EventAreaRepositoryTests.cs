@@ -30,12 +30,11 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateEventArea_ShouldBeEqualSameEventArea()
         {
             // arrange
-            var upgradeEventArea = new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m);
-            var expectedEventArea = await _eventAreaRepository.GetByIdAsync(upgradeEventArea.Id);
+            var expectedEventArea = new EventArea(1, 1, "Cinema Hall #2", 2, 1, 5.20m);
 
             // act
             await _eventAreaRepository.UpdateAsync(expectedEventArea);
-            var actualEventArea = await _eventAreaRepository.GetByIdAsync(upgradeEventArea.Id);
+            var actualEventArea = await _eventAreaRepository.GetByIdAsync(expectedEventArea.Id);
 
             // assert
             actualEventArea.Should().BeEquivalentTo(expectedEventArea);

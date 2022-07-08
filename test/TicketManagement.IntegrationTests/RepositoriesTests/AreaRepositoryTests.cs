@@ -30,12 +30,11 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateArea_ShouldBeEqualSameArea()
         {
             // arrange
-            var upgradeArea = new Area(1, 1, "Firs456547t etter of 3ett layout", 1, 7);
-            var expectedArea = await _areaRepository.GetByIdAsync(upgradeArea.Id);
+            var expectedArea = new Area(1, 1, "Firs456547t etter of 3ett layout", 1, 7);
 
             // act
             await _areaRepository.UpdateAsync(expectedArea);
-            var actualArea = await _areaRepository.GetByIdAsync(upgradeArea.Id);
+            var actualArea = await _areaRepository.GetByIdAsync(expectedArea.Id);
 
             // assert
             actualArea.Should().BeEquivalentTo(expectedArea);

@@ -61,16 +61,16 @@ namespace TicketManagement.DataAccess.Repositories
         public override async Task<Event> GetByIdAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
-            return await _dbSet.FromSqlRaw("spEventGetById @Id", paramId).FirstAsync();
+            return (await _dbSet.FromSqlRaw("spEventGetById @Id", paramId).ToListAsyncSafe())[0];
         }
 
         public override IQueryable<Event> GetAll()
-            => _dbSet.FromSqlRaw("spEventGetAll").AsNoTracking();
+            => _dbSet.FromSqlRaw("spEventGetAll").AsNoTracking().IgnoreQueryFilters();
 
         public IQueryable<Event> GetAllByLayoutId(int layoutId)
         {
             var paramLayoutId = new SqlParameter("@LayoutId", layoutId);
-            return _dbSet.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).AsNoTracking();
+            return _dbSet.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).AsNoTracking().IgnoreQueryFilters();
         }
 
         public async Task<int> GetSeatsAvailableCountAsync(int id)

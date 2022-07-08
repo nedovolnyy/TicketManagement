@@ -30,12 +30,11 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateVenue_ShouldBeEqualSameVenue()
         {
             // arrange
-            var upgradeVenue = new Venue(1, "Fjirst veejenue", "description first venue", "address first venue", "+4988955568");
-            var expectedVenue = await _venueRepository.GetByIdAsync(upgradeVenue.Id);
+            var expectedVenue = new Venue(1, "Fjirst veejenue", "description first venue", "address first venue", "+4988955568");
 
             // act
             await _venueRepository.UpdateAsync(expectedVenue);
-            var actualVenue = await _venueRepository.GetByIdAsync(upgradeVenue.Id);
+            var actualVenue = await _venueRepository.GetByIdAsync(expectedVenue.Id);
 
             // assert
             actualVenue.Should().BeEquivalentTo(expectedVenue);

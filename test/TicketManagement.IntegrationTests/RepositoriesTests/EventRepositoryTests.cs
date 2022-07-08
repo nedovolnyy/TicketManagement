@@ -24,19 +24,19 @@ namespace TicketManagement.IntegrationTests
             var actualDbSet = TestDatabaseFixture.DatabaseContext.Events;
 
             // assert
-            actualDbSet.Should().ContainEquivalentOf(expectedEvent, op => op.ExcludingMissingMembers());
+            actualDbSet.Should().Contain(e => (e.EventTime == expectedEvent.EventTime) && (e.LayoutId == expectedEvent.LayoutId))
+                .Which.Should().BeEquivalentTo(expectedEvent, opt => opt.Excluding(a => a.Path == "Id"));
         }
 
         [Test]
         public async Task Update_WhenUpdateEvent_ShouldBeEqualSameEvent()
         {
             // arrange
-            var upgradeEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
-            var expectedEvent = await _evntRepository.GetByIdAsync(upgradeEvent.Id);
+            var expectedEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
 
             // act
             await _evntRepository.UpdateAsync(expectedEvent);
-            var actualEvent = await _evntRepository.GetByIdAsync(upgradeEvent.Id);
+            var actualEvent = await _evntRepository.GetByIdAsync(expectedEvent.Id);
 
             // assert
             actualEvent.Should().BeEquivalentTo(expectedEvent);
@@ -46,11 +46,11 @@ namespace TicketManagement.IntegrationTests
         public async Task Delete_WhenDeleteEvent_ShouldStateDeleted()
         {
             // arrange
-            var expectedCount = TestDatabaseFixture.DatabaseContext.Events.Count();
+            var expectedCount = TestDatabaseFixture.DatabaseContext.Events.Count() - 1;
 
             // act
             await _evntRepository.DeleteAsync(10);
-            var actualCount = _evntRepository.GetAll().Count();
+            var actualCount = (await _evntRepository.GetAll().ToListAsyncSafe()).Count;
 
             // assert
             actualCount.Should().Be(expectedCount);

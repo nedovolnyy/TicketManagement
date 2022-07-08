@@ -30,12 +30,11 @@ namespace TicketManagement.IntegrationTests
         public async Task Update_WhenUpdateSeat_ShouldBeEqualSameSeat()
         {
             // arrange
-            var upgradeSeat = new Seat(1, 2, 55, 68);
-            var expectedSeat = await _seatRepository.GetByIdAsync(upgradeSeat.Id);
+            var expectedSeat = new Seat(1, 2, 55, 68);
 
             // act
             await _seatRepository.UpdateAsync(expectedSeat);
-            var actualSeat = await _seatRepository.GetByIdAsync(upgradeSeat.Id);
+            var actualSeat = await _seatRepository.GetByIdAsync(expectedSeat.Id);
 
             // assert
             actualSeat.Should().BeEquivalentTo(expectedSeat);
