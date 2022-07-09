@@ -19,7 +19,7 @@ namespace TicketManagement.Common.Entities
         public string Name { get; set; }
 
         [Required]
-        [ForeignKey("Area")]
+        [ForeignKey("Venue")]
         public int VenueId { get; set; }
 
         [Required]
