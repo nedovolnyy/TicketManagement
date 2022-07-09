@@ -18,7 +18,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Layout(2, "Second layout", 1, "description second layout"),
             new Layout(3, "Second layout", 2, "description second layout"),
         };
-        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenLayoutFieldNameEmpty_ShouldThrow()
@@ -115,17 +114,17 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Update_WhenUpdateLayout_ShouldNotNull()
         {
             // arrange
+            int timesApplyRuleCalled = default;
             var layoutExpected = new Layout(3, "Second layout", 2, "description second layout");
             var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
             var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.UpdateAsync(It.IsAny<Layout>())).Callback(() => _timesApplyRuleCalled++);
+            layoutService.Setup(x => x.UpdateAsync(It.IsAny<Layout>())).Callback(() => timesApplyRuleCalled++);
 
             // act
             await layoutService.Object.UpdateAsync(layoutExpected);
 
             // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
+            Assert.NotZero(timesApplyRuleCalled);
         }
 
         [Test]

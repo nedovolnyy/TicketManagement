@@ -18,7 +18,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"), "image1"),
             new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00 +03:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image2"),
         };
-        private int _timesApplyRuleCalled;
 
         [Test]
         public void GetSeatsAvailableCount_When1_ShouldNotNull()
@@ -224,18 +223,18 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Update_WhenUpdateEvent_ShouldNotNull()
         {
             // arrange
+            int timesApplyRuleCalled = default;
             var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("2022-09-09 00:05:00"), "Kitchen Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image");
             var eventRepository = new Mock<IEventRepository> { CallBase = true };
             var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
             eventService.Setup(x => x.GetSeatsCountAsync(It.IsAny<int>())).ReturnsAsync(5);
-            eventService.Setup(x => x.UpdateAsync(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
+            eventService.Setup(x => x.UpdateAsync(It.IsAny<Event>())).Callback(() => timesApplyRuleCalled++);
 
             // act
             await eventService.Object.UpdateAsync(eventExpected);
 
             // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
+            Assert.NotZero(timesApplyRuleCalled);
         }
 
         [Test]

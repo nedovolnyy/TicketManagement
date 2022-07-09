@@ -17,7 +17,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new EventSeat(2, 7, 3, 3, false),
             new EventSeat(3, 5, 9, 1, true),
         };
-        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenEventSeatFieldEventAreaIdNull_ShouldThrow()
@@ -93,17 +92,17 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Update_WhenUpdateEventSeat_ShouldNotNull()
         {
             // arrange
+            int timesApplyRuleCalled = default;
             var eventSeatExpected = new EventSeat(3, 5, 9, 1, true);
             var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
             var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.UpdateAsync(It.IsAny<EventSeat>())).Callback(() => _timesApplyRuleCalled++);
+            eventSeatService.Setup(x => x.UpdateAsync(It.IsAny<EventSeat>())).Callback(() => timesApplyRuleCalled++);
 
             // act
             await eventSeatService.Object.UpdateAsync(eventSeatExpected);
 
             // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
+            Assert.NotZero(timesApplyRuleCalled);
         }
 
         [Test]

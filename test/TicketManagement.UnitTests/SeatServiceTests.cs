@@ -18,7 +18,6 @@ namespace TicketManagement.BusinessLogic.UnitTests
             new Seat(2, 1, 2, 2),
             new Seat(3, 2, 1, 1),
         };
-        private int _timesApplyRuleCalled;
 
         [Test]
         public void Validate_WhenSeatFieldAreaIdNull_ShouldThrow()
@@ -115,17 +114,17 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Update_WhenUpdateSeat_ShouldNotNull()
         {
             // arrange
+            int timesApplyRuleCalled = default;
             var seatExpected = new Seat(1, 6, 1, 1);
             var seatRepository = new Mock<ISeatRepository> { CallBase = true };
             var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-            seatService.Setup(x => x.UpdateAsync(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
+            seatService.Setup(x => x.UpdateAsync(It.IsAny<Seat>())).Callback(() => timesApplyRuleCalled++);
 
             // act
             await seatService.Object.UpdateAsync(seatExpected);
 
             // assert
-            Assert.NotZero(_timesApplyRuleCalled);
-            _timesApplyRuleCalled = 0;
+            Assert.NotZero(timesApplyRuleCalled);
         }
 
         [Test]
