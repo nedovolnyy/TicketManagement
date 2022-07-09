@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,7 @@ namespace TicketManagement.IntegrationTests
         internal static IDatabaseContext DatabaseContext { get; private set; }
         private WebApplicationFactory<Program> WebApplicationFactory { get; set; } = null!;
         protected HttpClient Client { get; private set; } = null!;
+        private IConfiguration Configuration { get; set; } = null!;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -34,7 +36,7 @@ namespace TicketManagement.IntegrationTests
             });
         });
             Client = WebApplicationFactory.CreateClient();
-
+            Configuration = WebApplicationFactory.Services.GetRequiredService<IConfiguration>();
             _scope = WebApplicationFactory.Services.CreateScope();
             ServiceProvider = _scope.ServiceProvider;
             DatabaseContext = ServiceProvider.GetRequiredService<IDatabaseContext>();
@@ -62,8 +64,8 @@ namespace TicketManagement.IntegrationTests
 
             var target = new DacpacService();
             target.ProcessDacPac(DatabaseContext.ConnectionString,
-                                 "TestTicketManagement.Database",
-                                 "TestTicketManagement.Database.dacpac");
+                                 Configuration["DatabaseName:DefaultDatabaseName"],
+                                 Configuration["DatabaseFileName:DefaultDatabaseFileName"]);
         }
 
         public async Task DropDatabase()
