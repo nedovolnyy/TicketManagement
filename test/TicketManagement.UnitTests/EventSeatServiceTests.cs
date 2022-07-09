@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -11,144 +12,153 @@ namespace TicketManagement.BusinessLogic.UnitTests
 {
     public class EventSeatServiceTests
     {
+        private static readonly Mock<IEventSeatRepository> _eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
+        private readonly EventSeatService _eventSeatService = new EventSeatService(_eventSeatRepository.Object);
         private readonly List<EventSeat> _expectedEventSeats = new List<EventSeat>
         {
             new EventSeat(1, 6, 56, 2, true),
             new EventSeat(2, 7, 3, 3, false),
             new EventSeat(3, 5, 9, 1, true),
         };
+        private int _timesApplyRuleCalled;
+
+        [SetUp]
+        protected void SetUp()
+        {
+            _eventSeatRepository.Setup(x => x.InsertAsync(It.IsAny<EventSeat>())).Callback(() => _timesApplyRuleCalled++);
+            _eventSeatRepository.Setup(x => x.UpdateAsync(It.IsAny<EventSeat>())).Callback(() => _timesApplyRuleCalled++);
+            _eventSeatRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            _eventSeatRepository.Setup(x => x.GetAll()).Returns(_expectedEventSeats.AsQueryable());
+            foreach (var eventSeat in _expectedEventSeats)
+            {
+                _eventSeatRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(_expectedEventSeats[eventSeat.Id - 1]);
+                _eventSeatRepository.Setup(x => x.GetAllByEventAreaId(eventSeat.EventAreaId)).Returns(_expectedEventSeats.Where(x => x.EventAreaId == eventSeat.EventAreaId).AsQueryable());
+            }
+        }
 
         [Test]
-        public void Validate_WhenEventSeatFieldEventAreaIdNull_ShouldThrow()
+        public void Validate_WhenEventSeatFieldEventAreaIdZero_ShouldThrow()
         {
             // arrange
+            var eventSeatExpected = new EventSeat
+            {
+                EventAreaId = default,
+                Number = _expectedEventSeats[0].Number,
+                Row = _expectedEventSeats[0].Row,
+                State = _expectedEventSeats[0].State,
+            };
             var strException =
                 "The field 'EventAreaId' of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(1, 0, 56, 2, true);
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventSeatService.Object.ValidateAsync(eventSeatExpected));
+                            async () => await _eventSeatService.ValidateAsync(eventSeatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Validate_WhenEventSeatFieldRowNull_ShouldThrow()
+        public void Validate_WhenEventSeatFieldRowZero_ShouldThrow()
         {
             // arrange
+            var eventSeatExpected = new EventSeat
+            {
+                EventAreaId = _expectedEventSeats[0].EventAreaId,
+                Number = _expectedEventSeats[0].Number,
+                Row = default,
+                State = _expectedEventSeats[0].State,
+            };
             var strException =
                 "The field 'Row' of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(2, 7, 0, 3, true);
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventSeatService.Object.ValidateAsync(eventSeatExpected));
+                            async () => await _eventSeatService.ValidateAsync(eventSeatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Validate_WhenEventSeatFieldNumberNull_ShouldThrow()
+        public void Validate_WhenEventSeatFieldNumberZero_ShouldThrow()
         {
             // arrange
+            var eventSeatExpected = new EventSeat
+            {
+                EventAreaId = _expectedEventSeats[0].EventAreaId,
+                Number = default,
+                Row = _expectedEventSeats[0].Row,
+                State = _expectedEventSeats[0].State,
+            };
             var strException =
                 "The field 'Number' of EventSeat is not allowed to be null!";
-            var eventSeatExpected = new EventSeat(3, 5, 9, 0, true);
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await eventSeatService.Object.ValidateAsync(eventSeatExpected));
+                            async () => await _eventSeatService.ValidateAsync(eventSeatExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Insert_WhenInsertEventSeat_ShouldNotNull()
+        public async Task Insert_WhenCallInsertEventSeat_ShouldNotZeroCallback()
         {
             // arrange
             var eventSeatExpected = new EventSeat(1, 6, 6, 2, true);
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.InsertAsync(It.IsAny<EventSeat>()));
 
             // act
-            var actual = eventSeatService.Object.InsertAsync(eventSeatExpected);
+            await _eventSeatService.InsertAsync(eventSeatExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
         [Test]
-        public async Task Update_WhenUpdateEventSeat_ShouldNotNull()
+        public async Task Update_WhenCallUpdateEventSeat_ShouldNotZeroCallback()
         {
             // arrange
-            int timesApplyRuleCalled = default;
             var eventSeatExpected = new EventSeat(3, 5, 9, 1, true);
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.UpdateAsync(It.IsAny<EventSeat>())).Callback(() => timesApplyRuleCalled++);
 
             // act
-            await eventSeatService.Object.UpdateAsync(eventSeatExpected);
+            await _eventSeatService.UpdateAsync(eventSeatExpected);
 
             // assert
-            Assert.NotZero(timesApplyRuleCalled);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
         [Test]
-        public void Delete_WhenDeleteEventSeat_ShouldNotNull()
+        public async Task Delete_WhenCallDeleteEventSeat_ShouldNotZeroCallback()
         {
-            // arrange
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
-
             // act
-            var actual = eventSeatService.Object.DeleteAsync(1);
+            await _eventSeatService.DeleteAsync(1);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task GetById_WhenReturnEventSeatById_ShouldNotNull()
+        {
+            // act
+            var actual = await _eventSeatService.GetByIdAsync(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public void GetById_WhenReturnEventSeatById_ShouldNotNull()
+        public async Task GetAll_WhenReturnEventSeats_ShouldNotZero()
         {
-            // arrange
-            var eventSeatExpected = new EventSeat(5444, 6, 56, 2, true);
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(eventSeatExpected);
-
             // act
-            var actual = eventSeatService.Object.GetByIdAsync(5444);
+            var actual = (await _eventSeatService.GetAllAsync()).Count();
 
             // assert
-            Assert.NotNull(actual);
-        }
-
-        [Test]
-        public void GetAll_WhenReturnEventSeats_ShouldNotNull()
-        {
-            // arrange
-            var eventSeatRepository = new Mock<IEventSeatRepository> { CallBase = true };
-            var eventSeatService = new Mock<EventSeatService>(eventSeatRepository.Object) { CallBase = true };
-            eventSeatService.Setup(x => x.GetAllAsync()).ReturnsAsync(_expectedEventSeats);
-
-            // act
-            var actual = eventSeatService.Object.GetAllAsync();
-
-            // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(actual);
         }
     }
 }

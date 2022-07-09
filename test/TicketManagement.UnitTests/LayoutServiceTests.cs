@@ -12,44 +12,67 @@ namespace TicketManagement.BusinessLogic.UnitTests
 {
     public class LayoutServiceTests
     {
+        private static readonly Mock<ILayoutRepository> _layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
+        private readonly LayoutService _layoutService = new LayoutService(_layoutRepository.Object);
         private readonly List<Layout> _expectedLayouts = new List<Layout>
         {
             new Layout(1, "First layout", 1, "description first layout"),
             new Layout(2, "Second layout", 1, "description second layout"),
             new Layout(3, "Second layout", 2, "description second layout"),
         };
+        private int _timesApplyRuleCalled;
+
+        [SetUp]
+        protected void SetUp()
+        {
+            _layoutRepository.Setup(x => x.InsertAsync(It.IsAny<Layout>())).Callback(() => _timesApplyRuleCalled++);
+            _layoutRepository.Setup(x => x.UpdateAsync(It.IsAny<Layout>())).Callback(() => _timesApplyRuleCalled++);
+            _layoutRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            _layoutRepository.Setup(x => x.GetAll()).Returns(_expectedLayouts.AsQueryable());
+            foreach (var layout in _expectedLayouts)
+            {
+                _layoutRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(_expectedLayouts[layout.Id - 1]);
+                _layoutRepository.Setup(x => x.GetAllByVenueId(layout.VenueId)).Returns(_expectedLayouts.Where(x => x.VenueId == layout.VenueId).AsQueryable());
+            }
+        }
 
         [Test]
         public void Validate_WhenLayoutFieldNameEmpty_ShouldThrow()
         {
             // arrange
+            var layoutExpected = new Layout
+            {
+                Name = string.Empty,
+                Description = _expectedLayouts[0].Description,
+                VenueId = _expectedLayouts[0].VenueId,
+            };
             var strException =
                 "The field 'Name' of Layout is not allowed to be empty!";
-            var layoutExpected = new Layout(1, "", 1, "description first layout");
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
+                            async () => await _layoutService.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Validate_WhenLayoutFieldVenueIdNull_ShouldThrow()
+        public void Validate_WhenLayoutFieldVenueIdZero_ShouldThrow()
         {
             // arrange
+            var layoutExpected = new Layout
+            {
+                Name = _expectedLayouts[0].Name,
+                Description = _expectedLayouts[0].Description,
+                VenueId = default,
+            };
             var strException =
                 "The field 'VenueId' of Layout is not allowed to be null!";
-            var layoutExpected = new Layout(2, "Second layout", 0, "description second layout");
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
+                            async () => await _layoutService.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -59,118 +82,101 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenLayoutFieldDescriptionEmpty_ShouldThrow()
         {
             // arrange
+            var layoutExpected = new Layout
+            {
+                Name = _expectedLayouts[0].Name,
+                Description = string.Empty,
+                VenueId = _expectedLayouts[0].VenueId,
+            };
             var strException =
                 "The field 'Description' of Layout is not allowed to be empty!";
-            var layoutExpected = new Layout(3, "Second layout", 2, "");
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
+                            async () => await _layoutService.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, "First layout", 1, "description first layout")]
-        [TestCase(2, "Second layout", 1, "description second layout")]
-        [TestCase(3, "Second layout", 2, "description second layout")]
-        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, string name, int venueId, string description)
+        [Test]
+        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow()
         {
             // arrange
+            var layoutExpected = new Layout
+            {
+                Name = _expectedLayouts[0].Name,
+                Description = "any",
+                VenueId = _expectedLayouts[0].VenueId,
+            };
             var strException =
                 "Layout name should be unique in venue!";
-            var layoutExpected = new Layout(id: id, name: name, venueId: venueId, description: description);
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            layoutRepository.Setup(x => x.GetAllByVenueId(venueId)).Returns(_expectedLayouts.AsQueryable());
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await layoutService.Object.ValidateAsync(layoutExpected));
+                            async () => await _layoutService.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Insert_WhenInsertLayout_ShouldNotNull()
+        public async Task Insert_WhenCallInsertLayout_ShouldNotZeroCallback()
         {
             // arrange
-            var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.InsertAsync(It.IsAny<Layout>()));
+            var layoutExpected = new Layout("1st layout", 1, "any description for first layout");
 
             // act
-            var actual = layoutService.Object.InsertAsync(layoutExpected);
+            await _layoutService.InsertAsync(layoutExpected);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task Update_WhenCallUpdateLayout_ShouldNotZeroCallback()
+        {
+            // arrange
+            var layoutExpected = new Layout(3, "2nd layout", 2, "any description for second layout");
+
+            // act
+            await _layoutService.UpdateAsync(layoutExpected);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task Delete_WhenCallDeleteLayout_ShouldNotZeroCallback()
+        {
+            // act
+            await _layoutService.DeleteAsync(1);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task GetById_WhenReturnLayoutById_ShouldNotNull()
+        {
+            // act
+            var actual = await _layoutService.GetByIdAsync(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public async Task Update_WhenUpdateLayout_ShouldNotNull()
+        public async Task GetAll_WhenReturnLayouts_ShouldNotZero()
         {
-            // arrange
-            int timesApplyRuleCalled = default;
-            var layoutExpected = new Layout(3, "Second layout", 2, "description second layout");
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.UpdateAsync(It.IsAny<Layout>())).Callback(() => timesApplyRuleCalled++);
-
             // act
-            await layoutService.Object.UpdateAsync(layoutExpected);
+            var actual = (await _layoutService.GetAllAsync()).Count();
 
             // assert
-            Assert.NotZero(timesApplyRuleCalled);
-        }
-
-        [Test]
-        public void Delete_WhenDeleteLayout_ShouldNotNull()
-        {
-            // arrange
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
-
-            // act
-            var actual = layoutService.Object.DeleteAsync(1);
-
-            // assert
-            Assert.NotNull(actual);
-        }
-
-        [Test]
-        public void GetById_WhenReturnLayoutById_ShouldNotNull()
-        {
-            // arrange
-            var layoutExpected = new Layout(1, "First layout", 1, "description first layout");
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(layoutExpected);
-
-            // act
-            var actual = layoutService.Object.GetByIdAsync(5444);
-
-            // assert
-            Assert.NotNull(actual);
-        }
-
-        [Test]
-        public void GetAll_WhenReturnLayouts_ShouldNotNull()
-        {
-            // arrange
-            var layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-            var layoutService = new Mock<LayoutService>(layoutRepository.Object) { CallBase = true };
-            layoutService.Setup(x => x.GetAllAsync()).ReturnsAsync(_expectedLayouts);
-
-            // act
-            var actual = layoutService.Object.GetAllAsync();
-
-            // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(actual);
         }
     }
 }

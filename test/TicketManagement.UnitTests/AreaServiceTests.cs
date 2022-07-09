@@ -12,26 +12,47 @@ namespace TicketManagement.BusinessLogic.UnitTests
 {
     public class AreaServiceTests
     {
+        private static readonly Mock<IAreaRepository> _areaRepository = new Mock<IAreaRepository> { CallBase = true };
+        private readonly AreaService _areaService = new AreaService(_areaRepository.Object);
         private readonly List<Area> _expectedAreas = new List<Area>
         {
             new Area(1, 2, "First area of second layout", 2, 4),
             new Area(2, 1, "First area of first layout", 3, 2),
             new Area(3, 2, "First area of second layout", 1, 7),
         };
+        private int _timesApplyRuleCalled;
+
+        [SetUp]
+        protected void SetUp()
+        {
+            _areaRepository.Setup(x => x.InsertAsync(It.IsAny<Area>())).Callback(() => _timesApplyRuleCalled++);
+            _areaRepository.Setup(x => x.UpdateAsync(It.IsAny<Area>())).Callback(() => _timesApplyRuleCalled++);
+            _areaRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            _areaRepository.Setup(x => x.GetAll()).Returns(_expectedAreas.AsQueryable());
+            foreach (var area in _expectedAreas)
+            {
+                _areaRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(_expectedAreas[area.Id - 1]);
+                _areaRepository.Setup(x => x.GetAllByLayoutId(area.LayoutId)).Returns(_expectedAreas.Where(x => x.LayoutId == area.LayoutId).AsQueryable());
+            }
+        }
 
         [Test]
-        public void Validate_WhenAreaFieldLayoutIdNull_ShouldThrow()
+        public void Validate_WhenAreaFieldLayoutIdZero_ShouldThrow()
         {
             // arrange
+            var areaExpected = new Area
+            {
+                LayoutId = default,
+                Description = _expectedAreas[0].Description,
+                CoordX = _expectedAreas[0].CoordX,
+                CoordY = _expectedAreas[0].CoordY,
+            };
             var strException =
                 "The field 'LayoutId' of Area is not allowed to be null!";
-            var areaExpected = new Area(1, 0, "First area of second layout", 2, 4);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await areaService.Object.ValidateAsync(areaExpected));
+                            async () => await _areaService.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -41,154 +62,147 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public void Validate_WhenAreaFieldDescriptionEmpty_ShouldThrow()
         {
             // arrange
+            var areaExpected = new Area
+            {
+                LayoutId = _expectedAreas[0].LayoutId,
+                Description = string.Empty,
+                CoordX = _expectedAreas[0].CoordX,
+                CoordY = _expectedAreas[0].CoordY,
+            };
             var strException =
                 "The field 'Description' of Area is not allowed to be empty!";
-            var areaExpected = new Area(2, 1, "", 3, 2);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await areaService.Object.ValidateAsync(areaExpected));
+                            async () => await _areaService.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Validate_WhenAreaFieldCoordXNull_ShouldThrow()
+        public void Validate_WhenAreaFieldCoordXZero_ShouldThrow()
         {
             // arrange
+            var areaExpected = new Area
+            {
+                LayoutId = _expectedAreas[0].LayoutId,
+                Description = _expectedAreas[0].Description,
+                CoordX = default,
+                CoordY = _expectedAreas[0].CoordY,
+            };
             var strException =
                 "The field 'CoordX' of Area is not allowed to be null!";
-            var areaExpected = new Area(3, 2, "First area of second layout", 0, 3);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await areaService.Object.ValidateAsync(areaExpected));
+                            async () => await _areaService.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Validate_WhenAreaFieldCoordYNull_ShouldThrow()
+        public void Validate_WhenAreaFieldCoordYZero_ShouldThrow()
         {
             // arrange
+            var areaExpected = new Area
+            {
+                LayoutId = _expectedAreas[0].LayoutId,
+                Description = _expectedAreas[0].Description,
+                CoordX = _expectedAreas[0].CoordX,
+                CoordY = default,
+            };
             var strException =
                 "The field 'CoordY' of Area is not allowed to be null!";
-            var areaExpected = new Area(3, 2, "First area of second layout", 1, 0);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await areaService.Object.ValidateAsync(areaExpected));
+                            async () => await _areaService.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 2, "First area of second layout", 2, 4)]
-        [TestCase(2, 1, "First area of first layout", 3, 2)]
-        [TestCase(3, 2, "First area of second layout", 1, 7)]
-        public void Validate_WhenDescriptionNonUnique_ShouldThrow(int id, int layoutId, string description, int coordX, int coordY)
+        [Test]
+        public void Validate_WhenDescriptionNonUnique_ShouldThrow()
         {
             // arrange
+            var areaExpected = new Area
+            {
+                LayoutId = _expectedAreas[0].LayoutId,
+                Description = _expectedAreas[0].Description,
+                CoordX = int.MaxValue,
+                CoordY = int.MaxValue,
+            };
             var strException =
                 "Area description should be unique for area!";
-            var areaExpected = new Area(id: id, layoutId: layoutId, description: description, coordX: coordX, coordY: coordY);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            areaRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedAreas.AsQueryable());
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await areaService.Object.ValidateAsync(areaExpected));
+                            async () => await _areaService.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
         [Test]
-        public void Insert_WhenInsertArea_ShouldNotNull()
+        public async Task Insert_WhenCallInsertArea_ShouldNotZeroCallback()
         {
             // arrange
-            var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.InsertAsync(It.IsAny<Area>()));
+            var areaExpected = new Area(2, "1st area of second layout", 2, 4);
 
             // act
-            var actual = areaService.Object.InsertAsync(areaExpected);
+            await _areaService.InsertAsync(areaExpected);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task Update_WhenCallUpdateArea_ShouldNotZeroCallback()
+        {
+            // arrange
+            var areaExpected = new Area(1, 2, "1st area of second layout", 2, 4);
+
+            // act
+            await _areaService.UpdateAsync(areaExpected);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task Delete_WhenCallDeleteArea_ShouldNotZeroCallback()
+        {
+            // act
+            await _areaService.DeleteAsync(1);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task GetById_WhenReturnAreaById_ShouldNotNull()
+        {
+            // act
+            var actual = await _areaService.GetByIdAsync(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public async Task Update_WhenUpdateArea_ShouldNotNull()
+        public async Task GetAll_WhenReturnAreas_ShouldNotZero()
         {
-            // arrange
-            int timesApplyRuleCalled = default;
-            var areaExpected = new Area(1, 2, "First area of second layout", 2, 4);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.UpdateAsync(It.IsAny<Area>())).Callback(() => timesApplyRuleCalled++);
-
             // act
-            await areaService.Object.UpdateAsync(areaExpected);
+            var actual = (await _areaService.GetAllAsync()).Count();
 
             // assert
-            Assert.NotZero(timesApplyRuleCalled);
-        }
-
-        [Test]
-        public void Delete_WhenDeleteArea_ShouldNotNull()
-        {
-            // arrange
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.DeleteAsync(It.IsAny<int>()));
-
-            // act
-            var actual = areaService.Object.DeleteAsync(1);
-
-            // assert
-            Assert.NotNull(actual);
-        }
-
-        [Test]
-        public void GetById_WhenReturnAreaById_ShouldNotNull()
-        {
-            // arrange
-            var areaExpected = new Area(5444, 2, "First area of first layout", 3, 2);
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(areaExpected);
-
-            // act
-            var actual = areaService.Object.GetByIdAsync(5444);
-
-            // assert
-            Assert.NotNull(actual);
-        }
-
-        [Test]
-        public void GetAll_WhenReturnAreas_ShouldNotNull()
-        {
-            // arrange
-            var areaRepository = new Mock<IAreaRepository> { CallBase = true };
-            var areaService = new Mock<AreaService>(areaRepository.Object) { CallBase = true };
-            areaService.Setup(x => x.GetAllAsync()).ReturnsAsync(_expectedAreas);
-
-            // act
-            var actual = areaService.Object.GetAllAsync();
-
-            // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(actual);
         }
     }
 }

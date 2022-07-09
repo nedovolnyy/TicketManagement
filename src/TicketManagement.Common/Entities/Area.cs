@@ -6,6 +6,15 @@ namespace TicketManagement.Common.Entities
     [Table("Area")]
     public class Area : BaseEntity
     {
+        public Area()
+        {
+        }
+
+        public Area(int layoutId, string description, int coordX, int coordY)
+            : this(default, layoutId, description, coordX, coordY)
+        {
+        }
+
         public Area(int id, int layoutId, string description, int coordX, int coordY)
         {
             Id = id;

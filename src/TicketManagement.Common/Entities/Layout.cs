@@ -6,6 +6,15 @@ namespace TicketManagement.Common.Entities
     [Table("Layout")]
     public class Layout : BaseEntity
     {
+        public Layout()
+        {
+        }
+
+        public Layout(string name, int venueId, string description)
+            : this(default, name, venueId, description)
+        {
+        }
+
         public Layout(int id, string name, int venueId, string description)
         {
             Id = id;

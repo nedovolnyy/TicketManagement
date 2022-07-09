@@ -6,6 +6,15 @@ namespace TicketManagement.Common.Entities
     [Table("Seat")]
     public class Seat : BaseEntity
     {
+        public Seat()
+        {
+        }
+
+        public Seat(int areaId, int row, int number)
+            : this(default, areaId, row, number)
+        {
+        }
+
         public Seat(int id, int areaId, int row, int number)
         {
             Id = id;

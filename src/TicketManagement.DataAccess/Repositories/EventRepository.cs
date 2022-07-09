@@ -21,9 +21,9 @@ namespace TicketManagement.DataAccess.Repositories
         }
 
         public override async Task InsertAsync(Event evnt)
-            => await InsertAsync(evnt);
+            => await InsertAsync(evnt, decimal.Zero);
 
-        public async Task InsertAsync(Event evnt, decimal price = decimal.Zero)
+        public async Task InsertAsync(Event evnt, decimal price)
         {
             var paramName = new SqlParameter("@Name", evnt.Name);
             var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);

@@ -7,6 +7,21 @@ namespace TicketManagement.Common.Entities
     [Table("Event")]
     public class Event : BaseEntity
     {
+        public Event()
+        {
+        }
+
+        public Event(
+            string name,
+            DateTimeOffset eventTime,
+            string description,
+            int layoutId,
+            DateTime eventEndTime,
+            string eventLogoImage)
+            : this(default, name, eventTime, description, layoutId, eventEndTime, eventLogoImage)
+        {
+        }
+
         public Event(
             int id,
             string name,

@@ -22,7 +22,7 @@ namespace TicketManagement.BusinessLogic.Services
         {
             if (entity.EventId == default)
             {
-                throw new ValidationException("The field 'LayoutId' of EventArea is not allowed to be null!");
+                throw new ValidationException("The field 'EventId' of EventArea is not allowed to be null!");
             }
 
             if (entity.CoordX == default)

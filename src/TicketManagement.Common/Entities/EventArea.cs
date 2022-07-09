@@ -6,6 +6,15 @@ namespace TicketManagement.Common.Entities
     [Table("EventArea")]
     public class EventArea : BaseEntity
     {
+        public EventArea()
+        {
+        }
+
+        public EventArea(int eventId, string description, int coordX, int coordY, decimal price)
+            : this(default, eventId, description, coordX, coordY, price)
+        {
+        }
+
         public EventArea(int id, int eventId, string description, int coordX, int coordY, decimal price)
         {
             Id = id;

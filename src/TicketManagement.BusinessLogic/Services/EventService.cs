@@ -16,7 +16,10 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        public virtual async Task InsertAsync(Event evnt, decimal price = decimal.Zero)
+        public override async Task InsertAsync(Event evnt)
+            => await InsertAsync(evnt, decimal.Zero);
+
+        public virtual async Task InsertAsync(Event evnt, decimal price)
         {
             await ValidateAsync(evnt);
             await _eventRepository.InsertAsync(evnt, price);

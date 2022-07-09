@@ -10,6 +10,11 @@ namespace TicketManagement.Common.Entities
         {
         }
 
+        public Venue(string name, string description, string address, string phone = null)
+            : this(default, name, description, address, phone)
+        {
+        }
+
         public Venue(int id, string name, string description, string address, string phone = null)
         {
             Id = id;
