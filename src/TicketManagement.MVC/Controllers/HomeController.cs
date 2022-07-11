@@ -1,12 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Identity;
@@ -55,14 +51,14 @@ namespace TicketManagement.MVC.Controllers
             {
                 User user = await _userManager.GetUserAsync(User);
                 user.Balance += decimal.Parse(Regex.Replace(money, @"[^\d.,]", ""));
-                user.PayHistory += "AddMoney" + " : " + user.Balance + Environment.NewLine;
+                user.PayHistory += "ChangeBalance" + " : " + user.Balance + Environment.NewLine;
                 await _userManager.UpdateAsync(user);
             }
 
-            return RedirectToAction("GetMoney");
+            return RedirectToAction("Cart");
         }
 
-        public async Task<IActionResult> GetMoney()
+        public async Task<IActionResult> NoBalance()
         {
             return View(await _userManager.GetUserAsync(User));
         }

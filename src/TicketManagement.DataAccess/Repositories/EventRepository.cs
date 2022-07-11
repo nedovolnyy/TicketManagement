@@ -51,6 +51,21 @@ namespace TicketManagement.DataAccess.Repositories
                     paramId, paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage);
         }
 
+        public async Task UpdateAsync(Event evnt, decimal price)
+        {
+            var paramId = new SqlParameter("@Id", evnt.Id);
+            var paramName = new SqlParameter("@Name", evnt.Name);
+            var paramEventTime = new SqlParameter("@EventTime", evnt.EventTime);
+            var paramDescription = new SqlParameter("@Description", evnt.Description);
+            var paramLayoutId = new SqlParameter("@LayoutId", evnt.LayoutId);
+            var paramEventEndTime = new SqlParameter("@EventEndTime", evnt.EventEndTime);
+            var paramEventLogoImage = new SqlParameter("@EventLogoImage", evnt.EventLogoImage);
+            var paramPrice = new SqlParameter("@Price", price);
+            await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventUpdate @Id, @Name, @EventTime, @Description, @LayoutId, @EventEndTime, @EventLogoImage, @Price",
+                    paramId, paramName, paramEventTime, paramDescription, paramLayoutId, paramEventEndTime, paramEventLogoImage, paramPrice);
+        }
+
         public new async Task DeleteAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
@@ -73,19 +88,34 @@ namespace TicketManagement.DataAccess.Repositories
             return _dbSet.FromSqlRaw("spEventForValidationByLayout @LayoutId", paramLayoutId).AsNoTracking().IgnoreQueryFilters();
         }
 
+        public async Task<bool> IsAllAvailableSeatsAsync(int id)
+        {
+            var paramId = new SqlParameter("@Id", id);
+            var paramIsAllAvailableSeats = new SqlParameter
+            {
+                ParameterName = "@IsAllAvailableSeats",
+                SqlDbType = SqlDbType.Bit,
+                Direction = ParameterDirection.Output,
+            };
+
+            await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventIsAllAvailableSeats @Id, @IsAllAvailableSeats OUT", paramId, paramIsAllAvailableSeats);
+            return (bool)paramIsAllAvailableSeats.Value;
+        }
+
         public async Task<int> GetSeatsAvailableCountAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);
-            var paramCountEmptySeats = new SqlParameter
+            var paramCountAvailableSeats = new SqlParameter
             {
-                ParameterName = "@CountEmptySeats",
+                ParameterName = "@CountAvailableSeats",
                 SqlDbType = SqlDbType.Int,
                 Direction = ParameterDirection.Output,
             };
 
             await _databaseContext.Instance.Database
-                .ExecuteSqlRawAsync("spEventCountEmptySeats @Id, @CountEmptySeats OUT", paramId, paramCountEmptySeats);
-            return (int)paramCountEmptySeats.Value;
+                .ExecuteSqlRawAsync("spEventCountAvailableSeats @Id, @CountAvailableSeats OUT", paramId, paramCountAvailableSeats);
+            return (int)paramCountAvailableSeats.Value;
         }
 
         public async Task<int> GetSeatsCountAsync(int layoutId)

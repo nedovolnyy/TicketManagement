@@ -4,22 +4,21 @@
 @model EventModel
 
 @inject IViewLocalizer Localizer
-@inject IServiceProvider ServiceProvider
 
 @{
-    ViewData["Title"] = "Create Event";
+    ViewData["Title"] = "Edit Event";
 
     var timezoneList = TimeZoneInfo.GetSystemTimeZones()
         ?.Select(c => new SelectListItem { Value = c.BaseUtcOffset.ToString(), Text = c.DisplayName })
         .ToList();
-
-    var layoutIdList = new SelectList(Model.LayoutsId);
+    var eventId = Context.Request.Query["eventId"];
+    var layoutId = Model.LayoutsId[0].ToString();
 }
 
 <h3>@ViewData["Title"]</h3>
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post" asp-action="PublishEvent" asp-controller="EventManagement">
+        <form id="profile-form" method="post" asp-action="Edit" asp-controller="EventManagement">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
                 <input asp-for="Name" class="form-control" />
@@ -30,7 +29,7 @@
                 <label asp-for="Description" class="form-label"></label>
             </div>
             <div class="form-floating">
-                <input asp-for="EventTime" class="form-control" />
+                <input asp-for="EventTime" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
                 <label asp-for="EventTime" class="form-label"></label>
                 <span asp-validation-for="EventTime" class="text-danger"></span>
                 <div class="form-floating">
@@ -39,7 +38,7 @@
                 </div>
             </div>
             <div class="form-floating">
-                <input asp-for="EventEndTime" class="form-control" />
+                <input asp-for="EventEndTime" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
                 <label asp-for="EventEndTime" class="form-label"></label>
                 <span asp-validation-for="EventTime" class="text-danger"></span>
             </div>
@@ -48,14 +47,36 @@
                 <label asp-for="EventLogoImage" class="form-label"></label>
             </div>
             <div class="form-floating">
-                <select name="layoutId" asp-items="layoutIdList" class="form-select"></select>
+                @{
+                    if (ViewBag.isAllAvailableSeats)
+                    {
+                        <input name="layoutId" value="@layoutId" class="form-control"></input>
+                    }
+                    else
+                    {
+                        <input name="layoutId" value="@layoutId" class="form-control invisible" hidden></input>
+                        <input class="form-control" disabled></input>
+                    }
+                }
                 <label class="form-label">AreaID</label>
             </div>
             <div class="form-floating">
-                <input asp-for="Price" class="form-control" />
+                @{
+                    if (ViewBag.isAllAvailableSeats)
+                    {
+                        <input asp-for="Price" class="form-control"></input>
+                    }
+                    else
+                    {
+                        <input asp-for="Price" class="form-control" disabled></input>
+                    }
+                }
                 <label asp-for="Price" class="form-label"></label>
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Create Event</button>
+            <div class="table-active invisible">
+                    <input name="eventId" value="@eventId" hidden />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Edit Event</button>
         </form>
     </div>
 </div>

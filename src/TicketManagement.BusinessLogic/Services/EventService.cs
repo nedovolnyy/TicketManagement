@@ -25,8 +25,17 @@ namespace TicketManagement.BusinessLogic.Services
             await _eventRepository.InsertAsync(evnt, price);
         }
 
+        public virtual async Task UpdateAsync(Event evnt, decimal price)
+        {
+            await ValidateAsync(evnt);
+            await _eventRepository.UpdateAsync(evnt, price);
+        }
+
         public virtual async Task<IEnumerable<Event>> GetAllByLayoutIdAsync(int layoutId)
             => await _eventRepository.GetAllByLayoutId(layoutId).ToListAsyncSafe();
+
+        public virtual async Task<bool> IsAllAvailableSeatsAsync(int id)
+            => await _eventRepository.IsAllAvailableSeatsAsync(id);
 
         public virtual async Task<int> GetSeatsAvailableCountAsync(int id)
             => await _eventRepository.GetSeatsAvailableCountAsync(id);

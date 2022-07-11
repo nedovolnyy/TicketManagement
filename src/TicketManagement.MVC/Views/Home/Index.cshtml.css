@@ -18,23 +18,18 @@
     right: 0;
     bottom: 0;
     padding: 15px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
+    background: transparent;
+    background-image: linear-gradient(to bottom, #11de93, #0e7ad6);
+    opacity: 0.65;
 }
 
 .img__header {
     font-weight: bold;
     font-family: Georgia;
-    font-size: 1.15em;
+    font-size: 0.85em;
     text-decoration: none;
     overflow: hidden;
     color: black;
-}
-
-a {
-    text-decoration: none;
-    color: red;
 }
 
 .image {
@@ -48,17 +43,18 @@ a {
 div.text {
     font-family: Impact;
     overflow: hidden;
+    font-size: 0.95em;
     margin-bottom: -18px;
 }
 
     div.text div.left {
         float: left;
-        margin-left: 20px;
+        margin-left: 5px;
         color: black;
     }
 
     div.text div.right {
         float: right;
-        margin-right: 200px;
+        margin-right: 5px;
         color: brown;
     }

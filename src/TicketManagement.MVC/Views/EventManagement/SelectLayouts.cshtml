@@ -34,12 +34,12 @@
                 <tr><th></th></tr>
                 <tr>
                     <td>
-                        <form asp-action="InsertEvent" asp-controller="EventManagement" method="post">
+                        <form asp-action="Insert" asp-controller="EventManagement" method="get">
                             <input type="hidden" />
                             <div class="table-active">
                                 @foreach (var layout in Model)
                                 {
-                                    <input type="checkbox" name="layoutsId" value="@layout.Id" />
+                                    <input type="checkbox" name="layoutsId" value="@layout.Id" checked/>
                                     <hr />
                                 }
                             </div>

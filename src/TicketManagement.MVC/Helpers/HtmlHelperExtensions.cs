@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TicketManagement.Common.Identity;
-using TicketManagement.Common.Validation;
 
 namespace TicketManagement.MVC.Helpers
 {

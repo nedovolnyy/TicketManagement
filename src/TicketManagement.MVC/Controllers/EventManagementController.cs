@@ -6,21 +6,19 @@ using TicketManagement.MVC.Models;
 
 namespace TicketManagement.MVC.Controllers
 {
-    [Authorize(Roles = "EventManager")]
+    [Authorize(Roles = "EventManager,Administrator")]
     public class EventManagementController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public EventManagementController(ILogger<HomeController> logger, IServiceProvider serviceProvider)
+        public EventManagementController(IServiceProvider serviceProvider)
         {
-            _logger = logger;
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<IActionResult> CreateEvent()
+        public async Task<IActionResult> SelectVenues()
         {
-            IEnumerable<Venue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
+            var venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
             if (venues != null)
             {
                 return View(venues);
@@ -29,21 +27,10 @@ namespace TicketManagement.MVC.Controllers
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
 
-        public async Task<IActionResult> EditEvent()
-        {
-            IEnumerable<Venue> venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
-            if (venues is not null)
-            {
-                return View(venues);
-            }
-
-            return RedirectToRoute(new { controller = "Home", action = "Index" });
-        }
-
         [HttpPost]
-        public async Task<IActionResult> SelectLayouts(List<string> venuesId)
+        public async Task<IActionResult> SelectLayouts(IEnumerable<string> venuesId)
         {
-            List<Layout> layouts = new List<Layout>();
+            var layouts = new List<Layout>();
             foreach (var venueId in venuesId)
             {
                 layouts.Add(await _serviceProvider.GetRequiredService<ILayoutService>().GetByIdAsync(int.Parse(venueId)));
@@ -52,36 +39,101 @@ namespace TicketManagement.MVC.Controllers
             return View(layouts);
         }
 
+        public IActionResult Insert(List<string> layoutsId)
+        {
+            var initEventModel = new EventModel(
+                name: string.Empty,
+                description: string.Empty,
+                eventTime: DateTime.Now.AddDays(1),
+                eventLogoImage: string.Empty,
+                eventEndTime: DateTime.Now.AddDays(1).AddHours(1),
+                price: decimal.One.ToString(),
+                layoutsId: layoutsId);
+
+            return View(initEventModel);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> PublishEvent(EventModel eventModel, string layoutId, string timeZone)
+        public async Task<IActionResult> Insert(EventModel eventModel, string layoutId, string timeZone, List<string> layoutsId)
         {
             await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(
                 new Event(
-                id: 1,
                 name: eventModel.Name,
                 eventTime: DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
                 description: eventModel.Description,
                 eventEndTime: eventModel.EventEndTime,
                 eventLogoImage: eventModel.EventLogoImage,
                 layoutId: int.Parse(layoutId)),
-                price: decimal.Parse(eventModel.Price!));
+                price: decimal.Parse(eventModel.Price));
+
+            eventModel.LayoutsId = layoutsId;
+
+            if (eventModel.LayoutsId is null || eventModel.LayoutsId.Count < 2)
+            {
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            }
+
+            eventModel.LayoutsId.Remove(layoutId);
+
+            return View(eventModel);
+        }
+
+        public async Task<IActionResult> Edit(int eventId)
+        {
+            var evnt = await _serviceProvider.GetRequiredService<IEventService>().GetByIdAsync(eventId);
+            var layoutId = new List<string>();
+            layoutId.Add(evnt.LayoutId.ToString());
+            var editEventModel = new EventModel(
+                    name: evnt.Name,
+                    description: evnt.Description,
+                    eventTime: DateTime.Parse(evnt.EventTime.ToString()),
+                    eventLogoImage: evnt.EventLogoImage,
+                    eventEndTime: evnt.EventEndTime,
+                    price: string.Empty,
+                    layoutsId: layoutId);
+            ViewBag.isAllAvailableSeats = await _serviceProvider.GetRequiredService<IEventService>().IsAllAvailableSeatsAsync(eventId);
+            return View(editEventModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EventModel eventModel, int eventId, string timeZone, string layoutId)
+        {
+            var isAllAvailableSeats = await _serviceProvider.GetRequiredService<IEventService>().IsAllAvailableSeatsAsync(eventId);
+            if (isAllAvailableSeats)
+            {
+                await _serviceProvider.GetRequiredService<IEventService>().UpdateAsync(
+                    new Event(
+                    id: eventId,
+                    name: eventModel.Name,
+                    eventTime: DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
+                    description: eventModel.Description,
+                    eventEndTime: eventModel.EventEndTime,
+                    eventLogoImage: eventModel.EventLogoImage,
+                    layoutId: int.Parse(layoutId)),
+                    price: decimal.Parse(eventModel.Price));
+            }
+            else
+            {
+                await _serviceProvider.GetRequiredService<IEventService>().UpdateAsync(
+                    new Event(
+                    id: eventId,
+                    name: eventModel.Name,
+                    eventTime: DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
+                    description: eventModel.Description,
+                    eventEndTime: eventModel.EventEndTime,
+                    eventLogoImage: eventModel.EventLogoImage,
+                    layoutId: int.Parse(layoutId)));
+            }
 
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
 
         [HttpPost]
-        public IActionResult InsertEvent(List<string> layoutsId)
+        public async Task<ActionResult> Delete(int eventId)
         {
-            EventModel initEventModel = new EventModel(
-                name: "sgdrgdr",
-                description: "dffdbd",
-                eventTime: DateTime.Now,
-                eventLogoImage: "sgsdg",
-                eventEndTime: DateTime.Now,
-                price: decimal.One.ToString(),
-                layoutsId: layoutsId);
+            await _serviceProvider.GetRequiredService<IEventService>().DeleteAsync(eventId);
 
-            return View(initEventModel);
+            return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
     }
 }

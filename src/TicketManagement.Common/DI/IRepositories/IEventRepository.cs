@@ -14,11 +14,25 @@ namespace TicketManagement.Common.DI
         Task InsertAsync(Event evnt, decimal price);
 
         /// <summary>
+        /// Special method for update Event.
+        /// </summary>
+        /// <param name="evnt">Entity.</param>
+        /// <param name="price">Price.</param>
+        Task UpdateAsync(Event evnt, decimal price);
+
+        /// <summary>
         /// Method for populate data by layoutId.
         /// </summary>
         /// <param name="layoutId">layoutId.</param>
         /// <returns>IQueryable&lt;<see cref="Event"/>&gt;.</returns>
         IQueryable<Event> GetAllByLayoutId(int layoutId);
+
+        /// <summary>
+        /// All available seats or not.
+        /// </summary>
+        /// <param name="id">id.</param>
+        /// <returns><see cref="bool"/>.</returns>
+        Task<bool> IsAllAvailableSeatsAsync(int id);
 
         /// <summary>
         /// Count available seats.

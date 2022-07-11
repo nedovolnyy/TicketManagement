@@ -1,11 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Identity;
@@ -42,11 +37,6 @@ namespace TicketManagement.MVC.Controllers
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }
 
-        public IActionResult Purchase()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Purchase(int eventSeatId, string returnUrl, string price)
         {
@@ -56,7 +46,7 @@ namespace TicketManagement.MVC.Controllers
                 User user = await _userManager.GetUserAsync(User);
                 if (user.Balance < invariantPrice)
                 {
-                    return RedirectToRoute(new { controller = "Home", action = "GetMoney" });
+                    return RedirectToRoute(new { controller = "Home", action = "NoBalance" });
                 }
                 else
                 {
@@ -69,11 +59,6 @@ namespace TicketManagement.MVC.Controllers
             }
 
             return LocalRedirect(returnUrl);
-        }
-
-        public IActionResult AccessDenied()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

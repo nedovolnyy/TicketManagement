@@ -78,7 +78,7 @@
     <Build Include="StoredProcedures\spEventGetAll.sql" />
     <Build Include="StoredProcedures\spEventGetById.sql" />
     <Build Include="StoredProcedures\spEventUpdate.sql" />
-    <Build Include="StoredProcedures\spEventCountEmptySeats.sql" />
+    <Build Include="StoredProcedures\spEventCountAvailableSeats.sql" />
     <Build Include="StoredProcedures\spEventCountSeats.sql" />
     <Build Include="Tables\AspNetUsers.sql" />
     <Build Include="Tables\AspNetRoles.sql" />
@@ -94,6 +94,7 @@
     <Build Include="Indexes\IX_AspNetUserRoles_RoleId.sql" />
     <Build Include="Indexes\IX_AspNetRoleClaims_RoleId.sql" />
     <Build Include="Indexes\UserNameIndex.sql" />
+    <Build Include="StoredProcedures\spEventIsAllAvailableSeats.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Event.sql" />

@@ -1,16 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using TicketManagement.Common.Identity;
-using TicketManagement.MVC.Areas.Identity.Pages.Account;
 
 namespace TicketManagement.MVC.Controllers
 {
@@ -39,9 +32,9 @@ namespace TicketManagement.MVC.Controllers
             _emailStore = GetEmailStore();
         }
 
-        public string? ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; }
 
-        public void OnGet(string? returnUrl = null)
+        public void OnGet(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
         }
@@ -57,7 +50,7 @@ namespace TicketManagement.MVC.Controllers
             model.NormalizedEmail = string.Format(model.Email).ToUpper();
             model.NormalizedUserName = string.Format(model.Email).ToUpper();
 
-            var user = CreateUser();
+            var user = new User();
 
             await _userStore.SetUserNameAsync(user, model.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, model.Email, CancellationToken.None);
@@ -71,6 +64,7 @@ namespace TicketManagement.MVC.Controllers
                 user.TimeZone = DateTimeOffset.Now.Offset.ToString();
                 user.Language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name;
 
+                await _userManager.AddToRoleAsync(user, "User");
                 await _userManager.UpdateAsync(user);
                 return RedirectToAction("Index");
             }
@@ -81,20 +75,6 @@ namespace TicketManagement.MVC.Controllers
             }
 
             return RedirectToAction("Index");
-        }
-
-        private User CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<User>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
-                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
         }
 
         private IUserEmailStore<User> GetEmailStore()
@@ -177,7 +157,7 @@ namespace TicketManagement.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangeRole(string userId, List<string> roles)
+        public async Task<IActionResult> ChangeRole(string userId, IEnumerable<string> roles)
         {
             User user = await _userManager.FindByIdAsync(userId);
             if (user != null)

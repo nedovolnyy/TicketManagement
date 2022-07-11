@@ -11,11 +11,11 @@ namespace TicketManagement.MVC.Models
 
         public EventModel(DateTime eventTime,
                           DateTime eventEndTime,
-                          string? name = null!,
-                          string? description = null!,
-                          string? eventLogoImage = null!,
-                          string? price = null!,
-                          List<string>? layoutsId = null!)
+                          string name,
+                          string description,
+                          string eventLogoImage,
+                          string price,
+                          List<string> layoutsId)
         {
             Name = name;
             EventTime = eventTime;
@@ -28,7 +28,7 @@ namespace TicketManagement.MVC.Models
 
         [Required]
         [Display(Name = "Event Name")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [Display(Name = "Event Time")]
@@ -36,11 +36,11 @@ namespace TicketManagement.MVC.Models
 
         [Required]
         [Display(Name = "Description")]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [Required]
         [Display(Name = "Description for Area")]
-        public List<string>? LayoutsId { get; set; }
+        public List<string> LayoutsId { get; set; }
 
         [Required]
         [Display(Name = "Event End Time")]
@@ -49,12 +49,12 @@ namespace TicketManagement.MVC.Models
 
         [Required]
         [Display(Name = "EventLogoImage")]
-        public string? EventLogoImage { get; set; }
+        public string EventLogoImage { get; set; }
 
         [Required]
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         [Display(Name = "Price")]
-        public string? Price { get; set; }
+        public string Price { get; set; }
     }
 }

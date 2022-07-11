@@ -6,41 +6,41 @@ using TicketManagement.Common.Entities;
 namespace TicketManagement.MVC.Controllers
 {
     [Authorize(Roles = "Administrator")]
-    public class VenueManagementController : Controller
+    public class AreaManagementController : Controller
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public VenueManagementController(IServiceProvider serviceProvider)
+        public AreaManagementController(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
         public async Task<IActionResult> Index()
-            => View(await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync());
+            => View(await _serviceProvider.GetRequiredService<IAreaService>().GetAllAsync());
 
         public IActionResult Create() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Create(Venue venue)
+        public async Task<IActionResult> Create(Area area)
         {
-            await _serviceProvider.GetRequiredService<IVenueService>().InsertAsync(venue);
+            await _serviceProvider.GetRequiredService<IAreaService>().InsertAsync(area);
             return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(string id)
-            => View(await _serviceProvider.GetRequiredService<IVenueService>().GetByIdAsync(int.Parse(id)));
+            => View(await _serviceProvider.GetRequiredService<IAreaService>().GetByIdAsync(int.Parse(id)));
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Venue venue)
+        public async Task<IActionResult> Edit(Area area)
         {
-            await _serviceProvider.GetRequiredService<IVenueService>().UpdateAsync(venue);
+            await _serviceProvider.GetRequiredService<IAreaService>().UpdateAsync(area);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<ActionResult> Delete(string id)
         {
-            await _serviceProvider.GetRequiredService<IVenueService>().DeleteAsync(int.Parse(id));
+            await _serviceProvider.GetRequiredService<IAreaService>().DeleteAsync(int.Parse(id));
             return RedirectToAction("Index");
         }
     }
