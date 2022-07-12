@@ -57,17 +57,20 @@ namespace TicketManagement.BusinessLogic.Services
                 throw new ValidationException("EventEndTime cannot be later than EventTime!");
             }
 
-            var evntArray = await _eventRepository.GetAllByLayoutId(entity.LayoutId).ToListAsyncSafe();
-            foreach (var evnt in evntArray)
+            if (entity.Id == default)
             {
-                if (entity.LayoutId == evnt.LayoutId && entity.Name == evnt.Name)
+                var evntArray = await _eventRepository.GetAllByLayoutId(entity.LayoutId).ToListAsyncSafe();
+                foreach (var evnt in evntArray)
                 {
-                    throw new ValidationException("Layout name should be unique in venue!");
-                }
+                    if (entity.LayoutId == evnt.LayoutId && entity.Name == evnt.Name)
+                    {
+                        throw new ValidationException("Layout name should be unique in venue!");
+                    }
 
-                if (entity.LayoutId == evnt.LayoutId && entity.EventTime == evnt.EventTime)
-                {
-                    throw new ValidationException("Do not create event for the same layout in the same time!");
+                    if (entity.LayoutId == evnt.LayoutId && entity.EventTime == evnt.EventTime)
+                    {
+                        throw new ValidationException("Do not create event for the same layout in the same time!");
+                    }
                 }
             }
 
