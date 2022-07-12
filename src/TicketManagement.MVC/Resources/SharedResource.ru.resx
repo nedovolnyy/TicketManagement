@@ -177,4 +177,7 @@
   <data name="SurName" xml:space="preserve">
     <value>Фамилия</value>
   </data>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Подтвердите пароль</value>
+  </data>
 </root>

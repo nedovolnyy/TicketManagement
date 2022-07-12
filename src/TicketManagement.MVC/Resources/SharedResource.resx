@@ -123,6 +123,9 @@
   <data name="Confirm new password" xml:space="preserve">
     <value>Confirm new password</value>
   </data>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
   <data name="Current password" xml:space="preserve">
     <value>Current password</value>
   </data>

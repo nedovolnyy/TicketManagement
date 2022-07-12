@@ -177,4 +177,7 @@
   <data name="SurName" xml:space="preserve">
     <value>Прозвішча</value>
   </data>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Пацвердзіце пароль</value>
+  </data>
 </root>

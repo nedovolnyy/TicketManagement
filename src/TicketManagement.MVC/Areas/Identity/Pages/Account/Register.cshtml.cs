@@ -57,6 +57,7 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account
                     user.TimeZone = DateTimeOffset.Now.Offset.ToString();
                     user.Language = PageContext.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.Culture.Name;
 
+                    await _userManager.AddToRoleAsync(user, "User");
                     await _userManager.UpdateAsync(user);
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);

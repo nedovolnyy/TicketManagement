@@ -11,7 +11,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddRepositories(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<IDatabaseContext, DatabaseContext>(options => options.UseSqlServer(connectionString).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
+            services.AddDbContext<IDatabaseContext, DatabaseContext>(
+                options => options.UseSqlServer(connectionString)
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
                     .AddIdentity<User, Role>(
                         options =>
                         {
