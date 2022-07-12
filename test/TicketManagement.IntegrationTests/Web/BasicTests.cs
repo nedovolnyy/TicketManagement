@@ -1,20 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using AngleSharp.Html.Dom;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using System.Threading.Tasks;
 using NUnit.Framework;
-using TicketManagement.Common.DI;
-using TicketManagement.Common.Entities;
-using TicketManagement.MVC.Helpers;
 
 namespace TicketManagement.IntegrationTests.Web
 {

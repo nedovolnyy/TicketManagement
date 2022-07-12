@@ -10,12 +10,12 @@ namespace TicketManagement.Common.Entities
         {
         }
 
-        public EventSeat(int eventAreaId, int row, int number, int state)
+        public EventSeat(int eventAreaId, int row, int number, State state)
             : this(default, eventAreaId, row, number, state)
         {
         }
 
-        public EventSeat(int id, int eventAreaId, int row, int number, int state)
+        public EventSeat(int id, int eventAreaId, int row, int number, State state)
         {
             Id = id;
             EventAreaId = eventAreaId;
@@ -35,6 +35,6 @@ namespace TicketManagement.Common.Entities
         public int Number { get; set; }
 
         [Required]
-        public int State { get; set; }
+        public State State { get; set; }
     }
 }

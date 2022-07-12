@@ -17,7 +17,7 @@ namespace TicketManagement.IntegrationTests.Database
         {
             // arrange
             var areaDbSetBeforeInsert = await _areaServices.GetAllAsync();
-            var expectedArea = new Area(0, 2, "Thousand area of second layout", 1, 7);
+            var expectedArea = new Area(2, "Thousand area of second layout", 1, 7);
 
             // act
             await _areaServices.InsertAsync(expectedArea);
@@ -32,7 +32,7 @@ namespace TicketManagement.IntegrationTests.Database
         public async Task Update_WhenUpdateArea_ShouldBeEqualSameArea()
         {
             // arrange
-            var expectedArea = new Area(2, 1, "Firs456547t etter of 3ett layout", 1, 7);
+            var expectedArea = new Area(2, 1, "Firs27t etter of 3ett layout", 1, 7);
 
             // act
             await _areaServices.UpdateAsync(expectedArea);

@@ -17,6 +17,7 @@ namespace TicketManagement.Common.DI
         /// Method for change EventSeat.Status after purchase seat.
         /// </summary>
         /// <param name="eventSeatId">eventSeatId.</param>
-        Task ChangeEventSeatStatusAsync(int eventSeatId);
+        /// <param name="state">state.</param>
+        Task ChangeEventSeatStatusAsync(int eventSeatId, State state = State.Available);
     }
 }

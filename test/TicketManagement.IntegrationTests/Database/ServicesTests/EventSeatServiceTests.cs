@@ -16,7 +16,7 @@ namespace TicketManagement.IntegrationTests.Database
         public async Task Insert_WhenInsertEventSeat_ShouldBeEqualSameEventSeat()
         {
             // arrange
-            var expectedEventSeat = new EventSeat(0, 3, 9, 1, 1);
+            var expectedEventSeat = new EventSeat(0, 3, 9, 1, State.NotAvailable);
 
             // act
             await _eventSeatService.InsertAsync(expectedEventSeat);
@@ -30,7 +30,7 @@ namespace TicketManagement.IntegrationTests.Database
         public async Task Update_WhenUpdateEventSeat_ShouldBeEqualSameEventSeat()
         {
             // arrange
-            var expectedEventSeat = new EventSeat(4, 1, 3, 3, 1);
+            var expectedEventSeat = new EventSeat(4, 1, 3, 3, State.NotAvailable);
 
             // act
             await _eventSeatService.UpdateAsync(expectedEventSeat);
