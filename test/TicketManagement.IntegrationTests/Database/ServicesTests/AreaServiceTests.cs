@@ -10,20 +10,22 @@ namespace TicketManagement.IntegrationTests.Database
 {
     public class AreaServicesTests
     {
-        private static readonly IAreaRepository _areaServices = TestDatabaseFixture.ServiceProvider.GetRequiredService<IAreaRepository>();
+        private static readonly IAreaService _areaServices = TestDatabaseFixture.ServiceProvider.GetRequiredService<IAreaService>();
 
         [Test]
         public async Task Insert_WhenInsertArea_ShouldBeEqualSameArea()
         {
             // arrange
+            var areaDbSetBeforeInsert = await _areaServices.GetAllAsync();
             var expectedArea = new Area(0, 2, "Thousand area of second layout", 1, 7);
 
             // act
             await _areaServices.InsertAsync(expectedArea);
-            var actualDbSet = TestDatabaseFixture.DatabaseContext.Areas;
+            var areaDbSetAfterInsert = await _areaServices.GetAllAsync();
 
             // assert
-            actualDbSet.Should().ContainEquivalentOf(expectedArea, op => op.ExcludingMissingMembers());
+            areaDbSetBeforeInsert.Should().NotContainEquivalentOf(expectedArea, op => op.ExcludingMissingMembers());
+            areaDbSetAfterInsert.Should().ContainEquivalentOf(expectedArea, op => op.ExcludingMissingMembers());
         }
 
         [Test]
@@ -48,20 +50,20 @@ namespace TicketManagement.IntegrationTests.Database
 
             // act
             await _areaServices.DeleteAsync(13);
-            var actualCount = _areaServices.GetAll().Count();
+            var actualCount = (await _areaServices.GetAllAsync()).Count();
 
             // assert
             actualCount.Should().Be(expectedCount);
         }
 
         [Test]
-        public void GetAll_WhenHaveEntry_ShouldSameAreas()
+        public async Task GetAll_WhenHaveEntry_ShouldSameAreas()
         {
             // arrange
             var expectedCount = TestDatabaseFixture.DatabaseContext.Areas;
 
             // act
-            var actualCount = _areaServices.GetAll();
+            var actualCount = await _areaServices.GetAllAsync();
 
             // assert
             actualCount.Should().BeEquivalentTo(expectedCount);
@@ -78,22 +80,6 @@ namespace TicketManagement.IntegrationTests.Database
 
             // assert
             actualAreaDbSet.Should().ContainEquivalentOf(expectedArea);
-        }
-
-        [Test]
-        public void GetAllByLayoutId_WhenHaveEntry_ShouldContainThisAreas()
-        {
-            // arrange
-            var actualAreas = TestDatabaseFixture.DatabaseContext.Areas.ToList();
-
-            // act
-            var expectedAreas = _areaServices.GetAllByLayoutId(1).ToList();
-
-            // assert
-            foreach (var area in expectedAreas)
-            {
-                actualAreas.Should().ContainEquivalentOf(area);
-            }
         }
     }
 }
