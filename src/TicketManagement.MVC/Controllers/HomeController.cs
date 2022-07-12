@@ -51,7 +51,7 @@ namespace TicketManagement.MVC.Controllers
             {
                 User user = await _userManager.GetUserAsync(User);
                 user.Balance += decimal.Parse(Regex.Replace(money, @"[^\d.,]", ""));
-                user.PayHistory += "ChangeBalance" + " : " + user.Balance + Environment.NewLine;
+                user.PayHistory += "ChangeBalance" + " : $" + user.Balance + " | ";
                 await _userManager.UpdateAsync(user);
             }
 
@@ -61,11 +61,6 @@ namespace TicketManagement.MVC.Controllers
         public async Task<IActionResult> NoBalance()
         {
             return View(await _userManager.GetUserAsync(User));
-        }
-
-        public IActionResult AccessDenied()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

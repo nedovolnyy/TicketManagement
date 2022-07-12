@@ -17,8 +17,8 @@ namespace TicketManagement.Common.Identity
 
         [Required]
         [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Price")]
+        [DisplayFormat(DataFormatString = "{0:$#.##}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Balance")]
         public virtual decimal Balance { get; set; }
 
         public virtual string PayHistory { get; set; }

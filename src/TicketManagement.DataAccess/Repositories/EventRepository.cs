@@ -103,6 +103,21 @@ namespace TicketManagement.DataAccess.Repositories
             return (bool)paramIsAllAvailableSeats.Value;
         }
 
+        public async Task<decimal> GetPriceByEventIdAsync(int id)
+        {
+            var paramId = new SqlParameter("@Id", id);
+            var paramPrice = new SqlParameter
+            {
+                ParameterName = "@Price",
+                SqlDbType = SqlDbType.Decimal,
+                Direction = ParameterDirection.Output,
+            };
+
+            await _databaseContext.Instance.Database
+                .ExecuteSqlRawAsync("spEventGetPriceByEventId @Id, @Price OUT", paramId, paramPrice);
+            return (decimal)paramPrice.Value;
+        }
+
         public async Task<int> GetSeatsAvailableCountAsync(int id)
         {
             var paramId = new SqlParameter("@Id", id);

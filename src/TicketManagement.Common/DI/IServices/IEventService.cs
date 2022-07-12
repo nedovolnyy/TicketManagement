@@ -37,6 +37,13 @@ namespace TicketManagement.Common.DI
         Task<bool> IsAllAvailableSeatsAsync(int id);
 
         /// <summary>
+        /// Get price by Event.Id.
+        /// </summary>
+        /// <param name="id">id.</param>
+        /// <returns><see cref="decimal"/>.</returns>
+        Task<decimal> GetPriceByEventIdAsync(int id);
+
+        /// <summary>
         /// Count available seats.
         /// </summary>
         /// <param name="id">id.</param>

@@ -14,7 +14,7 @@ namespace TicketManagement.MVC.Models
                           string name,
                           string description,
                           string eventLogoImage,
-                          string price,
+                          decimal price,
                           List<string> layoutsId)
         {
             Name = name;
@@ -39,7 +39,7 @@ namespace TicketManagement.MVC.Models
         public string Description { get; set; }
 
         [Required]
-        [Display(Name = "Description for Area")]
+        [Display(Name = "Layout")]
         public List<string> LayoutsId { get; set; }
 
         [Required]
@@ -53,8 +53,8 @@ namespace TicketManagement.MVC.Models
 
         [Required]
         [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:$#.##}", ApplyFormatInEditMode = true)]
         [Display(Name = "Price")]
-        public string Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

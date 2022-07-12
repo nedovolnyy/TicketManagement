@@ -16,9 +16,9 @@ namespace TicketManagement.BusinessLogic.UnitTests
         private readonly EventSeatService _eventSeatService = new EventSeatService(_eventSeatRepository.Object);
         private readonly List<EventSeat> _expectedEventSeats = new List<EventSeat>
         {
-            new EventSeat(1, 6, 56, 2, true),
-            new EventSeat(2, 7, 3, 3, false),
-            new EventSeat(3, 5, 9, 1, true),
+            new EventSeat(1, 6, 56, 2, 1),
+            new EventSeat(2, 7, 3, 3, 0),
+            new EventSeat(3, 5, 9, 1, 1),
         };
         private int _timesApplyRuleCalled;
 
@@ -106,7 +106,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Insert_WhenCallInsertEventSeat_ShouldNotZeroCallback()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(1, 6, 6, 2, true);
+            var eventSeatExpected = new EventSeat(1, 6, 6, 2, 1);
 
             // act
             await _eventSeatService.InsertAsync(eventSeatExpected);
@@ -120,7 +120,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Update_WhenCallUpdateEventSeat_ShouldNotZeroCallback()
         {
             // arrange
-            var eventSeatExpected = new EventSeat(3, 5, 9, 1, true);
+            var eventSeatExpected = new EventSeat(3, 5, 9, 1, 1);
 
             // act
             await _eventSeatService.UpdateAsync(eventSeatExpected);

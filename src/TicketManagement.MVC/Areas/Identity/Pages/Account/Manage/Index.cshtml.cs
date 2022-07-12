@@ -1,11 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -26,6 +19,7 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
+        [Display(Name = "Username")]
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string SurName { get; set; }
@@ -107,7 +101,7 @@ namespace TicketManagement.MVC.Areas.Identity.Pages.Account.Manage
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
-            [Display(Name = "Sur Name")]
+            [Display(Name = "SurName")]
             public string SurName { get; set; }
         }
     }

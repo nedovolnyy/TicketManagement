@@ -40,8 +40,9 @@ namespace TicketManagement.Common.Entities
         public int CoordY { get; set; }
 
         [Required]
-        [Column("Price", TypeName = "decimal(18, 2)")]
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:$#.##}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Price")]
         public decimal Price { get; set; }
     }
 }

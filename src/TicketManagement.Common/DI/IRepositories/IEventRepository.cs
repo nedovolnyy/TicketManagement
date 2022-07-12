@@ -28,6 +28,13 @@ namespace TicketManagement.Common.DI
         IQueryable<Event> GetAllByLayoutId(int layoutId);
 
         /// <summary>
+        /// Get price by Event.Id.
+        /// </summary>
+        /// <param name="id">id.</param>
+        /// <returns><see cref="decimal"/>.</returns>
+        Task<decimal> GetPriceByEventIdAsync(int id);
+
+        /// <summary>
         /// All available seats or not.
         /// </summary>
         /// <param name="id">id.</param>

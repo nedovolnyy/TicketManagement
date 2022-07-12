@@ -95,6 +95,7 @@
     <Build Include="Indexes\IX_AspNetRoleClaims_RoleId.sql" />
     <Build Include="Indexes\UserNameIndex.sql" />
     <Build Include="StoredProcedures\spEventIsAllAvailableSeats.sql" />
+    <Build Include="StoredProcedures\spEventGetPriceByEventId.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Event.sql" />

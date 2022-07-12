@@ -462,7 +462,7 @@ $.validator.addMethod( "currency", function( value, element, param ) {
         soft = isParamString ? true : param[ 1 ],
         regex;
 
-    symbol = symbol.replace( /,/g, "" );
+    symbol = symbol.replace( /.,$/g, "" );
     symbol = soft ? symbol + "]" : symbol + "]?";
     regex = "^[" + symbol + "([1-9]{1}[0-9]{0,2}(\\,[0-9]{3})*(\\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|(\\.[0-9]{1,2})?)$";
     regex = new RegExp( regex );

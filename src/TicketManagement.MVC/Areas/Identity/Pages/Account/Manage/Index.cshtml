@@ -1,11 +1,13 @@
 ﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @model IndexModel
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
@@ -28,7 +30,7 @@
                 <input asp-for="Input.SurName" class="form-control" />
                 <label asp-for="Input.SurName" class="form-label"></label>
             </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">@Localizer["Save"]</button>
         </form>
     </div>
 </div>

@@ -120,4 +120,7 @@
   <data name="EPAM Spring-Summer Laboratory" xml:space="preserve">
     <value>EPAM Весенне-летняя лаборатория</value>
   </data>
+  <data name="TicketManagement" xml:space="preserve">
+    <value>TicketManagement</value>
+  </data>
 </root>

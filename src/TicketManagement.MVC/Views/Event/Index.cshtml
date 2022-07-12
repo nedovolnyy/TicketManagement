@@ -11,16 +11,11 @@
 @model IEnumerable<EventArea>
 
 @{
-    ViewData["Title"] = Localizer["EventPage"];
-}
-
-@{
     var evnt = await ServiceProvider.GetRequiredService<IEventService>().GetByIdAsync(Model.First().EventId);
 }
 
 <div class="text-center">
     <h1 class="display-4">@Localizer["Welcome to, "]@evnt.Name</h1>
-
     <div class="img__container">
         <img class="image shadow-lg" alt="" src="@Url.Content(evnt.EventLogoImage)" />
         <div class="img__description">

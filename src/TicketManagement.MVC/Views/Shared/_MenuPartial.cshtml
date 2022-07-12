@@ -1,31 +1,35 @@
-﻿@if (User.Identity is not null && User.Identity.IsAuthenticated)
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@if (User.Identity is not null && User.Identity.IsAuthenticated)
 {
     <ul class="navbar-nav">
         @if (User.IsInRole("EventManager") || User.IsInRole("Administrator"))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="EventManagement" asp-action="SelectVenues" title="Create Event">Create event</a>
+                <a class="nav-link text-dark" asp-controller="EventsManagement" asp-action="SelectVenues" >@Localizer["Create event"]</a>
             </li>
         }
         @if (User.IsInRole("Administrator"))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="AreaManagement" asp-action="Index" title="Areas management">Areas manage</a>
+                <a class="nav-link text-dark" asp-controller="AreasManagement" asp-action="Index" >@Localizer["Areas management"]</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="LayoutManagement" asp-action="Index" title="Layouts management">Layouts manage</a>
+                <a class="nav-link text-dark" asp-controller="LayoutsManagement" asp-action="Index" >@Localizer["Layouts management"]</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="VenueManagement" asp-action="Index" title="Venues management">Venues manage</a>
+                <a class="nav-link text-dark" asp-controller="VenuesManagement" asp-action="Index" >@Localizer["Venues management"]</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="UserManagement" asp-action="Index" title="Users management">Users manage</a>
+                <a class="nav-link text-dark" asp-controller="UsersManagement" asp-action="Index" >@Localizer["Users management"]</a>
             </li>
         }
         @if (User.IsInRole("User") || User.IsInRole("EventManager") || User.IsInRole("Administrator"))
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Home" asp-action="Cart" asp-action="Index" title="Cart">Cart</a>
+                <a class="nav-link text-dark" asp-controller="Home" asp-action="Cart" asp-action="Index" >@Localizer["Cart"]</a>
             </li>
         }
     </ul>

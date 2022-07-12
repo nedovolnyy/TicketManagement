@@ -97,16 +97,16 @@ insert into dbo.Seat
 --- Event
 insert into dbo.Event
 	values 
-		('Sider-Man II', '2023-05-30 00:00:00', 'Spider-Man II Movie', 1, '2023-05-30 00:45:00', 'https://i0.wp.com/www.mwcshanghai.com/wp-content/uploads/2022/01/hero-2022-general1.jpg?resize=2100%2C720&ssl=1'),
-		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 2, '2023-06-08 01:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-OjfE50Jq3Nq3V3AAy_gzaM98XUqqYN9P66USiVMA2NaZ4cADyObgEMrpACLzDAeX57c&usqp=CAU'),
-		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 3, '2023-05-30 01:30:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzDw_RhIiz9mF87VSo4RefxN5IIk94hdQ50awkHa2-Kn-GxZFxkHzi0ZTHMbu5uBpCY54&usqp=CAU'),
-		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 4, '2023-06-08 01:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpwViCv8QGIKNs9KmUBV6o85H1GSKtQTqs7J8Hw-7pwrL9vvTXHfzPztXyozkruU7uz8g&usqp=CAU'),
-		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 5, '2023-05-30 01:30:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1IZ9TiitYWL-I_0GUEF1q6kG0eL_kIbOrKfR2D0EricNf0OO0R0d9o9Ex5ZbBKxuEgh4&usqp=CAU'),
-		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 6, '2023-06-08 01:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSokh2e7sgFpBYCYU--b9p3mwGH_dNatPiS9g&usqp=CAU'),
-		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 7, '2023-05-30 01:30:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx4b1YOW470HqawzSbh5WVNFGgRt8RY5jOFv9tnUX9PI651u4Wp4nIEcfHH0cb7XwDQ68&usqp=CAU'),
-		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 8, '2023-06-08 01:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QvuRQA_ovTyaLVz1Cdcm_Ac7hIlDUiP1LESnSqzxF0D3YnjaIDxNnVNDSRfQ9dz7zKI&usqp=CAU'),
-		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 9, '2023-05-30 01:30:00', 'https://cdn.concreteplayground.com/content/uploads/2020/07/EventCinemas-supplied.jpg'),
-		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 10, '2023-05-30 01:30:00', 'https://cdn.concreteplayground.com/content/uploads/2020/07/Event-Cinemas_auditorium_supplied.jpg')
+		('Sider-Man II', '2023-05-30 00:00:00', 'Spider-Man II Movie', 1, '2023-05-30 08:45:00', 'https://i0.wp.com/www.mwcshanghai.com/wp-content/uploads/2022/01/hero-2022-general1.jpg?resize=2100%2C720&ssl=1'),
+		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 2, '2023-06-08 08:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-OjfE50Jq3Nq3V3AAy_gzaM98XUqqYN9P66USiVMA2NaZ4cADyObgEMrpACLzDAeX57c&usqp=CAU'),
+		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 3, '2023-05-30 09:30:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzDw_RhIiz9mF87VSo4RefxN5IIk94hdQ50awkHa2-Kn-GxZFxkHzi0ZTHMbu5uBpCY54&usqp=CAU'),
+		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 4, '2023-06-08 07:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpwViCv8QGIKNs9KmUBV6o85H1GSKtQTqs7J8Hw-7pwrL9vvTXHfzPztXyozkruU7uz8g&usqp=CAU'),
+		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 5, '2023-05-30 09:30:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1IZ9TiitYWL-I_0GUEF1q6kG0eL_kIbOrKfR2D0EricNf0OO0R0d9o9Ex5ZbBKxuEgh4&usqp=CAU'),
+		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 6, '2023-06-08 08:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSokh2e7sgFpBYCYU--b9p3mwGH_dNatPiS9g&usqp=CAU'),
+		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 7, '2023-05-30 09:30:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx4b1YOW470HqawzSbh5WVNFGgRt8RY5jOFv9tnUX9PI651u4Wp4nIEcfHH0cb7XwDQ68&usqp=CAU'),
+		('Venom', '2023-06-08 00:00:00', 'Venom Movie', 8, '2023-06-08 07:00:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QvuRQA_ovTyaLVz1Cdcm_Ac7hIlDUiP1LESnSqzxF0D3YnjaIDxNnVNDSRfQ9dz7zKI&usqp=CAU'),
+		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 9, '2023-05-30 09:30:00', 'https://cdn.concreteplayground.com/content/uploads/2020/07/EventCinemas-supplied.jpg'),
+		('Soccer', '2023-05-30 00:00:00', 'CSKA-TSMOKY', 10, '2023-05-30 08:30:00', 'https://cdn.concreteplayground.com/content/uploads/2020/07/Event-Cinemas_auditorium_supplied.jpg')
 
 --- EventArea
 insert into dbo.EventArea

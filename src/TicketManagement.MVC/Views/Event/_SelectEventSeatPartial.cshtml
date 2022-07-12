@@ -26,61 +26,61 @@
         {
             if (seat.Row != tempRow)
             {
-                @Html.Raw("<tr><td>")
-                <div class="container">
-                    @if (User.Identity is not null && User.Identity.IsAuthenticated)
+                    @Html.Raw("<tr><td>")
+                    <div class="container">
+                        @if (User.Identity is not null && User.Identity.IsAuthenticated)
                     {
-                        <form id="@Html.Raw("seat"+seat.Id)" asp-controller="Event"
+                            <form id="@Html.Raw("seat"+seat.Id)" asp-controller="Event"
               asp-action="Purchase" asp-route-eventSeatId="@seat.Id" asp-route-returnUrl="@returnUrl" asp-route-price="@Model.Price"
               method="post" class="form-horizontal" role="form">
-                            <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" onclick="return confirm('Are you sure you want to buy this seat?')" id="@Html.Raw("btn"+seat.Id)" @((seat.State) ? "disabled" : "")>
-                                <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
-                            @Html.DisplayFor(model => model.Price)
-                            <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
-                        </button>
-                        </form>
+                                <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" onclick="@Html.Raw("return confirm('")@Localizer["Are you sure you want to buy this seat?"]@Html.Raw("')")" id="@Html.Raw("btn"+seat.Id)" @((seat.State != default) ? "disabled" : "")>
+                                    <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
+                                    @Html.DisplayFor(model => model.Price)
+                                    <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
+                                </button>
+                            </form>
                     }
                     else
                     {
-                        <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" id="@Html.Raw("btn"+seat.Id)" @((seat.State) ? "disabled" : "")>
-                            <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
-                            @Html.DisplayFor(model => model.Price)
-                            <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
-                        </button>
+                            <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" id="@Html.Raw("btn"+seat.Id)" @((seat.State != default) ? "disabled" : "")>
+                                <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
+                                @Html.DisplayFor(model => model.Price)
+                                <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
+                            </button>
                     }
-                </div>
-                @Html.Raw("</td>")
+                    </div>
+                    @Html.Raw("</td>")
             }
             if (seat.Row == tempRow)
             {
-                @Html.Raw("<td>")
-                <div class="container">
-                    @if (User.Identity is not null && User.Identity.IsAuthenticated)
+                    @Html.Raw("<td>")
+                    <div class="container">
+                        @if (User.Identity is not null && User.Identity.IsAuthenticated)
                     {
-                        <form id="@Html.Raw("seat"+seat.Id)" asp-controller="Event"
+                            <form id="@Html.Raw("seat"+seat.Id)" asp-controller="Event"
               asp-action="Purchase" asp-route-eventSeatId="@seat.Id" asp-route-returnUrl="@returnUrl" asp-route-price="@Model.Price"
               method="post" class="form-horizontal" role="form">
-                            <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" onclick="return confirm('Are you sure you want to buy this seat?')" id="@Html.Raw("btn"+seat.Id)" @((seat.State) ? "disabled" : "")>
-                                <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
-                            @Html.DisplayFor(model => model.Price)
-                            <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
-                        </button>
-                        </form>
+                                <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" onclick="@Html.Raw("return confirm('")@Localizer["Are you sure you want to buy this seat?"]@Html.Raw("')")" id="@Html.Raw("btn"+seat.Id)" @((seat.State != default) ? "disabled" : "")>
+                                    <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
+                                    @Html.DisplayFor(model => model.Price)
+                                    <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
+                                </button>
+                            </form>
                     }
                     else
                     {
-                        <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" id="@Html.Raw("btn"+seat.Id)" @((seat.State) ? "disabled" : "")>
-                            <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
-                            @Html.DisplayFor(model => model.Price)
-                            <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
-                        </button>
+                            <button class="btn btn-outline-secondary btn-lg btn-block" style="height: 80px;" type="submit" id="@Html.Raw("btn"+seat.Id)" @((seat.State != default) ? "disabled" : "")>
+                                <label class="text-sm-start" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Row</label>
+                                @Html.DisplayFor(model => model.Price)
+                                <label class="text-sm-end" style="font-size: 0.5em; display:table-cell; vertical-align:top;">@seat.Number</label>
+                            </button>
                     }
-                </div>
-                @Html.Raw("</td>")
+                    </div>
+                    @Html.Raw("</td>")
             }
             tempRow = seat.Row;
         }
-        @Html.Raw("</tr>")
+            @Html.Raw("</tr>")
     }
 </div>
 @Html.Raw("</table>")

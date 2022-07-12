@@ -120,4 +120,61 @@
   <data name="Language" xml:space="preserve">
     <value>Мова</value>
   </data>
+  <data name="Time zone" xml:space="preserve">
+    <value>Часавы ланцуг</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Апісанне</value>
+  </data>
+  <data name="Event End Time" xml:space="preserve">
+    <value>Час заканчэння мерапрыемства</value>
+  </data>
+  <data name="Event Name" xml:space="preserve">
+    <value>Назва падзеи</value>
+  </data>
+  <data name="Event Time" xml:space="preserve">
+    <value>Час пачатку мерапрыемства</value>
+  </data>
+  <data name="EventLogoImage" xml:space="preserve">
+    <value>Малюнак</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>Рэгiён</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Кошт</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Электронная пошта</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Мянушка</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Баланс</value>
+  </data>
+  <data name="Confirm new password" xml:space="preserve">
+    <value>Пацвердзіце новы пароль</value>
+  </data>
+  <data name="Current password" xml:space="preserve">
+    <value>Цякушчы пароль</value>
+  </data>
+  <data name="First Name" xml:space="preserve">
+    <value>Імя</value>
+  </data>
+  <data name="New email" xml:space="preserve">
+    <value>Новая электронная пошта</value>
+  </data>
+  <data name="New password" xml:space="preserve">
+    <value>Новы пароль</value>
+  </data>
+  <data name="Phone number" xml:space="preserve">
+    <value>Нумар тэлефона</value>
+  </data>
+  <data name="SurName" xml:space="preserve">
+    <value>Прозвішча</value>
+  </data>
 </root>

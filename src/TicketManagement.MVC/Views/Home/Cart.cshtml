@@ -2,8 +2,8 @@
 @using TicketManagement.Common.Identity
 
 @model User
-
 @inject IViewLocalizer Localizer
+
 <tr>
     <td><h1>@Localizer["To up balance:"]</h1></td>
     <td>
@@ -13,7 +13,7 @@
                 <input asp-for="Balance" name="money" class="form-control" />
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-outline-success">Add money</button>
+                <button type="submit" class="btn btn-outline-success">@Localizer["Add money"]</button>
             </div>
         </form>
     </td>

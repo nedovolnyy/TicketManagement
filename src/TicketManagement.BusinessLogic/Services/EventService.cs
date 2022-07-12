@@ -37,6 +37,9 @@ namespace TicketManagement.BusinessLogic.Services
         public virtual async Task<bool> IsAllAvailableSeatsAsync(int id)
             => await _eventRepository.IsAllAvailableSeatsAsync(id);
 
+        public virtual async Task<decimal> GetPriceByEventIdAsync(int id)
+            => await _eventRepository.GetPriceByEventIdAsync(id);
+
         public virtual async Task<int> GetSeatsAvailableCountAsync(int id)
             => await _eventRepository.GetSeatsAvailableCountAsync(id);
         public virtual async Task<int> GetSeatsCountAsync(int layoutId)

@@ -21,7 +21,7 @@ namespace TicketManagement.DataAccess.Repositories
         public async Task ChangeEventSeatStatusAsync(int eventSeatId)
         {
             var eventSeat = await GetByIdAsync(eventSeatId);
-            eventSeat.State = !eventSeat.State;
+            eventSeat.State = eventSeat.State == default ? 1 : 0;
             await UpdateAsync(eventSeat);
         }
 
