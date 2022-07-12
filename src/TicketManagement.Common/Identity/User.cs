@@ -17,7 +17,7 @@ namespace TicketManagement.Common.Identity
 
         [Required]
         [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:$#.##}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:$0.00}", ApplyFormatInEditMode = true)]
         [Display(Name = "Balance")]
         public virtual decimal Balance { get; set; }
 

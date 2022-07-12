@@ -53,7 +53,7 @@ namespace TicketManagement.MVC.Models
 
         [Required]
         [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:$#.##}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:$0.00}", ApplyFormatInEditMode = true)]
         [Display(Name = "Price")]
         public decimal Price { get; set; }
     }
