@@ -1,139 +1,182 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
     public class SeatServiceTests
     {
+        private static readonly Mock<ISeatRepository> _seatRepository = new Mock<ISeatRepository> { CallBase = true };
+        private readonly SeatService _seatService = new SeatService(_seatRepository.Object);
         private readonly List<Seat> _expectedSeats = new List<Seat>
         {
             new Seat(1, 1, 1, 1),
             new Seat(2, 1, 2, 2),
             new Seat(3, 2, 1, 1),
         };
+        private int _timesApplyRuleCalled;
 
-        [TestCase(1, 0, 1, 1)]
-        [TestCase(2, 1, 0, 2)]
-        [TestCase(3, 2, 1, 0)]
-        public void Validate_WhenSeatFieldNull_ShouldThrow(int id, int areaId, int row, int number)
+        [SetUp]
+        protected void SetUp()
         {
-            // arrange
-            var strException =
-                "The field of Seat is not allowed to be null!";
-            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
-            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-
-            // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => seatService.Object.Validate(seatExpected));
-
-            // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            _seatRepository.Setup(x => x.InsertAsync(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
+            _seatRepository.Setup(x => x.UpdateAsync(It.IsAny<Seat>())).Callback(() => _timesApplyRuleCalled++);
+            _seatRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            _seatRepository.Setup(x => x.GetAll()).Returns(_expectedSeats.AsQueryable());
+            foreach (var seat in _expectedSeats)
+            {
+                _seatRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(_expectedSeats[seat.Id - 1]);
+                _seatRepository.Setup(x => x.GetAllByAreaId(seat.AreaId)).Returns(_expectedSeats.Where(x=> x.AreaId == seat.AreaId).AsQueryable());
+            }
         }
 
-        [TestCase(1, 1, 1, 1)]
-        [TestCase(2, 1, 2, 2)]
-        [TestCase(3, 2, 1, 1)]
-        public void Validate_WhenRowAndNumberNonUniqueForSeat_ShouldTrow(int id, int areaId, int row, int number)
+        [Test]
+        public void Validate_WhenSeatFieldAreaIdZero_ShouldThrow()
         {
             // arrange
+            var seatExpected = new Seat
+            {
+                AreaId = default,
+                Number = _expectedSeats[0].Number,
+                Row = _expectedSeats[0].Row,
+            };
+            var strException =
+                "The field 'AreaId' of Seat is not allowed to be null!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _seatService.ValidateAsync(seatExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenSeatFieldRowZero_ShouldThrow()
+        {
+            // arrange
+            var seatExpected = new Seat
+            {
+                AreaId = _expectedSeats[0].AreaId,
+                Number = _expectedSeats[0].Number,
+                Row = default,
+            };
+            var strException =
+                "The field 'Row' of Seat is not allowed to be null!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _seatService.ValidateAsync(seatExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenSeatFieldNumberZero_ShouldThrow()
+        {
+            // arrange
+            var seatExpected = new Seat
+            {
+                AreaId = _expectedSeats[0].AreaId,
+                Number = default,
+                Row = _expectedSeats[0].Row,
+            };
+            var strException =
+                "The field 'Number' of Seat is not allowed to be null!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _seatService.ValidateAsync(seatExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenRowAndNumberNonUniqueForArea_ShouldTrow()
+        {
+            // arrange
+            var seatExpected = new Seat
+            {
+                AreaId = _expectedSeats[1].AreaId,
+                Number = _expectedSeats[1].Number,
+                Row = _expectedSeats[1].Row,
+            };
             var strException =
                 "Row and number should be unique for area!";
-            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
-            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            seatRepository.Setup(x => x.GetAllByAreaId(areaId)).Returns(_expectedSeats);
-            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => seatService.Object.Validate(seatExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _seatService.ValidateAsync(seatExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(3, 2, 1, 6)]
-        public void Insert_WhenInsertSeat_ShouldNotNull(int id, int areaId, int row, int number)
+        [Test]
+        public async Task Insert_WhenCallInsertSeat_ShouldNotZeroCallback()
         {
             // arrange
-            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
-            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
+            var seatExpected = new Seat(2, 1, 6);
 
             // act
-            seatService.Setup(x => x.Insert(It.IsAny<Seat>())).Returns(1);
-            var actual = seatService.Object.Insert(seatExpected);
+            await _seatService.InsertAsync(seatExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
-        [TestCase(1, 6, 1, 1)]
-        public void Update_WhenUpdateSeat_ShouldNotNull(int id, int areaId, int row, int number)
+        [Test]
+        public async Task Update_WhenCallUpdateSeat_ShouldNotZeroCallback()
         {
             // arrange
-            var seatExpected = new Seat(id: id, areaId: areaId, row: row, number: number);
-            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
+            var seatExpected = new Seat(1, 6, 2, 1);
 
             // act
-            seatService.Setup(x => x.Update(It.IsAny<Seat>())).Returns(1);
-            var actual = seatService.Object.Update(seatExpected);
+            await _seatService.UpdateAsync(seatExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteSeat_ShouldNotNull(int id)
+        [Test]
+        public async Task Delete_WhenCallDeleteSeat_ShouldNotZeroCallback()
         {
-            // arrange
-            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-
             // act
-            seatService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = seatService.Object.Delete(id);
+            await _seatService.DeleteAsync(1);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnSeatById_ShouldNotNull(int id)
+        [Test]
+        public async Task GetById_WhenReturnSeatById_ShouldNotNull()
         {
-            // arrange
-            var seatExpected = new Seat(3, 2, 1, 1);
-            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-
             // act
-            seatService.Setup(x => x.GetById(It.IsAny<int>())).Returns(seatExpected);
-            var actual = seatService.Object.GetById(id);
+            var actual = await _seatService.GetByIdAsync(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public void GetAll_WhenReturnSeats_ShouldNotNull()
+        public async Task GetAll_WhenReturnSeats_ShouldNotZero()
         {
-            // arrange
-            var seatRepository = new Mock<ISeatRepository> { CallBase = true };
-            var seatService = new Mock<SeatService>(seatRepository.Object) { CallBase = true };
-
             // act
-            seatService.Setup(x => x.GetAll()).Returns(_expectedSeats);
-            var actual = seatService.Object.GetAll();
+            var actual = (await _seatService.GetAllAsync()).Count();
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(actual);
         }
     }
 }

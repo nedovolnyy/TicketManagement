@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TicketManagement.BusinessLogic.Interfaces;
+using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -15,25 +15,25 @@ namespace TicketManagement.BusinessLogic.Services
             _entityRepository = entityRepository;
         }
 
-        public virtual int Insert(T entity)
+        public virtual async Task InsertAsync(T entity)
         {
-            Validate(entity);
-            return _entityRepository.Insert(entity);
+            await ValidateAsync(entity);
+            await _entityRepository.InsertAsync(entity);
         }
 
-        public virtual int Update(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
-            Validate(entity);
-            return _entityRepository.Update(entity);
+            await ValidateAsync(entity);
+            await _entityRepository.UpdateAsync(entity);
         }
 
-        public virtual int Delete(int id) =>
-            _entityRepository.Delete(id);
-        public virtual T GetById(int id) =>
-            _entityRepository.GetById(id);
-        public virtual IEnumerable<T> GetAll() =>
-            _entityRepository.GetAll();
+        public virtual async Task DeleteAsync(int id) =>
+            await _entityRepository.DeleteAsync(id);
+        public virtual async Task<T> GetByIdAsync(int id) =>
+            await _entityRepository.GetByIdAsync(id);
+        public virtual async Task<IEnumerable<T>> GetAllAsync() =>
+            await _entityRepository.GetAll().ToListAsyncSafe();
 
-        public abstract void Validate(T entity);
+        public abstract Task ValidateAsync(T entity);
     }
 }

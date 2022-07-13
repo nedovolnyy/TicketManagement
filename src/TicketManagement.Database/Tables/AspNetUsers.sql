@@ -1,0 +1,26 @@
+﻿CREATE TABLE [dbo].[AspNetUsers]
+(
+        [Id] nvarchar(450) NOT NULL,
+        [UserName] nvarchar(256) NULL,
+        [NormalizedUserName] nvarchar(256) NULL,
+        [Email] nvarchar(256) NULL,
+        [NormalizedEmail] nvarchar(256) NULL,
+        [EmailConfirmed] bit NOT NULL,
+        [PasswordHash] nvarchar(max) NULL,
+        [SecurityStamp] nvarchar(max) NULL,
+        [ConcurrencyStamp] nvarchar(max) NULL,
+        [PhoneNumber] nvarchar(max) NULL,
+        [PhoneNumberConfirmed] bit NOT NULL,
+        [TwoFactorEnabled] bit NOT NULL,
+        [LockoutEnd] datetimeoffset NULL,
+        [LockoutEnabled] bit NOT NULL,
+        [AccessFailedCount] int NOT NULL,
+        [FirstName] nvarchar(256) NULL,
+        [SurName] nvarchar(256) NULL,
+        [Language] nvarchar(256) NULL,
+        [TimeZone] nvarchar(256) NULL,
+        [CartCount] INT NOT NULL DEFAULT 0 , 
+    [Balance] DECIMAL(18, 2) NOT NULL DEFAULT 0, 
+    [PayHistory] NVARCHAR(MAX) NULL, 
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
+)

@@ -1,9 +1,20 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketManagement.Common.Entities
 {
+    [Table("Layout")]
     public class Layout : BaseEntity
     {
+        public Layout()
+        {
+        }
+
+        public Layout(string name, int venueId, string description)
+            : this(default, name, venueId, description)
+        {
+        }
+
         public Layout(int id, string name, int venueId, string description)
         {
             Id = id;
@@ -12,8 +23,16 @@ namespace TicketManagement.Common.Entities
             Description = description;
         }
 
-        public string Name { get; private set; }
-        public int VenueId { get; private set; }
-        public string Description { get; private set; }
+        [Required]
+        [MaxLength(120)]
+        public string Name { get; set; }
+
+        [Required]
+        [ForeignKey("Venue")]
+        public int VenueId { get; set; }
+
+        [Required]
+        [MaxLength(120)]
+        public string Description { get; set; }
     }
 }

@@ -1,7 +1,11 @@
-﻿namespace TicketManagement.Common.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TicketManagement.Common.Entities
 {
     public class BaseEntity
     {
-        public int Id { get; protected set; }
+        [Key]
+        [Required]
+        public int Id { get; set; }
     }
 }

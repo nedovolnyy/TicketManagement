@@ -1,8 +1,8 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -15,14 +15,27 @@ namespace TicketManagement.BusinessLogic.Services
             _seatRepository = seatRepository;
         }
 
-        public override void Validate(Seat entity)
+        public virtual async Task<IEnumerable<Seat>> GetAllByAreaIdAsync(int areaId)
+            => await _seatRepository.GetAllByAreaId(areaId).ToListAsyncSafe();
+
+        public override async Task ValidateAsync(Seat entity)
         {
-            if (entity.AreaId == 0 || entity.Row == 0 || entity.Number == 0)
+            if (entity.AreaId == default)
             {
-                throw new ValidationException("The field of Seat is not allowed to be null!");
+                throw new ValidationException("The field 'AreaId' of Seat is not allowed to be null!");
             }
 
-            var seatArray = _seatRepository.GetAllByAreaId(entity.AreaId);
+            if (entity.Row == default)
+            {
+                throw new ValidationException("The field 'Row' of Seat is not allowed to be null!");
+            }
+
+            if (entity.Number == default)
+            {
+                throw new ValidationException("The field 'Number' of Seat is not allowed to be null!");
+            }
+
+            var seatArray = await _seatRepository.GetAllByAreaId(entity.AreaId).ToListAsyncSafe();
             foreach (var seat in seatArray)
             {
                 if (entity.Row == seat.Row && entity.Number == seat.Number)

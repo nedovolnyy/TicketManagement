@@ -1,7 +1,7 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -14,17 +14,27 @@ namespace TicketManagement.BusinessLogic.Services
             _venueRepository = venueRepository;
         }
 
-        public override void Validate(Venue entity)
+        public override async Task ValidateAsync(Venue entity)
         {
-            if (entity.Name == "" || entity.Address == "" || entity.Description == "")
+            if (string.IsNullOrEmpty(entity.Name))
             {
-                throw new ValidationException("The field of Venue is not allowed to be null!");
+                throw new ValidationException("The field 'Name' of Venue is not allowed to be empty!");
             }
 
-            var venue = _venueRepository.GetFirstByName(entity.Name);
-            if (venue != null)
+            if (string.IsNullOrEmpty(entity.Address))
             {
-                throw new ValidationException("The Venue name has not unique!");
+                throw new ValidationException("The field 'Address' of Venue is not allowed to be empty!");
+            }
+
+            if (string.IsNullOrEmpty(entity.Description))
+            {
+                throw new ValidationException("The field 'Description' of Venue is not allowed to be empty!");
+            }
+
+            var venueId = await _venueRepository.GetIdFirstByNameAsync(entity.Name);
+            if (venueId != default)
+            {
+                throw new ValidationException("The Venue name is not unique!");
             }
         }
     }

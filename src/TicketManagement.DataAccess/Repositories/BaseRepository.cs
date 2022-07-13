@@ -1,92 +1,49 @@
-﻿using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.DataAccess.Repositories
 {
-    internal abstract class BaseRepository<T> : IRepository<T>
+    internal class BaseRepository<T> : IRepository<T>
         where T : BaseEntity
     {
         private readonly IDatabaseContext _databaseContext;
+        private readonly DbSet<T> _dbSet;
+
         protected BaseRepository(IDatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
+            _dbSet = _databaseContext.Instance.Set<T>();
         }
 
-        /// <summary>
-        /// Base method for insert data.
-        /// </summary>
-        /// <param name="entity">Entity.</param>
-        public int Insert(T entity)
+        public virtual async Task InsertAsync(T entity)
         {
-            int i;
-
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForInsert(entity, cmd);
-            i = cmd.ExecuteNonQuery();
-            return i;
+            await _dbSet.AddAsync(entity);
+            await _databaseContext.Instance.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Base method for update data.
-        /// </summary>
-        /// <param name="entity">Entity.</param>
-        public int Update(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
-            int i;
-
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForUpdate(entity, cmd);
-            i = cmd.ExecuteNonQuery();
-            return i;
+            _databaseContext.Instance.Entry(entity).State = EntityState.Modified;
+            await _databaseContext.Instance.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Base method for delete data.
-        /// </summary>
-        /// <param name="id">id.</param>
-        public int Delete(int id)
+        public virtual async Task DeleteAsync(int id)
         {
-            int i;
-
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForDelete(id, cmd);
-            i = cmd.ExecuteNonQuery();
-            return i;
+            _dbSet.Remove(await _dbSet.FindAsync(id));
+            await _databaseContext.Instance.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Base method for populate data by id.
-        /// </summary>
-        /// <param name="id">id.</param>
-        /// <returns><see cref="BaseEntity"/>BaseEntity&gt;.</returns>
-        public T GetById(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
-            AddParamsForGetById(id, cmd);
-            using var reader = cmd.ExecuteReader();
-            return Map(reader);
+            return await _dbSet.FindAsync(id);
         }
 
-        /// <summary>
-        /// Base method for populate all data.
-        /// </summary>
-        /// <returns><see cref="BaseEntity"/>List&lt;BaseEntity&gt;.</returns>
-        public IEnumerable<T> GetAll()
+        public virtual IQueryable<T> GetAll()
         {
-            var cmd = _databaseContext.Connection.CreateCommand();
-            GetAllCommandParameters(cmd);
-            using var reader = cmd.ExecuteReader();
-            return Maps(reader);
+            return _dbSet.AsNoTracking();
         }
-
-        protected abstract void AddParamsForInsert(T entity, SqlCommand cmd);
-        protected abstract void AddParamsForUpdate(T entity, SqlCommand cmd);
-        protected abstract void AddParamsForDelete(int id, SqlCommand cmd);
-        protected abstract void AddParamsForGetById(int id, SqlCommand cmd);
-        protected abstract void GetAllCommandParameters(SqlCommand cmd);
-        protected abstract T Map(SqlDataReader reader);
-        protected abstract List<T> Maps(SqlDataReader reader);
     }
 }

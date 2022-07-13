@@ -1,7 +1,8 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -14,14 +15,27 @@ namespace TicketManagement.BusinessLogic.Services
             _layoutRepository = layoutRepository;
         }
 
-        public override void Validate(Layout entity)
+        public async Task<IEnumerable<Layout>> GetAllByVenueIdAsync(int venueId)
+            => await _layoutRepository.GetAllByVenueId(venueId).ToListAsyncSafe();
+
+        public override async Task ValidateAsync(Layout entity)
         {
-            if (entity.VenueId == 0 || entity.Name == "" || entity.Description == "")
+            if (entity.VenueId == default)
             {
-                throw new ValidationException("The field of Layout is not allowed to be null!");
+                throw new ValidationException("The field 'VenueId' of Layout is not allowed to be null!");
             }
 
-            var layoutArray = _layoutRepository.GetAllByVenueId(entity.VenueId);
+            if (string.IsNullOrEmpty(entity.Name))
+            {
+                throw new ValidationException("The field 'Name' of Layout is not allowed to be empty!");
+            }
+
+            if (string.IsNullOrEmpty(entity.Description))
+            {
+                throw new ValidationException("The field 'Description' of Layout is not allowed to be empty!");
+            }
+
+            var layoutArray = await _layoutRepository.GetAllByVenueId(entity.VenueId).ToListAsyncSafe();
             foreach (var layout in layoutArray)
             {
                 if (entity.Name == layout.Name)

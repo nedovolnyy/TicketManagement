@@ -62,6 +62,7 @@
     <Folder Include="Tables" />
     <Folder Include="Post" />
     <Folder Include="StoredProcedures\" />
+    <Folder Include="Indexes" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="ForeignKeys\FK_Venue_Layout.sql" />
@@ -70,8 +71,31 @@
     <Build Include="ForeignKeys\FK_Area_Seat.sql" />
     <Build Include="ForeignKeys\FK_Layout_Event.sql" />
     <Build Include="ForeignKeys\FK_Event_EventArea.sql" />
-    <Build Include="ForeignKeys\FK_Area_EventSeat.sql" />
-    <Build Include="StoredProcedures\spEvent.sql" />
+    <Build Include="ForeignKeys\FK_EventArea_EventSeat.sql" />
+    <Build Include="StoredProcedures\spEventInsert.sql" />
+    <Build Include="StoredProcedures\spEventDelete.sql" />
+    <Build Include="StoredProcedures\spEventForValidationByLayout.sql" />
+    <Build Include="StoredProcedures\spEventGetAll.sql" />
+    <Build Include="StoredProcedures\spEventGetById.sql" />
+    <Build Include="StoredProcedures\spEventUpdate.sql" />
+    <Build Include="StoredProcedures\spEventCountAvailableSeats.sql" />
+    <Build Include="StoredProcedures\spEventCountSeats.sql" />
+    <Build Include="Tables\AspNetUsers.sql" />
+    <Build Include="Tables\AspNetRoles.sql" />
+    <Build Include="Tables\AspNetRoleClaims.sql" />
+    <Build Include="Tables\AspNetUserClaims.sql" />
+    <Build Include="Tables\AspNetUserLogins.sql" />
+    <Build Include="Tables\AspNetUserRoles.sql" />
+    <Build Include="Tables\AspNetUserTokens.sql" />
+    <Build Include="Indexes\RoleNameIndex.sql" />
+    <Build Include="Indexes\IX_AspNetUserClaims_UserId.sql" />
+    <Build Include="Indexes\IX_AspNetUserLogins_UserId.sql" />
+    <Build Include="Indexes\EmailIndex.sql" />
+    <Build Include="Indexes\IX_AspNetUserRoles_RoleId.sql" />
+    <Build Include="Indexes\IX_AspNetRoleClaims_RoleId.sql" />
+    <Build Include="Indexes\UserNameIndex.sql" />
+    <Build Include="StoredProcedures\spEventIsAllAvailableSeats.sql" />
+    <Build Include="StoredProcedures\spEventGetPriceByEventId.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Event.sql" />

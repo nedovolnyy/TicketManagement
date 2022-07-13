@@ -1,27 +1,42 @@
-﻿using TicketManagement.BusinessLogic.Interfaces;
+﻿using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.Services
 {
     internal class AreaService : BaseService<Area>, IAreaService
     {
         private readonly IAreaRepository _areaRepository;
-        internal AreaService(IAreaRepository areaRepository)
+        public AreaService(IAreaRepository areaRepository)
             : base(areaRepository)
         {
             _areaRepository = areaRepository;
         }
 
-        public override void Validate(Area entity)
+        public override async Task ValidateAsync(Area entity)
         {
-            if (entity.LayoutId == 0 || entity.CoordX == 0 || entity.CoordY == 0 || entity.Description == "")
+            if (entity.LayoutId == default)
             {
-                throw new ValidationException("The field of Area is not allowed to be null!");
+                throw new ValidationException("The field 'LayoutId' of Area is not allowed to be null!");
             }
 
-            var areaArray = _areaRepository.GetAllByLayoutId(entity.LayoutId);
+            if (entity.CoordX == default)
+            {
+                throw new ValidationException("The field 'CoordX' of Area is not allowed to be null!");
+            }
+
+            if (entity.CoordY == default)
+            {
+                throw new ValidationException("The field 'CoordY' of Area is not allowed to be null!");
+            }
+
+            if (string.IsNullOrEmpty(entity.Description))
+            {
+                throw new ValidationException("The field 'Description' of Area is not allowed to be empty!");
+            }
+
+            var areaArray = await _areaRepository.GetAllByLayoutId(entity.LayoutId).ToListAsyncSafe();
             foreach (var area in areaArray)
             {
                 if (entity.Description == area.Description)

@@ -1,177 +1,351 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
     public class EventServiceTests
     {
+        private static readonly Mock<IEventRepository> _eventRepository = new Mock<IEventRepository> { CallBase = true };
+        private readonly EventService _eventService = new EventService(_eventRepository.Object);
         private readonly List<Event> _expectedEvents = new List<Event>
         {
-            new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2),
-            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00.0000000 +03:00"), "Stanger Things Serie", 1),
+            new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"), "image1"),
+            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00 +03:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image2"),
         };
+        private int _timesApplyRuleCalled;
 
-        [TestCase(2, 0, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
-        [TestCase(1, 2, "", "09/09/2021", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "")]
-        public void Validate_WhenEventFieldNull_ShouldThrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [SetUp]
+        protected void SetUp()
         {
-            // arrange
-            var strException =
-                "The field of Event is not allowed to be null!";
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
-
-            // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => evntService.Object.Validate(evntExpected));
-
-            // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            _eventRepository.Setup(x => x.InsertAsync(It.IsAny<Event>(), It.IsAny<decimal>())).Callback(() => _timesApplyRuleCalled++);
+            _eventRepository.Setup(x => x.UpdateAsync(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
+            _eventRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            _eventRepository.Setup(x => x.GetAll()).Returns(_expectedEvents.AsQueryable());
+            _eventRepository.Setup(x => x.GetSeatsAvailableCountAsync(It.IsAny<int>())).ReturnsAsync(1);
+            _eventRepository.Setup(x => x.GetSeatsCountAsync(It.IsAny<int>())).ReturnsAsync((int)default);
+            _eventRepository.Setup(x => x.GetSeatsCountAsync(It.IsIn(1))).ReturnsAsync(2);
+            foreach (var evnt in _expectedEvents)
+            {
+                _eventRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(_expectedEvents[evnt.Id - 1]);
+                _eventRepository.Setup(x => x.GetAllByLayoutId(evnt.LayoutId)).Returns(_expectedEvents.Where(x => x.LayoutId == evnt.LayoutId).AsQueryable());
+            }
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2021", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2021", "Stanger Things Serie")]
-        public void Validate_WhenEventTimeInPast_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [Test]
+        public async Task GetSeatsAvailableCount_When1_ShouldNotZero()
+        {
+            // act
+            var actual = await _eventService.GetSeatsAvailableCountAsync(1);
+
+            // assert
+            Assert.NotZero(actual);
+        }
+
+        [Test]
+        public void Validate_WhenAreaHavntSeats_ShouldTrow()
         {
             // arrange
+            var eventExpected = new Event
+            {
+                Name = _expectedEvents[0].Name,
+                Description = _expectedEvents[0].Description,
+                EventEndTime = _expectedEvents[0].EventEndTime,
+                EventTime = _expectedEvents[0].EventTime,
+                EventLogoImage = _expectedEvents[0].EventLogoImage,
+                LayoutId = int.MaxValue,
+            };
+            var strException =
+                "Create event is not possible! Haven't seats in Area!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventFieldNameEmpty_ShouldThrow()
+        {
+            // arrange
+            var eventExpected = new Event
+            {
+                Name = string.Empty,
+                Description = _expectedEvents[0].Description,
+                EventEndTime = _expectedEvents[0].EventEndTime,
+                EventTime = _expectedEvents[0].EventTime,
+                EventLogoImage = _expectedEvents[0].EventLogoImage,
+                LayoutId = _expectedEvents[0].LayoutId,
+            };
+            var strException =
+                "The field 'Name' of Event is not allowed to be empty!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventFieldDescriptionEmpty_ShouldThrow()
+        {
+            // arrange
+            var eventExpected = new Event
+            {
+                Name = _expectedEvents[0].Name,
+                Description = string.Empty,
+                EventEndTime = _expectedEvents[0].EventEndTime,
+                EventTime = _expectedEvents[0].EventTime,
+                EventLogoImage = _expectedEvents[0].EventLogoImage,
+                LayoutId = _expectedEvents[0].LayoutId,
+            };
+            var strException =
+                "The field 'Description' of Event is not allowed to be empty!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventFieldLayoutIdZero_ShouldThrow()
+        {
+            // arrange
+            var eventExpected = new Event
+            {
+                Name = _expectedEvents[0].Name,
+                Description = _expectedEvents[0].Description,
+                EventEndTime = _expectedEvents[0].EventEndTime,
+                EventTime = _expectedEvents[0].EventTime,
+                EventLogoImage = _expectedEvents[0].EventLogoImage,
+                LayoutId = default,
+            };
+            var strException =
+                "The field 'LayoutId' of Event is not allowed to be null!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventFieldEventLogoImageEmpty_ShouldThrow()
+        {
+            // arrange
+            var eventExpected = new Event
+            {
+                Name = _expectedEvents[0].Name,
+                Description = _expectedEvents[0].Description,
+                EventEndTime = _expectedEvents[0].EventEndTime,
+                EventTime = _expectedEvents[0].EventTime,
+                EventLogoImage = string.Empty,
+                LayoutId = _expectedEvents[0].LayoutId,
+            };
+            var strException =
+                "The field 'EventLogoImage' of Event is not allowed to be empty!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventTimeInPast_ShouldTrow()
+        {
+            // arrange
+            var eventExpected = new Event
+            {
+                Name = _expectedEvents[0].Name,
+                Description = _expectedEvents[0].Description,
+                EventEndTime = _expectedEvents[0].EventEndTime,
+                EventTime = DateTimeOffset.MinValue,
+                EventLogoImage = _expectedEvents[0].EventLogoImage,
+                LayoutId = _expectedEvents[0].LayoutId,
+            };
             var strException =
                 "Event can't be created in the past!";
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
-            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => evntService.Object.Validate(evntExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(2, 1, "Stanger Things Serie", "2022-09-09 00:00:00.0000000 +03:00", "Things Serie")]
-        public void Validate_WhenEventInSameTimeForLayout_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [Test]
+        public void Validate_WhenEventEndTimeLateEventTime_ShouldTrow()
         {
             // arrange
+            var eventExpected = new Event
+            {
+                Name = _expectedEvents[0].Name,
+                Description = _expectedEvents[0].Description,
+                EventEndTime = DateTime.Now,
+                EventTime = _expectedEvents[0].EventTime,
+                EventLogoImage = _expectedEvents[0].EventLogoImage,
+                LayoutId = _expectedEvents[0].LayoutId,
+            };
+            var strException =
+                "EventEndTime cannot be later than EventTime!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenEventInSameTimeForLayout_ShouldTrow()
+        {
+            // arrange
+            var eventExpected = new Event
+            {
+                Name = "any",
+                Description = "any",
+                EventEndTime = _expectedEvents[0].EventEndTime,
+                EventTime = _expectedEvents[0].EventTime,
+                EventLogoImage = "any",
+                LayoutId = _expectedEvents[0].LayoutId,
+            };
             var strException =
                 "Do not create event for the same layout in the same time!";
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
-            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => evntService.Object.Validate(evntExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
-        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [Test]
+        public void Validate_WhenEventTimeLaterEventEndTime_ShouldTrow()
         {
             // arrange
+            var eventExpected = new Event
+            {
+                Name = "any",
+                Description = "any",
+                EventEndTime = DateTime.Now.AddHours(2),
+                EventTime = DateTimeOffset.Now.AddHours(3),
+                EventLogoImage = "any",
+                LayoutId = int.MaxValue,
+            };
+            var strException =
+                "EventEndTime cannot be later than EventTime!";
+
+            // act
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public void Validate_WhenLayoutNameNonUniqueInVenue_ShouldTrow()
+        {
+            // arrange
+            var eventExpected = new Event
+            {
+                Name = _expectedEvents[0].Name,
+                Description = "any",
+                EventEndTime = DateTime.Now.AddHours(3),
+                EventTime = DateTimeOffset.Now.AddHours(2),
+                EventLogoImage = "any",
+                LayoutId = _expectedEvents[0].LayoutId,
+            };
             var strException =
                 "Layout name should be unique in venue!";
-            var evntExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var evntRepository = new Mock<IEventRepository> { CallBase = true };
-            evntRepository.Setup(x => x.GetAllByLayoutId(layoutId)).Returns(_expectedEvents);
-            var evntService = new Mock<EventService>(evntRepository.Object) { CallBase = true };
 
             // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => evntService.Object.Validate(evntExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventService.ValidateAsync(eventExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(2, 1, "Stanger Things Serie", "09/19/2022", "Stanger Things Serie")]
-        public void Insert_WhenInsertEvent_ShouldNotNull(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [Test]
+        public async Task Insert_WhenCallInsertEvent_ShouldNotZeroCallback()
         {
             // arrange
-            var eventExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var eventRepository = new Mock<IEventRepository> { CallBase = true };
-            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            var eventExpected = new Event("Stanger Serie", DateTimeOffset.Parse("2022-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-19 00:50:00"), "image");
 
             // act
-            eventService.Setup(x => x.Insert(It.IsAny<Event>())).Returns(1);
-            var actual = eventService.Object.Insert(eventExpected);
+            await _eventService.InsertAsync(eventExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
-        [TestCase(1, 2, "Kitchen Serie", "09/09/2022", "Kitchen Serie")]
-        public void Update_WhenUpdateEvent_ShouldNotNull(int id, int layoutId, string name, DateTimeOffset eventTime, string description)
+        [Test]
+        public async Task Update_WhenCallUpdateEvent_ShouldNotZeroCallback()
         {
             // arrange
-            var eventExpected = new Event(id: id, layoutId: layoutId, name: name, eventTime: eventTime, description: description);
-            var eventRepository = new Mock<IEventRepository> { CallBase = true };
-            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
+            var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("2022-09-09 00:05:00"), "Kitchen Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image");
 
             // act
-            eventService.Setup(x => x.Update(It.IsAny<Event>())).Returns(1);
-            var actual = eventService.Object.Update(eventExpected);
+            await _eventService.UpdateAsync(eventExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteEvent_ShouldNotNull(int id)
+        [Test]
+        public async Task Delete_WhenCallDeleteEvent_ShouldNotZeroCallback()
         {
-            // arrange
-            var eventRepository = new Mock<IEventRepository> { CallBase = true };
-            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-
             // act
-            eventService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = eventService.Object.Delete(id);
+            await _eventService.DeleteAsync(1);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnEventById_ShouldNotNull(int id)
+        [Test]
+        public async Task GetById_WhenReturnEventById_ShouldNotNull()
         {
-            // arrange
-            var eventExpected = new Event(id, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2);
-            var eventRepository = new Mock<IEventRepository> { CallBase = true };
-            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-
             // act
-            eventService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventExpected);
-            var actual = eventService.Object.GetById(id);
+            var actual = await _eventService.GetByIdAsync(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public void GetAll_WhenReturnEvents_ShouldNotNull()
+        public async Task GetAll_WhenReturnEvents_ShouldNotZero()
         {
-            // arrange
-            var eventRepository = new Mock<IEventRepository> { CallBase = true };
-            var eventService = new Mock<EventService>(eventRepository.Object) { CallBase = true };
-
             // act
-            eventService.Setup(x => x.GetAll()).Returns(_expectedEvents);
-            var actual = eventService.Object.GetAll();
+            var actual = (await _eventService.GetAllAsync()).Count();
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(actual);
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
-using TicketManagement.BusinessLogic.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
-using TicketManagement.DataAccess.Repositories;
 
 namespace TicketManagement.BusinessLogic.Services
 {
@@ -16,31 +16,93 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        public override void Validate(Event entity)
-        {
-            if (entity.LayoutId == 0 || entity.Name == "" || entity.Description == "")
-            {
-                throw new ValidationException("The field of Event is not allowed to be null!");
-            }
+        public override async Task InsertAsync(Event evnt)
+            => await InsertAsync(evnt, decimal.Zero);
 
+        public virtual async Task InsertAsync(Event evnt, decimal price)
+        {
+            await ValidateAsync(evnt);
+            await _eventRepository.InsertAsync(evnt, price);
+        }
+
+        public virtual async Task UpdateAsync(Event evnt, decimal price)
+        {
+            await ValidateAsync(evnt);
+            await _eventRepository.UpdateAsync(evnt, price);
+        }
+
+        public virtual async Task<IEnumerable<Event>> GetAllByLayoutIdAsync(int layoutId)
+            => await _eventRepository.GetAllByLayoutId(layoutId).ToListAsyncSafe();
+
+        public virtual async Task<bool> IsAllAvailableSeatsAsync(int id)
+            => await _eventRepository.IsAllAvailableSeatsAsync(id);
+
+        public virtual async Task<decimal> GetPriceByEventIdAsync(int id)
+            => await _eventRepository.GetPriceByEventIdAsync(id);
+
+        public virtual async Task<int> GetSeatsAvailableCountAsync(int id)
+            => await _eventRepository.GetSeatsAvailableCountAsync(id);
+        public virtual async Task<int> GetSeatsCountAsync(int layoutId)
+            => await _eventRepository.GetSeatsCountAsync(layoutId);
+
+        private async Task EventValidate(Event entity)
+        {
             if ((entity.EventTime.Ticks - DateTimeOffset.Now.Ticks) < 0)
             {
                 throw new ValidationException("Event can't be created in the past!");
             }
 
-            var evntArray = _eventRepository.GetAllByLayoutId(entity.LayoutId);
-            foreach (var evnt in evntArray)
+            if (entity.EventTime > entity.EventEndTime)
             {
-                if (entity.LayoutId == evnt.LayoutId && entity.Description == evnt.Description)
-                {
-                    throw new ValidationException("Layout name should be unique in venue!");
-                }
+                throw new ValidationException("EventEndTime cannot be later than EventTime!");
+            }
 
-                if (entity.LayoutId == evnt.LayoutId && entity.EventTime == evnt.EventTime)
+            if (entity.Id == default)
+            {
+                var evntArray = await _eventRepository.GetAllByLayoutId(entity.LayoutId).ToListAsyncSafe();
+                foreach (var evnt in evntArray)
                 {
-                    throw new ValidationException("Do not create event for the same layout in the same time!");
+                    if (entity.LayoutId == evnt.LayoutId && entity.Name == evnt.Name)
+                    {
+                        throw new ValidationException("Layout name should be unique in venue!");
+                    }
+
+                    if (entity.LayoutId == evnt.LayoutId && entity.EventTime == evnt.EventTime)
+                    {
+                        throw new ValidationException("Do not create event for the same layout in the same time!");
+                    }
                 }
             }
+
+            if (await GetSeatsCountAsync(entity.LayoutId) == default)
+            {
+                throw new ValidationException("Create event is not possible! Haven't seats in Area!");
+            }
+        }
+
+        public override async Task ValidateAsync(Event entity)
+        {
+            if (entity.LayoutId == default)
+            {
+                throw new ValidationException("The field 'LayoutId' of Event is not allowed to be null!");
+            }
+
+            if (string.IsNullOrEmpty(entity.Name))
+            {
+                throw new ValidationException("The field 'Name' of Event is not allowed to be empty!");
+            }
+
+            if (string.IsNullOrEmpty(entity.Description))
+            {
+                throw new ValidationException("The field 'Description' of Event is not allowed to be empty!");
+            }
+
+            if (string.IsNullOrEmpty(entity.EventLogoImage))
+            {
+                throw new ValidationException("The field 'EventLogoImage' of Event is not allowed to be empty!");
+            }
+
+            await EventValidate(entity);
         }
     }
 }

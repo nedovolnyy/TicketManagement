@@ -1,120 +1,213 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
     public class EventAreaServiceTests
     {
+        private static readonly Mock<IEventAreaRepository> _eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
+        private readonly EventAreaService _eventAreaService = new EventAreaService(_eventAreaRepository.Object);
         private readonly List<EventArea> _expectedEventAreas = new List<EventArea>
         {
             new EventArea(1, 2, "First eventArea of second layout", 2, 4, 5.8m),
             new EventArea(2, 1, "First eventArea of first layout", 3, 2, 8.6m),
             new EventArea(3, 2, "First eventArea of second layout", 1, 7, 4.6m),
         };
+        private int _timesApplyRuleCalled;
 
-        [TestCase(1, 0, "First eventArea of second layout", 2, 4, 7.5)]
-        [TestCase(2, 1, "", 3, 2, 5.5)]
-        [TestCase(3, 2, "First eventArea of second layout", 0, 7, 4.3)]
-        [TestCase(3, 2, "First eventArea of second layout", 1, 0, 4.3)]
-        [TestCase(2, 1, "First eventArea of first layout", 3, 2, 0)]
-        public void Validate_WhenEventAreaFieldNull_ShouldThrow(int id, int eventId, string description, int coordX, int coordY, decimal price)
+        [SetUp]
+        protected void SetUp()
+        {
+            _eventAreaRepository.Setup(x => x.InsertAsync(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
+            _eventAreaRepository.Setup(x => x.UpdateAsync(It.IsAny<EventArea>())).Callback(() => _timesApplyRuleCalled++);
+            _eventAreaRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            _eventAreaRepository.Setup(x => x.GetAll()).Returns(_expectedEventAreas.AsQueryable());
+            foreach (var eventArea in _expectedEventAreas)
+            {
+                _eventAreaRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(_expectedEventAreas[eventArea.Id - 1]);
+                _eventAreaRepository.Setup(x => x.GetAllByEventId(eventArea.EventId)).Returns(_expectedEventAreas.Where(x => x.EventId == eventArea.EventId).AsQueryable());
+            }
+        }
+
+        [Test]
+        public void Validate_WhenEventAreaFieldEventIdZero_ShouldThrow()
         {
             // arrange
+            var eventAreaExpected = new EventArea
+            {
+                EventId = default,
+                Description = _expectedEventAreas[0].Description,
+                CoordX = _expectedEventAreas[0].CoordX,
+                CoordY = _expectedEventAreas[0].CoordY,
+                Price = _expectedEventAreas[0].Price,
+            };
             var strException =
-                "The field of EventArea is not allowed to be null!";
-            var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
-            var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
-            var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+                "The field 'EventId' of EventArea is not allowed to be null!";
 
             // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => eventAreaService.Object.Validate(eventAreaExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventAreaService.ValidateAsync(eventAreaExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(3, 2, "First eventArea of second layout", 1, 7, 4.3)]
-        public void Insert_WhenInsertEventArea_ShouldNotNull(int id, int eventId, string description, int coordX, int coordY, decimal price)
+        [Test]
+        public void Validate_WhenEventAreaFieldDescriptionEmpty_ShouldThrow()
         {
             // arrange
-            var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
-            var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
-            var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            var eventAreaExpected = new EventArea
+            {
+                EventId = _expectedEventAreas[0].EventId,
+                Description = string.Empty,
+                CoordX = _expectedEventAreas[0].CoordX,
+                CoordY = _expectedEventAreas[0].CoordY,
+                Price = _expectedEventAreas[0].Price,
+            };
+            var strException =
+                "The field 'Description' of EventArea is not allowed to be empty!";
 
             // act
-            eventAreaService.Setup(x => x.Insert(It.IsAny<EventArea>())).Returns(1);
-            var actual = eventAreaService.Object.Insert(eventAreaExpected);
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventAreaService.ValidateAsync(eventAreaExpected));
 
             // assert
-            Assert.NotNull(actual);
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, 2, "First eventArea of second layout", 2, 4, 7.5)]
-        public void Update_WhenUpdateEventArea_ShouldNotNull(int id, int eventId, string description, int coordX, int coordY, decimal price)
+        [Test]
+        public void Validate_WhenEventAreaFieldPriceZero_ShouldThrow()
         {
             // arrange
-            var eventAreaExpected = new EventArea(id: id, eventId: eventId, description: description, coordX: coordX, coordY: coordY, price: price);
-            var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
-            var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            var eventAreaExpected = new EventArea
+            {
+                EventId = _expectedEventAreas[0].EventId,
+                Description = _expectedEventAreas[0].Description,
+                CoordX = _expectedEventAreas[0].CoordX,
+                CoordY = _expectedEventAreas[0].CoordY,
+                Price = decimal.Zero,
+            };
+            var strException =
+                "The field 'Price' of EventArea is not allowed to be null!";
 
             // act
-            eventAreaService.Setup(x => x.Update(It.IsAny<EventArea>())).Returns(1);
-            var actual = eventAreaService.Object.Update(eventAreaExpected);
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventAreaService.ValidateAsync(eventAreaExpected));
 
             // assert
-            Assert.NotNull(actual);
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteEventArea_ShouldNotNull(int id)
+        [Test]
+        public void Validate_WhenEventAreaFieldCoordXZero_ShouldThrow()
         {
             // arrange
-            var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
-            var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            var eventAreaExpected = new EventArea
+            {
+                EventId = _expectedEventAreas[0].EventId,
+                Description = _expectedEventAreas[0].Description,
+                CoordX = default,
+                CoordY = _expectedEventAreas[0].CoordY,
+                Price = _expectedEventAreas[0].Price,
+            };
+            var strException =
+                "The field 'CoordX' of EventArea is not allowed to be null!";
 
             // act
-            eventAreaService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = eventAreaService.Object.Delete(id);
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventAreaService.ValidateAsync(eventAreaExpected));
 
             // assert
-            Assert.NotNull(actual);
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnEventAreaById_ShouldNotNull(int id)
+        [Test]
+        public void Validate_WhenEventAreaFieldCoordYZero_ShouldThrow()
         {
             // arrange
-            var eventAreaExpected = new EventArea(id, 2, "First eventArea of first layout", 3, 2, 8.1m);
-            var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
-            var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
+            var eventAreaExpected = new EventArea
+            {
+                EventId = _expectedEventAreas[0].EventId,
+                Description = _expectedEventAreas[0].Description,
+                CoordX = _expectedEventAreas[0].CoordX,
+                CoordY = default,
+                Price = _expectedEventAreas[0].Price,
+            };
+            var strException =
+                "The field 'CoordY' of EventArea is not allowed to be null!";
 
             // act
-            eventAreaService.Setup(x => x.GetById(It.IsAny<int>())).Returns(eventAreaExpected);
-            var actual = eventAreaService.Object.GetById(id);
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _eventAreaService.ValidateAsync(eventAreaExpected));
+
+            // assert
+            Assert.That(actualException.Message, Is.EqualTo(strException));
+        }
+
+        [Test]
+        public async Task Insert_WhenCallInsertEventArea_ShouldNotZeroCallback()
+        {
+            // arrange
+            var eventAreaExpected = new EventArea(3, 2, "First eventArea of second layout", 1, 7, 4.3m);
+
+            // act
+            await _eventAreaService.InsertAsync(eventAreaExpected);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task Update_WhenCallUpdateEventArea_ShouldNotZeroCallback()
+        {
+            // arrange
+            var eventAreaExpected = new EventArea(1, 2, "First eventArea of second layout", 2, 4, 7.5m);
+
+            // act
+            await _eventAreaService.UpdateAsync(eventAreaExpected);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task Delete_WhenCallDeleteEventArea_ShouldNotZeroCallback()
+        {
+            // act
+            await _eventAreaService.DeleteAsync(1);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task GetById_WhenReturnEventAreaById_ShouldNotNull()
+        {
+            // act
+            var actual = await _eventAreaService.GetByIdAsync(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public void GetAll_WhenReturnEventAreas_ShouldNotNull()
+        public async Task GetAll_WhenReturnEventAreas_ShouldNotZero()
         {
-            // arrange
-            var eventAreaRepository = new Mock<IEventAreaRepository> { CallBase = true };
-            var eventAreaService = new Mock<EventAreaService>(eventAreaRepository.Object) { CallBase = true };
-
             // act
-            eventAreaService.Setup(x => x.GetAll()).Returns(_expectedEventAreas);
-            var actual = eventAreaService.Object.GetAll();
+            var actual = (await _eventAreaService.GetAllAsync()).Count();
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(actual);
         }
     }
 }

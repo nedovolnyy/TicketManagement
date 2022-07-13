@@ -1,10 +1,21 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketManagement.Common.Entities
 {
+    [Table("Venue")]
     public class Venue : BaseEntity
     {
-        public Venue(int id, string name, string description, string address, string phone)
+        public Venue()
+        {
+        }
+
+        public Venue(string name, string description, string address, string phone = null)
+            : this(default, name, description, address, phone)
+        {
+        }
+
+        public Venue(int id, string name, string description, string address, string phone = null)
         {
             Id = id;
             Name = name;
@@ -13,9 +24,19 @@ namespace TicketManagement.Common.Entities
             Phone = phone;
         }
 
-        public string Name { get; private set; }
-        public string Description { get; private set; }
-        public string Address { get; private set; }
-        public string Phone { get; private set; }
+        [Required]
+        [MaxLength(120)]
+        public string Name { get; set; }
+
+        [Required]
+        [MaxLength(120)]
+        public string Description { get; set; }
+
+        [Required]
+        [MaxLength(200)]
+        public string Address { get; set; }
+
+        [MaxLength(30)]
+        public string Phone { get; set; }
     }
 }

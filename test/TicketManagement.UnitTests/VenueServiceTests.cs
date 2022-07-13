@@ -1,139 +1,185 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using TicketManagement.BusinessLogic.Services;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
-using TicketManagement.DataAccess.Interfaces;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
     public class VenueServiceTests
     {
+        private static readonly Mock<IVenueRepository> _venueRepository = new Mock<IVenueRepository> { CallBase = true };
+        private readonly VenueService _venueService = new VenueService(_venueRepository.Object);
         private readonly List<Venue> _expectedVenues = new List<Venue>
         {
             new Venue(1, "First venue", "description first venue", "address first venue", "+4988955568"),
             new Venue(2, "Second venue", "description second venue", "address second venue", "+58487555"),
             new Venue(3, "Second venue", "description second venue", "address second venue", "+84845464"),
         };
+        private int _timesApplyRuleCalled;
 
-        [TestCase(1, "", "description first venue", "address first venue", "+4988955568")]
-        [TestCase(2, "Second venue", "", "address second venue", "+58487555")]
-        [TestCase(3, "Second venue", "description second venue", "", "+84845464")]
-        public void Validate_WhenVenueFieldNull_ShouldThrow(int id, string name, string description, string address, string phone)
+        [SetUp]
+        protected void SetUp()
+        {
+            _venueRepository.Setup(x => x.InsertAsync(It.IsAny<Venue>())).Callback(() => _timesApplyRuleCalled++);
+            _venueRepository.Setup(x => x.UpdateAsync(It.IsAny<Venue>())).Callback(() => _timesApplyRuleCalled++);
+            _venueRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
+            _venueRepository.Setup(x => x.GetAll()).Returns(_expectedVenues.AsQueryable());
+            foreach (var venue in _expectedVenues)
+            {
+                _venueRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(_expectedVenues[venue.Id - 1]);
+                _venueRepository.Setup(x => x.GetIdFirstByNameAsync(venue.Name)).ReturnsAsync(venue.Id);
+            }
+        }
+
+        [Test]
+        public void Validate_WhenVenueFieldNameEmpty_ShouldThrow()
         {
             // arrange
+            var venueExpected = new Venue
+            {
+                Name = string.Empty,
+                Address = _expectedVenues[0].Address,
+                Description = _expectedVenues[0].Description,
+                Phone = _expectedVenues[0].Phone,
+            };
             var strException =
-                "The field of Venue is not allowed to be null!";
-            var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
-            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+                "The field 'Name' of Venue is not allowed to be empty!";
 
             // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => venueService.Object.Validate(venueExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _venueService.ValidateAsync(venueExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, "First venue", "description first venue", "address first venue", "+4988955568")]
-        [TestCase(2, "Second venue", "description second venue", "address second venue", "+58487555")]
-        [TestCase(3, "Second venue", "description second venue", "address second venue", "+84845464")]
-        public void Validate_WhenNameNonUnique_ShouldTrow(int id, string name, string description, string address, string phone)
+        [Test]
+        public void Validate_WhenVenueFieldDescriptionEmpty_ShouldThrow()
         {
             // arrange
+            var venueExpected = new Venue
+            {
+                Name = _expectedVenues[0].Name,
+                Address = _expectedVenues[0].Address,
+                Description = string.Empty,
+                Phone = _expectedVenues[0].Phone,
+            };
             var strException =
-                "The Venue name has not unique!";
-            var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
-            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            venueRepository.Setup(x => x.GetFirstByName(name)).Returns(venueExpected);
-            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+                "The field 'Description' of Venue is not allowed to be empty!";
 
             // act
-            var ex = Assert.Throws<ValidationException>(
-                            () => venueService.Object.Validate(venueExpected));
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _venueService.ValidateAsync(venueExpected));
 
             // assert
-            Assert.That(ex.Message, Is.EqualTo(strException));
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(3, "Second venue", "description second venue", "address second venue", "+84845464")]
-        public void Insert_WhenInsertVenue_ShouldNotNull(int id, string name, string description, string address, string phone)
+        [Test]
+        public void Validate_WhenVenueFieldAddressEmpty_ShouldThrow()
         {
             // arrange
-            var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
-            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            var venueExpected = new Venue
+            {
+                Name = _expectedVenues[0].Name,
+                Address = string.Empty,
+                Description = _expectedVenues[0].Description,
+                Phone = _expectedVenues[0].Phone,
+            };
+            var strException =
+                "The field 'Address' of Venue is not allowed to be empty!";
 
             // act
-            venueService.Setup(x => x.Insert(It.IsAny<Venue>())).Returns(1);
-            var actual = venueService.Object.Insert(venueExpected);
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _venueService.ValidateAsync(venueExpected));
 
             // assert
-            Assert.NotNull(actual);
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1, "First venue", "description first venue", "address first venue", "+4988955568")]
-        public void Update_WhenUpdateVenue_ShouldNotNull(int id, string name, string description, string address, string phone)
+        [Test]
+        public void Validate_WhenNameNonUnique_ShouldTrow()
         {
             // arrange
-            var venueExpected = new Venue(id: id, name: name, description: description, address: address, phone: phone);
-            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            var venueExpected = new Venue
+            {
+                Name = _expectedVenues[0].Name,
+                Address = "any",
+                Description = "any",
+            };
+            var strException =
+                "The Venue name is not unique!";
 
             // act
-            venueService.Setup(x => x.Update(It.IsAny<Venue>())).Returns(1);
-            var actual = venueService.Object.Update(venueExpected);
+            var actualException = Assert.ThrowsAsync<ValidationException>(
+                            async () => await _venueService.ValidateAsync(venueExpected));
 
             // assert
-            Assert.NotNull(actual);
+            Assert.That(actualException.Message, Is.EqualTo(strException));
         }
 
-        [TestCase(1)]
-        public void Delete_WhenDeleteVenue_ShouldNotNull(int id)
+        [Test]
+        public async Task Insert_WhenCallInsertVenue_ShouldNotZeroCallback()
         {
             // arrange
-            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            var venueExpected = new Venue(3, "2nd venue", "any description for second venue", "address second venue", "+84845464");
 
             // act
-            venueService.Setup(x => x.Delete(It.IsAny<int>())).Returns(1);
-            var actual = venueService.Object.Delete(id);
+            await _venueService.InsertAsync(venueExpected);
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
         }
 
-        [TestCase(5444)]
-        public void GetById_WhenReturnVenueById_ShouldNotNull(int id)
+        [Test]
+        public async Task Update_WhenCallUpdateVenue_ShouldNotZeroCallback()
         {
             // arrange
-            var venueExpected = new Venue(3, "Second venue", "description second venue", "address second venue", "+84845464");
-            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
+            var venueExpected = new Venue(1, "1st venue", "any description for first venue", "address first venue", "+4988955568");
 
             // act
-            venueService.Setup(x => x.GetById(It.IsAny<int>())).Returns(venueExpected);
-            var actual = venueService.Object.GetById(id);
+            await _venueService.UpdateAsync(venueExpected);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task Delete_WhenCallDeleteVenue_ShouldNotZeroCallback()
+        {
+            // act
+            await _venueService.DeleteAsync(1);
+
+            // assert
+            Assert.NotZero(_timesApplyRuleCalled);
+            _timesApplyRuleCalled = default;
+        }
+
+        [Test]
+        public async Task GetById_WhenReturnVenueById_ShouldNotNull()
+        {
+            // act
+            var actual = await _venueService.GetByIdAsync(1);
 
             // assert
             Assert.NotNull(actual);
         }
 
         [Test]
-        public void GetAll_WhenReturnVenues_ShouldNotNull()
+        public async Task GetAll_WhenReturnVenues_ShouldNotZero()
         {
-            // arrange
-            var venueRepository = new Mock<IVenueRepository> { CallBase = true };
-            var venueService = new Mock<VenueService>(venueRepository.Object) { CallBase = true };
-
             // act
-            venueService.Setup(x => x.GetAll()).Returns(_expectedVenues);
-            var actual = venueService.Object.GetAll();
+            var actual = (await _venueService.GetAllAsync()).Count();
 
             // assert
-            Assert.NotNull(actual);
+            Assert.NotZero(actual);
         }
     }
 }

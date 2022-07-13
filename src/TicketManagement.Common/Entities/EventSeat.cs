@@ -1,10 +1,21 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketManagement.Common.Entities
 {
+    [Table("EventSeat")]
     public class EventSeat : BaseEntity
     {
-        public EventSeat(int id, int eventAreaId, int row, int number, int state)
+        public EventSeat()
+        {
+        }
+
+        public EventSeat(int eventAreaId, int row, int number, State state)
+            : this(default, eventAreaId, row, number, state)
+        {
+        }
+
+        public EventSeat(int id, int eventAreaId, int row, int number, State state)
         {
             Id = id;
             EventAreaId = eventAreaId;
@@ -13,9 +24,17 @@ namespace TicketManagement.Common.Entities
             State = state;
         }
 
-        public int EventAreaId { get; private set; }
-        public int Row { get; private set; }
-        public int Number { get; private set; }
-        public int State { get; private set; }
+        [Required]
+        [ForeignKey("EventArea")]
+        public int EventAreaId { get; set; }
+
+        [Required]
+        public int Row { get; set; }
+
+        [Required]
+        public int Number { get; set; }
+
+        [Required]
+        public State State { get; set; }
     }
 }

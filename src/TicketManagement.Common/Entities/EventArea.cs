@@ -1,9 +1,20 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketManagement.Common.Entities
 {
+    [Table("EventArea")]
     public class EventArea : BaseEntity
     {
+        public EventArea()
+        {
+        }
+
+        public EventArea(int eventId, string description, int coordX, int coordY, decimal price)
+            : this(default, eventId, description, coordX, coordY, price)
+        {
+        }
+
         public EventArea(int id, int eventId, string description, int coordX, int coordY, decimal price)
         {
             Id = id;
@@ -14,10 +25,24 @@ namespace TicketManagement.Common.Entities
             Price = price;
         }
 
-        public int EventId { get; private set; }
-        public string Description { get; private set; }
-        public int CoordX { get; private set; }
-        public int CoordY { get; private set; }
-        public decimal Price { get; private set; }
+        [Required]
+        [ForeignKey("Event")]
+        public int EventId { get; set; }
+
+        [Required]
+        [MaxLength(200)]
+        public string Description { get; set; }
+
+        [Required]
+        public int CoordX { get; set; }
+
+        [Required]
+        public int CoordY { get; set; }
+
+        [Required]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:$0.00}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Price")]
+        public decimal Price { get; set; }
     }
 }
