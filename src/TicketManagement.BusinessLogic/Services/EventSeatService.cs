@@ -15,7 +15,10 @@ namespace TicketManagement.BusinessLogic.Services
             _eventSeatRepository = eventSeatRepository;
         }
 
-        public async Task ChangeEventSeatStatusAsync(int eventSeatId, State state = State.Available)
+        public async Task ChangeEventSeatStatusAsync(int eventSeatId)
+            => await _eventSeatRepository.ChangeEventSeatStatusAsync(eventSeatId);
+
+        public async Task ChangeEventSeatStatusAsync(int eventSeatId, State state)
             => await _eventSeatRepository.ChangeEventSeatStatusAsync(eventSeatId, state);
 
         public virtual async Task<IEnumerable<EventSeat>> GetAllByEventAreaIdAsync(int eventAreaId)

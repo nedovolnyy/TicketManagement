@@ -15,18 +15,18 @@ namespace TicketManagement.DataAccess.Repositories
             _databaseContext = databaseContext;
         }
 
-        public async Task ChangeEventSeatStatusAsync(int eventSeatId, State state = State.Available)
+        public async Task ChangeEventSeatStatusAsync(int eventSeatId)
         {
             var eventSeat = await GetByIdAsync(eventSeatId);
-            if (state == State.Available)
-            {
-                eventSeat.State = eventSeat.State == State.Available ? State.NotAvailable : State.Available;
-            }
+            eventSeat.State = eventSeat.State == State.Available ? State.NotAvailable : State.Available;
 
-            if (state != State.Available)
-            {
-                eventSeat.State = eventSeat.State == State.Available ? state : State.Available;
-            }
+            await UpdateAsync(eventSeat);
+        }
+
+        public async Task ChangeEventSeatStatusAsync(int eventSeatId, State state)
+        {
+            var eventSeat = await GetByIdAsync(eventSeatId);
+            eventSeat.State = eventSeat.State == State.Available ? state : State.Available;
 
             await UpdateAsync(eventSeat);
         }
