@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.DI
+@using TicketManagement.Common.Entities
+@using TicketManagement.MVC.Helpers
+
+@inject IViewLocalizer Localizer
+@inject IEventService EventService
+
+@model IEnumerable<Event>
+
+@{
+    var isManageRole = User.IsInRole("Administrator") || User.IsInRole("EventManager");
+}
+
+@if (isManageRole)
+{
+    <div class="text-sm-center">
+        <h5 class="display-4">@Localizer["Total ThirdPartyEvents to Add:"] @(Model.Count())</h5>
+    </div>
+}
+
+<div class="container">
+    <div class="row">
+        @{
+            foreach (var evnt in Model)
+            {
+                <div class="col">
+                    <form asp-controller="ThirdPartyEvents" asp-action="Insert" method="post" class="form-horizontal" role="form">
+                        <div class="img__container visible">
+                            <input name="evntLogoImage" value="@evnt.EventLogoImage" hidden />
+                            <img class="image shadow-lg" alt="" src="@Url.Content(evnt.EventLogoImage)" />
+                            <div class="img__description">
+                                <div class="text">
+                                    <input name="evntTime" value="@evnt.EventTime" hidden />
+                                    <input name="evntEndTime" value="@evnt.EventEndTime" hidden />
+                                    <div class="img__header right" style="font-size: 0.75em;">@Html.ModifyDateTime(evnt.EventTime)</div>
+                                    <input name="evntName" value="@evnt.Name" hidden />
+                                    <div class="img__header left"><h2 style="text-decoration: none;">@evnt.Name</h2></div>
+                                </div>
+                                <div class="text">
+                                    <div class="right">
+                                        <input name="evntLayoutId" value="@evnt.LayoutId" hidden />
+                                        <p>@evnt.LayoutId</p>
+                                    </div>
+                                </div>
+                                <div class="text">
+                                    <div class="right">
+                                        <p style="font-size: 0.75em;">@Localizer["Layout"]</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text">
+                            <input name="evntDescription" value="@evnt.Description" hidden />
+                            <p>@evnt.Description</p>
+                        </div>
+                        <input class="btn btn-sm btn-primary" type="submit" value="@Localizer["Add"]" />
+                    </form>
+                    <form asp-controller="ThirdPartyEvents" asp-action="Delete" asp-route-evntName="@evnt.Name" asp-route-evntTime="@evnt.EventTime" asp-route-evntDescription="@evnt.Description" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="@Html.Raw("return confirm('")@Localizer["Are you sure you want to delete this ThirdPartyEvent?"]@Html.Raw("')")">@Localizer["Delete"]</button>
+                    </form>
+                </div>
+            }
+        }
+    </div>
+</div>

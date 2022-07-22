@@ -121,10 +121,10 @@
     <value>Дадаць грошаў</value>
   </data>
   <data name="Purchase history:" xml:space="preserve">
-    <value>Гісторыя пакупак</value>
+    <value>Гісторыя пакупак:</value>
   </data>
   <data name="To up balance:" xml:space="preserve">
-    <value>Папоўнiць рахунак</value>
+    <value>Папоўнiць рахунак:</value>
   </data>
   <data name="Total purchase:" xml:space="preserve">
     <value>Колькасць пакупак:</value>

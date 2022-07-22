@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using ThirdPartyEventEditor.Models;
 
@@ -9,31 +13,137 @@ namespace ThirdPartyEventEditor.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<ActionResult> Index()
+        private readonly string _jsonFileName = ConfigurationManager.AppSettings["JsonFileName"];
+        public ActionResult Index()
         {
-            var circusEvent = new ThirdPartyEvent()
-            {
-                Name = "Почти серьезно",
-                EndDate = new DateTime(2021, 06, 30, 21, 00, 00),
-                StartDate = new DateTime(2021, 05, 30, 15, 00, 00),
-                PosterImage = await UploadSampleImage(),
-                Description = @"С 15 мая по 1 августа Белгосцирк и Московский цирк Ю.Никулина на
-Цветном бульваре представляют новую цирковую программу «Почти серьезно», посвященную 100-летию со Дня рождения Юрия Никулина!
-В программе- дрессированные лошади, медведи, козы, бразильское колесо смелости,мото-шар,
-эквилибристы на канате, акробаты на мачте, воздушные гимнасты, жонглеры и клоуны! Спешите!"
-            };
-            return View(new List<ThirdPartyEvent> { circusEvent });
+            // GetAll
+            using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
+            var events = Deserialize<List<ThirdPartyEvent>>(fs);
+
+            ////HttpClient httpClient = new ();
+            ////object locker = new();
+            ////lock (locker)
+            ////{
+            ////}
+
+            return View(events);
         }
 
-        private async Task<string> UploadSampleImage()
+        private string ConvertImageToJson(byte[] stream)
         {
-            var path = Path.Combine(Server.MapPath("~/App_Data/"), "poster_circus.png");
-            using (var memoryStream = new MemoryStream())
-            using (var fileStream = new FileStream(path, FileMode.Open))
+            return "data:image/png;base64," + Convert.ToBase64String(stream);
+        }
+
+        private string GetPath(string filename)
+        {
+            return Path.Combine(Server.MapPath("~/App_Data/"), filename);
+        }
+
+        [HttpPost]
+        public ActionResult Insert(string name, string eventTime, string eventEndTime, string description, string layoutId, HttpPostedFileBase eventLogoImageData)
+        {
+            if (eventLogoImageData != null)
             {
-                await fileStream.CopyToAsync(memoryStream);
-                return "data:image/png;base64," + Convert.ToBase64String(memoryStream.ToArray());
+                byte[] imageByteArr = new byte[eventLogoImageData.ContentLength];
+                eventLogoImageData.InputStream.Read(imageByteArr, 0, eventLogoImageData.ContentLength);
+
+                ThirdPartyEvent newEvent = new()
+                {
+                    Name = name,
+                    EventTime = DateTimeOffset.Parse(eventTime),
+                    EventEndTime = DateTime.Parse(eventEndTime),
+                    LayoutId = int.Parse(layoutId),
+                    Description = description,
+                    EventLogoImage = ConvertImageToJson(imageByteArr),
+                };
+                using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
+
+                using StreamReader reader = new(fs);
+                using JsonTextReader jsonReader = new(reader);
+                var serializer = new JsonSerializer();
+                var events = serializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
+                lock (fs)
+                {
+                    fs.SetLength(0);
+                }
+                events.Add(newEvent);
+                Serialize(fs, events);
             }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Update(string evnt, string name, string eventTime, string eventEndTime, string description, string layoutId, HttpPostedFileBase eventLogoImageData)
+        {
+            if (eventLogoImageData != null)
+            {
+                byte[] imageByteArr = new byte[eventLogoImageData.ContentLength];
+                eventLogoImageData.InputStream.Read(imageByteArr, 0, eventLogoImageData.ContentLength);
+
+            ThirdPartyEvent newEvent = new()
+            {
+                Name = name,
+                EventTime = DateTimeOffset.Parse(eventTime),
+                EventEndTime = DateTime.Parse(eventEndTime),
+                LayoutId = int.Parse(layoutId),
+                Description = description,
+                EventLogoImage = ConvertImageToJson(imageByteArr),
+            };
+            using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
+
+            using StreamReader reader = new(fs);
+            using JsonTextReader jsonReader = new(reader);
+            var serializer = new JsonSerializer();
+            var events = serializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
+            lock (fs)
+            {
+                fs.SetLength(0);
+            }
+            var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
+            var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
+            events.Remove(ind);
+            events.Add(newEvent);
+            Serialize(fs, events);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string evnt)
+        {
+            using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
+            using StreamReader reader = new(fs);
+            using JsonTextReader jsonReader = new(reader);
+            var serializer = new JsonSerializer();
+            var events = serializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
+            lock (fs)
+            {
+                fs.SetLength(0);
+            }
+
+            var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
+            var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
+            events.Remove(ind);
+            Serialize(fs, events);
+
+            return RedirectToAction("Index");
+        }
+
+        private static void Serialize(Stream s, object value)
+        {
+            using StreamWriter writer = new(s);
+            using JsonTextWriter jsonWriter = new(writer);
+            JsonSerializer ser = new();
+            ser.Serialize(jsonWriter, value);
+            jsonWriter.Flush();
+        }
+
+        private static T Deserialize<T>(Stream s)
+        {
+            using StreamReader reader = new(s);
+            using JsonTextReader jsonReader = new(reader);
+            JsonSerializer ser = new();
+            return ser.Deserialize<T>(jsonReader);
         }
     }
 }

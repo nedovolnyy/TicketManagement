@@ -1,57 +1,211 @@
-﻿@model IEnumerable<ThirdPartyEventEditor.Models.ThirdPartyEvent>
+﻿@using ThirdPartyEventEditor.Models
+
+@model IEnumerable<ThirdPartyEvent>
 
 @{
     ViewBag.Title = "View";
+    int idIterator = 0;
+}
+
+@section scripts {
+    <script>
+        function clickAdd() {
+            $('#evntAddDivName').removeAttr('hidden');
+            $('#evntAddDivEventTime').removeAttr('hidden');
+            $('#evntAddDivEventEndTime').removeAttr('hidden');
+            $('#evntAddDivDescription').removeAttr('hidden');
+            $('#evntAddDivLayoutId').removeAttr('hidden');
+            $('#evntAddDivEventLogoImage').removeAttr('hidden');
+            $('#evntAddDivButton').removeAttr('hidden');
+            $('#evntAddButton' + iter).attr('hidden', 'hidden');
+        }
+        function clickEdit(iter) {
+            $('#evntEditorName' + iter).removeAttr('hidden');
+            $('#evntEditorEventTime' + iter).removeAttr('hidden');
+            $('#evntEditorEventEndTime' + iter).removeAttr('hidden');
+            $('#evntEditorDescription' + iter).removeAttr('hidden');
+            $('#evntEditorEventLogoImage' + iter).removeAttr('hidden');
+            $('#evntEditorLayoutId' + iter).removeAttr('hidden');
+            $('#evntEditorButton' + iter).removeAttr('hidden');
+            $('#evntViewerName' + iter).attr('hidden', 'hidden');
+            $('#evntViewerEventTime' + iter).attr('hidden', 'hidden');
+            $('#evntViewerEventEndTime' + iter).attr('hidden', 'hidden');
+            $('#evntViewerDescription' + iter).attr('hidden', 'hidden');
+            $('#evntViewerEventLogoImage' + iter).attr('hidden', 'hidden');
+            $('#evntViewerLayoutId' + iter).attr('hidden', 'hidden');
+            $('#evntViewerButton' + iter).attr('hidden', 'hidden');
+        }
+    </script>
 }
 
 <h2>Events</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create Event", "Insert")
+    <input id="evntAddButton" type="button" value="Create Event" onclick="clickAdd()" />
 </p>
-<table class="table">
+<table>
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StartDate)
+            @Html.DisplayNameFor(model => model.EventTime)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EndDate)
+            @Html.DisplayNameFor(model => model.EventEndTime)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.PosterImage)
+            @Html.DisplayNameFor(model => model.LayoutId)
         </th>
-        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.EventLogoImage)
+        </th>
+        <th>
+        </th>
     </tr>
-
-@foreach (var item in Model) {
+    <tr></tr>
     <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            <img src="@item.PosterImage" alt=""/>
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>
-    </tr>
-}
+        @using (Html.BeginForm("Insert", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <td>
+                <div id="evntAddDivName" hidden>
+                    <input name="name" />
+                    </div>
+            </td>
 
-</table>
+            <td>
+                <div id="evntAddDivEventTime" hidden>
+                    <input type="datetime-local" name="eventTime" />
+                </div>
+            </td>
+
+            <td>
+                <div id="evntAddDivEventEndTime" hidden>
+                    <input type="datetime-local" name="eventEndTime" />
+                </div>
+            </td>
+
+            <td>
+                <div id="evntAddDivDescription" hidden>
+                    <input name="description" />
+                </div>
+            </td>
+
+            <td>
+                <div id="evntAddDivLayoutId" hidden>
+                    <input name="LayoutId" />
+                </div>
+            </td>
+
+            <td>
+                <div id="evntAddDivEventLogoImage" hidden>
+                    <input type="file" name="eventLogoImageData" />
+                </div>
+            </td>
+
+            <td>
+                <div id="evntAddDivButton" hidden>
+                    <input type="submit" value="Add" />
+                </div>
+            </td>
+        }
+    </tr>
+        @foreach (var evnt in Model)
+        {
+            idIterator++;
+            <tr>
+                <td>
+                    <div id="@Html.Raw("evntViewerName" + idIterator)">
+                        @Html.DisplayFor(modelItem => evnt.Name)
+                    </div>
+                </td>
+                <td>
+                    <div id="@Html.Raw("evntViewerEventTime" + idIterator)">
+                        @Html.DisplayFor(modelItem => evnt.EventTime)
+                    </div>
+                </td>
+                <td>
+                    <div id="@Html.Raw("evntViewerEventEndTime" + idIterator)">
+                        @Html.DisplayFor(modelItem => evnt.EventEndTime)
+                    </div>
+                </td>
+                <td>
+                    <div id="@Html.Raw("evntViewerDescription" + idIterator)">
+                        @Html.DisplayFor(modelItem => evnt.Description)
+                    </div>
+                </td>
+                <td>
+                    <div id="@Html.Raw("evntViewerLayoutId" + idIterator)">
+                        @Html.DisplayFor(modelItem => evnt.LayoutId)
+                    </div>
+                </td>
+                <td>
+                    <div id="@Html.Raw("evntViewerEventLogoImage" + idIterator)">
+                        <img src="@evnt.EventLogoImage" alt="" />
+                    </div>
+                </td>
+                <td>
+                    @using (Html.BeginRouteForm("Default", new { action = "Delete", controller = "Home" }))
+                    {
+                        <input name="evnt" value="@Json.Encode(evnt)" hidden />
+                        <div id="@Html.Raw("evntViewerButton" + idIterator)">
+                            <input type="button" value="Edit" class="Edit" onclick="clickEdit(@idIterator)" />
+                            <input type="submit" value="Delete" />
+                        </div>
+                    }
+                </td>
+            </tr>
+            <tr>
+                @using (Html.BeginForm("Update", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <td>
+                        <div id="@Html.Raw("evntEditorName" + idIterator)" hidden>
+                            <input name="name" value="@evnt.Name" />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div id="@Html.Raw("evntEditorEventTime" + idIterator)" hidden>
+                            <input name="eventTime" type="datetime-local" value="@evnt.EventTime.ToString()" />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div id="@Html.Raw("evntEditorEventEndTime" + idIterator)" hidden>
+                            <input name="eventEndTime" type="datetime-local" value="new Date(@evnt.EventEndTime.ToLongTimeString())" />
+                            <h1><script>@evnt.EventEndTime.ToString()</script></h1>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div id="@Html.Raw("evntEditorDescription" + idIterator)" hidden>
+                            <input name="description" value="@evnt.Description" />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div id="@Html.Raw("evntEditorLayoutId" + idIterator)" hidden>
+                            <input name="LayoutId" value="@evnt.LayoutId" />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div id="@Html.Raw("evntEditorEventLogoImage" + idIterator)" hidden>
+                            <input type="file" name="eventLogoImageData" />
+                        </div>
+                    </td>
+
+                    <td>
+                        <input name="evnt" value="@Json.Encode(evnt)" hidden />
+                        <div id="@Html.Raw("evntEditorButton" + idIterator)" hidden>
+                            <input type="submit" value="Save" />
+                        </div>
+                    </td>
+                }
+            </tr>
+        }
+    </table>

@@ -130,25 +130,25 @@
     <value>Такім чынам, развіццѐ</value>
   </data>
   <data name="environment by setting the" xml:space="preserve">
-    <value>НАЛАДКА ГАДЗІННІКА</value>
+    <value>наваколля, устанавiў</value>
   </data>
   <data name="environment variable to" xml:space="preserve">
-    <value>Змяніць значэнне поля наStyle name</value>
+    <value>значэнне пераменнай акружэння на</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Памылка</value>
   </data>
   <data name="For local debugging, enable the" xml:space="preserve">
-    <value>ўключыць аўтамабільны рэжым.</value>
+    <value>Дзеля лакальнай адладкi уключыце</value>
   </data>
   <data name="Request ID:" xml:space="preserve">
-    <value>Запытаць</value>
+    <value>Iдэнтэфiкатар запыта:</value>
   </data>
   <data name="Swapping to" xml:space="preserve">
     <value>Змянице на</value>
   </data>
   <data name="environment will display more detailed information about the error that occurred." xml:space="preserve">
-    <value>environment адлюструе больш падрабязную інфармацыю аб памылцы, якая адбылася.</value>
+    <value>акружэння адлюструе больш падрабязную інфармацыю аб памылцы, якая адбылася.</value>
   </data>
   <data name="It can result in displaying sensitive information from exceptions to end users." xml:space="preserve">
     <value>Гэта можа прывесці да таго, што канфідэнцыяльная інфармацыя з выключэнняў будзе паказвацца канчатковым карыстальнікам.</value>

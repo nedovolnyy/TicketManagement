@@ -120,6 +120,9 @@
   <data name="Balance" xml:space="preserve">
     <value>Balance</value>
   </data>
+  <data name="Choose File" xml:space="preserve">
+    <value>Choose File</value>
+  </data>
   <data name="Confirm new password" xml:space="preserve">
     <value>Confirm new password</value>
   </data>

@@ -180,4 +180,7 @@
   <data name="Confirm password" xml:space="preserve">
     <value>Пацвердзіце пароль</value>
   </data>
+  <data name="Choose File" xml:space="preserve">
+    <value>Выбраць файл</value>
+  </data>
 </root>
