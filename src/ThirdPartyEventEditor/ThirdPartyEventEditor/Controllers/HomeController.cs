@@ -16,21 +16,16 @@ namespace ThirdPartyEventEditor.Controllers
         private readonly string _jsonFileName = ConfigurationManager.AppSettings["JsonFileName"];
         public ActionResult Index()
         {
-            // GetAll
             using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
             var events = Deserialize<List<ThirdPartyEvent>>(fs);
-
-            ////HttpClient httpClient = new ();
-            ////object locker = new();
-            ////lock (locker)
-            ////{
-            ////}
+            log4net.LogManager.GetLogger(HttpContext.Session.SessionID).Debug("Deserialized all ThirdPartyEvents from .json file");
 
             return View(events);
         }
 
         private string ConvertImageToJson(byte[] stream)
         {
+            log4net.LogManager.GetLogger(HttpContext.Session.SessionID).Debug("Convert png to base64string");
             return "data:image/png;base64," + Convert.ToBase64String(stream);
         }
 
@@ -68,6 +63,7 @@ namespace ThirdPartyEventEditor.Controllers
                 }
                 events.Add(newEvent);
                 Serialize(fs, events);
+                log4net.LogManager.GetLogger(HttpContext.Session.SessionID).Debug("Added new ThirdPartyEvent into .json file");
             }
             return RedirectToAction("Index");
         }
@@ -80,30 +76,31 @@ namespace ThirdPartyEventEditor.Controllers
                 byte[] imageByteArr = new byte[eventLogoImageData.ContentLength];
                 eventLogoImageData.InputStream.Read(imageByteArr, 0, eventLogoImageData.ContentLength);
 
-            ThirdPartyEvent newEvent = new()
-            {
-                Name = name,
-                EventTime = DateTimeOffset.Parse(eventTime),
-                EventEndTime = DateTime.Parse(eventEndTime),
-                LayoutId = int.Parse(layoutId),
-                Description = description,
-                EventLogoImage = ConvertImageToJson(imageByteArr),
-            };
-            using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
+                ThirdPartyEvent newEvent = new ()
+                {
+                    Name = name,
+                    EventTime = DateTimeOffset.Parse(eventTime),
+                    EventEndTime = DateTime.Parse(eventEndTime),
+                    LayoutId = int.Parse(layoutId),
+                    Description = description,
+                    EventLogoImage = ConvertImageToJson(imageByteArr),
+                };
+                using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
 
-            using StreamReader reader = new(fs);
-            using JsonTextReader jsonReader = new(reader);
-            var serializer = new JsonSerializer();
-            var events = serializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
-            lock (fs)
-            {
-                fs.SetLength(0);
-            }
-            var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
-            var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
-            events.Remove(ind);
-            events.Add(newEvent);
-            Serialize(fs, events);
+                using StreamReader reader = new(fs);
+                using JsonTextReader jsonReader = new(reader);
+                var serializer = new JsonSerializer();
+                var events = serializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
+                lock (fs)
+                {
+                    fs.SetLength(0);
+                }
+                var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
+                var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
+                events.Remove(ind);
+                events.Add(newEvent);
+                Serialize(fs, events);
+                log4net.LogManager.GetLogger(HttpContext.Session.SessionID).Debug("Updated existing ThirdPartyEvent into .json file");
             }
             return RedirectToAction("Index");
         }
@@ -125,6 +122,7 @@ namespace ThirdPartyEventEditor.Controllers
             var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
             events.Remove(ind);
             Serialize(fs, events);
+            log4net.LogManager.GetLogger(HttpContext.Session.SessionID).Debug("Deleted existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
         }
