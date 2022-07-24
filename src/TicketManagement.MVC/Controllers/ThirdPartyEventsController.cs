@@ -1,39 +1,37 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ThirdPartyEventEditor.Models;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.MVC.Helpers;
 
 namespace TicketManagement.MVC.Controllers
 {
     [Authorize(Roles = "EventManager,Administrator")]
     public class ThirdPartyEventsController : Controller
     {
-        private static List<Event> _events = new ();
-        private readonly IServiceProvider _serviceProvider;
+        private static readonly List<Event> _events = new List<Event>();
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ThirdPartyEventsController(IServiceProvider serviceProvider, IWebHostEnvironment webHostEnvironment)
+        public ThirdPartyEventsController(IEventService eventService, IWebHostEnvironment webHostEnvironment)
         {
-            _serviceProvider = serviceProvider;
+            EventService = eventService;
             _webHostEnvironment = webHostEnvironment;
         }
+
+        private IEventService EventService { get; }
 
         [HttpPost]
         public async Task<ActionResult> Insert(string evntName, string evntDescription, string evntTime, string evntEndTime, string evntLogoImage, string evntLayoutId)
         {
             var shortImagePath = "image" + Path.DirectorySeparatorChar + evntName + evntLayoutId + ".png";
             var fullImagePath = Path.Combine(_webHostEnvironment.WebRootPath, shortImagePath);
-            byte[] imgBytes = Convert.FromBase64String(evntLogoImage.Substring(evntLogoImage.LastIndexOf(',') + 1));
+            var imgBytes = Convert.FromBase64String(evntLogoImage.Substring(evntLogoImage.LastIndexOf(',') + 1));
 
-            using (var imageFile = new FileStream(fullImagePath, FileMode.Create))
-            {
-                imageFile.Write(imgBytes, 0, imgBytes.Length);
-                imageFile.Flush();
-            }
+            using var imageFile = new FileStream(fullImagePath, FileMode.Create);
+            imageFile.Write(imgBytes, 0, imgBytes.Length);
+            imageFile.Flush();
 
-            Event evnt = new ()
+            var evnt = new Event
             {
                 Name = evntName,
                 Description = evntDescription,
@@ -43,7 +41,7 @@ namespace TicketManagement.MVC.Controllers
                 EventLogoImage = shortImagePath,
             };
 
-            await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(evnt);
+            await EventService.InsertAsync(evnt);
 
             _events.Remove(_events.Find(x => x.Name == evnt.Name && x.EventTime == evnt.EventTime));
             return View("Preview", _events);
@@ -75,7 +73,7 @@ namespace TicketManagement.MVC.Controllers
             _events.Clear();
             foreach (var thirdPartyEvent in thirdPartyEvents)
             {
-                Event evnt = new ()
+                var evnt = new Event
                 {
                     Name = thirdPartyEvent.Name,
                     Description = thirdPartyEvent.Description,
