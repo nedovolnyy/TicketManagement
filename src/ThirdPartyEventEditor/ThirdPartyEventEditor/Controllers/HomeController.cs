@@ -18,7 +18,7 @@ namespace ThirdPartyEventEditor.Controllers
         {
             var events = JsonFileGetAllEvents(_jsonFileName);
             _logger.Debug("Deserialized all ThirdPartyEvents from .json file");
-            
+
             return View(events);
         }
 
@@ -34,7 +34,7 @@ namespace ThirdPartyEventEditor.Controllers
         }
 
         [HttpPost]
-        public ActionResult Insert(string name, string eventTime, string eventEndTime, string description, string layoutId, HttpPostedFileBase eventLogoImageData)
+        public ActionResult Insert(string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
         {
             if (eventLogoImageData != null)
             {
@@ -49,13 +49,12 @@ namespace ThirdPartyEventEditor.Controllers
                     LayoutId = int.Parse(layoutId),
                     Description = description,
                     EventLogoImage = ConvertImageToJson(imageByteArr),
+                    Price = decimal.Parse(price),
                 };
+
                 using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
                 var events = Deserialize<List<ThirdPartyEvent>>(fs);
-                lock (fs)
-                {
-                    fs.SetLength(0);
-                }
+                fs.SetLength(0);
                 events.Add(newEvent);
                 Serialize(fs, events);
                 _logger.Debug("Added new ThirdPartyEvent into .json file");
@@ -64,14 +63,14 @@ namespace ThirdPartyEventEditor.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(string evnt, string name, string eventTime, string eventEndTime, string description, string layoutId, HttpPostedFileBase eventLogoImageData)
+        public ActionResult Update(string evnt, string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
         {
             if (eventLogoImageData != null)
             {
                 var imageByteArr = new byte[eventLogoImageData.ContentLength];
                 eventLogoImageData.InputStream.Read(imageByteArr, 0, eventLogoImageData.ContentLength);
 
-                ThirdPartyEvent newEvent = new ()
+                ThirdPartyEvent newEvent = new()
                 {
                     Name = name,
                     EventTime = DateTimeOffset.Parse(eventTime),
@@ -79,13 +78,11 @@ namespace ThirdPartyEventEditor.Controllers
                     LayoutId = int.Parse(layoutId),
                     Description = description,
                     EventLogoImage = ConvertImageToJson(imageByteArr),
+                    Price = decimal.Parse(price),
                 };
                 using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
                 var events = Deserialize<List<ThirdPartyEvent>>(fs);
-                lock (fs)
-                {
-                    fs.SetLength(0);
-                }
+                fs.SetLength(0);
                 var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
                 var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
                 events.Remove(ind);
@@ -102,10 +99,7 @@ namespace ThirdPartyEventEditor.Controllers
         {
             using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
             var events = Deserialize<List<ThirdPartyEvent>>(fs);
-            lock (fs)
-            {
-                fs.SetLength(0);
-            }
+            fs.SetLength(0);
 
             var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
             var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);

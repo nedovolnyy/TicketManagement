@@ -19,6 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<ISeatService, SeatService>(provider => new SeatService(provider.GetRequiredService<ISeatRepository>()));
 
+            services.AddTransient<IThirdPartyEventService, ThirdPartyEventService>(provider => new ThirdPartyEventService(provider.GetRequiredService<IEventRepository>()));
+
             services.AddTransient<IVenueService, VenueService>(provider => new VenueService(provider.GetRequiredService<IVenueRepository>()));
         }
     }

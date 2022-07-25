@@ -14,6 +14,7 @@
             $('#evntAddDivEventEndTime').removeAttr('hidden');
             $('#evntAddDivDescription').removeAttr('hidden');
             $('#evntAddDivLayoutId').removeAttr('hidden');
+            $('#evntAddDivPrice').removeAttr('hidden');
             $('#evntAddDivEventLogoImage').removeAttr('hidden');
             $('#evntAddDivButton').removeAttr('hidden');
             $('#evntAddButton' + iter).attr('hidden', 'hidden');
@@ -25,6 +26,7 @@
             $('#evntEditorDescription' + iter).removeAttr('hidden');
             $('#evntEditorEventLogoImage' + iter).removeAttr('hidden');
             $('#evntEditorLayoutId' + iter).removeAttr('hidden');
+            $('#evntEditorPrice' + iter).removeAttr('hidden');
             $('#evntEditorButton' + iter).removeAttr('hidden');
             $('#evntViewerName' + iter).attr('hidden', 'hidden');
             $('#evntViewerEventTime' + iter).attr('hidden', 'hidden');
@@ -32,6 +34,7 @@
             $('#evntViewerDescription' + iter).attr('hidden', 'hidden');
             $('#evntViewerEventLogoImage' + iter).attr('hidden', 'hidden');
             $('#evntViewerLayoutId' + iter).attr('hidden', 'hidden');
+            $('#evntViewerPrice' + iter).attr('hidden', 'hidden');
             $('#evntViewerButton' + iter).attr('hidden', 'hidden');
         }
     </script>
@@ -58,6 +61,9 @@
         </th>
         <th>
             @Html.Label("Layout ID")
+        </th>
+        <th>
+            @Html.Label("Price")
         </th>
         <th>
             @Html.Label("Event Image")
@@ -97,6 +103,12 @@
             <td>
                 <div id="evntAddDivLayoutId" hidden>
                     <input name="LayoutId" />
+                </div>
+            </td>
+
+            <td>
+                <div id="evntAddDivPrice" hidden>
+                    <input name="Price" />
                 </div>
             </td>
 
@@ -143,6 +155,11 @@
                 </div>
             </td>
             <td>
+                <div id="@Html.Raw("evntViewerPrice" + idIterator)">
+                    @Html.DisplayFor(modelItem => evnt.Price)
+                </div>
+            </td>
+            <td>
                 <div id="@Html.Raw("evntViewerEventLogoImage" + idIterator)">
                     <img src="@evnt.EventLogoImage" alt="" />
                 </div>
@@ -177,7 +194,8 @@
                     <div id="@Html.Raw("evntEditorEventEndTime" + idIterator)" hidden>
                         <input name="eventEndTime" type="datetime-local" value="new Date(@evnt.EventEndTime.ToLongTimeString())" />
                         <h1>
-                        <script>@evnt.EventEndTime.ToString()</script></h1>
+                            <script>@evnt.EventEndTime.ToString()</script>
+                        </h1>
                     </div>
                 </td>
 
@@ -190,6 +208,12 @@
                 <td>
                     <div id="@Html.Raw("evntEditorLayoutId" + idIterator)" hidden>
                         <input name="LayoutId" value="@evnt.LayoutId" />
+                    </div>
+                </td>
+
+                <td>
+                    <div id="@Html.Raw("evntEditorPrice" + idIterator)" hidden>
+                        <input name="Price" value="Price" />
                     </div>
                 </td>
 

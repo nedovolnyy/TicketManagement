@@ -10,48 +10,51 @@ namespace TicketManagement.MVC.Controllers
     [Authorize(Roles = "EventManager,Administrator")]
     public class ThirdPartyEventsController : Controller
     {
-        private static readonly List<Event> _events = new List<Event>();
+        private static readonly List<ThirdPartyEvent> _thirdPartyEvents = new List<ThirdPartyEvent>();
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ThirdPartyEventsController(IEventService eventService, IWebHostEnvironment webHostEnvironment)
+        public ThirdPartyEventsController(IThirdPartyEventService thirdPartyEventService, IWebHostEnvironment webHostEnvironment)
         {
-            EventService = eventService;
+            ThirdPartyEventService = thirdPartyEventService;
             _webHostEnvironment = webHostEnvironment;
         }
 
-        private IEventService EventService { get; }
+        private IThirdPartyEventService ThirdPartyEventService { get; }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(string evntName, string evntDescription, string evntTime, string evntEndTime, string evntLogoImage, string evntLayoutId)
+        public async Task<ActionResult> Insert(
+            string thirdPartyEventName,
+            string thirdPartyEventDescription,
+            string thirdPartyEventTime,
+            string thirdPartyEventEndTime,
+            string thirdPartyEventLogoImage,
+            string thirdPartyEventLayoutId,
+            string thirdPartyEventPrice)
         {
-            var shortImagePath = "image" + Path.DirectorySeparatorChar + evntName + evntLayoutId + ".png";
+            var eventPrice = decimal.Parse(thirdPartyEventPrice);
+            var shortImagePath = "image" + Path.DirectorySeparatorChar + thirdPartyEventName + thirdPartyEventLayoutId + ".png";
             var fullImagePath = Path.Combine(_webHostEnvironment.WebRootPath, shortImagePath);
-            var imgBytes = Convert.FromBase64String(evntLogoImage.Substring(evntLogoImage.LastIndexOf(',') + 1));
-
-            using var imageFile = new FileStream(fullImagePath, FileMode.Create);
-            imageFile.Write(imgBytes, 0, imgBytes.Length);
-            imageFile.Flush();
-
-            var evnt = new Event
+            var thirdPartyEvent = new Event
             {
-                Name = evntName,
-                Description = evntDescription,
-                EventTime = DateTimeOffset.Parse(evntTime),
-                EventEndTime = DateTime.Parse(evntEndTime),
-                LayoutId = int.Parse(evntLayoutId),
+                Name = thirdPartyEventName,
+                Description = thirdPartyEventDescription,
+                EventTime = DateTimeOffset.Parse(thirdPartyEventTime),
+                EventEndTime = DateTime.Parse(thirdPartyEventEndTime),
+                LayoutId = int.Parse(thirdPartyEventLayoutId),
                 EventLogoImage = shortImagePath,
             };
 
-            await EventService.InsertAsync(evnt);
+            await ThirdPartyEventService.InsertEventToDatabase(fullImagePath, thirdPartyEvent, eventPrice, thirdPartyEventLogoImage);
 
-            _events.Remove(_events.Find(x => x.Name == evnt.Name && x.EventTime == evnt.EventTime));
-            return View("Preview", _events);
+            _thirdPartyEvents.Remove(_thirdPartyEvents.Find(x => x.Name == thirdPartyEvent.Name && x.EventTime == thirdPartyEvent.EventTime));
+            return View("Preview", _thirdPartyEvents);
         }
 
         [HttpPost]
-        public ActionResult Delete(string evntName, string evntDescription, string evntTime)
+        public ActionResult Delete(string thirdPartyEventName, string thirdPartyEventDescription, string thirdPartyEventTime)
         {
-            _events.Remove(_events.Find(x => x.Name == evntName && x.EventTime == DateTimeOffset.Parse(evntTime) && x.Description == evntDescription));
-            return View("Preview", _events);
+            _thirdPartyEvents.Remove(
+                _thirdPartyEvents.Find(x => x.Name == thirdPartyEventName && x.EventTime == DateTimeOffset.Parse(thirdPartyEventTime) && x.Description == thirdPartyEventDescription));
+            return View("Preview", _thirdPartyEvents);
         }
 
         [HttpPost]
@@ -63,29 +66,20 @@ namespace TicketManagement.MVC.Controllers
             }
 
             using var reader = new StreamReader(file.OpenReadStream());
-            var events = MapEventFromThirdParty(await JsonSerializer.DeserializeAsync<List<ThirdPartyEvent>>(reader.BaseStream));
+            var thirdPartyEvents = PrepareListOfThirdPartyEvents(await JsonSerializer.DeserializeAsync<List<ThirdPartyEvent>>(reader.BaseStream));
 
-            return View(events);
+            return View(thirdPartyEvents);
         }
 
-        private static List<Event> MapEventFromThirdParty(List<ThirdPartyEvent> thirdPartyEvents)
+        private static List<ThirdPartyEvent> PrepareListOfThirdPartyEvents(List<ThirdPartyEvent> thirdPartyEvents)
         {
-            _events.Clear();
+            _thirdPartyEvents.Clear();
             foreach (var thirdPartyEvent in thirdPartyEvents)
             {
-                var evnt = new Event
-                {
-                    Name = thirdPartyEvent.Name,
-                    Description = thirdPartyEvent.Description,
-                    EventTime = thirdPartyEvent.EventTime,
-                    EventEndTime = thirdPartyEvent.EventEndTime,
-                    LayoutId = thirdPartyEvent.LayoutId,
-                    EventLogoImage = thirdPartyEvent.EventLogoImage,
-                };
-                _events.Add(evnt);
+                _thirdPartyEvents.Add(thirdPartyEvent);
             }
 
-            return _events;
+            return _thirdPartyEvents;
         }
     }
 }
