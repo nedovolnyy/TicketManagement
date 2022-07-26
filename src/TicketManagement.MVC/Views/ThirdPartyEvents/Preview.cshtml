@@ -23,7 +23,7 @@
             foreach (var thirdPartyEvent in Model)
             {
                 <div class="col">
-                    <form asp-controller="ThirdPartyEvents" asp-action="Insert" method="post" class="form-horizontal" role="form">
+                    <form asp-controller="ThirdPartyEvents" asp-action="AddThirdPartyEvent" method="post" class="form-horizontal" role="form">
                         <div class="img__container visible">
                             <input name="thirdPartyEventLogoImage" value="@thirdPartyEvent.EventLogoImage" hidden />
                             <img class="image shadow-lg" alt="" src="@Url.Content(thirdPartyEvent.EventLogoImage)" />
@@ -58,7 +58,7 @@
                         </div>
                         <input class="btn btn-sm btn-primary" type="submit" value="@Localizer["Add"]" />
                     </form>
-                    <form asp-controller="ThirdPartyEvents" asp-action="Delete" asp-route-thirdPartyEventName="@thirdPartyEvent.Name" asp-route-thirdPartyEventTime="@thirdPartyEvent.EventTime" asp-route-thirdPartyEventDescription="@thirdPartyEvent.Description" method="post">
+                    <form asp-controller="ThirdPartyEvents" asp-action="DeleteThirdPartyEvent" asp-route-thirdPartyEventName="@thirdPartyEvent.Name" asp-route-thirdPartyEventTime="@thirdPartyEvent.EventTime" asp-route-thirdPartyEventDescription="@thirdPartyEvent.Description" method="post">
                         <button type="submit" class="btn btn-sm btn-danger" onclick="@Html.Raw("return confirm('")@Localizer["Are you sure you want to delete this ThirdPartyEvent?"]@Html.Raw("')")">@Localizer["Delete"]</button>
                     </form>
                 </div>

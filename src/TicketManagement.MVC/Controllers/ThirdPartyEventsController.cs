@@ -21,7 +21,7 @@ namespace TicketManagement.MVC.Controllers
         private IThirdPartyEventService ThirdPartyEventService { get; }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(
+        public async Task<ActionResult> AddThirdPartyEvent(
             string thirdPartyEventName,
             string thirdPartyEventDescription,
             string thirdPartyEventTime,
@@ -30,7 +30,6 @@ namespace TicketManagement.MVC.Controllers
             string thirdPartyEventLayoutId,
             string thirdPartyEventPrice)
         {
-            var eventPrice = decimal.Parse(thirdPartyEventPrice);
             var shortImagePath = "image" + Path.DirectorySeparatorChar + thirdPartyEventName + thirdPartyEventLayoutId + ".png";
             var fullImagePath = Path.Combine(_webHostEnvironment.WebRootPath, shortImagePath);
             var thirdPartyEvent = new Event
@@ -43,14 +42,14 @@ namespace TicketManagement.MVC.Controllers
                 EventLogoImage = shortImagePath,
             };
 
-            await ThirdPartyEventService.InsertEventToDatabase(fullImagePath, thirdPartyEvent, eventPrice, thirdPartyEventLogoImage);
+            await ThirdPartyEventService.InsertEventToDatabase(fullImagePath, thirdPartyEvent, decimal.Parse(thirdPartyEventPrice), thirdPartyEventLogoImage);
 
             _thirdPartyEvents.Remove(_thirdPartyEvents.Find(x => x.Name == thirdPartyEvent.Name && x.EventTime == thirdPartyEvent.EventTime));
             return View("Preview", _thirdPartyEvents);
         }
 
         [HttpPost]
-        public ActionResult Delete(string thirdPartyEventName, string thirdPartyEventDescription, string thirdPartyEventTime)
+        public ActionResult DeleteThirdPartyEvent(string thirdPartyEventName, string thirdPartyEventDescription, string thirdPartyEventTime)
         {
             _thirdPartyEvents.Remove(
                 _thirdPartyEvents.Find(x => x.Name == thirdPartyEventName && x.EventTime == DateTimeOffset.Parse(thirdPartyEventTime) && x.Description == thirdPartyEventDescription));
