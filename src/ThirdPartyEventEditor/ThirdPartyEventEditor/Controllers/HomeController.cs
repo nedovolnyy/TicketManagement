@@ -25,7 +25,13 @@
         [HttpPost]
         public ActionResult Insert(string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
         {
-            if (eventLogoImageData != null)
+            if (eventLogoImageData is not null &&
+                name != string.Empty &&
+                eventTime is not null &&
+                eventEndTime is not null &&
+                description != string.Empty &&
+                layoutId != string.Empty &&
+                price != string.Empty)
             {
                 var newThirdPartyEvent = new ThirdPartyEvent()
                 {
@@ -48,7 +54,13 @@
         [HttpPost]
         public ActionResult Update(string thirdPartyEvent, string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
         {
-            if (eventLogoImageData != null)
+            if (eventLogoImageData is not null &&
+                name != string.Empty &&
+                eventTime is not null &&
+                eventEndTime is not null &&
+                description != string.Empty &&
+                layoutId != string.Empty &&
+                price != string.Empty)
             {
                 var newThirdPartyEvent = new ThirdPartyEvent()
                 {
