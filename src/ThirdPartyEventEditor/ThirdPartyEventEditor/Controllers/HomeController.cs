@@ -12,28 +12,28 @@
     public class HomeController : Controller
     {
         private readonly string _jsonFileName = ConfigurationManager.AppSettings["JsonFileName"];
-        private ILog _logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog _logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public ActionResult Index()
         {
-            var events = JsonRepository.GetAllThirdPartyEventOutoJsonFile(this.GetPath(this._jsonFileName));
-            this._logger.Debug("Deserialized all ThirdPartyEvents from .json file");
+            var events = JsonRepository.GetAllThirdPartyEventOutoJsonFile(GetPath(_jsonFileName));
+            _logger.Debug("Deserialized all ThirdPartyEvents from .json file");
 
-            return this.View(events);
+            return View(events);
         }
 
         [HttpPost]
-        public ActionResult Insert(string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
+        public ActionResult InsertThirdPartyEvent(string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
         {
-            if (eventLogoImageData is not null &&
-                name != string.Empty &&
-                eventTime is not null &&
-                eventEndTime is not null &&
-                description != string.Empty &&
-                layoutId != string.Empty &&
+            if (eventLogoImageData is not null &
+                name != string.Empty &
+                eventTime is not null &
+                eventEndTime is not null &
+                description != string.Empty &
+                layoutId != string.Empty &
                 price != string.Empty)
             {
-                var newThirdPartyEvent = new ThirdPartyEvent()
+                var newThirdPartyEvent = new ThirdPartyEvent
                 {
                     Name = name,
                     EventTime = DateTimeOffset.Parse(eventTime),
@@ -44,25 +44,28 @@
                     Price = decimal.Parse(price),
                 };
 
-                JsonRepository.InsertThirdPartyEventToJsonFile(newThirdPartyEvent, this.GetPath(this._jsonFileName), eventLogoImageData);
-                this._logger.Debug("Added new ThirdPartyEvent into .json file");
+                JsonRepository.InsertThirdPartyEventToJsonFile(newThirdPartyEvent, GetPath(_jsonFileName), eventLogoImageData);
+                _logger.Debug("Added new ThirdPartyEvent into .json file");
             }
 
-            return this.RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult Update(string thirdPartyEvent, string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
+        public ActionResult UpdateThirdPartyEvent(
+            string thirdPartyEvent, string name, string eventTime,
+            string eventEndTime, string description, string layoutId,
+            string price, HttpPostedFileBase eventLogoImageData)
         {
-            if (eventLogoImageData is not null &&
-                name != string.Empty &&
-                eventTime is not null &&
-                eventEndTime is not null &&
-                description != string.Empty &&
-                layoutId != string.Empty &&
+            if (eventLogoImageData is not null &
+                name != string.Empty &
+                eventTime is not null &
+                eventEndTime is not null &
+                description != string.Empty &
+                layoutId != string.Empty &
                 price != string.Empty)
             {
-                var newThirdPartyEvent = new ThirdPartyEvent()
+                var newThirdPartyEvent = new ThirdPartyEvent
                 {
                     Name = name,
                     EventTime = DateTimeOffset.Parse(eventTime),
@@ -73,25 +76,25 @@
                     Price = decimal.Parse(price),
                 };
 
-                JsonRepository.UpdateThirdPartyEventInJsonFile(thirdPartyEvent, newThirdPartyEvent, this.GetPath(this._jsonFileName), eventLogoImageData);
-                this._logger.Debug("Updated existing ThirdPartyEvent into .json file");
+                JsonRepository.UpdateThirdPartyEventInJsonFile(thirdPartyEvent, newThirdPartyEvent, GetPath(_jsonFileName), eventLogoImageData);
+                _logger.Debug("Updated existing ThirdPartyEvent into .json file");
             }
 
-            return this.RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult Delete(string thirdPartyEvent)
+        public ActionResult DeleteThirdPartyEvent(string thirdPartyEvent)
         {
-            JsonRepository.DeleteThirdPartyEventInJsonFile(thirdPartyEvent, this.GetPath(this._jsonFileName));
-            this._logger.Debug("Deleted existing ThirdPartyEvent into .json file");
+            JsonRepository.DeleteThirdPartyEventInJsonFile(thirdPartyEvent, GetPath(_jsonFileName));
+            _logger.Debug("Deleted existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
         }
 
         private string GetPath(string filename)
         {
-            return Path.Combine(this.Server.MapPath("~/App_Data/"), filename);
+            return Path.Combine(Server.MapPath("~/App_Data/"), filename);
         }
     }
 }

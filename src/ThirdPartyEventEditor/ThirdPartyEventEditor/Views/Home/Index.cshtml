@@ -74,7 +74,7 @@
     </tr>
     <tr></tr>
     <tr>
-        @using (Html.BeginForm("Insert", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("InsertThirdPartyEvent", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <td>
                 <div id="thirdPartyEventAddDivName" hidden>
@@ -165,7 +165,7 @@
                 </div>
             </td>
             <td>
-                @using (Html.BeginRouteForm("Default", new { action = "Delete", controller = "Home" }))
+                @using (Html.BeginRouteForm("Default", new { action = "DeleteThirdPartyEvent", controller = "Home" }))
                 {
                     <input name="thirdPartyEvent" value="@Json.Encode(thirdPartyEvent)" hidden />
                     <div id="@Html.Raw("thirdPartyEventViewerButton" + idIterator)">
@@ -176,7 +176,7 @@
             </td>
         </tr>
         <tr>
-            @using (Html.BeginForm("Update", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            @using (Html.BeginForm("UpdateThirdPartyEvent", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
                 <td>
                     <div id="@Html.Raw("thirdPartyEventEditorName" + idIterator)" hidden>
