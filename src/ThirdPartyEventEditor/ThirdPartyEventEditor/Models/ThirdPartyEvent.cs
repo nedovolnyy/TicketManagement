@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace ThirdPartyEventEditor.Models
+﻿namespace ThirdPartyEventEditor.Models
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+
     public class ThirdPartyEvent
     {
         [Required]

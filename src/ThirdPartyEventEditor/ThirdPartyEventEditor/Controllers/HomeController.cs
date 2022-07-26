@@ -1,36 +1,25 @@
-﻿using log4net;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Web;
-using System.Web.Mvc;
-using ThirdPartyEventEditor.Models;
-
-namespace ThirdPartyEventEditor.Controllers
+﻿namespace ThirdPartyEventEditor.Controllers
 {
+    using System;
+    using System.Configuration;
+    using System.IO;
+    using System.Web;
+    using System.Web.Mvc;
+    using log4net;
+    using ThirdPartyEventEditor.Models;
+    using ThirdPartyEventEditor.Repository;
+
     public class HomeController : Controller
     {
         private readonly string _jsonFileName = ConfigurationManager.AppSettings["JsonFileName"];
         private ILog _logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public ActionResult Index()
         {
-            var events = JsonFileGetAllEvents(_jsonFileName);
-            _logger.Debug("Deserialized all ThirdPartyEvents from .json file");
+            var events = JsonRepository.GetAllThirdPartyEventOutoJsonFile(this.GetPath(this._jsonFileName));
+            this._logger.Debug("Deserialized all ThirdPartyEvents from .json file");
 
-            return View(events);
-        }
-
-        private string ConvertImageToJson(byte[] stream)
-        {
-            _logger.Debug("Convert png to base64string");
-            return "data:image/png;base64," + Convert.ToBase64String(stream);
-        }
-
-        private string GetPath(string filename)
-        {
-            return Path.Combine(Server.MapPath("~/App_Data/"), filename);
+            return this.View(events);
         }
 
         [HttpPost]
@@ -38,99 +27,59 @@ namespace ThirdPartyEventEditor.Controllers
         {
             if (eventLogoImageData != null)
             {
-                var imageByteArr = new byte[eventLogoImageData.ContentLength];
-                eventLogoImageData.InputStream.Read(imageByteArr, 0, eventLogoImageData.ContentLength);
-
-                ThirdPartyEvent newEvent = new()
+                var newThirdPartyEvent = new ThirdPartyEvent()
                 {
                     Name = name,
                     EventTime = DateTimeOffset.Parse(eventTime),
                     EventEndTime = DateTime.Parse(eventEndTime),
                     LayoutId = int.Parse(layoutId),
                     Description = description,
-                    EventLogoImage = ConvertImageToJson(imageByteArr),
+                    EventLogoImage = string.Empty,
                     Price = decimal.Parse(price),
                 };
 
-                using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
-                var events = Deserialize<List<ThirdPartyEvent>>(fs);
-                fs.SetLength(0);
-                events.Add(newEvent);
-                Serialize(fs, events);
-                _logger.Debug("Added new ThirdPartyEvent into .json file");
+                JsonRepository.InsertThirdPartyEventToJsonFile(newThirdPartyEvent, this.GetPath(this._jsonFileName), eventLogoImageData);
+                this._logger.Debug("Added new ThirdPartyEvent into .json file");
             }
-            return RedirectToAction("Index");
+
+            return this.RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult Update(string evnt, string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
+        public ActionResult Update(string thirdPartyEvent, string name, string eventTime, string eventEndTime, string description, string layoutId, string price, HttpPostedFileBase eventLogoImageData)
         {
             if (eventLogoImageData != null)
             {
-                var imageByteArr = new byte[eventLogoImageData.ContentLength];
-                eventLogoImageData.InputStream.Read(imageByteArr, 0, eventLogoImageData.ContentLength);
-
-                ThirdPartyEvent newEvent = new()
+                var newThirdPartyEvent = new ThirdPartyEvent()
                 {
                     Name = name,
                     EventTime = DateTimeOffset.Parse(eventTime),
                     EventEndTime = DateTime.Parse(eventEndTime),
                     LayoutId = int.Parse(layoutId),
                     Description = description,
-                    EventLogoImage = ConvertImageToJson(imageByteArr),
+                    EventLogoImage = string.Empty,
                     Price = decimal.Parse(price),
                 };
-                using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
-                var events = Deserialize<List<ThirdPartyEvent>>(fs);
-                fs.SetLength(0);
-                var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
-                var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
-                events.Remove(ind);
-                events.Add(newEvent);
-                Serialize(fs, events);
-                _logger.Debug("Updated existing ThirdPartyEvent into .json file");
+
+                JsonRepository.UpdateThirdPartyEventInJsonFile(thirdPartyEvent, newThirdPartyEvent, this.GetPath(this._jsonFileName), eventLogoImageData);
+                this._logger.Debug("Updated existing ThirdPartyEvent into .json file");
             }
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult Delete(string evnt)
+        public ActionResult Delete(string thirdPartyEvent)
         {
-            using FileStream fs = new(GetPath(_jsonFileName), FileMode.OpenOrCreate);
-            var events = Deserialize<List<ThirdPartyEvent>>(fs);
-            fs.SetLength(0);
-
-            var tempEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(evnt);
-            var ind = events.Find(x => x.Description == tempEvent.Description && x.Name == tempEvent.Name);
-            events.Remove(ind);
-            Serialize(fs, events);
-            _logger.Debug("Deleted existing ThirdPartyEvent into .json file");
+            JsonRepository.DeleteThirdPartyEventInJsonFile(thirdPartyEvent, this.GetPath(this._jsonFileName));
+            this._logger.Debug("Deleted existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
         }
 
-        private List<ThirdPartyEvent> JsonFileGetAllEvents(string jsonFileName)
+        private string GetPath(string filename)
         {
-            using FileStream fs = new(GetPath(jsonFileName), FileMode.OpenOrCreate);
-            return Deserialize<List<ThirdPartyEvent>>(fs);
-        }
-
-        private static void Serialize(Stream s, object value)
-        {
-            using StreamWriter writer = new(s);
-            using JsonTextWriter jsonWriter = new(writer);
-            JsonSerializer ser = new();
-            ser.Serialize(jsonWriter, value);
-            jsonWriter.Flush();
-        }
-
-        private static T Deserialize<T>(Stream s)
-        {
-            using StreamReader reader = new(s);
-            using JsonTextReader jsonReader = new(reader);
-            JsonSerializer ser = new();
-            return ser.Deserialize<T>(jsonReader);
+            return Path.Combine(this.Server.MapPath("~/App_Data/"), filename);
         }
     }
 }
