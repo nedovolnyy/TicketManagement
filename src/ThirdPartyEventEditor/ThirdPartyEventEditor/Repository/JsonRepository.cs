@@ -8,90 +8,96 @@
     using Newtonsoft.Json;
     using ThirdPartyEventEditor.Models;
 
-    public static class JsonRepository
+    public class JsonRepository : IDisposable
     {
-        private static readonly ReaderWriterLockSlim ReadWriteLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        private readonly ReaderWriterLockSlim _readWriteLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
-        public static void InsertThirdPartyEventToJsonFile(ThirdPartyEvent thirdPartyEvent, string pathJsonFile, HttpPostedFileBase eventLogoImageData)
+        public void Insert(ThirdPartyEvent thirdPartyEvent, string pathJsonFile, HttpPostedFileBase eventLogoImageData)
         {
-            thirdPartyEvent.EventLogoImage = ConvertImageToJson(eventLogoImageData);
-            var thirdPartyEvents = GetAllThirdPartyEventOutoJsonFile(pathJsonFile);
-
-            ReadWriteLockSlim.EnterWriteLock();
+            _readWriteLockSlim.EnterWriteLock();
             try
             {
+                thirdPartyEvent.EventLogoImage = ConvertImageToBase64(eventLogoImageData);
+                var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile(pathJsonFile);
                 using var streamWriter = new StreamWriter(pathJsonFile, append: false);
                 thirdPartyEvents.Add(thirdPartyEvent);
                 SerializeJson(streamWriter, thirdPartyEvents);
             }
             finally
             {
-                if (ReadWriteLockSlim.IsWriteLockHeld)
+                if (_readWriteLockSlim.IsWriteLockHeld)
                 {
-                    ReadWriteLockSlim.ExitWriteLock();
+                    _readWriteLockSlim.ExitWriteLock();
                 }
             }
         }
 
-        public static void UpdateThirdPartyEventInJsonFile(string jsonThirdPartyEvent, ThirdPartyEvent thirdPartyEvent, string pathJsonFile, HttpPostedFileBase eventLogoImageData)
+        public void Update(ThirdPartyEvent thirdPartyEvent, ThirdPartyEvent updatedthirdPartyEvent, string pathJsonFile, HttpPostedFileBase eventLogoImageData)
         {
-            thirdPartyEvent.EventLogoImage = ConvertImageToJson(eventLogoImageData);
-            var thirdPartyEvents = GetAllThirdPartyEventOutoJsonFile(pathJsonFile);
-            var editedThirdPartyEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(jsonThirdPartyEvent);
-
-            ReadWriteLockSlim.EnterWriteLock();
+            _readWriteLockSlim.EnterWriteLock();
             try
             {
+                updatedthirdPartyEvent.EventLogoImage = ConvertImageToBase64(eventLogoImageData);
+                var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile(pathJsonFile);
                 using var streamWriter = new StreamWriter(pathJsonFile, append: false);
-                thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == editedThirdPartyEvent.Description && x.Name == editedThirdPartyEvent.Name));
-                thirdPartyEvents.Add(thirdPartyEvent);
+                thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == thirdPartyEvent.Description && x.Name == thirdPartyEvent.Name));
+                thirdPartyEvents.Add(updatedthirdPartyEvent);
                 SerializeJson(streamWriter, thirdPartyEvents);
             }
             finally
             {
-                if (ReadWriteLockSlim.IsWriteLockHeld)
+                if (_readWriteLockSlim.IsWriteLockHeld)
                 {
-                    ReadWriteLockSlim.ExitWriteLock();
+                    _readWriteLockSlim.ExitWriteLock();
                 }
             }
         }
 
-        public static void DeleteThirdPartyEventInJsonFile(string jsonThirdPartyEvent, string pathJsonFile)
+        public void Delete(ThirdPartyEvent thirdPartyEvent, string pathJsonFile)
         {
-            var thirdPartyEvents = GetAllThirdPartyEventOutoJsonFile(pathJsonFile);
-            var deletedThirdPartyEvent = JsonConvert.DeserializeObject<ThirdPartyEvent>(jsonThirdPartyEvent);
-
-            ReadWriteLockSlim.EnterWriteLock();
+            _readWriteLockSlim.EnterWriteLock();
             try
             {
+                var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile(pathJsonFile);
                 using var streamWriter = new StreamWriter(pathJsonFile, append: false);
-                thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == deletedThirdPartyEvent.Description && x.Name == deletedThirdPartyEvent.Name));
+                thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == thirdPartyEvent.Description && x.Name == thirdPartyEvent.Name));
                 SerializeJson(streamWriter, thirdPartyEvents);
             }
             finally
             {
-                if (ReadWriteLockSlim.IsWriteLockHeld)
+                if (_readWriteLockSlim.IsWriteLockHeld)
                 {
-                    ReadWriteLockSlim.ExitWriteLock();
+                    _readWriteLockSlim.ExitWriteLock();
                 }
             }
         }
 
-        public static List<ThirdPartyEvent> GetAllThirdPartyEventOutoJsonFile(string pathJsonFile)
+        public List<ThirdPartyEvent> GetAllThirdPartyEventsOutoJsonFile(string pathJsonFile)
         {
             using var jsonReader = new JsonTextReader(new StreamReader(pathJsonFile));
             var jsonSerializer = new JsonSerializer();
             return jsonSerializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
         }
 
-        private static void SerializeJson(StreamWriter streamWriter, object value)
+        private void SerializeJson(StreamWriter streamWriter, object value)
         {
             var jsonSerializer = new JsonSerializer();
             jsonSerializer.Serialize(streamWriter, value);
             streamWriter.Flush();
         }
 
-        private static string ConvertImageToJson(HttpPostedFileBase eventLogoImageData)
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _readWriteLockSlim.Dispose();
+        }
+
+        private string ConvertImageToBase64(HttpPostedFileBase eventLogoImageData)
         {
             var imageByteArray = new byte[eventLogoImageData.ContentLength];
             eventLogoImageData.InputStream.Read(imageByteArray, 0, eventLogoImageData.ContentLength);

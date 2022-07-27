@@ -1,0 +1,212 @@
+﻿@using ThirdPartyEventEditor.Models
+
+@model IEnumerable<ThirdPartyEvent>
+
+@{
+    var idIterator = 0;
+    var newThirdPartyEvent = new ThirdPartyEvent();
+    var updatedThirdPartyEvent = new ThirdPartyEvent();
+    var deletedThirdPartyEvent = new ThirdPartyEvent();
+}
+
+@section scripts {
+    <script>
+        function clickAdd() {
+            document.querySelectorAll('.thirdPartyEventAddDiv').forEach(el => el.removeAttribute('hidden'));
+        }
+        function clickEdit(iter) {
+            document.querySelectorAll('.thirdPartyEventEditor' + iter).forEach(el => el.removeAttribute('hidden'));
+            document.querySelectorAll('.thirdPartyEventViewer' + iter).forEach(el => el.setAttribute('hidden', 'hidden'));
+        }
+    </script>
+}
+
+<h2>Events</h2>
+
+<p>
+    <input id="thirdPartyEventAddButton" type="button" value="Create Event" onclick="clickAdd()" />
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Event time")
+        </th>
+        <th>
+            @Html.Label("Event end time")
+        </th>
+        <th>
+            @Html.Label("Description")
+        </th>
+        <th>
+            @Html.Label("Layout ID")
+        </th>
+        <th>
+            @Html.Label("Price")
+        </th>
+        <th>
+            @Html.Label("Event Image")
+        </th>
+        <th>
+            @Html.Label("Action")
+        </th>
+    </tr>
+    <tr></tr>
+    <tr>
+        @using (Html.BeginForm("Insert", "ThirdPartyEvents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input name="newThirdPartyEvent.Name" value="@newThirdPartyEvent.Name" />
+                </div>
+            </td>
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input name="newThirdPartyEvent.EventTime" type="datetime-local" value="@DateTimeOffset.Now.ToString("s")" />
+                </div>
+            </td>
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input name="newThirdPartyEvent.EventEndTime" type="datetime-local" value="@DateTime.Now.AddHours(1).ToString("s")" />
+                </div>
+            </td>
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input name="newThirdPartyEvent.Description" />
+                </div>
+            </td>
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input name="newThirdPartyEvent.LayoutId" type="number" />
+                </div>
+            </td>
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input name="newThirdPartyEvent.Price" type="number" value="@newThirdPartyEvent.Price" />
+                </div>
+            </td>
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input name="eventLogoImageData" type="file" />
+                </div>
+            </td>
+            <td>
+                <div class="thirdPartyEventAddDiv" hidden>
+                    <input type="submit" value="Add" />
+                </div>
+            </td>
+        }
+    </tr>
+    @foreach (var thirdPartyEvent in Model)
+    {
+        idIterator++;
+        using (Html.BeginRouteForm("Default", new { action = "Delete", controller = "ThirdPartyEvents" }))
+        {
+            @Html.AntiForgeryToken()
+            <tr>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        @Html.DisplayFor(modelItem => thirdPartyEvent.Name)
+                        <input name="thirdPartyEvent.Name" value="@thirdPartyEvent.Name" hidden />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        @Html.DisplayFor(modelItem => thirdPartyEvent.EventTime)
+                        <input name="thirdPartyEvent.EventTime" value="@thirdPartyEvent.EventTime.ToString("s")" hidden />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        @Html.DisplayFor(modelItem => thirdPartyEvent.EventEndTime)
+                        <input name="thirdPartyEvent.EventEndTime" value="@thirdPartyEvent.EventEndTime.ToString("s")" hidden />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        @Html.DisplayFor(modelItem => thirdPartyEvent.Description)
+                        <input name="thirdPartyEvent.Description" value="@thirdPartyEvent.Description" hidden />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        @Html.DisplayFor(modelItem => thirdPartyEvent.LayoutId)
+                        <input name="thirdPartyEvent.LayoutId" value="@thirdPartyEvent.LayoutId" hidden />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        @Html.DisplayFor(modelItem => thirdPartyEvent.Price)
+                        <input name="thirdPartyEvent.Price" value="@thirdPartyEvent.Price" hidden />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        <img src="@thirdPartyEvent.EventLogoImage" alt="" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventViewer" + idIterator)">
+                        <input type="button" value="Edit" class="Edit" onclick="clickEdit(@idIterator)" />
+                        <input type="submit" value="Delete" />
+                    </div>
+                </td>
+            </tr>
+        }
+        <tr>
+            @using (Html.BeginForm("Update", "ThirdPartyEvents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input name="thirdPartyEvent.Name" value="@thirdPartyEvent.Name" hidden />
+                        <input name="updatedThirdPartyEvent.Name" value="@thirdPartyEvent.Name" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input name="thirdPartyEvent.EventTime" value="@thirdPartyEvent.EventTime.ToString("s")" hidden />
+                        <input name="updatedThirdPartyEvent.EventTime" value="@thirdPartyEvent.EventTime.ToString("s")" type="datetime-local" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input name="thirdPartyEvent.EventEndTime" value="@thirdPartyEvent.EventEndTime.ToString("s")" hidden />
+                        <input name="updatedThirdPartyEvent.EventEndTime" value="@thirdPartyEvent.EventEndTime.ToString("s")" type="datetime-local" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input name="thirdPartyEvent.Description" value="@thirdPartyEvent.Description" hidden />
+                        <input name="updatedThirdPartyEvent.Description" value="@thirdPartyEvent.Description" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input name="thirdPartyEvent.LayoutId" value="@thirdPartyEvent.LayoutId" hidden />
+                        <input name="updatedThirdPartyEvent.LayoutId" value="@thirdPartyEvent.LayoutId" type="number" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input name="thirdPartyEvent.Price" value="@thirdPartyEvent.Price" hidden />
+                        <input name="updatedThirdPartyEvent.Price" value="@thirdPartyEvent.Price" type="number" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input name="eventLogoImageData" type="file" />
+                    </div>
+                </td>
+                <td>
+                    <div class="@Html.Raw("thirdPartyEventEditor" + idIterator)" hidden>
+                        <input type="submit" value="Save" />
+                    </div>
+                </td>
+            }
+        </tr>
+    }
+</table>

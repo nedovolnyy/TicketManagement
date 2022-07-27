@@ -7,11 +7,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddBLLServices(this IServiceCollection services)
         {
-            services.AddTransient<IAreaService, AreaService>(provider => new AreaService(provider.GetRequiredService<IAreaRepository>()));
+            services.AddTransient<IAreaService, AreaService>();
 
-            services.AddTransient<IEventAreaService, EventAreaService>(provider => new EventAreaService(provider.GetRequiredService<IEventAreaRepository>()));
+            services.AddTransient<IEventAreaService, EventAreaService>();
 
-            services.AddTransient<IEventSeatService, EventSeatService>(provider => new EventSeatService(provider.GetRequiredService<IEventSeatRepository>()));
+            services.AddTransient<IEventSeatService, EventSeatService>();
 
             services.AddTransient<IEventService, EventService>(provider => new EventService(provider.GetRequiredService<IEventRepository>()));
 

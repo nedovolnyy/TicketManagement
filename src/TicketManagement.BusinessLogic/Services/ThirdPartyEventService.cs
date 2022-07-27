@@ -16,7 +16,7 @@ namespace TicketManagement.BusinessLogic.Services
 
         public async Task InsertEventToDatabase(string fullImagePath, Event evnt, decimal price, string evntLogoImage)
         {
-            var imgBytes = Convert.FromBase64String(evntLogoImage.Substring(evntLogoImage.LastIndexOf(',') + 1));
+            var imgBytes = Convert.FromBase64String(evntLogoImage);
 
             using var imageFile = new FileStream(fullImagePath, FileMode.Create);
             imageFile.Write(imgBytes, 0, imgBytes.Length);

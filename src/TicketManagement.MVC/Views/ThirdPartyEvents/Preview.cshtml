@@ -6,16 +6,9 @@
 
 @model IEnumerable<ThirdPartyEvent>
 
-@{
-    var isManageRole = User.IsInRole("Administrator") || User.IsInRole("EventManager");
-}
-
-@if (isManageRole)
-{
-    <div class="text-sm-center">
-        <h5 class="display-4">@Localizer["Total ThirdPartyEvents to Add:"] @(Model.Count())</h5>
-    </div>
-}
+<div class="text-sm-center">
+    <h5 class="display-4">@Localizer["Total ThirdPartyEvents to Add:"] @(Model.Count())</h5>
+</div>
 
 <div class="container">
     <div class="row">

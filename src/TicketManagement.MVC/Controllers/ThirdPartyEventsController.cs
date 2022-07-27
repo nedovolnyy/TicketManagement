@@ -10,15 +10,14 @@ namespace TicketManagement.MVC.Controllers
     [Authorize(Roles = "EventManager,Administrator")]
     public class ThirdPartyEventsController : Controller
     {
-        private static readonly List<ThirdPartyEvent> _thirdPartyEvents = new List<ThirdPartyEvent>();
+        private readonly List<ThirdPartyEvent> _thirdPartyEvents = new List<ThirdPartyEvent>();
+        private readonly IThirdPartyEventService _thirdPartyEventService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         public ThirdPartyEventsController(IThirdPartyEventService thirdPartyEventService, IWebHostEnvironment webHostEnvironment)
         {
-            ThirdPartyEventService = thirdPartyEventService;
+            _thirdPartyEventService = thirdPartyEventService;
             _webHostEnvironment = webHostEnvironment;
         }
-
-        private IThirdPartyEventService ThirdPartyEventService { get; }
 
         [HttpPost]
         public async Task<ActionResult> AddThirdPartyEvent(
@@ -42,7 +41,7 @@ namespace TicketManagement.MVC.Controllers
                 EventLogoImage = shortImagePath,
             };
 
-            await ThirdPartyEventService.InsertEventToDatabase(fullImagePath, thirdPartyEvent, decimal.Parse(thirdPartyEventPrice), thirdPartyEventLogoImage);
+            await _thirdPartyEventService.InsertEventToDatabase(fullImagePath, thirdPartyEvent, decimal.Parse(thirdPartyEventPrice), thirdPartyEventLogoImage);
 
             _thirdPartyEvents.Remove(_thirdPartyEvents.Find(x => x.Name == thirdPartyEvent.Name && x.EventTime == thirdPartyEvent.EventTime));
             return View("Preview", _thirdPartyEvents);
@@ -70,7 +69,7 @@ namespace TicketManagement.MVC.Controllers
             return View(thirdPartyEvents);
         }
 
-        private static List<ThirdPartyEvent> PrepareListOfThirdPartyEvents(List<ThirdPartyEvent> thirdPartyEvents)
+        private List<ThirdPartyEvent> PrepareListOfThirdPartyEvents(List<ThirdPartyEvent> thirdPartyEvents)
         {
             _thirdPartyEvents.Clear();
             foreach (var thirdPartyEvent in thirdPartyEvents)
