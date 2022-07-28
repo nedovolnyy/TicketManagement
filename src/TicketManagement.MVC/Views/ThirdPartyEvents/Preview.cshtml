@@ -16,16 +16,16 @@
             foreach (var thirdPartyEvent in Model)
             {
                 <div class="col">
-                    <form asp-controller="ThirdPartyEvents" asp-action="AddThirdPartyEvent" method="post" class="form-horizontal" role="form">
+                    <form asp-controller="ThirdPartyEvents" asp-action="Add" method="post" class="form-horizontal" role="form">
                         <div class="img__container visible">
-                            <input name="thirdPartyEventLogoImage" value="@thirdPartyEvent.EventLogoImage" hidden />
+                            <input name="event.EventLogoImage" value="@thirdPartyEvent.EventLogoImage" hidden />
                             <img class="image shadow-lg" alt="" src="@Url.Content(thirdPartyEvent.EventLogoImage)" />
                             <div class="img__description">
                                 <div class="text">
-                                    <input name="thirdPartyEventTime" value="@thirdPartyEvent.EventTime" hidden />
-                                    <input name="thirdPartyEventEndTime" value="@thirdPartyEvent.EventEndTime" hidden />
+                                    <input name="event.EventTime" value="@thirdPartyEvent.EventTime" hidden />
+                                    <input name="event.EventEndTime" value="@thirdPartyEvent.EventEndTime" hidden />
                                     <div class="img__header right" style="font-size: 0.75em;">@Html.ModifyDateTime(thirdPartyEvent.EventTime)</div>
-                                    <input name="thirdPartyEventName" value="@thirdPartyEvent.Name" hidden />
+                                    <input name="event.Name" value="@thirdPartyEvent.Name" hidden />
                                     <div class="img__header left"><h2 style="text-decoration: none;">@thirdPartyEvent.Name</h2></div>
                                 </div>
                                 <div class="text">
@@ -34,7 +34,7 @@
                                         <p>@Html.DisplayFor(model => thirdPartyEvent.Price)</p>
                                     </div>
                                     <div class="right">
-                                        <input name="thirdPartyEventLayoutId" value="@thirdPartyEvent.LayoutId" hidden />
+                                        <input name="event.LayoutId" value="@thirdPartyEvent.LayoutId" hidden />
                                         <p>@thirdPartyEvent.LayoutId</p>
                                     </div>
                                 </div>
@@ -46,12 +46,12 @@
                             </div>
                         </div>
                         <div class="text">
-                            <input name="thirdPartyEventDescription" value="@thirdPartyEvent.Description" hidden />
+                            <input name="event.Description" value="@thirdPartyEvent.Description" hidden />
                             <p>@thirdPartyEvent.Description</p>
                         </div>
                         <input class="btn btn-sm btn-primary" type="submit" value="@Localizer["Add"]" />
                     </form>
-                    <form asp-controller="ThirdPartyEvents" asp-action="DeleteThirdPartyEvent" asp-route-thirdPartyEventName="@thirdPartyEvent.Name" asp-route-thirdPartyEventTime="@thirdPartyEvent.EventTime" asp-route-thirdPartyEventDescription="@thirdPartyEvent.Description" method="post">
+                    <form asp-controller="ThirdPartyEvents" asp-action="Delete" asp-route-thirdPartyEventName="@thirdPartyEvent.Name" asp-route-thirdPartyEventTime="@thirdPartyEvent.EventTime" asp-route-thirdPartyEventDescription="@thirdPartyEvent.Description" method="post">
                         <button type="submit" class="btn btn-sm btn-danger" onclick="@Html.Raw("return confirm('")@Localizer["Are you sure you want to delete this ThirdPartyEvent?"]@Html.Raw("')")">@Localizer["Delete"]</button>
                     </form>
                 </div>

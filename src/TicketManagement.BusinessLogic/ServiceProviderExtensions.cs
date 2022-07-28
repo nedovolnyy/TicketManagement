@@ -13,15 +13,15 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IEventSeatService, EventSeatService>();
 
-            services.AddTransient<IEventService, EventService>(provider => new EventService(provider.GetRequiredService<IEventRepository>()));
+            services.AddTransient<IEventService, EventService>();
 
-            services.AddTransient<ILayoutService, LayoutService>(provider => new LayoutService(provider.GetRequiredService<ILayoutRepository>()));
+            services.AddTransient<ILayoutService, LayoutService>();
 
-            services.AddTransient<ISeatService, SeatService>(provider => new SeatService(provider.GetRequiredService<ISeatRepository>()));
+            services.AddTransient<ISeatService, SeatService>();
 
-            services.AddTransient<IThirdPartyEventService, ThirdPartyEventService>(provider => new ThirdPartyEventService(provider.GetRequiredService<IEventRepository>()));
+            services.AddTransient<IThirdPartyEventService, ThirdPartyEventService>();
 
-            services.AddTransient<IVenueService, VenueService>(provider => new VenueService(provider.GetRequiredService<IVenueRepository>()));
+            services.AddTransient<IVenueService, VenueService>();
         }
     }
 }

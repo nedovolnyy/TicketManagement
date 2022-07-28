@@ -12,7 +12,12 @@
     {
         private readonly JsonRepository _jsonRepository = new JsonRepository();
         private readonly string _jsonFileName = ConfigurationManager.AppSettings["JsonFileName"];
-        private readonly ILog _logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly ILog _logger;
+
+        public ThirdPartyEventsController(ILog logger)
+        {
+            _logger = logger;
+        }
 
         public ActionResult Index()
         {
