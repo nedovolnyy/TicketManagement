@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.IO;
     using System.Threading;
     using System.Web;
@@ -10,6 +11,7 @@
 
     public class JsonRepository : IDisposable
     {
+        private readonly string _jsonFileFullPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), ConfigurationManager.AppSettings["JsonFileName"]);
         private readonly ReaderWriterLockSlim _readWriteLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
         public List<ThirdPartyEvent> Insert(
@@ -45,9 +47,15 @@
             return thirdPartyEvents;
         }
 
+        public List<ThirdPartyEvent> GetAllThirdPartyEventsOutoJsonFile()
+        {
+            using var jsonReader = new JsonTextReader(new StreamReader(_jsonFileFullPath));
+            var jsonSerializer = new JsonSerializer();
+            return jsonSerializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
+        }
+
         public void DoJsonFile(
             Func<List<ThirdPartyEvent>, ThirdPartyEvent, HttpPostedFileBase, ThirdPartyEvent, List<ThirdPartyEvent>> selectedMethod,
-            string pathJsonFile,
             ThirdPartyEvent thirdPartyEvent,
             HttpPostedFileBase eventLogoImageData = null,
             ThirdPartyEvent updatedthirdPartyEvent = null)
@@ -55,8 +63,8 @@
             _readWriteLockSlim.EnterWriteLock();
             try
             {
-                var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile(pathJsonFile);
-                using var streamWriter = new StreamWriter(pathJsonFile, append: false);
+                var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile();
+                using var streamWriter = new StreamWriter(_jsonFileFullPath, append: false);
 
                 thirdPartyEvents = selectedMethod(thirdPartyEvents, thirdPartyEvent, eventLogoImageData, updatedthirdPartyEvent);
 
@@ -71,20 +79,6 @@
             }
         }
 
-        public List<ThirdPartyEvent> GetAllThirdPartyEventsOutoJsonFile(string pathJsonFile)
-        {
-            using var jsonReader = new JsonTextReader(new StreamReader(pathJsonFile));
-            var jsonSerializer = new JsonSerializer();
-            return jsonSerializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
-        }
-
-        private void SerializeJson(StreamWriter streamWriter, object value)
-        {
-            var jsonSerializer = new JsonSerializer();
-            jsonSerializer.Serialize(streamWriter, value);
-            streamWriter.Flush();
-        }
-
         public void Dispose()
         {
             Dispose(true);
@@ -94,6 +88,13 @@
         protected virtual void Dispose(bool disposing)
         {
             _readWriteLockSlim.Dispose();
+        }
+
+        private void SerializeJson(StreamWriter streamWriter, object value)
+        {
+            var jsonSerializer = new JsonSerializer();
+            jsonSerializer.Serialize(streamWriter, value);
+            streamWriter.Flush();
         }
 
         private string ConvertImageToBase64(HttpPostedFileBase eventLogoImageData)

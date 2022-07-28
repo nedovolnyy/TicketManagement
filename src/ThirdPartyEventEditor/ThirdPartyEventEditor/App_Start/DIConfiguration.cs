@@ -5,15 +5,18 @@ using log4net.Core;
 using SimpleInjector;
 using SimpleInjector.Integration.Web;
 using SimpleInjector.Integration.Web.Mvc;
+using ThirdPartyEventEditor.Repository;
 
 namespace ThirdPartyEventEditor
 {
-    public class DIConfiguration
+    public static class DIConfiguration
     {
         public static void ConfigureInjector()
         {
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
+
+            container.Register<JsonRepository>(Lifestyle.Scoped);
 
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
 

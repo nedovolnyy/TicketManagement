@@ -1,7 +1,5 @@
 ﻿namespace ThirdPartyEventEditor.Controllers
 {
-    using System.Configuration;
-    using System.IO;
     using System.Web;
     using System.Web.Mvc;
     using log4net;
@@ -10,18 +8,18 @@
 
     public class ThirdPartyEventsController : Controller
     {
-        private readonly JsonRepository _jsonRepository = new JsonRepository();
-        private readonly string _jsonFileName = ConfigurationManager.AppSettings["JsonFileName"];
+        private readonly JsonRepository _jsonRepository;
         private readonly ILog _logger;
 
-        public ThirdPartyEventsController(ILog logger)
+        public ThirdPartyEventsController(ILog logger, JsonRepository jsonRepository)
         {
             _logger = logger;
+            _jsonRepository = jsonRepository;
         }
 
         public ActionResult Index()
         {
-            var events = _jsonRepository.GetAllThirdPartyEventsOutoJsonFile(GetPath(_jsonFileName));
+            var events = _jsonRepository.GetAllThirdPartyEventsOutoJsonFile();
             _logger.Debug("Deserialized all ThirdPartyEvents from .json file");
 
             return View(events);
@@ -31,7 +29,7 @@
         [ValidateAntiForgeryToken]
         public ActionResult Insert(ThirdPartyEvent newThirdPartyEvent, HttpPostedFileBase eventLogoImageData)
         {
-            _jsonRepository.DoJsonFile(_jsonRepository.Insert, GetPath(_jsonFileName), newThirdPartyEvent, eventLogoImageData);
+            _jsonRepository.DoJsonFile(_jsonRepository.Insert, newThirdPartyEvent, eventLogoImageData);
             _logger.Debug("Added new ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
@@ -41,7 +39,7 @@
         [ValidateAntiForgeryToken]
         public ActionResult Update(ThirdPartyEvent thirdPartyEvent, ThirdPartyEvent updatedThirdPartyEvent, HttpPostedFileBase eventLogoImageData)
         {
-            _jsonRepository.DoJsonFile(_jsonRepository.Update, GetPath(_jsonFileName), thirdPartyEvent, eventLogoImageData, updatedThirdPartyEvent);
+            _jsonRepository.DoJsonFile(_jsonRepository.Update, thirdPartyEvent, eventLogoImageData, updatedThirdPartyEvent);
             _logger.Debug("Updated existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
@@ -51,15 +49,10 @@
         [ValidateAntiForgeryToken]
         public ActionResult Delete(ThirdPartyEvent thirdPartyEvent)
         {
-            _jsonRepository.DoJsonFile(_jsonRepository.Delete, GetPath(_jsonFileName), thirdPartyEvent);
+            _jsonRepository.DoJsonFile(_jsonRepository.Delete, thirdPartyEvent);
             _logger.Debug("Deleted existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
-        }
-
-        private string GetPath(string filename)
-        {
-            return Path.Combine(Server.MapPath("~/App_Data/"), filename);
         }
     }
 }
