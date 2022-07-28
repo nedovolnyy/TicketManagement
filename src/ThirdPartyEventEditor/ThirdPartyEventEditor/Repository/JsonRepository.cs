@@ -12,55 +12,54 @@
     {
         private readonly ReaderWriterLockSlim _readWriteLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
-        public void Insert(ThirdPartyEvent thirdPartyEvent, string pathJsonFile, HttpPostedFileBase eventLogoImageData)
+        public List<ThirdPartyEvent> Insert(
+            List<ThirdPartyEvent> thirdPartyEvents,
+            ThirdPartyEvent thirdPartyEvent,
+            HttpPostedFileBase eventLogoImageData,
+            ThirdPartyEvent updatedthirdPartyEvent = null)
         {
-            _readWriteLockSlim.EnterWriteLock();
-            try
-            {
-                thirdPartyEvent.EventLogoImage = ConvertImageToBase64(eventLogoImageData);
-                var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile(pathJsonFile);
-                using var streamWriter = new StreamWriter(pathJsonFile, append: false);
-                thirdPartyEvents.Add(thirdPartyEvent);
-                SerializeJson(streamWriter, thirdPartyEvents);
-            }
-            finally
-            {
-                if (_readWriteLockSlim.IsWriteLockHeld)
-                {
-                    _readWriteLockSlim.ExitWriteLock();
-                }
-            }
+            thirdPartyEvent.EventLogoImage = ConvertImageToBase64(eventLogoImageData);
+            thirdPartyEvents.Add(thirdPartyEvent);
+            return thirdPartyEvents;
         }
 
-        public void Update(ThirdPartyEvent thirdPartyEvent, ThirdPartyEvent updatedthirdPartyEvent, string pathJsonFile, HttpPostedFileBase eventLogoImageData)
+        public List<ThirdPartyEvent> Update(
+            List<ThirdPartyEvent> thirdPartyEvents,
+            ThirdPartyEvent thirdPartyEvent,
+            HttpPostedFileBase eventLogoImageData,
+            ThirdPartyEvent updatedthirdPartyEvent)
         {
-            _readWriteLockSlim.EnterWriteLock();
-            try
-            {
-                updatedthirdPartyEvent.EventLogoImage = ConvertImageToBase64(eventLogoImageData);
-                var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile(pathJsonFile);
-                using var streamWriter = new StreamWriter(pathJsonFile, append: false);
-                thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == thirdPartyEvent.Description && x.Name == thirdPartyEvent.Name));
-                thirdPartyEvents.Add(updatedthirdPartyEvent);
-                SerializeJson(streamWriter, thirdPartyEvents);
-            }
-            finally
-            {
-                if (_readWriteLockSlim.IsWriteLockHeld)
-                {
-                    _readWriteLockSlim.ExitWriteLock();
-                }
-            }
+            updatedthirdPartyEvent.EventLogoImage = ConvertImageToBase64(eventLogoImageData);
+            thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == thirdPartyEvent.Description && x.Name == thirdPartyEvent.Name));
+            thirdPartyEvents.Add(updatedthirdPartyEvent);
+            return thirdPartyEvents;
         }
 
-        public void Delete(ThirdPartyEvent thirdPartyEvent, string pathJsonFile)
+        public List<ThirdPartyEvent> Delete(
+            List<ThirdPartyEvent> thirdPartyEvents,
+            ThirdPartyEvent thirdPartyEvent,
+            HttpPostedFileBase eventLogoImageData = null,
+            ThirdPartyEvent updatedthirdPartyEvent = null)
+        {
+            thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == thirdPartyEvent.Description && x.Name == thirdPartyEvent.Name));
+            return thirdPartyEvents;
+        }
+
+        public void DoJsonFile(
+            Func<List<ThirdPartyEvent>, ThirdPartyEvent, HttpPostedFileBase, ThirdPartyEvent, List<ThirdPartyEvent>> selectedMethod,
+            string pathJsonFile,
+            ThirdPartyEvent thirdPartyEvent,
+            HttpPostedFileBase eventLogoImageData = null,
+            ThirdPartyEvent updatedthirdPartyEvent = null)
         {
             _readWriteLockSlim.EnterWriteLock();
             try
             {
                 var thirdPartyEvents = GetAllThirdPartyEventsOutoJsonFile(pathJsonFile);
                 using var streamWriter = new StreamWriter(pathJsonFile, append: false);
-                thirdPartyEvents.Remove(thirdPartyEvents.Find(x => x.Description == thirdPartyEvent.Description && x.Name == thirdPartyEvent.Name));
+
+                thirdPartyEvents = selectedMethod(thirdPartyEvents, thirdPartyEvent, eventLogoImageData, updatedthirdPartyEvent);
+
                 SerializeJson(streamWriter, thirdPartyEvents);
             }
             finally
