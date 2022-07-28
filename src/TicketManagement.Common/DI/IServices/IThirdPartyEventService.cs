@@ -8,10 +8,7 @@ namespace TicketManagement.Common.DI
         /// <summary>
         /// Method for insert ThirdPartyEvent to Database.
         /// </summary>
-        /// <param name="fullImagePath">fullImagePath.</param>
-        /// <param name="event">event.</param>
-        /// <param name="price">price.</param>
-        /// <param name="evntLogoImage">evntLogoImage.</param>
-        Task InsertAsync(string fullImagePath, Event @event, decimal price, string evntLogoImage);
+        /// <param name="eventFromJson">EventFromJson.</param>
+        Task InsertAsync(EventFromJson eventFromJson);
     }
 }

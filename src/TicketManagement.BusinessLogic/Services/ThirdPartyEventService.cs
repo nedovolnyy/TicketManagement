@@ -14,15 +14,15 @@ namespace TicketManagement.BusinessLogic.Services
             _eventRepository = eventRepository;
         }
 
-        public async Task InsertAsync(string fullImagePath, Event @event, decimal price, string evntLogoImage)
+        public async Task InsertAsync(EventFromJson eventFromJson)
         {
-            var imgBytes = Convert.FromBase64String(evntLogoImage[(evntLogoImage.LastIndexOf(',') + 1)..]);
+            var imgBytes = Convert.FromBase64String(eventFromJson.EventLogoImage[(eventFromJson.EventLogoImage.LastIndexOf(',') + 1)..]);
 
-            using var imageFile = new FileStream(fullImagePath, FileMode.Create);
+            using var imageFile = new FileStream(eventFromJson.FullImagePath, FileMode.Create);
             imageFile.Write(imgBytes, 0, imgBytes.Length);
             imageFile.Flush();
 
-            await _eventRepository.InsertAsync(@event, price);
+            await _eventRepository.InsertAsync(eventFromJson.Event, eventFromJson.Price);
         }
     }
 }

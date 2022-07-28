@@ -26,7 +26,13 @@ namespace TicketManagement.MVC.Controllers
             var shortImagePath = "image" + Path.DirectorySeparatorChar + @event.Name + @event.LayoutId + ".png";
             var fullImagePath = Path.Combine(_webHostEnvironment.WebRootPath, shortImagePath);
 
-            await _thirdPartyEventService.InsertAsync(fullImagePath, @event, thirdPartyEventPrice, @event.EventLogoImage);
+            await _thirdPartyEventService.InsertAsync(new EventFromJson
+            {
+                Event = @event,
+                EventLogoImage = @event.EventLogoImage,
+                FullImagePath = fullImagePath,
+                Price = thirdPartyEventPrice,
+            });
 
             var thirdPartyEvents = _listThirdPartyEventsService.Add(@event, thirdPartyEventPrice);
             return View("Preview", thirdPartyEvents);
