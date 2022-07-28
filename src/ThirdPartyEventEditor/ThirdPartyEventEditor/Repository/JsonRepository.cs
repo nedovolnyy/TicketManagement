@@ -98,10 +98,14 @@
 
         private string ConvertImageToBase64(HttpPostedFileBase eventLogoImageData)
         {
-            var imageByteArray = new byte[eventLogoImageData.ContentLength];
-            eventLogoImageData.InputStream.Read(imageByteArray, 0, eventLogoImageData.ContentLength);
+            if (eventLogoImageData is not null)
+            {
+                var imageByteArray = new byte[eventLogoImageData.ContentLength];
+                eventLogoImageData.InputStream.Read(imageByteArray, 0, eventLogoImageData.ContentLength);
+                return "data:image/png;base64," + Convert.ToBase64String(imageByteArray);
+            }
 
-            return "data:image/png;base64," + Convert.ToBase64String(imageByteArray);
+            return string.Empty;
         }
     }
 }

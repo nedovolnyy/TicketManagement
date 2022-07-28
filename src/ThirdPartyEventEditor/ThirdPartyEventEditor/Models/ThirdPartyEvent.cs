@@ -6,19 +6,23 @@
     public class ThirdPartyEvent
     {
         [Required]
+        [StringLength(160, MinimumLength = 3)]
         public string Name { get; set; }
 
         [Required]
+        [Range(typeof(DateTimeOffset), "1/1/2022", "1/1/2040")]
         public DateTimeOffset EventTime { get; set; }
 
         [Required]
+        [Range(typeof(DateTime), "1/1/2022", "1/1/2040")]
+        public DateTime EventEndTime { get; set; }
+
+        [Required]
+        [StringLength(9166, MinimumLength = 10)]
         public string Description { get; set; }
 
         [Required]
         public int LayoutId { get; set; }
-
-        [Required]
-        public DateTime EventEndTime { get; set; }
 
         [Required]
         public string EventLogoImage { get; set; }
