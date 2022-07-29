@@ -135,4 +135,7 @@
   <data name="Venues management" xml:space="preserve">
     <value>Площадки</value>
   </data>
+  <data name="Upload Event from file:" xml:space="preserve">
+    <value>Загрузить мероприятие из файла:</value>
+  </data>
 </root>

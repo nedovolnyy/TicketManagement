@@ -7,19 +7,21 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddBLLServices(this IServiceCollection services)
         {
-            services.AddTransient<IAreaService, AreaService>(provider => new AreaService(provider.GetRequiredService<IAreaRepository>()));
+            services.AddTransient<IAreaService, AreaService>();
 
-            services.AddTransient<IEventAreaService, EventAreaService>(provider => new EventAreaService(provider.GetRequiredService<IEventAreaRepository>()));
+            services.AddTransient<IEventAreaService, EventAreaService>();
 
-            services.AddTransient<IEventSeatService, EventSeatService>(provider => new EventSeatService(provider.GetRequiredService<IEventSeatRepository>()));
+            services.AddTransient<IEventSeatService, EventSeatService>();
 
-            services.AddTransient<IEventService, EventService>(provider => new EventService(provider.GetRequiredService<IEventRepository>()));
+            services.AddTransient<IEventService, EventService>();
 
-            services.AddTransient<ILayoutService, LayoutService>(provider => new LayoutService(provider.GetRequiredService<ILayoutRepository>()));
+            services.AddTransient<ILayoutService, LayoutService>();
 
-            services.AddTransient<ISeatService, SeatService>(provider => new SeatService(provider.GetRequiredService<ISeatRepository>()));
+            services.AddTransient<ISeatService, SeatService>();
 
-            services.AddTransient<IVenueService, VenueService>(provider => new VenueService(provider.GetRequiredService<IVenueRepository>()));
+            services.AddTransient<IThirdPartyEventService, ThirdPartyEventService>();
+
+            services.AddTransient<IVenueService, VenueService>();
         }
     }
 }

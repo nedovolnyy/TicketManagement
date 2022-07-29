@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using TicketManagement.Common.DI;
 using TicketManagement.MVC;
+using TicketManagement.MVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,7 @@ builder.Services
 builder.Services.AddMvc();
 builder.Services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddBLLServices();
+builder.Services.AddSingleton<ListThirdPartyEventsService>();
 
 builder.Services.AddAuthentication();
 

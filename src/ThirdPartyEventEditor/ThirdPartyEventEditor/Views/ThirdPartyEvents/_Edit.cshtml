@@ -1,0 +1,56 @@
+﻿@using ThirdPartyEventEditor.Models
+
+@model ThirdPartyEvent
+
+@using (Html.BeginForm("Update", "ThirdPartyEvents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <tr>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input name="thirdPartyEvent.Name" value="@Model.Name" hidden />
+                <input name="updatedThirdPartyEvent.Name" value="@Model.Name" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input name="thirdPartyEvent.EventTime" value="@Model.EventTime.ToString("s")" hidden />
+                <input name="updatedThirdPartyEvent.EventTime" value="@Model.EventTime.ToString("s")" type="datetime-local" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input name="thirdPartyEvent.EventEndTime" value="@Model.EventEndTime.ToString("s")" hidden />
+                <input name="updatedThirdPartyEvent.EventEndTime" value="@Model.EventEndTime.ToString("s")" type="datetime-local" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input name="thirdPartyEvent.Description" value="@Model.Description" hidden />
+                <input name="updatedThirdPartyEvent.Description" value="@Model.Description" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input name="thirdPartyEvent.LayoutId" value="@Model.LayoutId" hidden />
+                <input name="updatedThirdPartyEvent.LayoutId" value="@Model.LayoutId" type="number" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input name="thirdPartyEvent.Price" value="@Model.Price" hidden />
+                <input name="updatedThirdPartyEvent.Price" value="@Model.Price" type="number" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input name="eventLogoImageData" type="file" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventEditor" + Model.Id)" hidden>
+                <input type="submit" value="Save" />
+            </div>
+        </td>
+    </tr>
+}

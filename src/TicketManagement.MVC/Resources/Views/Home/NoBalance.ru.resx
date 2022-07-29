@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Not enough funds on the balance" xml:space="preserve">
-    <value>Не хватает средств на балансе!</value>
+    <value>Не хватает средств на балансе</value>
   </data>
   <data name="shopping cart" xml:space="preserve">
     <value>корзине</value>
@@ -127,6 +127,6 @@
     <value>Чтобы пополнить баланс, перейдите к вашей</value>
   </data>
   <data name="Your balance:" xml:space="preserve">
-    <value>Ваш баланс</value>
+    <value>Ваш баланс:</value>
   </data>
 </root>

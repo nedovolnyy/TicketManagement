@@ -130,22 +130,22 @@
     <value>Режим разработки</value>
   </data>
   <data name="environment by setting the" xml:space="preserve">
-    <value>окружения путем установки!</value>
+    <value>окружающей среды, установив</value>
   </data>
   <data name="environment variable to" xml:space="preserve">
-    <value>Переменная окружения</value>
+    <value>переменную окружения в</value>
   </data>
   <data name="environment will display more detailed information about the error that occurred." xml:space="preserve">
-    <value>среда отобразит более подробную информацию о возникшей ошибке.!</value>
+    <value>среда отобразит более подробную информацию о возникшей ошибке.</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Ошибка!</value>
+    <value>Ошибка</value>
   </data>
   <data name="For local debugging, enable the" xml:space="preserve">
-    <value>Для локальной отладки включите функцию!</value>
+    <value>Для локальной отладки включите</value>
   </data>
   <data name="It can result in displaying sensitive information from exceptions to end users." xml:space="preserve">
-    <value>Это может привести к отображению конфиденциальной информации из исключений для конечных пользователей.!</value>
+    <value>Это может привести к отображению конфиденциальной информации из исключений для конечных пользователей.</value>
   </data>
   <data name="Request ID:" xml:space="preserve">
     <value>Идентификатор запроса:</value>
@@ -154,6 +154,6 @@
     <value>Поменяйте местами с</value>
   </data>
   <data name="The Development environment shouldn't be enabled for deployed applications." xml:space="preserve">
-    <value>Среда разработки не должна быть включена для развернутых приложений.!</value>
+    <value>Среда разработки не должна быть включена для развернутых приложений.</value>
   </data>
 </root>

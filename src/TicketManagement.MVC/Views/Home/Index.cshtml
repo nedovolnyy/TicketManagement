@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="text">
                                         <div class="left">
-                                            <p>@evnt.Description</p>
+                                            <p>@string.Concat(@evnt.Description.Substring(0, Math.Min(evnt.Description.Length, 45)), "...")</p>
                                         </div>
                                         <div class="right">
                                             <p>@(await EventService.GetSeatsAvailableCountAsync(evnt.Id)) / @(await EventService.GetSeatsCountAsync(evnt.LayoutId))</p>

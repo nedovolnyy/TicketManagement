@@ -1,0 +1,63 @@
+﻿@using ThirdPartyEventEditor.Models
+
+@model IEnumerable<ThirdPartyEvent>
+
+@{
+    var idIterator = 0;
+}
+
+@section scripts {
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script>
+        function clickAdd() {
+            document.querySelectorAll('.thirdPartyEventAddDiv').forEach(el => el.removeAttribute('hidden'));
+        }
+        function clickEdit(iter) {
+            document.querySelectorAll('.thirdPartyEventEditor' + iter).forEach(el => el.removeAttribute('hidden'));
+            document.querySelectorAll('.thirdPartyEventViewer' + iter).forEach(el => el.setAttribute('hidden', 'hidden'));
+        }
+    </script>
+}
+
+<h2>Events</h2>
+
+<p>
+    <input id="thirdPartyEventAddButton" type="button" value="Create Event" onclick="clickAdd()" />
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.Label("Name")
+        </th>
+        <th>
+            @Html.Label("Event time")
+        </th>
+        <th>
+            @Html.Label("Event end time")
+        </th>
+        <th>
+            @Html.Label("Description")
+        </th>
+        <th>
+            @Html.Label("Layout ID")
+        </th>
+        <th>
+            @Html.Label("Price")
+        </th>
+        <th>
+            @Html.Label("Event Image")
+        </th>
+        <th>
+            @Html.Label("Action")
+        </th>
+    </tr>
+    <tr></tr>
+    @Html.Partial("_Create", new ThirdPartyEvent())
+    @foreach (var thirdPartyEvent in Model)
+    {
+        thirdPartyEvent.Id = idIterator++;
+        @Html.Partial("_View", thirdPartyEvent)
+        @Html.Partial("_Edit", thirdPartyEvent)
+    }
+</table>

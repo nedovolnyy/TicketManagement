@@ -13,12 +13,10 @@ namespace TicketManagement.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly UserManager<User> _userManager;
-        private readonly ILogger<HomeController> _logger;
         private readonly IServiceProvider _serviceProvider;
-        public HomeController(UserManager<User> userManager, ILogger<HomeController> logger, IServiceProvider serviceProvider)
+        public HomeController(UserManager<User> userManager, IServiceProvider serviceProvider)
         {
             _userManager = userManager;
-            _logger = logger;
             _serviceProvider = serviceProvider;
         }
 

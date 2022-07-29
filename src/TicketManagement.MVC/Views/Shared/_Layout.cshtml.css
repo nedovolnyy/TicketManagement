@@ -54,3 +54,15 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+.control_wrapper {
+    max-width: 300px;
+    margin: auto;
+}
+
+.e-upload {
+    width: 100%;
+    position: relative;
+    border: 1px dashed #adb5bd;
+    margin-top: 15px;
+}

@@ -29,19 +29,19 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddEntityFrameworkStores<DatabaseContext>()
                     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
-            services.AddTransient<IAreaRepository, AreaRepository>(provider => new AreaRepository(provider.GetRequiredService<IDatabaseContext>()));
+            services.AddTransient<IAreaRepository, AreaRepository>();
 
-            services.AddTransient<IEventAreaRepository, EventAreaRepository>(provider => new EventAreaRepository(provider.GetRequiredService<IDatabaseContext>()));
+            services.AddTransient<IEventAreaRepository, EventAreaRepository>();
 
-            services.AddTransient<IEventSeatRepository, EventSeatRepository>(provider => new EventSeatRepository(provider.GetRequiredService<IDatabaseContext>()));
+            services.AddTransient<IEventSeatRepository, EventSeatRepository>();
 
-            services.AddTransient<IEventRepository, EventRepository>(provider => new EventRepository(provider.GetRequiredService<IDatabaseContext>()));
+            services.AddTransient<IEventRepository, EventRepository>();
 
-            services.AddTransient<ILayoutRepository, LayoutRepository>(provider => new LayoutRepository(provider.GetRequiredService<IDatabaseContext>()));
+            services.AddTransient<ILayoutRepository, LayoutRepository>();
 
-            services.AddTransient<ISeatRepository, SeatRepository>(provider => new SeatRepository(provider.GetRequiredService<IDatabaseContext>()));
+            services.AddTransient<ISeatRepository, SeatRepository>();
 
-            services.AddTransient<IVenueRepository, VenueRepository>(provider => new VenueRepository(provider.GetRequiredService<IDatabaseContext>()));
+            services.AddTransient<IVenueRepository, VenueRepository>();
         }
     }
 }

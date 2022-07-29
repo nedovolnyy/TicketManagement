@@ -129,6 +129,9 @@
   <data name="Layouts management" xml:space="preserve">
     <value>Layouts management</value>
   </data>
+  <data name="Upload Event from file:" xml:space="preserve">
+    <value>Upload Event from file:</value>
+  </data>
   <data name="Users management" xml:space="preserve">
     <value>Users management</value>
   </data>
