@@ -226,9 +226,12 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\ThirdPartyEvents\Index.cshtml" />
+    <Content Include="Views\ThirdPartyEvents\_View.cshtml" />
     <Content Include="Scripts\jquery-3.6.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.6.0.min.map" />
+    <Content Include="Views\ThirdPartyEvents\_Edit.cshtml" />
+    <Content Include="Views\ThirdPartyEvents\_Create.cshtml" />
+    <Content Include="Views\ThirdPartyEvents\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

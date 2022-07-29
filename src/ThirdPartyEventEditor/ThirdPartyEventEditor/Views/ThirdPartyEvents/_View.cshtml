@@ -1,0 +1,57 @@
+﻿@using ThirdPartyEventEditor.Models
+
+@model ThirdPartyEvent
+
+@using (Html.BeginRouteForm("Default", new { action = "Delete", controller = "ThirdPartyEvents" }))
+{
+    @Html.AntiForgeryToken()
+    <tr>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                @Html.DisplayFor(modelItem => Model.Name)
+                <input name="thirdPartyEvent.Name" value="@Model.Name" hidden />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                @Html.DisplayFor(modelItem => Model.EventTime)
+                <input name="thirdPartyEvent.EventTime" value="@Model.EventTime.ToString("s")" hidden />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                @Html.DisplayFor(modelItem => Model.EventEndTime)
+                <input name="thirdPartyEvent.EventEndTime" value="@Model.EventEndTime.ToString("s")" hidden />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                @Html.DisplayFor(modelItem => Model.Description)
+                <input name="thirdPartyEvent.Description" value="@Model.Description" hidden />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                @Html.DisplayFor(modelItem => Model.LayoutId)
+                <input name="thirdPartyEvent.LayoutId" value="@Model.LayoutId" hidden />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                @Html.DisplayFor(modelItem => Model.Price)
+                <input name="thirdPartyEvent.Price" value="@Model.Price" hidden />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                <img src="@Model.EventLogoImage" alt="" />
+            </div>
+        </td>
+        <td>
+            <div class="@Html.Raw("thirdPartyEventViewer" + Model.Id)">
+                <input type="button" value="Edit" class="Edit" onclick="clickEdit(@Model.Id)" />
+                <input type="submit" value="Delete" />
+            </div>
+        </td>
+    </tr>
+}

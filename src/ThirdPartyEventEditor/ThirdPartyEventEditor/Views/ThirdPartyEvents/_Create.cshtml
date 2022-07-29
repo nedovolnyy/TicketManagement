@@ -1,0 +1,51 @@
+﻿@using ThirdPartyEventEditor.Models
+
+@model ThirdPartyEvent
+
+@using (Html.BeginForm("Insert", "ThirdPartyEvents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <tr>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input name="newThirdPartyEvent.Name" value="@Model.Name" />
+            </div>
+        </td>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input name="newThirdPartyEvent.EventTime" type="datetime-local" value="@DateTimeOffset.Now.ToString("s")" />
+            </div>
+        </td>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input name="newThirdPartyEvent.EventEndTime" type="datetime-local" value="@DateTime.Now.AddHours(1).ToString("s")" />
+            </div>
+        </td>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input name="newThirdPartyEvent.Description" />
+            </div>
+        </td>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input name="newThirdPartyEvent.LayoutId" type="number" />
+            </div>
+        </td>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input name="newThirdPartyEvent.Price" type="number" value="@Model.Price" />
+            </div>
+        </td>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input name="eventLogoImageData" type="file" />
+            </div>
+        </td>
+        <td>
+            <div class="thirdPartyEventAddDiv" hidden>
+                <input type="submit" value="Add" />
+            </div>
+        </td>
+    </tr>
+}
