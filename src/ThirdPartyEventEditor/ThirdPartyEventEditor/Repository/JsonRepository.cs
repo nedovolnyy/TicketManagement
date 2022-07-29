@@ -14,7 +14,29 @@
         private readonly string _jsonFileFullPath = Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), ConfigurationManager.AppSettings["JsonFileName"]);
         private readonly ReaderWriterLockSlim _readWriteLockSlim = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
-        public List<ThirdPartyEvent> Insert(
+        public void Insert(ThirdPartyEvent newThirdPartyEvent, HttpPostedFileBase eventLogoImageData)
+        {
+            ChangeJsonFile(Insert, newThirdPartyEvent, eventLogoImageData);
+        }
+
+        public void Update(ThirdPartyEvent thirdPartyEvent, HttpPostedFileBase eventLogoImageData, ThirdPartyEvent updatedThirdPartyEvent)
+        {
+            ChangeJsonFile(Update, thirdPartyEvent, eventLogoImageData, updatedThirdPartyEvent);
+        }
+
+        public void Delete(ThirdPartyEvent thirdPartyEvent)
+        {
+            ChangeJsonFile(Delete, thirdPartyEvent);
+        }
+
+        public List<ThirdPartyEvent> GetAllThirdPartyEventsOutoJsonFile()
+        {
+            using var jsonReader = new JsonTextReader(new StreamReader(_jsonFileFullPath));
+            var jsonSerializer = new JsonSerializer();
+            return jsonSerializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
+        }
+
+        private List<ThirdPartyEvent> Insert(
             List<ThirdPartyEvent> thirdPartyEvents,
             ThirdPartyEvent thirdPartyEvent,
             HttpPostedFileBase eventLogoImageData,
@@ -25,7 +47,7 @@
             return thirdPartyEvents;
         }
 
-        public List<ThirdPartyEvent> Update(
+        private List<ThirdPartyEvent> Update(
             List<ThirdPartyEvent> thirdPartyEvents,
             ThirdPartyEvent thirdPartyEvent,
             HttpPostedFileBase eventLogoImageData,
@@ -37,7 +59,7 @@
             return thirdPartyEvents;
         }
 
-        public List<ThirdPartyEvent> Delete(
+        private List<ThirdPartyEvent> Delete(
             List<ThirdPartyEvent> thirdPartyEvents,
             ThirdPartyEvent thirdPartyEvent,
             HttpPostedFileBase eventLogoImageData = null,
@@ -47,14 +69,7 @@
             return thirdPartyEvents;
         }
 
-        public List<ThirdPartyEvent> GetAllThirdPartyEventsOutoJsonFile()
-        {
-            using var jsonReader = new JsonTextReader(new StreamReader(_jsonFileFullPath));
-            var jsonSerializer = new JsonSerializer();
-            return jsonSerializer.Deserialize<List<ThirdPartyEvent>>(jsonReader);
-        }
-
-        public void DoJsonFile(
+        private void ChangeJsonFile(
             Func<List<ThirdPartyEvent>, ThirdPartyEvent, HttpPostedFileBase, ThirdPartyEvent, List<ThirdPartyEvent>> selectedMethod,
             ThirdPartyEvent thirdPartyEvent,
             HttpPostedFileBase eventLogoImageData = null,
@@ -79,6 +94,18 @@
             }
         }
 
+        private string ConvertImageToBase64(HttpPostedFileBase eventLogoImageData)
+        {
+            if (eventLogoImageData is not null)
+            {
+                var imageByteArray = new byte[eventLogoImageData.ContentLength];
+                eventLogoImageData.InputStream.Read(imageByteArray, 0, eventLogoImageData.ContentLength);
+                return "data:image/png;base64," + Convert.ToBase64String(imageByteArray);
+            }
+
+            return string.Empty;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -95,18 +122,6 @@
             var jsonSerializer = new JsonSerializer();
             jsonSerializer.Serialize(streamWriter, value);
             streamWriter.Flush();
-        }
-
-        private string ConvertImageToBase64(HttpPostedFileBase eventLogoImageData)
-        {
-            if (eventLogoImageData is not null)
-            {
-                var imageByteArray = new byte[eventLogoImageData.ContentLength];
-                eventLogoImageData.InputStream.Read(imageByteArray, 0, eventLogoImageData.ContentLength);
-                return "data:image/png;base64," + Convert.ToBase64String(imageByteArray);
-            }
-
-            return string.Empty;
         }
     }
 }

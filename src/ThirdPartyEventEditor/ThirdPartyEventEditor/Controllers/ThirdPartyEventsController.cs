@@ -29,7 +29,7 @@
         [ValidateAntiForgeryToken]
         public ActionResult Insert(ThirdPartyEvent newThirdPartyEvent, HttpPostedFileBase eventLogoImageData)
         {
-            _jsonRepository.DoJsonFile(_jsonRepository.Insert, newThirdPartyEvent, eventLogoImageData);
+            _jsonRepository.Insert(newThirdPartyEvent, eventLogoImageData);
             _logger.Debug("Added new ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
@@ -37,9 +37,9 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(ThirdPartyEvent thirdPartyEvent, ThirdPartyEvent updatedThirdPartyEvent, HttpPostedFileBase eventLogoImageData)
+        public ActionResult Update(ThirdPartyEvent thirdPartyEvent, HttpPostedFileBase eventLogoImageData, ThirdPartyEvent updatedThirdPartyEvent)
         {
-            _jsonRepository.DoJsonFile(_jsonRepository.Update, thirdPartyEvent, eventLogoImageData, updatedThirdPartyEvent);
+            _jsonRepository.Update(thirdPartyEvent, eventLogoImageData, updatedThirdPartyEvent);
             _logger.Debug("Updated existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
@@ -49,7 +49,7 @@
         [ValidateAntiForgeryToken]
         public ActionResult Delete(ThirdPartyEvent thirdPartyEvent)
         {
-            _jsonRepository.DoJsonFile(_jsonRepository.Delete, thirdPartyEvent);
+            _jsonRepository.Delete(thirdPartyEvent);
             _logger.Debug("Deleted existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
