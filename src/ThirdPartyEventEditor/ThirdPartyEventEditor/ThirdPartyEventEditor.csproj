@@ -139,7 +139,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionFilters\ErrorActionFilter.cs" />
+    <Compile Include="Filters\HandleAllErrorAttribute.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\DIConfiguration.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -224,7 +224,7 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\ThirdPartyEvents\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\ThirdPartyEvents\_View.cshtml" />
     <Content Include="Scripts\jquery-3.6.0.slim.min.map" />
@@ -232,7 +232,6 @@
     <Content Include="Views\ThirdPartyEvents\_Edit.cshtml" />
     <Content Include="Views\ThirdPartyEvents\_Create.cshtml" />
     <Content Include="Views\ThirdPartyEvents\Index.cshtml" />
-    <Content Include="Views\ThirdPartyEvents\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

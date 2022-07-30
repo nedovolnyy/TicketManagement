@@ -1,0 +1,23 @@
+﻿@using System.Web.Mvc;
+
+@model HandleErrorInfo
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Error";
+}
+
+<h2>
+    Sorry, an error occurred while processing your request.
+</h2>
+<div>
+    <p>
+        There was a <b>@Model.Exception.GetType().Name</b> while rendering <b>@Model.ControllerName</b>'s
+        <b>@Model.ActionName</b> action.
+    </p>
+    <p>
+        The exception message is: <b><@Model.Exception.Message></b>
+    </p>
+    <p>Stack trace:</p>
+    <pre>@Model.Exception.StackTrace</pre>
+</div>

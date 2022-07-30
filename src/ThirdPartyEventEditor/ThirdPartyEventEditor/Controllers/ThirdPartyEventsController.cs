@@ -1,6 +1,5 @@
 ﻿namespace ThirdPartyEventEditor.Controllers
 {
-    using System;
     using System.Web;
     using System.Web.Mvc;
     using log4net;
@@ -56,9 +55,14 @@
             return RedirectToAction("Index");
         }
 
-        public ActionResult NotFound()
+        public ActionResult Error(HandleErrorInfo exception)
         {
-            return View();
+            return View(exception);
+        }
+
+        public ActionResult NotFound(HandleErrorInfo exception)
+        {
+            return View(exception);
         }
     }
 }
