@@ -1,5 +1,6 @@
 ﻿namespace ThirdPartyEventEditor.Controllers
 {
+    using System;
     using System.Web;
     using System.Web.Mvc;
     using log4net;
@@ -53,6 +54,11 @@
             _logger.Debug("Deleted existing ThirdPartyEvent into .json file");
 
             return RedirectToAction("Index");
+        }
+
+        public ActionResult NotFound()
+        {
+            return View();
         }
     }
 }
