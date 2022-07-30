@@ -232,6 +232,7 @@
     <Content Include="Views\ThirdPartyEvents\_Edit.cshtml" />
     <Content Include="Views\ThirdPartyEvents\_Create.cshtml" />
     <Content Include="Views\ThirdPartyEvents\Index.cshtml" />
+    <Content Include="Views\ThirdPartyEvents\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
