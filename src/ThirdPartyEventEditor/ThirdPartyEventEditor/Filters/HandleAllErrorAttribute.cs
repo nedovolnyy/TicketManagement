@@ -25,7 +25,7 @@ namespace ThirdPartyEventEditor
                 return;
             }
 
-            Exception exception = filterContext.Exception;
+            var exception = filterContext.Exception;
             _logger.Error(exception);
 
             if (!ExceptionType.IsInstanceOfType(exception))
@@ -33,9 +33,9 @@ namespace ThirdPartyEventEditor
                 return;
             }
 
-            string controllerName = (string)filterContext.RouteData.Values["controller"];
-            string actionName = (string)filterContext.RouteData.Values["action"];
-            HandleErrorInfo model = new HandleErrorInfo(filterContext.Exception, controllerName, actionName);
+            var controllerName = (string)filterContext.RouteData.Values["controller"];
+            var actionName = (string)filterContext.RouteData.Values["action"];
+            var model = new HandleErrorInfo(filterContext.Exception, controllerName, actionName);
             filterContext.Result = new ViewResult
             {
                 ViewName = View,
