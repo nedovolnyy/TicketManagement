@@ -16,7 +16,7 @@ namespace ThirdPartyEventEditor
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new WebRequestLifestyle();
 
-            container.Register<JsonRepository>(Lifestyle.Scoped);
+            container.Register<JsonRepository>(Lifestyle.Singleton);
 
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
 
