@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.Identity
+
+@model User
+@inject IViewLocalizer Localizer
+
+<tr>
+    <td><h1>@Localizer["To up balance:"]</h1></td>
+    <td>
+        <form asp-action="Cart" asp-controller="Home">
+            <div class="form-group">
+                <label asp-for="Balance" class="control-label" />
+                <input asp-for="Balance" name="money" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-success">@Localizer["Add money"]</button>
+            </div>
+        </form>
+    </td>
+</tr>
+
+<h2>@Localizer["Total purchase:"] @Model.CartCount</h2>
+<h1>@Localizer["Purchase history:"]</h1>
+
+<h7>@Model.PayHistory</h7>

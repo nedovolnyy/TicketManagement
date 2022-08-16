@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.Identity
+
+@model User
+@inject IViewLocalizer Localizer
+
+<tr>
+    <td><h1>@Localizer["Not enough funds on the balance"]</h1></td>
+    <td><h2>@Localizer["Your balance:"] @Model.Balance</h2></td>
+    <td><h2>@Localizer["To top up your balance, go to your"] <a asp-action="Cart" asp-controller="Home">@Localizer["shopping cart"]</a>.</h2></td>
+</tr>
