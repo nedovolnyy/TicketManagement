@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Security.Claims;
-using EventApiClientGenerated;
+using EventManagementApiClientGenerated;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +48,7 @@ builder.Services.AddScoped(scope =>
 {
     var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagerAPIClient");
     var baseUrl = builder.Configuration["EventManagerApiAddress"];
-    return new EventApiClient(baseUrl, httpClient);
+    return new EventManagementApiClient(baseUrl, httpClient);
 });
 //// Registering reast ease client
 builder.Services.AddScoped(scope =>

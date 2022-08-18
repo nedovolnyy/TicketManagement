@@ -1,11 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
-using EventApiClientGenerated;
+using EventManagementApiClientGenerated;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using TicketManagement.Common.DI;
-using TicketManagement.Common.Entities;
 using TicketManagement.Common.Identity;
 using TicketManagement.WebUI.Models;
 
@@ -13,19 +12,17 @@ namespace TicketManagement.WebUI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly EventManagementApiClient _eventApiClient;
+        private readonly EventManagementApiClient _eventManagementApiClient;
         private readonly UserManager<User> _userManager;
-        private readonly IServiceProvider _serviceProvider;
-        public HomeController(UserManager<User> userManager, IServiceProvider serviceProvider, EventApiClient eventApiClient)
+        public HomeController(UserManager<User> userManager, EventManagementApiClient eventManagementApiClient)
         {
             _userManager = userManager;
-            _serviceProvider = serviceProvider;
-            _eventApiClient = eventApiClient;
+            _eventManagementApiClient = eventManagementApiClient;
         }
 
         public async Task<IActionResult> IndexAsync()
         {
-            return View(await _eventApiClient.CitiesAllAsync());
+            return View(await _eventManagementApiClient.GetAllEventsAsync());
         }
 
         public IActionResult Create()
@@ -34,9 +31,9 @@ namespace TicketManagement.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Event evnt)
+        public async Task<IActionResult> Create(Event @event)
         {
-            await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(evnt);
+            await _eventManagementApiClient.InsertEventAsync(decimal.Zero, @event);
             return RedirectToAction("Index");
         }
 

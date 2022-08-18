@@ -1,12 +1,12 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using EventManagementApiClientGenerated
+@using Microsoft.AspNetCore.Mvc.Localization
 @using TicketManagement.Common.DI
-@using TicketManagement.Common.Entities
 @using TicketManagement.WebUI.Helpers
 
 @inject IViewLocalizer Localizer
 @inject IEventService EventService
 
-@model IEnumerable<Event>
+@model ICollection<Event>
 
 @{
     var isManageRole = User.IsInRole("Administrator") || User.IsInRole("EventManager");

@@ -18,13 +18,13 @@ namespace EventManagementApiClientGenerated
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class EventsManagementClient 
+    public partial class EventManagementApiClient 
     {
         private string _baseUrl = "";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<System.Text.Json.JsonSerializerOptions> _settings;
 
-        public EventsManagementClient(string baseUrl, System.Net.Http.HttpClient httpClient)
+        public EventManagementApiClient(string baseUrl, System.Net.Http.HttpClient httpClient)
         {
             BaseUrl = baseUrl;
             _httpClient = httpClient;
@@ -63,7 +63,7 @@ namespace EventManagementApiClientGenerated
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Event>> GetAllEventsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -148,7 +148,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("@event");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement?");
             if (price != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("price") + "=").Append(System.Uri.EscapeDataString(ConvertToString(price, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -235,7 +235,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("@event");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement?");
             if (price != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("price") + "=").Append(System.Uri.EscapeDataString(ConvertToString(price, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -316,7 +316,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("eventId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement/{eventId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement/{eventId}");
             urlBuilder_.Replace("{eventId}", System.Uri.EscapeDataString(ConvertToString(eventId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -402,7 +402,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("eventId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement/{eventId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement/{eventId}");
             urlBuilder_.Replace("{eventId}", System.Uri.EscapeDataString(ConvertToString(eventId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -482,7 +482,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("eventId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement/IsAllAvailableSeats/{eventId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement/IsAllAvailableSeats/{eventId}");
             urlBuilder_.Replace("{eventId}", System.Uri.EscapeDataString(ConvertToString(eventId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -558,7 +558,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("layoutId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement/GetAllEventsByLayoutId/{layoutId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement/GetAllEventsByLayoutId/{layoutId}");
             urlBuilder_.Replace("{layoutId}", System.Uri.EscapeDataString(ConvertToString(layoutId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -644,7 +644,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("eventId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement/GetPriceByEventId/{eventId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement/GetPriceByEventId/{eventId}");
             urlBuilder_.Replace("{eventId}", System.Uri.EscapeDataString(ConvertToString(eventId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -720,7 +720,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("eventId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement/GetSeatsAvailableCount/{eventId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement/GetSeatsAvailableCount/{eventId}");
             urlBuilder_.Replace("{eventId}", System.Uri.EscapeDataString(ConvertToString(eventId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -796,7 +796,7 @@ namespace EventManagementApiClientGenerated
                 throw new System.ArgumentNullException("layoutId");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventsManagement/GetSeatsCount/{layoutId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/EventManagement/GetSeatsCount/{layoutId}");
             urlBuilder_.Replace("{layoutId}", System.Uri.EscapeDataString(ConvertToString(layoutId, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;

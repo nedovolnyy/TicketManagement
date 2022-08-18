@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TicketManagement.Common.DI;
@@ -10,14 +11,14 @@ namespace TicketManagement.EventManagementAPI.Controllers
     /// Resource for the operations against the event entity.
     /// </summary>
     [ApiController]
-    ////[Authorize(Roles = "EventManager,Administrator")]
+    [Authorize(Roles = "EventManager,Administrator")]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    public class EventsManagementController : ControllerBase
+    public class EventManagementController : ControllerBase
     {
         private readonly IEventRepository _eventRepository;
 
-        public EventsManagementController(IEventRepository eventRepository)
+        public EventManagementController(IEventRepository eventRepository)
         {
             _eventRepository = eventRepository;
         }
@@ -70,7 +71,7 @@ namespace TicketManagement.EventManagementAPI.Controllers
         /// </summary>
         /// <returns>.</returns>
         [HttpPut]
-        public async Task<IActionResult> UpdateEventAsync(Event @event, decimal price)
+        public async Task<IActionResult> UpdateEventAsync(Event @event, [Optional] decimal price)
         {
             await _eventRepository.UpdateAsync(@event, price);
             return Ok();

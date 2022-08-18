@@ -1,17 +1,17 @@
 {
-  "x-generator": "NSwag v13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v13.0.0.0))",
+  "x-generator": "NSwag v13.16.1.0 (NJsonSchema v10.7.2.0 (Newtonsoft.Json v9.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "My Title",
     "version": "1.0.0"
   },
   "paths": {
-    "/api/EventsManagement": {
+    "/api/EventManagement": {
       "get": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_GetAllEvents",
+        "operationId": "EventManagement_GetAllEvents",
         "responses": {
           "200": {
             "description": "",
@@ -40,9 +40,9 @@
       },
       "post": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_InsertEvent",
+        "operationId": "EventManagement_InsertEvent",
         "parameters": [
           {
             "name": "price",
@@ -84,9 +84,9 @@
       },
       "put": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_UpdateEvent",
+        "operationId": "EventManagement_UpdateEvent",
         "parameters": [
           {
             "name": "price",
@@ -125,12 +125,12 @@
         }
       }
     },
-    "/api/EventsManagement/{eventId}": {
+    "/api/EventManagement/{eventId}": {
       "get": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_GetByIdEvent",
+        "operationId": "EventManagement_GetByIdEvent",
         "parameters": [
           {
             "name": "eventId",
@@ -168,9 +168,9 @@
       },
       "delete": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_DeleteEvent",
+        "operationId": "EventManagement_DeleteEvent",
         "parameters": [
           {
             "name": "eventId",
@@ -200,12 +200,12 @@
         }
       }
     },
-    "/api/EventsManagement/IsAllAvailableSeats/{eventId}": {
+    "/api/EventManagement/IsAllAvailableSeats/{eventId}": {
       "get": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_IsAllAvailableSeats",
+        "operationId": "EventManagement_IsAllAvailableSeats",
         "parameters": [
           {
             "name": "eventId",
@@ -232,12 +232,12 @@
         }
       }
     },
-    "/api/EventsManagement/GetAllEventsByLayoutId/{layoutId}": {
+    "/api/EventManagement/GetAllEventsByLayoutId/{layoutId}": {
       "get": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_GetAllEventsByLayoutId",
+        "operationId": "EventManagement_GetAllEventsByLayoutId",
         "parameters": [
           {
             "name": "layoutId",
@@ -277,12 +277,12 @@
         }
       }
     },
-    "/api/EventsManagement/GetPriceByEventId/{eventId}": {
+    "/api/EventManagement/GetPriceByEventId/{eventId}": {
       "get": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_GetPriceByEventId",
+        "operationId": "EventManagement_GetPriceByEventId",
         "parameters": [
           {
             "name": "eventId",
@@ -310,12 +310,12 @@
         }
       }
     },
-    "/api/EventsManagement/GetSeatsAvailableCount/{eventId}": {
+    "/api/EventManagement/GetSeatsAvailableCount/{eventId}": {
       "get": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_GetSeatsAvailableCount",
+        "operationId": "EventManagement_GetSeatsAvailableCount",
         "parameters": [
           {
             "name": "eventId",
@@ -343,12 +343,12 @@
         }
       }
     },
-    "/api/EventsManagement/GetSeatsCount/{layoutId}": {
+    "/api/EventManagement/GetSeatsCount/{layoutId}": {
       "get": {
         "tags": [
-          "EventsManagement"
+          "EventManagement"
         ],
-        "operationId": "EventsManagement_GetSeatsCount",
+        "operationId": "EventManagement_GetSeatsCount",
         "parameters": [
           {
             "name": "layoutId",

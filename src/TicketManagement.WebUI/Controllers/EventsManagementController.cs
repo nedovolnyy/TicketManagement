@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using EventManagementApiClientGenerated;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
@@ -9,11 +10,13 @@ namespace TicketManagement.WebUI.Controllers
     [Authorize(Roles = "EventManager,Administrator")]
     public class EventsManagementController : Controller
     {
+        private readonly EventManagementApiClient _eventManagementApiClient;
         private readonly IServiceProvider _serviceProvider;
 
-        public EventsManagementController(IServiceProvider serviceProvider)
+        public EventsManagementController(IServiceProvider serviceProvider, EventManagementApiClient eventManagementApiClient)
         {
             _serviceProvider = serviceProvider;
+            _eventManagementApiClient = eventManagementApiClient;
         }
 
         public async Task<IActionResult> SelectVenues()
@@ -56,15 +59,17 @@ namespace TicketManagement.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert(EventModel eventModel, string layoutId, string timeZone, List<string> layoutsId)
         {
-            await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(
-                new Event(
-                name: eventModel.Name,
-                eventTime: DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
-                description: eventModel.Description,
-                eventEndTime: eventModel.EventEndTime,
-                eventLogoImage: eventModel.EventLogoImage,
-                layoutId: int.Parse(layoutId)),
-                price: eventModel.Price);
+            await _eventManagementApiClient.InsertEventAsync(
+                price: eventModel.Price,
+                new EventManagementApiClientGenerated.Event
+                {
+                    Name = eventModel.Name,
+                    EventTime = DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
+                    Description = eventModel.Description,
+                    EventEndTime = eventModel.EventEndTime,
+                    EventLogoImage = eventModel.EventLogoImage,
+                    LayoutId = int.Parse(layoutId),
+                });
 
             eventModel.LayoutsId = layoutsId;
 
@@ -80,7 +85,7 @@ namespace TicketManagement.WebUI.Controllers
 
         public async Task<IActionResult> Edit(int eventId)
         {
-            var evnt = await _serviceProvider.GetRequiredService<IEventService>().GetByIdAsync(eventId);
+            var evnt = await _eventManagementApiClient.GetByIdEventAsync(eventId);
             var layoutId = new List<string>
             {
                 evnt.LayoutId.ToString(),
@@ -90,41 +95,46 @@ namespace TicketManagement.WebUI.Controllers
                     description: evnt.Description,
                     eventTime: DateTime.Parse(evnt.EventTime.ToString()),
                     eventLogoImage: evnt.EventLogoImage,
-                    eventEndTime: evnt.EventEndTime,
-                    price: await _serviceProvider.GetRequiredService<IEventService>().GetPriceByEventIdAsync(eventId),
+                    eventEndTime: evnt.EventEndTime.DateTime,
+                    price: await _eventManagementApiClient.GetPriceByEventIdAsync(eventId),
                     layoutsId: layoutId);
-            ViewBag.isAllAvailableSeats = await _serviceProvider.GetRequiredService<IEventService>().IsAllAvailableSeatsAsync(eventId);
+            ViewBag.isAllAvailableSeats = await _eventManagementApiClient.IsAllAvailableSeatsAsync(eventId);
             return View(editEventModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(EventModel eventModel, int eventId, string timeZone, string layoutId)
         {
-            var isAllAvailableSeats = await _serviceProvider.GetRequiredService<IEventService>().IsAllAvailableSeatsAsync(eventId);
+            var isAllAvailableSeats = await _eventManagementApiClient.IsAllAvailableSeatsAsync(eventId);
             if (isAllAvailableSeats)
             {
-                await _serviceProvider.GetRequiredService<IEventService>().UpdateAsync(
-                    new Event(
-                    id: eventId,
-                    name: eventModel.Name,
-                    eventTime: DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
-                    description: eventModel.Description,
-                    eventEndTime: eventModel.EventEndTime,
-                    eventLogoImage: eventModel.EventLogoImage,
-                    layoutId: int.Parse(layoutId)),
-                    price: eventModel.Price);
+                await _eventManagementApiClient.UpdateEventAsync(
+                price: eventModel.Price,
+                new EventManagementApiClientGenerated.Event
+                {
+                    Id = eventId,
+                    Name = eventModel.Name,
+                    EventTime = DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
+                    Description = eventModel.Description,
+                    EventEndTime = eventModel.EventEndTime,
+                    EventLogoImage = eventModel.EventLogoImage,
+                    LayoutId = int.Parse(layoutId),
+                });
             }
             else
             {
-                await _serviceProvider.GetRequiredService<IEventService>().UpdateAsync(
-                    new Event(
-                    id: eventId,
-                    name: eventModel.Name,
-                    eventTime: DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
-                    description: eventModel.Description,
-                    eventEndTime: eventModel.EventEndTime,
-                    eventLogoImage: eventModel.EventLogoImage,
-                    layoutId: int.Parse(layoutId)));
+                await _eventManagementApiClient.UpdateEventAsync(
+                price: decimal.One,
+                new EventManagementApiClientGenerated.Event
+                {
+                    Id = eventId,
+                    Name = eventModel.Name,
+                    EventTime = DateTimeOffset.Parse(eventModel.EventTime.ToString()).ToOffset(TimeSpan.Parse(timeZone)),
+                    Description = eventModel.Description,
+                    EventEndTime = eventModel.EventEndTime,
+                    EventLogoImage = eventModel.EventLogoImage,
+                    LayoutId = int.Parse(layoutId),
+                });
             }
 
             return RedirectToRoute(new { controller = "Home", action = "Index" });
@@ -133,7 +143,7 @@ namespace TicketManagement.WebUI.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete(int eventId)
         {
-            await _serviceProvider.GetRequiredService<IEventService>().DeleteAsync(eventId);
+            await _eventManagementApiClient.DeleteEventAsync(eventId);
 
             return RedirectToRoute(new { controller = "Home", action = "Index" });
         }

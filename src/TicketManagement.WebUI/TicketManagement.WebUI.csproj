@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\TicketManagement.EventManagementAPI\Client\EventManagementApiClientGenerated.cs" Link="Client\EventManagementApiClientGenerated.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="TicketManagement.IntegrationTests" />
   </ItemGroup>
 
@@ -24,11 +28,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NSwag.ApiDescription.Client" Version="13.16.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="RestEase" Version="1.5.7" />
   </ItemGroup>
 
@@ -36,6 +35,7 @@
     <ProjectReference Include="..\TicketManagement.BusinessLogic\TicketManagement.BusinessLogic.csproj" />
     <ProjectReference Include="..\TicketManagement.Common\TicketManagement.Common.csproj" />
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
+    <ProjectReference Include="..\TicketManagement.EventManagementAPI\TicketManagement.EventManagementAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
