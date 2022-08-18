@@ -20,7 +20,7 @@ namespace TicketManagement.MVC.Controllers
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexAsync()
         {
             return View(await _serviceProvider.GetRequiredService<IEventService>().GetAllAsync());
         }
@@ -31,7 +31,7 @@ namespace TicketManagement.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Event evnt)
+        public async Task<IActionResult> CreateAsync(Event evnt)
         {
             await _serviceProvider.GetRequiredService<IEventService>().InsertAsync(evnt);
             return RedirectToAction("Index");
@@ -43,7 +43,7 @@ namespace TicketManagement.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Cart(string money)
+        public async Task<IActionResult> CartAsync(string money)
         {
             if (User is not null && money is not null)
             {
@@ -56,7 +56,7 @@ namespace TicketManagement.MVC.Controllers
             return RedirectToAction("Cart");
         }
 
-        public async Task<IActionResult> NoBalance()
+        public async Task<IActionResult> NoBalanceAsync()
         {
             return View(await _userManager.GetUserAsync(User));
         }
@@ -69,7 +69,7 @@ namespace TicketManagement.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SetLanguage(string culture, string returnUrl)
+        public async Task<IActionResult> SetLanguageAsync(string culture, string returnUrl)
         {
             if (User.Identity is not null && User.Identity.IsAuthenticated)
             {

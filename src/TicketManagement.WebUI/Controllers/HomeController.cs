@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
-////using EventApiClientGenerated;
+using EventApiClientGenerated;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +13,19 @@ namespace TicketManagement.WebUI.Controllers
 {
     public class HomeController : Controller
     {
-        ////private readonly EventApiClient _eventApiClient;
+        private readonly EventManagementApiClient _eventApiClient;
         private readonly UserManager<User> _userManager;
         private readonly IServiceProvider _serviceProvider;
-        public HomeController(UserManager<User> userManager, IServiceProvider serviceProvider/*, EventApiClient eventApiClient*/)
+        public HomeController(UserManager<User> userManager, IServiceProvider serviceProvider, EventApiClient eventApiClient)
         {
             _userManager = userManager;
             _serviceProvider = serviceProvider;
-            ////_eventApiClient = eventApiClient;
+            _eventApiClient = eventApiClient;
         }
 
         public async Task<IActionResult> IndexAsync()
         {
-            return View(await _serviceProvider.GetRequiredService<IEventService>().GetAllAsync());
+            return View(await _eventApiClient.CitiesAllAsync());
         }
 
         public IActionResult Create()

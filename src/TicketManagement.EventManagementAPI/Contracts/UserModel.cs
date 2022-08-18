@@ -1,4 +1,4 @@
-namespace TicketManagement.EventManagerAPI.Contracts
+namespace TicketManagement.EventManagementAPI.Contracts
 {
     public class UserModel
     {

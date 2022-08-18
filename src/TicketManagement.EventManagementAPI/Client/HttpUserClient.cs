@@ -1,9 +1,9 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using TicketManagement.EventManagerAPI.Contracts;
+using TicketManagement.EventManagementAPI.Contracts;
 
-namespace TicketManagement.EventManagerAPI.Client
+namespace TicketManagement.EventManagementAPI.Client
 {
     public interface IUserClient
     {

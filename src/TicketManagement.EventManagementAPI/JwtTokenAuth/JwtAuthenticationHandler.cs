@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using TicketManagement.EventManagerAPI.Client;
+using TicketManagement.EventManagementAPI.Client;
 
-namespace TicketManagement.EventManagerAPI.JwtTokenAuth
+namespace TicketManagement.EventManagementAPI.JwtTokenAuth
 {
     public class JwtAuthenticationHandler : AuthenticationHandler<JwtAuthenticationOptions>
     {

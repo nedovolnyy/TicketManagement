@@ -53,7 +53,7 @@
                     </form>
                     @if (isManageRole)
                     {
-                        <form asp-action="Delete" asp-controller="EventsManagement" asp-route-eventId="@evnt.Id" method="post">
+                        <form asp-controller="EventsManagement" asp-action="Delete" asp-route-eventId="@evnt.Id" method="post">
                             <a class="btn btn-sm btn-primary" asp-action="Edit" asp-controller="EventsManagement" asp-route-eventId="@evnt.Id">@Localizer["Edit"]</a>
                             @if (await EventService.IsAllAvailableSeatsAsync(evnt.Id))
                             {

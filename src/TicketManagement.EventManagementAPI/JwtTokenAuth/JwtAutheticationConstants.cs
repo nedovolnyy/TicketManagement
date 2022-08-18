@@ -1,4 +1,4 @@
-﻿namespace TicketManagement.EventManagerAPI.JwtTokenAuth
+﻿namespace TicketManagement.EventManagementAPI.JwtTokenAuth
 {
     public static class JwtAutheticationConstants
     {

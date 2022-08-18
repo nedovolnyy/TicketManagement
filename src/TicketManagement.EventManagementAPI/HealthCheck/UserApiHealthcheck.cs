@@ -3,10 +3,10 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using TicketManagement.EventManagerAPI.Client;
-using TicketManagement.EventManagerAPI.Contracts;
+using TicketManagement.EventManagementAPI.Client;
+using TicketManagement.EventManagementAPI.Contracts;
 
-namespace TicketManagement.EventManagerAPI.HealthCheck
+namespace TicketManagement.EventManagementAPI.HealthCheck
 {
     /// <summary>
     /// Testing health of the API.

@@ -1,4 +1,4 @@
-namespace TicketManagement.EventManagerAPI
+namespace TicketManagement.EventManagementAPI
 {
     public class UserApiOptions
     {

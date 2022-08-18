@@ -29,9 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.Common", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.MVC", "src\TicketManagement.MVC\TicketManagement.MVC.csproj", "{DFE3F782-B75F-4D78-BCDA-550A170A31E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketManagement.EventManagerAPI", "src\TicketManagement.EventManagerAPI\TicketManagement.EventManagerAPI.csproj", "{A2836B43-AF5D-4677-BE66-AE7EAA4E2172}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.EventManagementAPI", "src\TicketManagement.EventManagementAPI\TicketManagement.EventManagementAPI.csproj", "{A2836B43-AF5D-4677-BE66-AE7EAA4E2172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketManagement.UserAPI", "src\TicketManagement.UserAPI\TicketManagement.UserAPI.csproj", "{F6D52BDE-C32E-4CE6-87C1-20B2F1B3242F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.UserAPI", "src\TicketManagement.UserAPI\TicketManagement.UserAPI.csproj", "{F6D52BDE-C32E-4CE6-87C1-20B2F1B3242F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.WebUI", "src\TicketManagement.WebUI\TicketManagement.WebUI.csproj", "{E347106C-1FB0-4E23-9B3A-DB63AD2B1B20}"
 EndProject
