@@ -11,7 +11,7 @@
         "tags": [
           "EventsManagement"
         ],
-        "operationId": "EventsManagement_GetEvents",
+        "operationId": "EventsManagement_GetAllEvents",
         "responses": {
           "200": {
             "description": "",
@@ -20,7 +20,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/EventWithPrice"
+                    "$ref": "#/components/schemas/Event"
                   }
                 }
               }
@@ -42,13 +42,24 @@
         "tags": [
           "EventsManagement"
         ],
-        "operationId": "EventsManagement_Insert",
+        "operationId": "EventsManagement_InsertEvent",
+        "parameters": [
+          {
+            "name": "price",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
-          "x-name": "eventWithPrice",
+          "x-name": "event",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EventWithPrice"
+                "$ref": "#/components/schemas/Event"
               }
             }
           },
@@ -75,13 +86,24 @@
         "tags": [
           "EventsManagement"
         ],
-        "operationId": "EventsManagement_EditPUT",
+        "operationId": "EventsManagement_UpdateEvent",
+        "parameters": [
+          {
+            "name": "price",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
-          "x-name": "eventWithPrice",
+          "x-name": "event",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EventWithPrice"
+                "$ref": "#/components/schemas/Event"
               }
             }
           },
@@ -108,7 +130,7 @@
         "tags": [
           "EventsManagement"
         ],
-        "operationId": "EventsManagement_EditGET",
+        "operationId": "EventsManagement_GetByIdEvent",
         "parameters": [
           {
             "name": "eventId",
@@ -127,7 +149,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EventWithPrice"
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             }
@@ -148,7 +170,7 @@
         "tags": [
           "EventsManagement"
         ],
-        "operationId": "EventsManagement_Delete",
+        "operationId": "EventsManagement_DeleteEvent",
         "parameters": [
           {
             "name": "eventId",
@@ -177,33 +199,186 @@
           }
         }
       }
+    },
+    "/api/EventsManagement/IsAllAvailableSeats/{eventId}": {
+      "get": {
+        "tags": [
+          "EventsManagement"
+        ],
+        "operationId": "EventsManagement_IsAllAvailableSeats",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventsManagement/GetAllEventsByLayoutId/{layoutId}": {
+      "get": {
+        "tags": [
+          "EventsManagement"
+        ],
+        "operationId": "EventsManagement_GetAllEventsByLayoutId",
+        "parameters": [
+          {
+            "name": "layoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventsManagement/GetPriceByEventId/{eventId}": {
+      "get": {
+        "tags": [
+          "EventsManagement"
+        ],
+        "operationId": "EventsManagement_GetPriceByEventId",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "decimal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventsManagement/GetSeatsAvailableCount/{eventId}": {
+      "get": {
+        "tags": [
+          "EventsManagement"
+        ],
+        "operationId": "EventsManagement_GetSeatsAvailableCount",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventsManagement/GetSeatsCount/{layoutId}": {
+      "get": {
+        "tags": [
+          "EventsManagement"
+        ],
+        "operationId": "EventsManagement_GetSeatsCount",
+        "parameters": [
+          {
+            "name": "layoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "EventWithPrice": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "event",
-          "price"
-        ],
-        "properties": {
-          "event": {
-            "title": "Event",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/Event"
-              }
-            ]
-          },
-          "price": {
-            "title": "Price",
-            "type": "number",
-            "format": "decimal"
-          }
-        }
-      },
       "Event": {
         "allOf": [
           {

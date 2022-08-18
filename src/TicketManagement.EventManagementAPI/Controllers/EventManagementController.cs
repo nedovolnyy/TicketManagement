@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.EventManagementAPI.Helper;
 
 namespace TicketManagement.EventManagementAPI.Controllers
 {
@@ -10,16 +10,16 @@ namespace TicketManagement.EventManagementAPI.Controllers
     /// Resource for the operations against the event entity.
     /// </summary>
     [ApiController]
-    [Authorize(Roles = "EventManager,Administrator")]
+    ////[Authorize(Roles = "EventManager,Administrator")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class EventsManagementController : ControllerBase
     {
-        private IEnumerable<EventWithPrice> _eventWithPrices = new List<EventWithPrice>();
+        private readonly IEventRepository _eventRepository;
 
-        public EventsManagementController(IServiceProvider servicesProvider)
+        public EventsManagementController(IEventRepository eventRepository)
         {
-            EventRepositoryResolver.Configure(servicesProvider);
+            _eventRepository = eventRepository;
         }
 
         /// <summary>
@@ -28,12 +28,12 @@ namespace TicketManagement.EventManagementAPI.Controllers
         /// <returns>.</returns>
         [HttpGet]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(IEnumerable<EventWithPrice>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetEvents()
+        public async Task<IActionResult> GetAllEventsAsync()
         {
-            _eventWithPrices = await _eventWithPrices.GetAllAsync();
-            IActionResult result = _eventWithPrices is null ? NotFound() : Ok(_eventWithPrices);
+            var events = await _eventRepository.GetAll().ToListAsyncSafe();
+            IActionResult result = events is null ? NotFound() : Ok(events);
             return result;
         }
 
@@ -44,9 +44,9 @@ namespace TicketManagement.EventManagementAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> InsertAsync(EventWithPrice eventWithPrice)
+        public async Task<IActionResult> InsertEventAsync(Event @event, decimal price)
         {
-            await _eventWithPrices.InsertAsync(eventWithPrice);
+            await _eventRepository.InsertAsync(@event, price);
             return Ok();
         }
 
@@ -55,12 +55,13 @@ namespace TicketManagement.EventManagementAPI.Controllers
         /// </summary>
         /// <returns>.</returns>
         [HttpGet("{eventId:int}")]
-        [ProducesResponseType(typeof(EventWithPrice), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(Event), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Edit(int eventId)
+        public async Task<IActionResult> GetByIdEventAsync(int eventId)
         {
-            var eventWithPrice = await _eventWithPrices.GetByIdAsync(eventId);
-            IActionResult result = eventWithPrice is null ? NotFound() : Ok(eventWithPrice);
+            var @event = await _eventRepository.GetByIdAsync(eventId);
+            IActionResult result = @event is null ? NotFound() : Ok(@event);
             return result;
         }
 
@@ -69,9 +70,9 @@ namespace TicketManagement.EventManagementAPI.Controllers
         /// </summary>
         /// <returns>.</returns>
         [HttpPut]
-        public async Task<IActionResult> Edit(EventWithPrice eventWithPrice)
+        public async Task<IActionResult> UpdateEventAsync(Event @event, decimal price)
         {
-            await _eventWithPrices.UpdateAsync(eventWithPrice);
+            await _eventRepository.UpdateAsync(@event, price);
             return Ok();
         }
 
@@ -82,10 +83,71 @@ namespace TicketManagement.EventManagementAPI.Controllers
         [HttpDelete("{eventId:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(int eventId)
+        public async Task<IActionResult> DeleteEventAsync(int eventId)
         {
-            await _eventWithPrices.DeleteAsync(eventId);
+            await _eventRepository.DeleteAsync(eventId);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Is all available seats in selected event.
+        /// </summary>
+        /// <returns>.</returns>
+        [HttpGet("IsAllAvailableSeats/{eventId:int}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        public async Task<ActionResult<bool>> IsAllAvailableSeatsAsync(int eventId)
+        {
+            return await _eventRepository.IsAllAvailableSeatsAsync(eventId);
+        }
+
+        /// <summary>
+        /// Returns list of the events into selected layoutId.
+        /// </summary>
+        /// <returns>.</returns>
+        [HttpGet("GetAllEventsByLayoutId/{layoutId:int}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<Event>>> GetAllEventsByLayoutIdAsync(int layoutId)
+        {
+            return await _eventRepository.GetAllByLayoutId(layoutId).ToListAsyncSafe();
+        }
+
+        /// <summary>
+        /// Get price by eventId.
+        /// </summary>
+        /// <returns>.</returns>
+        [HttpGet("GetPriceByEventId/{eventId:int}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
+        public async Task<ActionResult<decimal>> GetPriceByEventIdAsync(int eventId)
+        {
+            return await _eventRepository.GetPriceByEventIdAsync(eventId);
+        }
+
+        /// <summary>
+        /// Get seats available count by eventId..
+        /// </summary>
+        /// <returns>.</returns>
+        [HttpGet("GetSeatsAvailableCount/{eventId:int}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> GetSeatsAvailableCountAsync(int eventId)
+        {
+            return await _eventRepository.GetSeatsAvailableCountAsync(eventId);
+        }
+
+        /// <summary>
+        /// Get seats count by layoutId.
+        /// </summary>
+        /// <returns>.</returns>
+        [HttpGet("GetSeatsCount/{layoutId:int}")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> GetSeatsCountAsync(int layoutId)
+        {
+            return await _eventRepository.GetSeatsCountAsync(layoutId);
         }
     }
 }

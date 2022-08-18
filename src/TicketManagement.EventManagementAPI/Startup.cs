@@ -14,7 +14,6 @@ using Microsoft.Extensions.PlatformAbstractions;
 ////using Microsoft.OpenApi.Models;
 using TicketManagement.EventManagementAPI.Client;
 using TicketManagement.EventManagementAPI.HealthCheck;
-using TicketManagement.EventManagementAPI.Helper;
 using TicketManagement.EventManagementAPI.JwtTokenAuth;
 
 namespace TicketManagement.EventManagementAPI
