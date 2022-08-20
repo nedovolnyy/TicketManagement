@@ -8,6 +8,10 @@
   <ItemGroup>
     <None Include="..\TicketManagement.EventManagementAPI\Client\EventManagementApiClientGenerated.cs" Link="Client\EventManagementApiClientGenerated.cs" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\TicketManagement.UserAPI\Client\UserApiClientGenerated.cs" Link="Client\UserApiClientGenerated.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="TicketManagement.IntegrationTests" />
@@ -36,6 +40,7 @@
     <ProjectReference Include="..\TicketManagement.Common\TicketManagement.Common.csproj" />
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
     <ProjectReference Include="..\TicketManagement.EventManagementAPI\TicketManagement.EventManagementAPI.csproj" />
+    <ProjectReference Include="..\TicketManagement.UserAPI\TicketManagement.UserAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

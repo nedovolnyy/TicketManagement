@@ -5,16 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TicketManagement.Common.Identity;
 using TicketManagement.WebUI.Helpers;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UsersApiClient _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(UserManager<User> userManager, UsersApiClient signInManager, ILogger<LoginModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -49,27 +50,34 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                /*var result = */await _signInManager.LoginAsync(
+                    new UserApiClientGenerated.LoginModel
+                        {
+                            Email = Input.Email,
+                            Password = Input.Password,
+                            RememberMe = Input.RememberMe,
+                        });
 
-                    HtmlHelperExtensions.SaveUserCookies(Response, user);
+                ////if (result.Succeeded)
+                ////{
+                ////    _logger.LogInformation("User logged in.");
+                ////    var user = await _userManager.FindByEmailAsync(Input.Email);
 
-                    return LocalRedirect(returnUrl);
-                }
+                ////    HtmlHelperExtensions.SaveUserCookies(Response, user);
 
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+                ////    return LocalRedirect(returnUrl);
+                ////}
+
+                ////if (result.IsLockedOut)
+                ////{
+                ////    _logger.LogWarning("User account locked out.");
+                ////    return RedirectToPage("./Lockout");
+                ////}
+                ////else
+                ////{
+                ////    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ////    return Page();
+                ////}
             }
 
             return Page();

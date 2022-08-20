@@ -1,20 +1,7 @@
-using System;
-using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.PlatformAbstractions;
-////using Microsoft.OpenApi.Models;
-using TicketManagement.EventManagementAPI.Client;
-using TicketManagement.EventManagementAPI.HealthCheck;
 using TicketManagement.EventManagementAPI.JwtTokenAuth;
+using UserApiClientGenerated;
 
 namespace TicketManagement.EventManagementAPI
 {
@@ -31,13 +18,13 @@ namespace TicketManagement.EventManagementAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHealthChecks().AddCheck<UserApiHealthcheck>("user_api_check", tags: new[] { "ready" });
+            ////services.AddHealthChecks().AddCheck<UserApiHealthcheck>("user_api_check", tags: new[] { "ready" });
             services.AddOptions().Configure<UserApiOptions>(binder => binder.UserApiAddress = _configuration["UserApiAddress"]);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddAuthentication(JwtAutheticationConstants.SchemeName)
                 .AddScheme<JwtAuthenticationOptions, JwtAuthenticationHandler>(JwtAutheticationConstants.SchemeName, null);
 
-            services.AddHttpClient<IUserClient, UserClient>((provider, client) =>
+            services.AddHttpClient<UsersApiClient>((provider, client) =>
             {
                 var userApiAddress = provider.GetService<IOptions<UserApiOptions>>()?.Value.UserApiAddress;
                 client.BaseAddress = new Uri(userApiAddress ?? string.Empty);
@@ -87,20 +74,20 @@ namespace TicketManagement.EventManagementAPI
             app.UseSwaggerUi3();
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
-                {
-                    Predicate = check => check.Tags.Contains("ready"),
-                }).WithMetadata(new AllowAnonymousAttribute());
-                endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
-                {
-                    Predicate = _ => false,
-                }).WithMetadata(new AllowAnonymousAttribute());
+                ////endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
+                ////{
+                ////    Predicate = check => check.Tags.Contains("ready"),
+                ////}).WithMetadata(new AllowAnonymousAttribute());
+                ////endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
+                ////{
+                ////    Predicate = _ => false,
+                ////}).WithMetadata(new AllowAnonymousAttribute());
             });
         }
 

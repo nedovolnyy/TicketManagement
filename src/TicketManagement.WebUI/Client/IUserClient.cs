@@ -1,22 +1,19 @@
-﻿using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using RestEase;
+﻿using RestEase;
 
 namespace TicketManagement.WebUI.Client
 {
     public interface IUserRestClient
     {
-        [Get("/health/live")]
-        public Task HealthCheck(CancellationToken cancellationToken = default);
+        ////[Get("/health/live")]
+        ////public Task HealthCheck(CancellationToken cancellationToken = default);
 
-        [Post("users/register")]
+        [Post("api/users/register")]
         public Task<string> Register([Body] HttpContent content, CancellationToken cancellationToken = default);
 
-        [Post("users/login")]
+        [Post("api/users/login")]
         public Task<string> Login([Body] HttpContent content, CancellationToken cancellationToken = default);
 
-        [Get("users/validate")]
+        [Get("api/users/validate")]
         public Task ValidateToken([Query]string token, CancellationToken cancellationToken = default);
     }
 

@@ -1,9 +1,3 @@
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-
 namespace TicketManagement.UserAPI
 {
     public class Program

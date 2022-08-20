@@ -1,13 +1,10 @@
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using TicketManagement.EventManagementAPI.Contracts;
 
 namespace TicketManagement.EventManagementAPI.Client
 {
     public interface IUserClient
     {
-        public Task HealthCheck(CancellationToken cancellationToken = default);
+        ////public Task HealthCheck(CancellationToken cancellationToken = default);
 
         public Task<string> Register(UserModel userModel, CancellationToken cancellationToken = default);
 
@@ -25,11 +22,11 @@ namespace TicketManagement.EventManagementAPI.Client
             _httpClient = httpClient;
         }
 
-        public async Task HealthCheck(CancellationToken cancellationToken = default)
-        {
-            var result = await _httpClient.GetAsync("/health/live", cancellationToken);
-            result.EnsureSuccessStatusCode();
-        }
+        ////public async Task HealthCheck(CancellationToken cancellationToken = default)
+        ////{
+        ////    var result = await _httpClient.GetAsync("/health/live", cancellationToken);
+        ////    result.EnsureSuccessStatusCode();
+        ////}
 
         public async Task<string> Register(UserModel userModel, CancellationToken cancellationToken = default)
             => await AuthorizeInternal(userModel, "users/register", cancellationToken);

@@ -1,13 +1,18 @@
+using System.Configuration;
 using System.Globalization;
 using System.Security.Claims;
+using System.Text;
 using EventManagementApiClientGenerated;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using RestEase;
 using TicketManagement.Common.DI;
+using TicketManagement.UserAPI.Settings;
 using TicketManagement.WebUI;
 using TicketManagement.WebUI.Client;
 using TicketManagement.WebUI.Services;
@@ -39,6 +44,34 @@ builder.Services
     })
     .AddViewLocalization();
 
+var tokenSettings = builder.Configuration.GetSection(nameof(JwtTokenSettings));
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/api/Users/Login";
+            options.AccessDeniedPath = "/Account/Forbidden/";
+        })
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = tokenSettings[nameof(JwtTokenSettings.JwtIssuer)],
+                        ValidateAudience = true,
+                        ValidAudience = tokenSettings[nameof(JwtTokenSettings.JwtAudience)],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings[nameof(JwtTokenSettings.JwtSecretKey)])),
+                        ValidateLifetime = false,
+                    };
+                    options.SaveToken = true;
+                });
+
 builder.Services.AddMvc();
 builder.Services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
 
@@ -54,7 +87,7 @@ builder.Services.AddScoped(scope =>
 builder.Services.AddScoped(scope =>
 {
     var baseUrl = builder.Configuration["UserApiAddress"];
-    return RestClient.For<IUserRestClient>(baseUrl);
+    return RestClient.For<UsersApiClient>(baseUrl);
 });
 
 builder.Services.AddBLLServices();

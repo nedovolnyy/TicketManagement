@@ -13,21 +13,21 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddDbContext<IDatabaseContext, DatabaseContext>(
                 options => options.UseSqlServer(connectionString)
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
-                    .AddIdentity<User, Role>(
-                        options =>
-                        {
-                            options.Password.RequireDigit = true;
-                            options.Password.RequireLowercase = true;
-                            options.Password.RequireNonAlphanumeric = true;
-                            options.Password.RequireUppercase = false;
-                            options.Password.RequiredLength = 6;
-                            options.SignIn.RequireConfirmedAccount = false;
-                        })
-                    .AddRoles<Role>()
-                    .AddDefaultUI()
-                    .AddEntityFrameworkStores<DatabaseContext>()
-                    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+                    //.AddIdentity<User, Role>(
+                    //    options =>
+                    //    {
+                    //        options.Password.RequireDigit = true;
+                    //        options.Password.RequireLowercase = true;
+                    //        options.Password.RequireNonAlphanumeric = true;
+                    //        options.Password.RequireUppercase = false;
+                    //        options.Password.RequiredLength = 6;
+                    //        options.SignIn.RequireConfirmedAccount = false;
+                    //    })
+                    //.AddRoles<Role>()
+                    //.AddDefaultUI()
+                    //.AddEntityFrameworkStores<DatabaseContext>()
+                    //.AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
             services.AddTransient<IAreaRepository, AreaRepository>();
 

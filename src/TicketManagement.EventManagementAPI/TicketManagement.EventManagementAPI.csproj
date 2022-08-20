@@ -11,9 +11,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\net6.0\EventManagementApi.xml</DocumentationFile>
   </PropertyGroup>
-
   <ItemGroup>
-    <None Include="..\TicketManagement.Common\Entities\EventWithPrice.cs" Link="Contracts\EventWithPrice.cs" />
+    <Compile Remove="Client\HttpUserClient.cs" />
+    <Compile Remove="HealthCheck\UserApiHealthcheck.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Client\HttpUserClient.cs" />
+    <None Include="HealthCheck\UserApiHealthcheck.cs" />
   </ItemGroup>
   
   <ItemGroup>
@@ -33,6 +37,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
+    <ProjectReference Include="..\TicketManagement.UserAPI\TicketManagement.UserAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

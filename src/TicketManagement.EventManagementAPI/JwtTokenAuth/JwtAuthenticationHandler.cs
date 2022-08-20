@@ -1,27 +1,22 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
-using System.Net.Http;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using TicketManagement.EventManagementAPI.Client;
+using UserApiClientGenerated;
 
 namespace TicketManagement.EventManagementAPI.JwtTokenAuth
 {
     public class JwtAuthenticationHandler : AuthenticationHandler<JwtAuthenticationOptions>
     {
-        private readonly IUserClient _userClient;
+        private readonly UsersApiClient _userClient;
 
         public JwtAuthenticationHandler(
             IOptionsMonitor<JwtAuthenticationOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            IUserClient userClient)
+            UsersApiClient userClient)
             : base(options, logger, encoder, clock)
         {
             _userClient = userClient;
@@ -38,7 +33,7 @@ namespace TicketManagement.EventManagementAPI.JwtTokenAuth
             var token = Request.Headers["Authorization"].ToString()["Bearer ".Length..];
             try
             {
-                await _userClient.ValidateToken(token);
+                await _userClient.ValidateAsync(token);
             }
             catch
             {

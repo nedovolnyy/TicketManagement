@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.Identity;
 using TicketManagement.WebUI.Models;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Controllers
 {
