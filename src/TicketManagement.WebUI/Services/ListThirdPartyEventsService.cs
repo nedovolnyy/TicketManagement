@@ -2,41 +2,39 @@
 using ThirdPartyEventEditor.Models;
 using TicketManagement.Common.Entities;
 
-namespace TicketManagement.WebUI.Services
+namespace TicketManagement.WebUI.Services;
+public class ListThirdPartyEventsService
 {
-    public class ListThirdPartyEventsService
+    private readonly List<ThirdPartyEvent> _thirdPartyEvents = new List<ThirdPartyEvent>();
+
+    public List<ThirdPartyEvent> Add(Event @event, decimal thirdPartyEventPrice)
     {
-        private readonly List<ThirdPartyEvent> _thirdPartyEvents = new List<ThirdPartyEvent>();
+        _thirdPartyEvents.Remove(_thirdPartyEvents.Find(x => x.Name == @event.Name && x.EventTime == @event.EventTime));
+        return _thirdPartyEvents;
+    }
 
-        public List<ThirdPartyEvent> Add(Event @event, decimal thirdPartyEventPrice)
+    public List<ThirdPartyEvent> Delete(string thirdPartyEventName, string thirdPartyEventDescription, DateTimeOffset thirdPartyEventTime)
+    {
+        _thirdPartyEvents.Remove(
+            _thirdPartyEvents.Find(x => x.Name == thirdPartyEventName && x.EventTime == thirdPartyEventTime && x.Description == thirdPartyEventDescription));
+        return _thirdPartyEvents;
+    }
+
+    public async Task<List<ThirdPartyEvent>> PreviewAsync(IFormFile file)
+    {
+        using var reader = new StreamReader(file.OpenReadStream());
+        var thirdPartyEvents = PrepareListOfThirdPartyEvents(await JsonSerializer.DeserializeAsync<List<ThirdPartyEvent>>(reader.BaseStream));
+        return thirdPartyEvents;
+    }
+
+    private List<ThirdPartyEvent> PrepareListOfThirdPartyEvents(List<ThirdPartyEvent> thirdPartyEvents)
+    {
+        _thirdPartyEvents.Clear();
+        foreach (var thirdPartyEvent in thirdPartyEvents)
         {
-            _thirdPartyEvents.Remove(_thirdPartyEvents.Find(x => x.Name == @event.Name && x.EventTime == @event.EventTime));
-            return _thirdPartyEvents;
+            _thirdPartyEvents.Add(thirdPartyEvent);
         }
 
-        public List<ThirdPartyEvent> Delete(string thirdPartyEventName, string thirdPartyEventDescription, DateTimeOffset thirdPartyEventTime)
-        {
-            _thirdPartyEvents.Remove(
-                _thirdPartyEvents.Find(x => x.Name == thirdPartyEventName && x.EventTime == thirdPartyEventTime && x.Description == thirdPartyEventDescription));
-            return _thirdPartyEvents;
-        }
-
-        public async Task<List<ThirdPartyEvent>> PreviewAsync(IFormFile file)
-        {
-            using var reader = new StreamReader(file.OpenReadStream());
-            var thirdPartyEvents = PrepareListOfThirdPartyEvents(await JsonSerializer.DeserializeAsync<List<ThirdPartyEvent>>(reader.BaseStream));
-            return thirdPartyEvents;
-        }
-
-        private List<ThirdPartyEvent> PrepareListOfThirdPartyEvents(List<ThirdPartyEvent> thirdPartyEvents)
-        {
-            _thirdPartyEvents.Clear();
-            foreach (var thirdPartyEvent in thirdPartyEvents)
-            {
-                _thirdPartyEvents.Add(thirdPartyEvent);
-            }
-
-            return _thirdPartyEvents;
-        }
+        return _thirdPartyEvents;
     }
 }

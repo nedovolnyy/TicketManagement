@@ -11,12 +11,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>bin\Release\net6.0\EventManagementApi.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="HealthCheck\UserApiHealthcheck.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="HealthCheck\UserApiHealthcheck.cs" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
@@ -30,24 +24,19 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.22.0" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
-    <ProjectReference Include="..\TicketManagement.UserAPI\TicketManagement.UserAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="SonarAnalyzer.CSharp" Version="8.43.0.51858">
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="8.44.0.52574">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>none</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
-  <Target Name="GenerateNSwag" AfterTargets="Build" Condition="$(SkipSwagger) != 'true'">
-    <Exec EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development;" Command="$(NSwagExe_Net60) aspnetcore2openapi /project:&quot;$(MSBuildProjectFullPath)&quot; /nobuild:true /output:&quot;../TicketManagement.WebUI/OpenAPIs/swagger.json&quot; /documentName:v1 /configuration:$(Configuration)" />
-    <Exec Command="$(NSwagExe_Net60) run EventManagementApiClient.nswag /variables:Configuration=$(Configuration),OutDir=Client,InputSwagger=../TicketManagement.WebUI/OpenAPIs/swagger.json" />
-  </Target>
-  
 </Project>
