@@ -29,14 +29,14 @@ namespace TicketManagement.EventManagementAPI.Client
         ////}
 
         public async Task<string> Register(UserModel userModel, CancellationToken cancellationToken = default)
-            => await AuthorizeInternal(userModel, "users/register", cancellationToken);
+            => await AuthorizeInternal(userModel, "api/users/register", cancellationToken);
 
         public async Task<string> Login(UserModel userModel, CancellationToken cancellationToken = default)
-            =>await AuthorizeInternal(userModel, "users/login", cancellationToken);
+            =>await AuthorizeInternal(userModel, "api/users/login", cancellationToken);
 
         public async Task ValidateToken(string token, CancellationToken cancellationToken = default)
         {
-            var address = $"users/validate?token={token}";
+            var address = $"api/users/validate?token={token}";
             var message = await _httpClient.GetAsync(address, cancellationToken);
             message.EnsureSuccessStatusCode();
         }

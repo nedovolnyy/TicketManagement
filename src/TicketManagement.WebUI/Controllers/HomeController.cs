@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 using EventManagementApiClientGenerated;
 using Microsoft.AspNetCore.Identity;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.Identity;
 using TicketManagement.WebUI.Models;
-using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Controllers
 {

@@ -1,5 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
+using TicketManagement.EventManagementAPI.Client;
 using TicketManagement.EventManagementAPI.JwtTokenAuth;
 using UserApiClientGenerated;
 
@@ -21,10 +24,10 @@ namespace TicketManagement.EventManagementAPI
             ////services.AddHealthChecks().AddCheck<UserApiHealthcheck>("user_api_check", tags: new[] { "ready" });
             services.AddOptions().Configure<UserApiOptions>(binder => binder.UserApiAddress = _configuration["UserApiAddress"]);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddAuthentication(JwtAutheticationConstants.SchemeName)
+            services.AddAuthentication(options => options.DefaultAuthenticateScheme = JwtAutheticationConstants.SchemeName)
                 .AddScheme<JwtAuthenticationOptions, JwtAuthenticationHandler>(JwtAutheticationConstants.SchemeName, null);
 
-            services.AddHttpClient<UsersApiClient>((provider, client) =>
+            services.AddHttpClient<IUserClient, UserClient>((provider, client) =>
             {
                 var userApiAddress = provider.GetService<IOptions<UserApiOptions>>()?.Value.UserApiAddress;
                 client.BaseAddress = new Uri(userApiAddress ?? string.Empty);

@@ -84,7 +84,7 @@ namespace TicketManagement.UserAPI.Controllers
 
             ////var roleName = model.IsAdmin ? UserRoles.Admin : UserRoles.Manager;
             var roleName = await _userManager.GetRolesAsync(newUser);
-            var jwtToken = _jwtTokenService.GetToken(newUser, roleName);
+            var jwtToken = _jwtTokenService.GenerateJwtToken(newUser, roleName);
 
             _logger.LogInformation($"The user with name {model.Email} was registered.");
 
@@ -157,7 +157,8 @@ namespace TicketManagement.UserAPI.Controllers
 
             ////var isAdmin = roles.Contains(UserRoles.Admin);
             ////var roleName = isAdmin ? UserRoles.Admin : UserRoles.Manager;
-            var jwtToken = _jwtTokenService.GenerateJwtToken(existingUser, "Administrator");
+            var roleName = await _userManager.GetRolesAsync(existingUser);
+            var jwtToken = _jwtTokenService.GenerateJwtToken(existingUser, roleName);
 
             _logger.LogInformation($"The user with email {model.Email} was logged in.");
 

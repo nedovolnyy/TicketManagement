@@ -1,15 +1,15 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 ////using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 ////using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
-////using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models;
 using TicketManagement.Common.Identity;
 using TicketManagement.UserAPI.DataAccess;
 using TicketManagement.UserAPI.Services;
@@ -17,6 +17,11 @@ using TicketManagement.UserAPI.Settings;
 
 namespace TicketManagement.UserAPI
 {
+    public static class ClaimPermission
+    {
+        public static readonly string[] Roles = { "Administrator", "EventManager" };
+    }
+
     public class Startup
     {
         private readonly IConfiguration _configuration;
@@ -70,8 +75,16 @@ namespace TicketManagement.UserAPI
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings[nameof(JwtTokenSettings.JwtSecretKey)])),
                         ValidateLifetime = false,
+                        RoleClaimType = ClaimsIdentity.DefaultRoleClaimType,
                     };
                     options.SaveToken = true;
+                });
+            services.AddAuthorization(options =>
+                {
+                    foreach (var prop in typeof(ClaimPermission).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy))
+                    {
+                        options.AddPolicy(prop.GetValue(null).ToString(), policy => policy.RequireClaim(ClaimsIdentity.DefaultRoleClaimType, ClaimPermission.Roles));
+                    }
                 });
 
             services.Configure<JwtTokenSettings>(tokenSettings);
@@ -83,7 +96,8 @@ namespace TicketManagement.UserAPI
             ////{
             ////    options.SwaggerDoc("v1", new OpenApiInfo
             ////    {
-            ////        Title = "Internal lab Demo 2", Version = "v1",
+            ////        Title = "Internal lab Demo 2",
+            ////        Version = "v1",
             ////    });
             ////    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             ////    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -114,6 +128,8 @@ namespace TicketManagement.UserAPI
 
         public void Configure(IApplicationBuilder app)
         {
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+
             app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
             ////app.UseSwagger();
             ////app.UseSwaggerUI(options =>

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.EventManagementAPI.JwtTokenAuth;
 
 namespace TicketManagement.EventManagementAPI.Controllers
 {
@@ -12,7 +13,7 @@ namespace TicketManagement.EventManagementAPI.Controllers
     /// Resource for the operations against the event entity.
     /// </summary>
     [ApiController]
-    [Authorize(Roles = "EventManager,Administrator")]
+    [Authorize(AuthenticationSchemes = JwtAutheticationConstants.SchemeName, Roles = "Administrator,EventManager")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class EventManagementController : ControllerBase

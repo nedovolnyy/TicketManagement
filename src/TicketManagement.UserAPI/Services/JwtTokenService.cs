@@ -17,47 +17,28 @@ namespace TicketManagement.UserAPI.Services
             _settings = options.Value;
         }
 
-        public string GetToken(IdentityUser user, IList<string> roles)
+        public string GenerateJwtToken(IdentityUser user, IEnumerable<string> roles)
         {
-            var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
             var userClaims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
             };
-            userClaims.AddRange(roleClaims);
-            var jwt = new JwtSecurityToken(
-                issuer: _settings.JwtIssuer,
-                audience: _settings.JwtAudience,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtSecretKey)),
-                    SecurityAlgorithms.HmacSha256),
-                claims: userClaims);
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            userClaims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
 
-            return encodedJwt;
-        }
-
-        public string GenerateJwtToken(IdentityUser user, string roleName)
-        {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-            var key = Encoding.ASCII.GetBytes(_settings.JwtSecretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(ClaimTypes.Role, roleName),
-                }),
+                Subject = new ClaimsIdentity(userClaims),
+                Issuer = _settings.JwtIssuer,
+                Audience = _settings.JwtAudience,
                 Expires = DateTime.UtcNow.AddMinutes(10),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtSecretKey)), SecurityAlgorithms.HmacSha512Signature),
             };
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-
             var jwtToken = jwtTokenHandler.WriteToken(token);
 
             return jwtToken;
@@ -72,13 +53,14 @@ namespace TicketManagement.UserAPI.Services
                 token,
                 new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
                     ValidIssuer = _settings.JwtIssuer,
-                    ValidateAudience = true,
                     ValidAudience = _settings.JwtAudience,
-                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtSecretKey)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
                     ValidateLifetime = false,
+                    RoleClaimType = ClaimsIdentity.DefaultRoleClaimType,
                 },
                 out var _);
             }

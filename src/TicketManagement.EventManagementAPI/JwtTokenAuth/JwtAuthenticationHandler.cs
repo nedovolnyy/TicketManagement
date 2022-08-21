@@ -3,20 +3,21 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
+using TicketManagement.EventManagementAPI.Client;
 using UserApiClientGenerated;
 
 namespace TicketManagement.EventManagementAPI.JwtTokenAuth
 {
     public class JwtAuthenticationHandler : AuthenticationHandler<JwtAuthenticationOptions>
     {
-        private readonly UsersApiClient _userClient;
+        private readonly IUserClient _userClient;
 
         public JwtAuthenticationHandler(
             IOptionsMonitor<JwtAuthenticationOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            UsersApiClient userClient)
+            IUserClient userClient)
             : base(options, logger, encoder, clock)
         {
             _userClient = userClient;
@@ -30,10 +31,10 @@ namespace TicketManagement.EventManagementAPI.JwtTokenAuth
                 return AuthenticateResult.Fail("Unauthorized");
             }
 
-            var token = Request.Headers["Authorization"].ToString()["Bearer ".Length..];
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             try
             {
-                await _userClient.ValidateAsync(token);
+                await _userClient.ValidateToken(token);
             }
             catch
             {
@@ -42,9 +43,10 @@ namespace TicketManagement.EventManagementAPI.JwtTokenAuth
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
-            var identity = new ClaimsIdentity(jwtToken.Claims, Scheme.Name);
-            var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, Scheme.Name);
+            var claimsIdentity = new ClaimsIdentity(jwtToken.Claims, Scheme.Name);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            var ticket = new AuthenticationTicket(claimsPrincipal, Scheme.Name);
             return AuthenticateResult.Success(ticket);
         }
     }

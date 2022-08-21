@@ -2,6 +2,6 @@
 {
     public static class JwtAutheticationConstants
     {
-        public const string SchemeName = "CustomJwtAuth";
+        public const string SchemeName = "EventManagementJwtAuth";
     }
 }
