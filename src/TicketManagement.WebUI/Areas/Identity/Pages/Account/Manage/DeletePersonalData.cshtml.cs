@@ -1,25 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TicketManagement.Common.Identity;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 {
     public class DeletePersonalDataModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly UsersManagementApiClient _usersManagementApiClient;
+        private readonly string _userId;
 
         public DeletePersonalDataModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            UsersManagementApiClient usersManagementApiClient)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
             _logger = logger;
+            _usersManagementApiClient = usersManagementApiClient;
+            _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         [BindProperty]
@@ -29,41 +30,36 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGet()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(_userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{_userId}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
+            RequirePassword = await _usersManagementApiClient.HasPasswordAsync(_userId);
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(_userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{_userId}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
-            if (RequirePassword && !await _userManager.CheckPasswordAsync(user, Input.Password))
+            RequirePassword = await _usersManagementApiClient.HasPasswordAsync(_userId);
+            if (RequirePassword && !await _usersManagementApiClient.CheckPasswordAsync(_userId, Input.Password))
             {
                 ModelState.AddModelError(string.Empty, "Incorrect password.");
                 return Page();
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
-            {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user.");
-            }
+            await _usersManagementApiClient.DeleteUserAsync(_userId);
 
-            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", _userId);
 
             return Redirect("~/");
         }

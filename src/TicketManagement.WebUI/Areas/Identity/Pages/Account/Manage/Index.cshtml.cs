@@ -1,22 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TicketManagement.Common.Identity;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UsersManagementApiClient _usersManagementApiClient;
 
-        public IndexModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
+        public IndexModel(UsersManagementApiClient usersManagementApiClient)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _usersManagementApiClient = usersManagementApiClient;
         }
 
         [Display(Name = "Username")]
@@ -30,16 +26,14 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
-        private async Task LoadAsync(User user)
+        private async Task LoadAsync()
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            Username = userName;
-
+            Username = user.UserName;
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber,
+                PhoneNumber = user.PhoneNumber,
                 FirstName = user.FirstName,
                 SurName = user.SurName,
             };
@@ -47,37 +41,36 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
             }
 
-            await LoadAsync(user);
+            await LoadAsync();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
             }
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                await LoadAsync();
                 return Page();
             }
 
             user.FirstName = Input.FirstName;
             user.SurName = Input.SurName;
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            if (Input.PhoneNumber != user.PhoneNumber)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+                var setPhoneResult = await _usersManagementApiClient.SetPhoneNumberAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
@@ -85,9 +78,7 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            await _userManager.UpdateAsync(user);
-
-            await _signInManager.RefreshSignInAsync(user);
+            await _usersManagementApiClient.RefreshSignInAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }

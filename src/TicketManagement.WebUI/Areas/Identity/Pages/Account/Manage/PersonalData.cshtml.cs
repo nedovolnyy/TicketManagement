@@ -1,29 +1,31 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TicketManagement.Common.Identity;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 {
     public class PersonalDataModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
         private readonly ILogger<PersonalDataModel> _logger;
+        private readonly UsersManagementApiClient _usersManagementApiClient;
+        private readonly string _userId;
 
         public PersonalDataModel(
-            UserManager<User> userManager,
-            ILogger<PersonalDataModel> logger)
+            ILogger<PersonalDataModel> logger,
+            UsersManagementApiClient usersManagementApiClient)
         {
-            _userManager = userManager;
             _logger = logger;
+            _usersManagementApiClient = usersManagementApiClient;
+            _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         public async Task<IActionResult> OnGet()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(_userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{_userId}'.");
             }
 
             return Page();

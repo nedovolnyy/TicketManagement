@@ -7,6 +7,7 @@ using TicketManagement.EventManagementAPI.Client;
 using TicketManagement.EventManagementAPI.JwtTokenAuth;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 var logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(builder.Configuration)
                         .Enrich.FromLogContext()
@@ -20,21 +21,21 @@ builder.WebHost.UseUrls("https://*:5000").ConfigureKestrel(options =>
     options.ListenAnyIP(5003, configure => configure.UseHttps());
 });
 
-builder.Services.AddEndpointsApiExplorer();
+services.AddEndpointsApiExplorer();
 ////services.AddHealthChecks().AddCheck<UserApiHealthcheck>("user_api_check", tags: new[] { "ready" });
-builder.Services.AddOptions().Configure<UserApiOptions>(binder => binder.UserApiAddress = builder.Configuration["UserApiAddress"]);
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddAuthentication(options => options.DefaultAuthenticateScheme = JwtAutheticationConstants.SchemeName)
+services.AddOptions().Configure<UserApiOptions>(binder => binder.UserApiAddress = builder.Configuration["UserApiAddress"]);
+services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+services.AddAuthentication(options => options.DefaultAuthenticateScheme = JwtAutheticationConstants.SchemeName)
     .AddScheme<JwtAuthenticationOptions, JwtAuthenticationHandler>(JwtAutheticationConstants.SchemeName, null);
 
-builder.Services.AddHttpClient<IUserClient, UserClient>((provider, client) =>
+services.AddHttpClient<IUserClient, UserClient>((provider, client) =>
 {
     var userApiAddress = provider.GetService<IOptions<UserApiOptions>>()?.Value.UserApiAddress;
     client.BaseAddress = new Uri(userApiAddress ?? string.Empty);
 });
 
-builder.Services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
-builder.Services.AddControllers();
+services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
+services.AddControllers();
 ////services.AddSwaggerGen(options =>
 ////{
 ////    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Internal lab Demo 2", Version = "v1" });
@@ -61,7 +62,7 @@ builder.Services.AddControllers();
 ////    });
 ////});
 
-builder.Services.AddOpenApiDocument();
+services.AddOpenApiDocument();
 
 var app = builder.Build();
 

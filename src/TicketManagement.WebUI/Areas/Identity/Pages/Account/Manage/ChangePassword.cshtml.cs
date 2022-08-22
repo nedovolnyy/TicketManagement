@@ -1,25 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TicketManagement.Common.Identity;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly UsersManagementApiClient _usersManagementApiClient;
+        private readonly string _userId;
 
         public ChangePasswordModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            ILogger<ChangePasswordModel> logger,
+            UsersManagementApiClient usersManagementApiClient)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
             _logger = logger;
+            _usersManagementApiClient = usersManagementApiClient;
+            _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         [BindProperty]
@@ -30,13 +29,13 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(_userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{_userId}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(user);
+            var hasPassword = await _usersManagementApiClient.HasPasswordAsync(_userId);
             if (!hasPassword)
             {
                 return RedirectToPage("./SetPassword");
@@ -52,13 +51,13 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(_userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{_userId}'.");
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, Input.OldPassword, Input.NewPassword);
+            var changePasswordResult = await _usersManagementApiClient.ChangePasswordAsync(_userId, Input.OldPassword, Input.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
@@ -69,7 +68,7 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _usersManagementApiClient.RefreshSignInAsync(_userId);
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
 

@@ -1,23 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TicketManagement.Common.Identity;
 using TicketManagement.WebUI.Helpers;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 {
     public class RegionSettingsModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UsersManagementApiClient _usersManagementApiClient;
 
-        public RegionSettingsModel(
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
+        public RegionSettingsModel(UsersManagementApiClient usersManagementApiClient)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _usersManagementApiClient = usersManagementApiClient;
         }
 
         public string Language { get; set; }
@@ -40,10 +36,10 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
             }
 
             Load(user);
@@ -52,10 +48,10 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync(string culture, string timeZone)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
             }
 
             if (!ModelState.IsValid)
@@ -64,12 +60,13 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            user.Language = culture;
-            user.TimeZone = timeZone;
+            await _usersManagementApiClient.EditUserAsync(new CreateUser
+            {
+                Language = culture,
+                TimeZone = timeZone,
+            });
 
-            await _userManager.UpdateAsync(user);
-
-            await _signInManager.RefreshSignInAsync(user);
+            await _usersManagementApiClient.RefreshSignInAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             StatusMessage = "Your profile has been updated";
 
             HtmlHelperExtensions.SaveUserCookies(Response, user);

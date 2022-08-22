@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using TicketManagement.Common.DI;
 using TicketManagement.Common.Identity;
 using TicketManagement.UserAPI.DataAccess;
 using TicketManagement.UserAPI.Services;
@@ -18,6 +16,7 @@ using TicketManagement.UserAPI.Settings;
 var roles = new string[] { "Administrator", "EventManager" };
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 var logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(builder.Configuration)
                         .Enrich.FromLogContext()
@@ -26,7 +25,7 @@ var logger = new LoggerConfiguration()
                         .CreateLogger();
 builder.Host.UseSerilog(logger);
 
-////builder.Services.Configure<HostOptions>(hostOptions =>
+////services.Configure<HostOptions>(hostOptions =>
 ////        {
 ////            hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 ////        });
@@ -36,7 +35,7 @@ builder.WebHost.UseUrls("https://*:5000").ConfigureKestrel(options =>
     options.ListenAnyIP(5004, configure => configure.UseHttps());
 });
 
-builder.Services.AddDbContext<UserApiDbContext>(
+services.AddDbContext<UserApiDbContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
                     .AddIdentity<User, Role>()
@@ -46,7 +45,7 @@ builder.Services.AddDbContext<UserApiDbContext>(
                     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
 var tokenSettings = builder.Configuration.GetSection(nameof(JwtTokenSettings));
-builder.Services.AddAuthentication(options =>
+services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -68,7 +67,7 @@ builder.Services.AddAuthentication(options =>
         };
         options.SaveToken = true;
     });
-builder.Services.AddAuthorization(options =>
+services.AddAuthorization(options =>
 {
     foreach (var prop in roles)
     {
@@ -76,10 +75,10 @@ builder.Services.AddAuthorization(options =>
     }
 });
 
-builder.Services.Configure<JwtTokenSettings>(tokenSettings);
-builder.Services.AddScoped<JwtTokenService>();
+services.Configure<JwtTokenSettings>(tokenSettings);
+services.AddScoped<JwtTokenService>();
 
-builder.Services.AddControllers();
+services.AddControllers();
 
 ////services.AddSwaggerGen(options =>
 ////{
@@ -112,7 +111,7 @@ builder.Services.AddControllers();
 ////        { jwtSecurityScheme, Array.Empty<string>() },
 ////    });
 ////});
-builder.Services.AddOpenApiDocument();
+services.AddOpenApiDocument();
 
 var app = builder.Build();
 
@@ -128,7 +127,7 @@ app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
 
 app.UseOpenApi();
 app.UseSwaggerUi3();
-////app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseRouting();
 

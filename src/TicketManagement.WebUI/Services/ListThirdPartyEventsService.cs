@@ -5,7 +5,7 @@ using TicketManagement.Common.Entities;
 namespace TicketManagement.WebUI.Services;
 public class ListThirdPartyEventsService
 {
-    private readonly List<ThirdPartyEvent> _thirdPartyEvents = new List<ThirdPartyEvent>();
+    private readonly List<ThirdPartyEvent> _thirdPartyEvents = new ();
 
     public List<ThirdPartyEvent> Add(Event @event, decimal thirdPartyEventPrice)
     {

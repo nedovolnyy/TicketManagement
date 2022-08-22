@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.Identity;
+using TicketManagement.Common.JwtTokenAuth;
 using TicketManagement.UserAPI.Models;
-using TicketManagement.UserAPI.Responses;
 using TicketManagement.UserAPI.Services;
 
 namespace TicketManagement.UserAPI.Controllers
@@ -166,6 +166,7 @@ namespace TicketManagement.UserAPI.Controllers
             {
                 Result = true,
                 Token = jwtToken,
+                User = existingUser,
             });
         }
 

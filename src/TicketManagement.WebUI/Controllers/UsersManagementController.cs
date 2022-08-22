@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Controllers;
 
-////[Authorize(Roles = "Administrator")]
+[Authorize(Roles = "Administrator")]
 public class UsersManagementController : Controller
 {
     private readonly UsersManagementApiClient _usersManagementApiClient;
@@ -20,19 +21,29 @@ public class UsersManagementController : Controller
         ReturnUrl = returnUrl;
     }
 
-    public IActionResult Index() => View(_usersManagementApiClient.GetAllUsersAsync());
+    public async Task<IActionResult> Index() => View(await _usersManagementApiClient.GetAllUsersAsync());
 
     public IActionResult Create() => View();
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateUser model)
     {
-        await _usersManagementApiClient.CreateUserAsync(model);
+        await _usersManagementApiClient.CreateUserAsync(model.Password, new User { Email = model.Email, FirstName = model.FirstName, SurName = model.SurName, });
         return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> Edit(string id)
-        => View(await _usersManagementApiClient.GetByIdUserAsync(id));
+    {
+        var user = await _usersManagementApiClient.GetByIdUserAsync(id);
+        return View(new CreateUser
+        {
+            Email = user.Email,
+            FirstName = user.FirstName,
+            SurName = user.SurName,
+            UserName = user.UserName,
+            PhoneNumber = user.PhoneNumber,
+        });
+    }
 
     [HttpPost]
     public async Task<IActionResult> Edit(CreateUser model)

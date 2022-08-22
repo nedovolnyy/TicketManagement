@@ -1,27 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using TicketManagement.Common.Identity;
-using TicketManagement.WebUI.Client;
+using Newtonsoft.Json;
+using TicketManagement.Common.JwtTokenAuth;
 using TicketManagement.WebUI.Helpers;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IUserRestClient _userRestClient;
-        private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UsersManagementApiClient _usersManagementApiClient;
 
-        public LoginModel(UserManager<User> userManager, IUserRestClient userRestClient, SignInManager<User> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(ILogger<LoginModel> logger, UsersManagementApiClient usersManagementApiClient)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _userRestClient = userRestClient;
             _logger = logger;
+            _usersManagementApiClient = usersManagementApiClient;
         }
 
         [BindProperty]
@@ -41,7 +40,7 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             ReturnUrl = returnUrl;
         }
@@ -52,60 +51,44 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                ////var result = await _signInManager.LoginAsync(
-                ////    new UserApiClientGenerated.LoginModel
-                ////        {
-                ////            Email = Input.Email,
-                ////            Password = Input.Password,
-                ////            RememberMe = Input.RememberMe,
-                ////        });
-
-                if (result.Succeeded)
+                using var httpClient = new HttpClient();
+                var stringContent = new StringContent(JsonConvert.SerializeObject(Input), Encoding.UTF8, "application/json");
+                using var response = await httpClient.PostAsync($"https://localhost:5004/api/users/login", stringContent);
+                var authenticationResultJson = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("JWToken", authenticationResultJson);
+                var authenticationResult = JsonConvert.DeserializeObject<AuthenticationResult>(authenticationResultJson);
+                var userRole = await _usersManagementApiClient.GetRoleByIdAsync(authenticationResult.User.Id);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     _logger.LogInformation("User logged in.");
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-                    ////var token = await Login(_userRestClient, new UserModel
-                    ////{
-                    ////    Login = Input.Email,
-                    ////    Password = Input.Password,
-                    ////});
-                    ////HttpContext.Response.Cookies.Append("secret_jwt_key", token, new CookieOptions
-                    ////{
-                    ////    HttpOnly = true,
-                    ////    SameSite = SameSiteMode.Strict,
-                    ////});
 
-                    HtmlHelperExtensions.SaveUserCookies(Response, user);
+                    var userClaims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, authenticationResult.User.Id),
+                        new Claim(ClaimTypes.Email, Input.Email),
+                        new Claim(ClaimTypes.Name, Input.Email),
+                    };
+                    userClaims.AddRange(userRole.UserRoles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+
+                    var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                    HtmlHelperExtensions.SaveUserCookies(Response, new User
+                    {
+                        Language = authenticationResult.User.Language,
+                        TimeZone = authenticationResult.User.TimeZone,
+                    });
 
                     return LocalRedirect(returnUrl);
                 }
-
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                    return RedirectToPage();
                 }
             }
 
-            return Page();
+            return RedirectToPage();
         }
-
-        ////private async Task<string> Login(IUserRestClient userClient, UserModel userModel, CancellationToken cancellationToken = default)
-        ////{
-        ////    var form = new MultipartFormDataContent
-        ////    {
-        ////        { new StringContent(userModel.Login), nameof(UserModel.Login) },
-        ////        { new StringContent(userModel.Password), nameof(UserModel.Password) },
-        ////    };
-        ////    var result = await userClient.Login(form, cancellationToken);
-        ////    return result;
-        ////}
 
         public class InputModel
         {
