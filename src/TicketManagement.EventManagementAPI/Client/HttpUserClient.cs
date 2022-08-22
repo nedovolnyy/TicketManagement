@@ -4,8 +4,6 @@ namespace TicketManagement.EventManagementAPI.Client
 {
     public interface IUserClient
     {
-        ////public Task HealthCheck(CancellationToken cancellationToken = default);
-
         public Task<string> Register(UserModel userModel, CancellationToken cancellationToken = default);
 
         public Task<string> Login(UserModel userModel, CancellationToken cancellationToken = default);
@@ -21,12 +19,6 @@ namespace TicketManagement.EventManagementAPI.Client
         {
             _httpClient = httpClient;
         }
-
-        ////public async Task HealthCheck(CancellationToken cancellationToken = default)
-        ////{
-        ////    var result = await _httpClient.GetAsync("/health/live", cancellationToken);
-        ////    result.EnsureSuccessStatusCode();
-        ////}
 
         public async Task<string> Register(UserModel userModel, CancellationToken cancellationToken = default)
             => await AuthorizeInternal(userModel, "api/users/register", cancellationToken);

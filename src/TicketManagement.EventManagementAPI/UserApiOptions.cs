@@ -1,7 +1,6 @@
-namespace TicketManagement.EventManagementAPI
+namespace TicketManagement.EventManagementAPI;
+
+public class UserApiOptions
 {
-    public class UserApiOptions
-    {
-        public string UserApiAddress { get; set; } = null!;
-    }
+    public string UserApiAddress { get; set; } = null!;
 }

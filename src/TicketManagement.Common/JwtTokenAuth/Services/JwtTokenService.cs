@@ -1,12 +1,15 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using TicketManagement.UserAPI.Settings;
+using TicketManagement.Common.JwtTokenAuth.Settings;
 
-namespace TicketManagement.UserAPI.Services
+namespace TicketManagement.Common.JwtTokenAuth.Services
 {
     public class JwtTokenService
     {

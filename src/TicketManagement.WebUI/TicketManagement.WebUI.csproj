@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\TicketManagement.EventManagementAPI\Client\EventManagementApiClientGenerated.cs" Link="Client\EventManagementApiClientGenerated.cs" />
+    <Compile Include="..\TicketManagement.EventManagementAPI\Client\EventManagementApiClientGenerated.cs" Link="Client\EventManagementApiClientGenerated.cs" />
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="..\TicketManagement.UserAPI\Client\UserApiClientGenerated.cs" Link="Client\UserApiClientGenerated.cs" />
+    <Compile Include="..\TicketManagement.UserAPI\Client\UserApiClientGenerated.cs" Link="Client\UserApiClientGenerated.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,32 +19,18 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.1" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.25.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.8" />
     <PackageReference Include="RestEase" Version="1.5.7" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.22.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TicketManagement.BusinessLogic\TicketManagement.BusinessLogic.csproj" />
     <ProjectReference Include="..\TicketManagement.Common\TicketManagement.Common.csproj" />
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
-    <ProjectReference Include="..\TicketManagement.EventManagementAPI\TicketManagement.EventManagementAPI.csproj" />
-    <ProjectReference Include="..\TicketManagement.UserAPI\TicketManagement.UserAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

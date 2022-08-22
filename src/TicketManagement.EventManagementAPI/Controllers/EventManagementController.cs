@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
-using TicketManagement.Common.JwtTokenAuth;
 using TicketManagement.Common.Validation;
 
 namespace TicketManagement.EventManagementAPI.Controllers;
@@ -12,7 +12,7 @@ namespace TicketManagement.EventManagementAPI.Controllers;
 /// Resource for the operations against the event entity.
 /// </summary>
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtAutheticationConstants.SchemeName, Roles = "Administrator,EventManager")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator,EventManager")]
 [Route("api/[controller]")]
 [Produces("application/json")]
 public class EventManagementController : ControllerBase
@@ -30,27 +30,18 @@ public class EventManagementController : ControllerBase
     /// <returns>.</returns>
     [HttpGet]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllEventsAsync()
-    {
-        var events = await _eventRepository.GetAll().ToListAsyncSafe();
-        IActionResult result = events is null ? NotFound() : Ok(events);
-        return result;
-    }
+    public async Task<List<Event>> GetAllEventsAsync()
+        => await _eventRepository.GetAll().ToListAsyncSafe();
 
     /// <summary>
     /// Add new event.
     /// </summary>
     /// <returns>.</returns>
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> InsertEventAsync(Event @event, [Optional] decimal price)
+    public async Task InsertEventAsync(Event @event, [Optional] decimal price)
     {
         await ValidateAsync(@event);
         await _eventRepository.InsertAsync(@event, price);
-        return Ok();
     }
 
     /// <summary>
@@ -58,11 +49,10 @@ public class EventManagementController : ControllerBase
     /// </summary>
     /// <returns>.</returns>
     [HttpPut]
-    public async Task<IActionResult> UpdateEventAsync(Event @event, [Optional] decimal price)
+    public async Task UpdateEventAsync(Event @event, [Optional] decimal price)
     {
         await ValidateAsync(@event);
         await _eventRepository.UpdateAsync(@event, price);
-        return Ok();
     }
 
     /// <summary>
@@ -70,12 +60,9 @@ public class EventManagementController : ControllerBase
     /// </summary>
     /// <returns>.</returns>
     [HttpDelete("{eventId:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteEventAsync(int eventId)
+    public async Task DeleteEventAsync(int eventId)
     {
         await _eventRepository.DeleteAsync(eventId);
-        return NoContent();
     }
 
     /// <summary>

@@ -9,7 +9,6 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
     {
         private readonly ILogger<PersonalDataModel> _logger;
         private readonly UsersManagementApiClient _usersManagementApiClient;
-        private readonly string _userId;
 
         public PersonalDataModel(
             ILogger<PersonalDataModel> logger,
@@ -17,15 +16,15 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
         {
             _logger = logger;
             _usersManagementApiClient = usersManagementApiClient;
-            _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         public async Task<IActionResult> OnGet()
         {
-            var user = await _usersManagementApiClient.GetByIdUserAsync(_userId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _usersManagementApiClient.GetByIdUserAsync(userId);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userId}'.");
+                return NotFound($"Unable to load user with ID '{userId}'.");
             }
 
             return Page();

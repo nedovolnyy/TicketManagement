@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Client\UserApiClientGenerated.cs" />
     <Compile Remove="Controllers\TestController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Controllers\TestController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,10 +37,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>none</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Responses\" />
   </ItemGroup>
 
   <Target Name="GenerateNSwag" AfterTargets="Build" Condition="$(SkipSwagger) != 'true'">

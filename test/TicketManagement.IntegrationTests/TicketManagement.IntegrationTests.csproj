@@ -37,6 +37,7 @@
     <ProjectReference Include="..\..\src\TicketManagement.BusinessLogic\TicketManagement.BusinessLogic.csproj" />
     <ProjectReference Include="..\..\src\TicketManagement.Common\TicketManagement.Common.csproj" />
     <ProjectReference Include="..\..\src\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
+    <ProjectReference Include="..\..\src\TicketManagement.WebUI\TicketManagement.WebUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

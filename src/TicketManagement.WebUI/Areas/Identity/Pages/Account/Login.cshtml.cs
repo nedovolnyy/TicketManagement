@@ -75,7 +75,7 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 
                     HtmlHelperExtensions.SaveUserCookies(Response, new User
                     {
-                        Language = authenticationResult.User.Language,
+                        Language = "en",
                         TimeZone = authenticationResult.User.TimeZone,
                     });
 

@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using TicketManagement.Common.Identity;
+using TicketManagement.Common.JwtTokenAuth.Services;
+using TicketManagement.Common.JwtTokenAuth.Settings;
 using TicketManagement.UserAPI.DataAccess;
-using TicketManagement.UserAPI.Services;
-using TicketManagement.UserAPI.Settings;
 
 var roles = new string[] { "Administrator", "EventManager" };
 
@@ -24,11 +23,6 @@ var logger = new LoggerConfiguration()
                         .WriteTo.Console()
                         .CreateLogger();
 builder.Host.UseSerilog(logger);
-
-////services.Configure<HostOptions>(hostOptions =>
-////        {
-////            hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
-////        });
 
 builder.WebHost.UseUrls("https://*:5000").ConfigureKestrel(options =>
 {
@@ -80,37 +74,6 @@ services.AddScoped<JwtTokenService>();
 
 services.AddControllers();
 
-////services.AddSwaggerGen(options =>
-////{
-////    options.SwaggerDoc("v1", new OpenApiInfo
-////    {
-////        Title = "Internal lab Demo 2",
-////        Version = "v1",
-////    });
-////    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-////    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-////    options.IncludeXmlComments(xmlPath);
-////    var jwtSecurityScheme = new OpenApiSecurityScheme
-////    {
-////        Description = "Jwt Token is required to access the endpoints",
-////        In = ParameterLocation.Header,
-////        Name = "JWT Authentication",
-////        Type = SecuritySchemeType.Http,
-////        Scheme = "bearer",
-////        BearerFormat = "JWT",
-////        Reference = new OpenApiReference
-////        {
-////            Id = JwtBearerDefaults.AuthenticationScheme,
-////            Type = ReferenceType.SecurityScheme,
-////        },
-////    };
-
-////    options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
-////    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-////    {
-////        { jwtSecurityScheme, Array.Empty<string>() },
-////    });
-////});
 services.AddOpenApiDocument();
 
 var app = builder.Build();
@@ -119,11 +82,6 @@ JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
 app.UseSerilogRequestLogging();
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
-////app.UseSwagger();
-////app.UseSwaggerUI(options =>
-////{
-////    options.SwaggerEndpoint("/swagger/v1/swagger.json", "User API v1");
-////});
 
 app.UseOpenApi();
 app.UseSwaggerUi3();
@@ -137,10 +95,6 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapDefaultControllerRoute();
-    ////endpoints.MapHealthChecks("/health/live", new HealthCheckOptions
-    ////{
-    ////    Predicate = check => check.Tags.Contains("live"),
-    ////}).WithMetadata(new AllowAnonymousAttribute());
 });
 
 app.Run();

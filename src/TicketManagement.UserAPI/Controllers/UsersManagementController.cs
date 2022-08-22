@@ -47,9 +47,7 @@ public class UsersManagementController : ControllerBase
     /// </summary>
     /// <returns>.</returns>
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IdentityResult>> CreateUserAsync(User model, string password)
+    public async Task<IdentityResult> CreateUserAsync(User model, string password)
     {
         model.UserName = model.Email;
         model.NormalizedEmail = string.Format(model.Email).ToUpper();
@@ -83,7 +81,7 @@ public class UsersManagementController : ControllerBase
     /// </summary>
     /// <returns>.</returns>
     [HttpPut]
-    public async Task<ActionResult<CreateUser>> EditUserAsync(CreateUser model)
+    public async Task<CreateUser> EditUserAsync(CreateUser model)
     {
         var user = await _userManager.FindByIdAsync(model.Id);
 
@@ -103,8 +101,6 @@ public class UsersManagementController : ControllerBase
     /// <returns>.</returns>
     [HttpGet("{userId}")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<User>> GetByIdUserAsync(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
@@ -333,17 +329,15 @@ public class UsersManagementController : ControllerBase
     /// </summary>
     /// <returns>.</returns>
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IdentityResult>> DeleteUserAsync(string id)
+    public async Task<IdentityResult> DeleteUserAsync(string id)
     {
-        User user = await _userManager.FindByIdAsync(id);
+        var user = await _userManager.FindByIdAsync(id);
         if (user is not null)
         {
             return await _userManager.DeleteAsync(user);
         }
 
-        return NoContent();
+        return IdentityResult.Failed();
     }
 
     private IUserEmailStore<User> GetEmailStore()
