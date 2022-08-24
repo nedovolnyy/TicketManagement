@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace TicketManagement.WebUI.Helpers
-{
-    [AttributeUsage(AttributeTargets.All)]
-    public class IgnoreValidationAttribute : ActionFilterAttribute
-    {
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            var modelState = context.ModelState;
+namespace TicketManagement.WebUI.Helpers;
 
-            foreach (var modelValue in modelState.Values)
-            {
-                modelValue.Errors.Clear();
-            }
+[AttributeUsage(AttributeTargets.All)]
+public class IgnoreValidationAttribute : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        var modelState = context.ModelState;
+
+        foreach (var modelValue in modelState.Values)
+        {
+            modelValue.Errors.Clear();
         }
     }
 }

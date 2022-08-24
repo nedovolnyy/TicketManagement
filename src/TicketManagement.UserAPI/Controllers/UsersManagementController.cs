@@ -10,7 +10,7 @@ namespace TicketManagement.UserAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = nameof(Roles.Administrator))]
 [Produces("application/json")]
 public class UsersManagementController : ControllerBase
 {
@@ -68,7 +68,7 @@ public class UsersManagementController : ControllerBase
             user.TimeZone = DateTimeOffset.Now.Offset.ToString();
             user.Language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name;
 
-            await _userManager.AddToRoleAsync(user, Roles.User.ToString("F"));
+            await _userManager.AddToRoleAsync(user, nameof(Roles.User));
             await _userManager.UpdateAsync(user);
             await _signInManager.SignInAsync(user, isPersistent: false);
         }

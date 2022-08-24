@@ -1,6 +1,7 @@
 ﻿@using EventManagementApiClientGenerated
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TicketManagement.Common.DI
+@using TicketManagement.Common.Identity
 @using TicketManagement.WebUI.Helpers
 
 @inject IViewLocalizer Localizer
@@ -9,7 +10,7 @@
 @model ICollection<Event>
 
 @{
-    var isManageRole = User.IsInRole("Administrator") || User.IsInRole("EventManager");
+    var isManageRole = User.IsInRole(nameof(Roles.Administrator)) || User.IsInRole(nameof(Roles.EventManager));
 }
 
 @if (isManageRole)

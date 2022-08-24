@@ -5,82 +5,81 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TicketManagement.WebUI.Helpers;
 using UserApiClientGenerated;
 
-namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
+namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage;
+
+public class RegionSettingsModel : PageModel
 {
-    public class RegionSettingsModel : PageModel
+    private readonly UsersManagementApiClient _usersManagementApiClient;
+
+    public RegionSettingsModel(UsersManagementApiClient usersManagementApiClient)
     {
-        private readonly UsersManagementApiClient _usersManagementApiClient;
+        _usersManagementApiClient = usersManagementApiClient;
+    }
 
-        public RegionSettingsModel(UsersManagementApiClient usersManagementApiClient)
+    public string Language { get; set; }
+    public string TimeZone { get; set; }
+
+    [TempData]
+    public string StatusMessage { get; set; }
+
+    [BindProperty]
+    public InputModel Input { get; set; }
+
+    private void Load(User user)
+    {
+        Input = new InputModel
         {
-            _usersManagementApiClient = usersManagementApiClient;
+            Language = user.Language,
+            TimeZone = user.TimeZone,
+        };
+    }
+
+    public async Task<IActionResult> OnGetAsync()
+    {
+        var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        if (user == null)
+        {
+            return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
         }
 
-        public string Language { get; set; }
-        public string TimeZone { get; set; }
+        Load(user);
+        return Page();
+    }
 
-        [TempData]
-        public string StatusMessage { get; set; }
-
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        private void Load(User user)
+    public async Task<IActionResult> OnPostAsync(string culture, string timeZone)
+    {
+        var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        if (user == null)
         {
-            Input = new InputModel
-            {
-                Language = user.Language,
-                TimeZone = user.TimeZone,
-            };
+            return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        if (!ModelState.IsValid)
         {
-            var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
-            }
-
             Load(user);
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string culture, string timeZone)
+        await _usersManagementApiClient.EditUserAsync(new CreateUser
         {
-            var user = await _usersManagementApiClient.GetByIdUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{User.FindFirstValue(ClaimTypes.NameIdentifier)}'.");
-            }
+            Language = culture,
+            TimeZone = timeZone,
+        });
 
-            if (!ModelState.IsValid)
-            {
-                Load(user);
-                return Page();
-            }
+        await _usersManagementApiClient.RefreshSignInAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        StatusMessage = "Your profile has been updated";
 
-            await _usersManagementApiClient.EditUserAsync(new CreateUser
-            {
-                Language = culture,
-                TimeZone = timeZone,
-            });
+        HtmlHelperExtensions.SaveUserCookies(Response, user);
 
-            await _usersManagementApiClient.RefreshSignInAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            StatusMessage = "Your profile has been updated";
+        return RedirectToPage();
+    }
 
-            HtmlHelperExtensions.SaveUserCookies(Response, user);
+    public class InputModel
+    {
+        [Display(Name = "Language")]
+        public string Language { get; set; }
 
-            return RedirectToPage();
-        }
-
-        public class InputModel
-        {
-            [Display(Name = "Language")]
-            public string Language { get; set; }
-
-            [Display(Name = "Time zone")]
-            public string TimeZone { get; set; }
-        }
+        [Display(Name = "Time zone")]
+        public string TimeZone { get; set; }
     }
 }

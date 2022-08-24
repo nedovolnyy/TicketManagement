@@ -2,46 +2,46 @@
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
+using TicketManagement.Common.Identity;
 
-namespace TicketManagement.WebUI.Controllers
+namespace TicketManagement.WebUI.Controllers;
+
+[Authorize(Roles = nameof(Roles.Administrator))]
+public class AreasManagementController : Controller
 {
-    [Authorize(Roles = "Administrator")]
-    public class AreasManagementController : Controller
+    private readonly IServiceProvider _serviceProvider;
+
+    public AreasManagementController(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _serviceProvider = serviceProvider;
+    }
 
-        public AreasManagementController(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
+    public async Task<IActionResult> Index()
+        => View(await _serviceProvider.GetRequiredService<IAreaService>().GetAllAsync());
 
-        public async Task<IActionResult> Index()
-            => View(await _serviceProvider.GetRequiredService<IAreaService>().GetAllAsync());
+    public IActionResult Create() => View();
 
-        public IActionResult Create() => View();
+    [HttpPost]
+    public async Task<IActionResult> Create(Area area)
+    {
+        await _serviceProvider.GetRequiredService<IAreaService>().InsertAsync(area);
+        return RedirectToAction("Index");
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(Area area)
-        {
-            await _serviceProvider.GetRequiredService<IAreaService>().InsertAsync(area);
-            return RedirectToAction("Index");
-        }
+    public async Task<IActionResult> Edit(string id)
+        => View(await _serviceProvider.GetRequiredService<IAreaService>().GetByIdAsync(int.Parse(id)));
 
-        public async Task<IActionResult> Edit(string id)
-            => View(await _serviceProvider.GetRequiredService<IAreaService>().GetByIdAsync(int.Parse(id)));
+    [HttpPost]
+    public async Task<IActionResult> Edit(Area area)
+    {
+        await _serviceProvider.GetRequiredService<IAreaService>().UpdateAsync(area);
+        return RedirectToAction("Index");
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(Area area)
-        {
-            await _serviceProvider.GetRequiredService<IAreaService>().UpdateAsync(area);
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Delete(string id)
-        {
-            await _serviceProvider.GetRequiredService<IAreaService>().DeleteAsync(int.Parse(id));
-            return RedirectToAction("Index");
-        }
+    [HttpPost]
+    public async Task<ActionResult> Delete(string id)
+    {
+        await _serviceProvider.GetRequiredService<IAreaService>().DeleteAsync(int.Parse(id));
+        return RedirectToAction("Index");
     }
 }

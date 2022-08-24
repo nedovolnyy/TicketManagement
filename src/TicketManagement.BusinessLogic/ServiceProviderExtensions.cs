@@ -1,25 +1,24 @@
 ﻿using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.DI;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class ServiceProviderExtensions
 {
-    public static class ServiceProviderExtensions
+    public static void AddBLLServices(this IServiceCollection services)
     {
-        public static void AddBLLServices(this IServiceCollection services)
-        {
-            services.AddTransient<IAreaService, AreaService>();
+        services.AddTransient<IAreaService, AreaService>();
 
-            services.AddTransient<IEventAreaService, EventAreaService>();
+        services.AddTransient<IEventAreaService, EventAreaService>();
 
-            services.AddTransient<IEventSeatService, EventSeatService>();
+        services.AddTransient<IEventSeatService, EventSeatService>();
 
-            services.AddTransient<ILayoutService, LayoutService>();
+        services.AddTransient<ILayoutService, LayoutService>();
 
-            services.AddTransient<ISeatService, SeatService>();
+        services.AddTransient<ISeatService, SeatService>();
 
-            services.AddTransient<IThirdPartyEventService, ThirdPartyEventService>();
+        services.AddTransient<IThirdPartyEventService, ThirdPartyEventService>();
 
-            services.AddTransient<IVenueService, VenueService>();
-        }
+        services.AddTransient<IVenueService, VenueService>();
     }
 }

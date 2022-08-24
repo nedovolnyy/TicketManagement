@@ -1,24 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace TicketManagement.Common.Identity
+namespace TicketManagement.Common.Identity;
+
+public class Role : IdentityRole
 {
-    public enum Roles
+    public Role()
+        : base()
     {
-        Administrator,
-        EventManager,
-        User,
     }
 
-    public class Role : IdentityRole
+    public Role(string roleName)
+        : base(roleName)
     {
-        public Role()
-            : base()
-        {
-        }
-
-        public Role(string roleName)
-            : base(roleName)
-        {
-        }
     }
 }

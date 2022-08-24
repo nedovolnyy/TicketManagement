@@ -3,30 +3,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TicketManagement.Common;
 
-namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
+namespace TicketManagement.WebUI.Areas.Identity.Pages.Account;
+
+public class LogoutModel : PageModel
 {
-    public class LogoutModel : PageModel
+    private readonly ILogger<LogoutModel> _logger;
+
+    public LogoutModel(ILogger<LogoutModel> logger)
     {
-        private readonly ILogger<LogoutModel> _logger;
+        _logger = logger;
+    }
 
-        public LogoutModel(ILogger<LogoutModel> logger)
+    public async Task<IActionResult> OnPost(string returnUrl = null)
+    {
+        await HttpContext.SignOutAsync(Settings.Jwt.JwtOrCookieScheme);
+        Response.Cookies.Delete("token");
+        _logger.LogInformation("User logged out.");
+        if (returnUrl != null)
         {
-            _logger = logger;
+            return LocalRedirect(returnUrl);
         }
-
-        public async Task<IActionResult> OnPost(string returnUrl = null)
+        else
         {
-            await HttpContext.SignOutAsync(Settings.Jwt.JwtOrCookieScheme);
-            Response.Cookies.Delete("token");
-            _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToPage();
-            }
+            return RedirectToPage();
         }
     }
 }

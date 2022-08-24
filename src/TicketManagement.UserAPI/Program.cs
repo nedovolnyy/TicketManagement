@@ -1,8 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
@@ -10,10 +8,8 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Extensions;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using TicketManagement.Common;
-using TicketManagement.Common.DI;
 using TicketManagement.Common.Identity;
 using TicketManagement.UserAPI.DataAccess;
 using TicketManagement.UserAPI.Services;
@@ -105,6 +101,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 });
 app.UseSerilogRequestLogging();
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
+app.UseOpenApi();
 app.UseSwaggerUi3();
 app.UseHttpsRedirection();
 

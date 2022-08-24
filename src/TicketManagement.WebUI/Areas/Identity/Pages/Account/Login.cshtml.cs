@@ -10,102 +10,101 @@ using TicketManagement.Common.JwtTokenAuth;
 using TicketManagement.WebUI.Helpers;
 using UserApiClientGenerated;
 
-namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
+namespace TicketManagement.WebUI.Areas.Identity.Pages.Account;
+
+public class LoginModel : PageModel
 {
-    public class LoginModel : PageModel
+    private readonly ILogger<LoginModel> _logger;
+    private readonly UsersManagementApiClient _usersManagementApiClient;
+
+    public LoginModel(ILogger<LoginModel> logger, UsersManagementApiClient usersManagementApiClient)
     {
-        private readonly ILogger<LoginModel> _logger;
-        private readonly UsersManagementApiClient _usersManagementApiClient;
+        _logger = logger;
+        _usersManagementApiClient = usersManagementApiClient;
+    }
 
-        public LoginModel(ILogger<LoginModel> logger, UsersManagementApiClient usersManagementApiClient)
+    [BindProperty]
+    public InputModel Input { get; set; }
+
+    public string ReturnUrl { get; set; }
+
+    [TempData]
+    public string ErrorMessage { get; set; }
+
+    public async Task OnGetAsync(string returnUrl = null)
+    {
+        if (!string.IsNullOrEmpty(ErrorMessage))
         {
-            _logger = logger;
-            _usersManagementApiClient = usersManagementApiClient;
+            ModelState.AddModelError(string.Empty, ErrorMessage);
         }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        returnUrl ??= Url.Content("~/");
 
-        public string ReturnUrl { get; set; }
+        await HttpContext.SignOutAsync(Settings.Jwt.JwtOrCookieScheme);
 
-        [TempData]
-        public string ErrorMessage { get; set; }
+        ReturnUrl = returnUrl;
+    }
 
-        public async Task OnGetAsync(string returnUrl = null)
+    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    {
+        returnUrl ??= Url.Content("~/");
+
+        if (ModelState.IsValid)
         {
-            if (!string.IsNullOrEmpty(ErrorMessage))
+            var authenticationResult = await GetAuthenticationResultAfterSignIn();
+            HttpContext.Response.Cookies.Append("token", authenticationResult.Token);
+            var userRole = await _usersManagementApiClient.GetRoleByIdAsync(authenticationResult.User.Id);
+            if (authenticationResult.Result)
             {
-                ModelState.AddModelError(string.Empty, ErrorMessage);
+                _logger.LogInformation("User logged in.");
+
+                var userClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, authenticationResult.User.Id),
+                    new Claim(ClaimTypes.Email, Input.Email),
+                    new Claim(ClaimTypes.Name, Input.Email),
+                };
+                userClaims.AddRange(userRole.UserRoles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
+
+                var claimsIdentity = new ClaimsIdentity(userClaims, Settings.Jwt.JwtOrCookieScheme);
+                await HttpContext.SignInAsync(Settings.Jwt.JwtOrCookieScheme, new ClaimsPrincipal(claimsIdentity));
+                HtmlHelperExtensions.SaveUserCookies(Response, new User
+                {
+                    Language = "en-US",
+                    TimeZone = authenticationResult.User.TimeZone,
+                });
+
+                return LocalRedirect(returnUrl);
             }
-
-            returnUrl ??= Url.Content("~/");
-
-            await HttpContext.SignOutAsync(Settings.Jwt.JwtOrCookieScheme);
-
-            ReturnUrl = returnUrl;
-        }
-
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        {
-            returnUrl ??= Url.Content("~/");
-
-            if (ModelState.IsValid)
+            else
             {
-                var authenticationResult = await GetAuthenticationResultAfterSignIn();
-                HttpContext.Response.Cookies.Append("token", authenticationResult.Token);
-                var userRole = await _usersManagementApiClient.GetRoleByIdAsync(authenticationResult.User.Id);
-                if (authenticationResult.Result)
-                {
-                    _logger.LogInformation("User logged in.");
-
-                    var userClaims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, authenticationResult.User.Id),
-                        new Claim(ClaimTypes.Email, Input.Email),
-                        new Claim(ClaimTypes.Name, Input.Email),
-                    };
-                    userClaims.AddRange(userRole.UserRoles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
-
-                    var claimsIdentity = new ClaimsIdentity(userClaims, Settings.Jwt.JwtOrCookieScheme);
-                    await HttpContext.SignInAsync(Settings.Jwt.JwtOrCookieScheme, new ClaimsPrincipal(claimsIdentity));
-                    HtmlHelperExtensions.SaveUserCookies(Response, new User
-                    {
-                        Language = "en-US",
-                        TimeZone = authenticationResult.User.TimeZone,
-                    });
-
-                    return LocalRedirect(returnUrl);
-                }
-                else
-                {
-                    return RedirectToPage();
-                }
+                return RedirectToPage();
             }
-
-            return RedirectToPage();
         }
 
-        private async Task<AuthenticationResult> GetAuthenticationResultAfterSignIn()
-        {
-            using var httpClient = new HttpClient();
-            var stringContent = new StringContent(JsonConvert.SerializeObject(Input), Encoding.UTF8, "application/json");
-            using var response = await httpClient.PostAsync($"https://localhost:5004/api/users/login", stringContent);
-            var authenticationResultJson = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<AuthenticationResult>(authenticationResultJson);
-        }
+        return RedirectToPage();
+    }
 
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+    private async Task<AuthenticationResult> GetAuthenticationResultAfterSignIn()
+    {
+        using var httpClient = new HttpClient();
+        var stringContent = new StringContent(JsonConvert.SerializeObject(Input), Encoding.UTF8, "application/json");
+        using var response = await httpClient.PostAsync($"https://localhost:5004/api/users/login", stringContent);
+        var authenticationResultJson = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<AuthenticationResult>(authenticationResultJson);
+    }
 
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
+    public class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
 
-            [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
-        }
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
     }
 }

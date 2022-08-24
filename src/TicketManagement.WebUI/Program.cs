@@ -94,20 +94,20 @@ services.AddAuthentication(options =>
 
 services.AddAuthorization(options =>
 {
-    options.AddPolicy(Roles.Administrator.ToString("F"), builder =>
+    options.AddPolicy(nameof(Roles.Administrator), builder =>
     {
-        builder.RequireClaim(ClaimTypes.Role, Roles.Administrator.ToString("F"));
+        builder.RequireClaim(ClaimTypes.Role, nameof(Roles.Administrator));
     });
 
-    options.AddPolicy(Roles.EventManager.ToString("F"), builder =>
+    options.AddPolicy(nameof(Roles.EventManager), builder =>
     {
-        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.EventManager.ToString("F"))
-                                      || x.User.HasClaim(ClaimTypes.Role, Roles.Administrator.ToString("F")));
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, nameof(Roles.EventManager))
+                                      || x.User.HasClaim(ClaimTypes.Role, nameof(Roles.Administrator)));
     });
 
-    options.AddPolicy(Roles.User.ToString("F"), builder =>
+    options.AddPolicy(nameof(Roles.User), builder =>
     {
-        builder.RequireClaim(ClaimTypes.Role, Roles.User.ToString("F"));
+        builder.RequireClaim(ClaimTypes.Role, nameof(Roles.User));
     });
 });
 

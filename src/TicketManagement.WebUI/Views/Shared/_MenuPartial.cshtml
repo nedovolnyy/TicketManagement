@@ -1,11 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.Identity
 
 @inject IViewLocalizer Localizer
 
 @if (User.Identity is not null && User.Identity.IsAuthenticated)
 {
     <ul class="navbar-nav">
-        @if (User.IsInRole("EventManager") || User.IsInRole("Administrator"))
+        @if (User.IsInRole(nameof(Roles.EventManager)) || User.IsInRole(nameof(Roles.Administrator)))
         {
             <li class="nav-item e-upload e-control-wrapper e-lib e-keyboard">
                 <form asp-controller="ThirdPartyEvents" asp-action="Preview" method="post"
@@ -18,7 +19,7 @@
                 <a class="nav-link text-dark" asp-controller="EventsManagement" asp-action="SelectVenues">@Localizer["Create event"]</a>
             </li>
         }
-        @if (User.IsInRole("Administrator"))
+        @if (User.IsInRole(nameof(Roles.Administrator)))
         {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-controller="AreasManagement" asp-action="Index">@Localizer["Areas management"]</a>
@@ -33,7 +34,7 @@
                 <a class="nav-link text-dark" asp-controller="UsersManagement" asp-action="Index">@Localizer["Users management"]</a>
             </li>
         }
-        @if (User.IsInRole("User") || User.IsInRole("EventManager") || User.IsInRole("Administrator"))
+        @if (User.Identity.IsAuthenticated)
         {
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-controller="Home" asp-action="Cart" asp-action="Index">@Localizer["Cart"]</a>

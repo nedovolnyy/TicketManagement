@@ -4,7 +4,7 @@ using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Controllers;
 
-[Authorize(Roles = "Administrator")]
+[Authorize(Roles = nameof(Common.Identity.Roles.Administrator))]
 public class UsersManagementController : Controller
 {
     private readonly UsersManagementApiClient _usersManagementApiClient;

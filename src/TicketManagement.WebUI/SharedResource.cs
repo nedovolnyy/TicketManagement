@@ -1,6 +1,5 @@
-﻿namespace TicketManagement.WebUI
+﻿namespace TicketManagement.WebUI;
+
+public class SharedResource
 {
-    public class SharedResource
-    {
-    }
 }
