@@ -2,10 +2,10 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using TicketManagement.Common;
 using TicketManagement.Common.JwtTokenAuth;
 using TicketManagement.WebUI.Helpers;
 using UserApiClientGenerated;
@@ -40,7 +40,7 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(Settings.Jwt.JwtOrCookieScheme);
 
             ReturnUrl = returnUrl;
         }
@@ -51,14 +51,10 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                using var httpClient = new HttpClient();
-                var stringContent = new StringContent(JsonConvert.SerializeObject(Input), Encoding.UTF8, "application/json");
-                using var response = await httpClient.PostAsync($"https://localhost:5004/api/users/login", stringContent);
-                var authenticationResultJson = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("JWToken", authenticationResultJson);
-                var authenticationResult = JsonConvert.DeserializeObject<AuthenticationResult>(authenticationResultJson);
+                var authenticationResult = await GetAuthenticationResultAfterSignIn();
+                HttpContext.Response.Cookies.Append("token", authenticationResult.Token);
                 var userRole = await _usersManagementApiClient.GetRoleByIdAsync(authenticationResult.User.Id);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                if (authenticationResult.Result)
                 {
                     _logger.LogInformation("User logged in.");
 
@@ -70,12 +66,11 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
                     };
                     userClaims.AddRange(userRole.UserRoles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
 
-                    var claimsIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
+                    var claimsIdentity = new ClaimsIdentity(userClaims, Settings.Jwt.JwtOrCookieScheme);
+                    await HttpContext.SignInAsync(Settings.Jwt.JwtOrCookieScheme, new ClaimsPrincipal(claimsIdentity));
                     HtmlHelperExtensions.SaveUserCookies(Response, new User
                     {
-                        Language = "en",
+                        Language = "en-US",
                         TimeZone = authenticationResult.User.TimeZone,
                     });
 
@@ -88,6 +83,15 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
             }
 
             return RedirectToPage();
+        }
+
+        private async Task<AuthenticationResult> GetAuthenticationResultAfterSignIn()
+        {
+            using var httpClient = new HttpClient();
+            var stringContent = new StringContent(JsonConvert.SerializeObject(Input), Encoding.UTF8, "application/json");
+            using var response = await httpClient.PostAsync($"https://localhost:5004/api/users/login", stringContent);
+            var authenticationResultJson = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<AuthenticationResult>(authenticationResultJson);
         }
 
         public class InputModel

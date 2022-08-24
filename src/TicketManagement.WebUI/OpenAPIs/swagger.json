@@ -6,21 +6,22 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/EventManagement": {
+    "/api/UsersManagement": {
       "get": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_GetAllEvents",
+        "summary": "Returns list of the users.",
+        "operationId": "UsersManagement_GetAllUsers",
         "responses": {
           "200": {
-            "description": "",
+            "description": ".",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Event"
+                    "$ref": "#/components/schemas/User"
                   }
                 }
               }
@@ -30,26 +31,27 @@
       },
       "post": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_InsertEvent",
+        "summary": "Add new user.",
+        "operationId": "UsersManagement_CreateUser",
         "parameters": [
           {
-            "name": "price",
+            "name": "password",
             "in": "query",
             "schema": {
-              "type": "number",
-              "format": "decimal"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 2
           }
         ],
         "requestBody": {
-          "x-name": "event",
+          "x-name": "model",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Event"
+                "$ref": "#/components/schemas/User"
               }
             }
           },
@@ -58,32 +60,29 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityResult"
+                }
+              }
+            }
           }
         }
       },
       "put": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_UpdateEvent",
-        "parameters": [
-          {
-            "name": "price",
-            "in": "query",
-            "schema": {
-              "type": "number",
-              "format": "decimal"
-            },
-            "x-position": 2
-          }
-        ],
+        "summary": "Update existed user.",
+        "operationId": "UsersManagement_EditUser",
         "requestBody": {
-          "x-name": "event",
+          "x-name": "model",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Event"
+                "$ref": "#/components/schemas/CreateUser"
               }
             }
           },
@@ -92,97 +91,110 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUser"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/EventManagement/{eventId}": {
-      "delete": {
-        "tags": [
-          "EventManagement"
-        ],
-        "operationId": "EventManagement_DeleteEvent",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
+    "/api/UsersManagement/{userId}": {
       "get": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_GetByIdEvent",
+        "summary": "Returns selected user.",
+        "operationId": "UsersManagement_GetByIdUser",
         "parameters": [
           {
-            "name": "eventId",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": ".",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/UserName/{userId}": {
+      "post": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Sets the given userName for the specified userId.",
+        "operationId": "UsersManagement_SetUserName",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user whose name should be set.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
           },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "The user name to set.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Task that represents the asynchronous operation."
           }
         }
       }
     },
-    "/api/EventManagement/IsAllAvailableSeats/{eventId}": {
+    "/api/UsersManagement/HasPassword/{userId}": {
       "get": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_IsAllAvailableSeats",
+        "summary": "Gets a flag indicating whether the specified user has a password.",
+        "operationId": "UsersManagement_HasPassword",
         "parameters": [
           {
-            "name": "eventId",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": ".",
             "content": {
               "application/json": {
                 "schema": {
@@ -194,34 +206,274 @@
         }
       }
     },
-    "/api/EventManagement/GetAllEventsByLayoutId/{layoutId}": {
+    "/api/UsersManagement/IsEmailConfirmed/{userId}": {
       "get": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_GetAllEventsByLayoutId",
+        "summary": "Gets a flag indicating whether the email address for the specified userId has been verified, true if the email address is verified otherwise\nfalse.",
+        "operationId": "UsersManagement_IsEmailConfirmed",
         "parameters": [
           {
-            "name": "layoutId",
+            "name": "userId",
             "in": "path",
             "required": true,
+            "description": "The user whose email confirmation status should be returned.",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "The task object containing the results of the asynchronous operation, a flag indicating whether the email address for the specified userId\nhas been confirmed or not.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Event"
-                  }
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/EmailToken/{userId}": {
+      "post": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Generates an email change token for the specified user.",
+        "operationId": "UsersManagement_GenerateChangeEmailToken",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user to generate an email change token for.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "newEmail",
+            "in": "query",
+            "description": "The new email address.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Task that represents the asynchronous operation, an email change token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/password/{userId}": {
+      "put": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Returns selected user.",
+        "operationId": "UsersManagement_ChangePassword",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "currentPassword",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "newPassword",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Returns a flag indicating whether the given password is valid for the\nspecified userId.",
+        "operationId": "UsersManagement_CheckPassword",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user whose password should be validated.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "The password to validate.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Task that represents the asynchronous operation, containing true if\n            the specified password matches the one store for the userId,\n            otherwise false.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/RefreshSignIn/{userId}": {
+      "post": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Signs in the specified userId, whilst preserving the existing\nAuthenticationProperties of the current signed-in user like rememberMe, as an asynchronous operation.",
+        "operationId": "UsersManagement_RefreshSignIn",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user to sign-in.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The task object representing the asynchronous operation."
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/PhoneNumber/{userId}": {
+      "put": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Sets the phone number for the specified userId.",
+        "operationId": "UsersManagement_SetPhoneNumber",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user whose phone number to set.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "description": "The phone number to set.",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Task that represents the asynchronous operation, containing the IdentityResult\nof the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/role/{userId}": {
+      "get": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Returns selected users role.",
+        "operationId": "UsersManagement_GetRoleById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeRole"
                 }
               }
             }
@@ -237,34 +489,50 @@
             }
           }
         }
-      }
-    },
-    "/api/EventManagement/GetPriceByEventId/{eventId}": {
-      "get": {
+      },
+      "put": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_GetPriceByEventId",
+        "summary": "Change role selected user.",
+        "operationId": "UsersManagement_ChangeRole",
         "parameters": [
           {
-            "name": "eventId",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           }
         ],
+        "requestBody": {
+          "x-name": "roles",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
         "responses": {
           "200": {
+            "description": "."
+          },
+          "400": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "number",
-                  "format": "decimal"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -272,32 +540,43 @@
         }
       }
     },
-    "/api/EventManagement/GetSeatsAvailableCount/{eventId}": {
-      "get": {
+    "/api/UsersManagement/cart": {
+      "put": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_GetSeatsAvailableCount",
+        "summary": "Change cart selected user.",
+        "operationId": "UsersManagement_EditCart",
         "parameters": [
           {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
+            "name": "money",
+            "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
           "200": {
+            "description": "."
+          },
+          "400": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -305,20 +584,218 @@
         }
       }
     },
-    "/api/EventManagement/GetSeatsCount/{layoutId}": {
-      "get": {
+    "/api/UsersManagement/purchase": {
+      "post": {
         "tags": [
-          "EventManagement"
+          "UsersManagement"
         ],
-        "operationId": "EventManagement_GetSeatsCount",
+        "summary": "Purchase methods for selected user.",
+        "operationId": "UsersManagement_Purchase",
         "parameters": [
           {
-            "name": "layoutId",
-            "in": "path",
-            "required": true,
+            "name": "eventSeatId",
+            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "returnUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "price",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/language/{userId}": {
+      "post": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Change language selected user.",
+        "operationId": "UsersManagement_SetLanguage",
+        "parameters": [
+          {
+            "name": "culture",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/{id}": {
+      "delete": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Delete selected user.",
+        "operationId": "UsersManagement_DeleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users_Register",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/Login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Login into the new API.",
+        "description": "Here is the code sample of usage.",
+        "operationId": "Users_Login",
+        "requestBody": {
+          "x-name": "model",
+          "description": ".",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "..",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/validate": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "Users_Validate",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
           }
@@ -327,10 +804,10 @@
           "200": {
             "description": "",
             "content": {
-              "application/json": {
+              "application/octet-stream": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -341,64 +818,276 @@
   },
   "components": {
     "schemas": {
-      "Event": {
+      "User": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/BaseEntity"
+            "$ref": "#/components/schemas/IdentityUser"
           },
           {
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "name",
-              "eventTime",
-              "description",
-              "layoutId",
-              "eventEndTime",
-              "eventLogoImage"
+              "balance"
             ],
             "properties": {
-              "name": {
+              "firstName": {
                 "type": "string",
-                "maxLength": 120,
-                "minLength": 1
+                "nullable": true
               },
-              "eventTime": {
+              "surName": {
                 "type": "string",
-                "format": "date-time",
-                "minLength": 1
+                "nullable": true
               },
-              "description": {
+              "language": {
                 "type": "string",
-                "minLength": 1
+                "nullable": true
               },
-              "layoutId": {
+              "timeZone": {
+                "type": "string",
+                "nullable": true
+              },
+              "cartCount": {
                 "type": "integer",
                 "format": "int32"
               },
-              "eventEndTime": {
-                "type": "string",
-                "format": "date-time",
-                "minLength": 1
+              "balance": {
+                "title": "Balance",
+                "type": "number",
+                "format": "decimal"
               },
-              "eventLogoImage": {
+              "payHistory": {
                 "type": "string",
-                "minLength": 1
+                "nullable": true
               }
             }
           }
         ]
       },
-      "BaseEntity": {
+      "IdentityUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityUserOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "IdentityUserOfString": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "id"
-        ],
         "properties": {
           "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedUserName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailConfirmed": {
+            "type": "boolean"
+          },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "securityStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumberConfirmed": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
+          },
+          "lockoutEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lockoutEnabled": {
+            "type": "boolean"
+          },
+          "accessFailedCount": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "IdentityResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "succeeded": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/IdentityError"
+            }
+          }
+        }
+      },
+      "IdentityError": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "email"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "email": {
+                "title": "Email",
+                "type": "string",
+                "format": "email",
+                "minLength": 1
+              },
+              "userName": {
+                "title": "UserName",
+                "type": "string",
+                "format": "email",
+                "nullable": true
+              },
+              "password": {
+                "title": "Password",
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 6,
+                "nullable": true
+              },
+              "phoneNumber": {
+                "type": "string",
+                "nullable": true
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true
+              },
+              "surName": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "ChangeRole": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "allRoles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          "userRoles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Role": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityRole"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "IdentityRole": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IdentityRoleOfString"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "IdentityRoleOfString": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedName": {
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -428,6 +1117,56 @@
           "instance": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "RegisterModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "title": "Password",
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          },
+          "confirmPassword": {
+            "title": "Confirm password",
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "LoginModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rememberMe": {
+            "title": "Remember me?",
+            "type": "boolean"
           }
         }
       }

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TicketManagement.Common;
 using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
@@ -57,7 +57,8 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account.Manage
 
             await _usersManagementApiClient.DeleteUserAsync(_userId);
 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(Settings.Jwt.JwtOrCookieScheme);
+            Response.Cookies.Delete("token");
 
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", _userId);
 

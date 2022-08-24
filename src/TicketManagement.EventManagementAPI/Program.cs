@@ -1,12 +1,7 @@
-using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using TicketManagement.Common.JwtTokenAuth;
-using TicketManagement.Common.JwtTokenAuth.Settings;
 using TicketManagement.EventManagementAPI;
 using TicketManagement.EventManagementAPI.Client;
 using TicketManagement.EventManagementAPI.JwtTokenAuth;
@@ -26,29 +21,10 @@ builder.WebHost.UseUrls("https://*:5000").ConfigureKestrel(options =>
     options.ListenAnyIP(5003, configure => configure.UseHttps());
 });
 
-var tokenSettings = builder.Configuration.GetSection(nameof(JwtTokenSettings));
-
 services.AddEndpointsApiExplorer();
 services.AddOptions().Configure<UserApiOptions>(binder => binder.UserApiAddress = builder.Configuration["UserApiAddress"]);
-services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-services.AddAuthentication()
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = tokenSettings[nameof(JwtTokenSettings.JwtIssuer)],
-            ValidateAudience = true,
-            ValidAudience = tokenSettings[nameof(JwtTokenSettings.JwtAudience)],
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings[nameof(JwtTokenSettings.JwtSecretKey)])),
-            ValidateLifetime = false,
-            RoleClaimType = ClaimsIdentity.DefaultRoleClaimType,
-        };
-        options.SaveToken = true;
-    });
-
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddScheme<JwtAuthenticationOptions, JwtAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, null);
 services.AddHttpClient<IUserClient, UserClient>((provider, client) =>
 {
     var userApiAddress = provider.GetService<IOptions<UserApiOptions>>()?.Value.UserApiAddress;

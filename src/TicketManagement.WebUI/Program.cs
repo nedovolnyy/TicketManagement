@@ -1,13 +1,20 @@
 using System.Globalization;
 using System.Security.Claims;
+using System.Text;
 using EventManagementApiClientGenerated;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using TicketManagement.Common.JwtTokenAuth.Services;
+using TicketManagement.Common;
+using TicketManagement.Common.Identity;
 using TicketManagement.WebUI;
 using TicketManagement.WebUI.Services;
 using UserApiClientGenerated;
@@ -46,66 +53,64 @@ services
     })
     .AddViewLocalization();
 
-services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+services.AddAuthentication(options =>
+{
+    options.DefaultScheme = Settings.Jwt.JwtOrCookieScheme;
+    options.DefaultChallengeScheme = Settings.Jwt.JwtOrCookieScheme;
+})
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
         options.SlidingExpiration = true;
-        options.AccessDeniedPath = "/Forbidden/";
         options.LoginPath = "/Identity/Account/Login/";
-    });
-////services.AddSwaggerGen(options =>
-////{
-////    options.SwaggerDoc("v1", new OpenApiInfo
-////    {
-////        Title = "Internal lab Demo 2",
-////        Version = "v1",
-////    });
-////    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-////    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-////    options.IncludeXmlComments(xmlPath);
-////    var jwtSecurityScheme = new OpenApiSecurityScheme
-////    {
-////        Description = "Jwt Token is required to access the endpoints",
-////        In = ParameterLocation.Header,
-////        Name = "JWT Authentication",
-////        Type = SecuritySchemeType.Http,
-////        Scheme = "bearer",
-////        BearerFormat = "JWT",
-////        Reference = new OpenApiReference
-////        {
-////            Id = JwtBearerDefaults.AuthenticationScheme,
-////            Type = ReferenceType.SecurityScheme,
-////        },
-////    };
+    })
+        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
+            options.Authority = "https://localhost:5004";
+            options.RequireHttpsMetadata = false;
+            options.Audience = Settings.Jwt.JwtAudience;
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies[JwtBearerDefaults.AuthenticationScheme];
+                    return Task.CompletedTask;
+                },
+            };
+        })
+    .AddPolicyScheme(Settings.Jwt.JwtOrCookieScheme, Settings.Jwt.JwtOrCookieScheme, options =>
+    {
+        options.ForwardDefaultSelector = context =>
+        {
+            string authorization = context.Request.Headers["Authorization"];
+            if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+            {
+                return JwtBearerDefaults.AuthenticationScheme;
+            }
 
-////    options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
-////    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-////                {
-////                    { jwtSecurityScheme, Array.Empty<string>() },
-////                });
-////});
+            return CookieAuthenticationDefaults.AuthenticationScheme;
+        };
+    });
 
 services.AddAuthorization(options =>
 {
-    options.AddPolicy("Administrator", builder =>
+    options.AddPolicy(Roles.Administrator.ToString("F"), builder =>
     {
-        builder.RequireClaim(ClaimTypes.Role, "Administrator");
+        builder.RequireClaim(ClaimTypes.Role, Roles.Administrator.ToString("F"));
     });
 
-    options.AddPolicy("EventManager", builder =>
+    options.AddPolicy(Roles.EventManager.ToString("F"), builder =>
     {
-        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, "EventManager")
-                                      || x.User.HasClaim(ClaimTypes.Role, "Administrator"));
+        builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.EventManager.ToString("F"))
+                                      || x.User.HasClaim(ClaimTypes.Role, Roles.Administrator.ToString("F")));
     });
 
-    options.AddPolicy("User", builder =>
+    options.AddPolicy(Roles.User.ToString("F"), builder =>
     {
-        builder.RequireClaim(ClaimTypes.Role, "User");
+        builder.RequireClaim(ClaimTypes.Role, Roles.User.ToString("F"));
     });
 });
 
-services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(60));
 services.AddControllersWithViews(options =>
 {
     options.Filters.Add<SerilogMvcLoggingAttribute>();
@@ -132,9 +137,10 @@ services.AddScoped(scope =>
     return new UsersManagementApiClient(baseUrl, httpClient);
 });
 
+services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
+
 services.AddBLLServices();
 services.AddSingleton<ListThirdPartyEventsService>();
-services.AddSingleton<JwtTokenService>();
 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 services.AddMvc(options =>
@@ -149,7 +155,6 @@ var app = builder.Build();
 
 app.UseRequestLocalization();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -157,25 +162,37 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseStaticFiles();
 app.UseRewriter(new RewriteOptions().AddRedirectToHttps(301, 5004));
-////app.UseIdentityServer();
 app.UseSession();
-
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    HttpOnly = HttpOnlyPolicy.Always,
+    Secure = CookieSecurePolicy.Always,
+});
 app.UseSerilogRequestLogging();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{
+    await next();
+    var bearerAuth = context.Request.Headers["Authorization"]
+        .FirstOrDefault()?.StartsWith("Bearer ") ?? false;
+    if (context.Response.StatusCode == 401
+        && !context.User.Identity.IsAuthenticated
+        && !bearerAuth)
+    {
+        await context.ChallengeAsync(JwtBearerDefaults.AuthenticationScheme);
+    }
+});
 
 app.MapControllerRoute(
     name: "default",

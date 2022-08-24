@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.Identity;
-using TicketManagement.Common.JwtTokenAuth.Services;
 using TicketManagement.UserAPI.Models;
+using TicketManagement.UserAPI.Services;
 
 namespace TicketManagement.Common.JwtTokenAuth.Controllers;
 
@@ -60,7 +60,12 @@ public class UsersController : ControllerBase
             });
         }
 
-        var newUser = new User { Email = model.Email, UserName = model.Email, Language = "en" };
+        var newUser = new User
+        {
+            Email = model.Email,
+            UserName = model.Email,
+            Language = "en-US",
+        };
         var isCreated = await _userManager.CreateAsync(newUser, model.Password);
         if (!isCreated.Succeeded)
         {
@@ -149,7 +154,7 @@ public class UsersController : ControllerBase
         var jwtToken = _jwtTokenService.GenerateJwtToken(existingUser, roleName);
 
         _logger.LogInformation($"The user with email {model.Email} was logged in.");
-
+        HttpContext.Response.Cookies.Append("fghf", jwtToken);
         return Ok(new AuthenticationResult
         {
             Result = true,

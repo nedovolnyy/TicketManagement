@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using TicketManagement.Common.JwtTokenAuth.Settings;
+using TicketManagement.Common;
 
-namespace TicketManagement.Common.JwtTokenAuth.Services
+namespace TicketManagement.UserAPI.Services
 {
     public class JwtTokenService
     {
-        private readonly JwtTokenSettings _settings;
-
-        public JwtTokenService(IOptions<JwtTokenSettings> options)
-        {
-            _settings = options.Value;
-        }
-
         public string GenerateJwtToken(IdentityUser user, IEnumerable<string> roles)
         {
             var userClaims = new List<Claim>
@@ -35,10 +24,10 @@ namespace TicketManagement.Common.JwtTokenAuth.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(userClaims),
-                Issuer = _settings.JwtIssuer,
-                Audience = _settings.JwtAudience,
+                Issuer = Settings.Jwt.JwtIssuer,
+                Audience = Settings.Jwt.JwtAudience,
                 Expires = DateTime.UtcNow.AddMinutes(10),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtSecretKey)), SecurityAlgorithms.HmacSha512Signature),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Settings.Jwt.JwtSecretKey)), SecurityAlgorithms.HmacSha512Signature),
             };
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
@@ -56,9 +45,9 @@ namespace TicketManagement.Common.JwtTokenAuth.Services
                 token,
                 new TokenValidationParameters
                 {
-                    ValidIssuer = _settings.JwtIssuer,
-                    ValidAudience = _settings.JwtAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtSecretKey)),
+                    ValidIssuer = Settings.Jwt.JwtIssuer,
+                    ValidAudience = Settings.Jwt.JwtAudience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Settings.Jwt.JwtSecretKey)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,

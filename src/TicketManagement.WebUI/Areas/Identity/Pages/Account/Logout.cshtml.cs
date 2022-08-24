@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TicketManagement.Common;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 {
@@ -16,7 +16,8 @@ namespace TicketManagement.WebUI.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(Settings.Jwt.JwtOrCookieScheme);
+            Response.Cookies.Delete("token");
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {

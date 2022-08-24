@@ -28,7 +28,15 @@ public class UsersManagementController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateUser model)
     {
-        await _usersManagementApiClient.CreateUserAsync(model.Password, new User { Email = model.Email, FirstName = model.FirstName, SurName = model.SurName, });
+        await _usersManagementApiClient.CreateUserAsync(model.Password,
+            new User
+            {
+                Email = model.Email,
+                FirstName = model.FirstName,
+                SurName = model.SurName,
+                UserName = model.UserName,
+                PhoneNumber = model.PhoneNumber,
+            });
         return RedirectToAction("Index");
     }
 

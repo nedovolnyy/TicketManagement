@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TicketManagement.Common.DI;
@@ -12,7 +11,7 @@ namespace TicketManagement.EventManagementAPI.Controllers;
 /// Resource for the operations against the event entity.
 /// </summary>
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator,EventManager")]
+[Authorize(Roles = "Administrator,EventManager")]
 [Route("api/[controller]")]
 [Produces("application/json")]
 public class EventManagementController : ControllerBase

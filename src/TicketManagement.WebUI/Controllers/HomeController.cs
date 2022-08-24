@@ -66,7 +66,10 @@ public class HomeController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SetLanguage(string culture, string returnUrl)
     {
-        await _usersManagementApiClient.SetLanguageAsync(culture, User.FindFirstValue(ClaimTypes.NameIdentifier));
+        if (User.Identity.IsAuthenticated)
+        {
+            await _usersManagementApiClient.SetLanguageAsync(culture, User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
 
         Response.Cookies.Append(
             CookieRequestCultureProvider.DefaultCookieName,

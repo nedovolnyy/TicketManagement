@@ -1,18 +1,22 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Extensions;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using TicketManagement.Common;
+using TicketManagement.Common.DI;
 using TicketManagement.Common.Identity;
-using TicketManagement.Common.JwtTokenAuth.Services;
-using TicketManagement.Common.JwtTokenAuth.Settings;
 using TicketManagement.UserAPI.DataAccess;
-
-var roles = new string[] { "Administrator", "EventManager" };
+using TicketManagement.UserAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -38,7 +42,6 @@ services.AddDbContext<UserApiDbContext>(
                     .AddEntityFrameworkStores<UserApiDbContext>()
                     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
-var tokenSettings = builder.Configuration.GetSection(nameof(JwtTokenSettings));
 services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -47,43 +50,61 @@ services.AddAuthentication(options =>
 })
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = tokenSettings[nameof(JwtTokenSettings.JwtIssuer)],
+            ValidIssuer = Settings.Jwt.JwtIssuer,
             ValidateAudience = true,
-            ValidAudience = tokenSettings[nameof(JwtTokenSettings.JwtAudience)],
+            ValidAudience = Settings.Jwt.JwtAudience,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings[nameof(JwtTokenSettings.JwtSecretKey)])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Settings.Jwt.JwtSecretKey)),
             ValidateLifetime = false,
             RoleClaimType = ClaimsIdentity.DefaultRoleClaimType,
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["Authorization"];
+                return Task.CompletedTask;
+            },
+        };
+        options.RequireHttpsMetadata = true;
         options.SaveToken = true;
+    })
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.SlidingExpiration = true;
+        options.LoginPath = "/Identity/Account/Login/";
     });
+
 services.AddAuthorization(options =>
 {
-    foreach (var prop in roles)
+    foreach (var prop in Enum.GetValues<Roles>())
     {
-        options.AddPolicy(prop, policy => policy.RequireClaim(ClaimsIdentity.DefaultRoleClaimType, roles));
+        options.AddPolicy(prop.GetDisplayName(), policy =>
+        {
+            policy.RequireClaim(ClaimsIdentity.DefaultRoleClaimType, Enum.GetNames<Roles>());
+        });
     }
 });
 
-services.Configure<JwtTokenSettings>(tokenSettings);
-services.AddScoped<JwtTokenService>();
-
 services.AddControllers();
-
+services.AddScoped<JwtTokenService>();
 services.AddOpenApiDocument();
 
 var app = builder.Build();
 
 JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
-
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict,
+    HttpOnly = HttpOnlyPolicy.Always,
+    Secure = CookieSecurePolicy.Always,
+});
 app.UseSerilogRequestLogging();
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
-
-app.UseOpenApi();
 app.UseSwaggerUi3();
 app.UseHttpsRedirection();
 

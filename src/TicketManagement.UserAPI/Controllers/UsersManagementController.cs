@@ -68,7 +68,7 @@ public class UsersManagementController : ControllerBase
             user.TimeZone = DateTimeOffset.Now.Offset.ToString();
             user.Language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.Name;
 
-            await _userManager.AddToRoleAsync(user, "User");
+            await _userManager.AddToRoleAsync(user, Roles.User.ToString("F"));
             await _userManager.UpdateAsync(user);
             await _signInManager.SignInAsync(user, isPersistent: false);
         }
@@ -114,7 +114,7 @@ public class UsersManagementController : ControllerBase
     /// <param name="userName">The user name to set.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
     /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-    [HttpPost("SetUserName/{userId}")]
+    [HttpPost("UserName/{userId}")]
     [AllowAnonymous]
     public async Task SetUserNameAsync(string userId, string userName, CancellationToken cancellationToken)
         => await _userStore.SetUserNameAsync(await _userManager.FindByIdAsync(userId), userName, cancellationToken);
@@ -150,7 +150,7 @@ public class UsersManagementController : ControllerBase
     /// <returns>
     /// The <see cref="Task"/> that represents the asynchronous operation, an email change token.
     /// </returns>
-    [HttpPost("GenerateChangeEmailToken/{userId}")]
+    [HttpPost("EmailToken/{userId}")]
     [AllowAnonymous]
     public async Task<ActionResult<string>> GenerateChangeEmailTokenAsync(string userId, string newEmail)
         => await _userManager.GenerateChangeEmailTokenAsync(await _userManager.FindByIdAsync(userId), newEmail);
@@ -159,7 +159,7 @@ public class UsersManagementController : ControllerBase
     /// Returns selected user.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPut("ChangePassword/{userId}")]
+    [HttpPut("password/{userId}")]
     [AllowAnonymous]
     public async Task<ActionResult<IdentityResult>> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
         => await _userManager.ChangePasswordAsync(await _userManager.FindByIdAsync(userId), currentPassword, newPassword);
@@ -184,7 +184,7 @@ public class UsersManagementController : ControllerBase
     /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing true if
     /// the specified <paramref name="password" /> matches the one store for the <paramref name="userId"/>,
     /// otherwise false.</returns>
-    [HttpPost("CheckPassword/{userId}")]
+    [HttpPost("password/{userId}")]
     [AllowAnonymous]
     public async Task<ActionResult<bool>> CheckPasswordAsync(string userId, string password)
         => await _userManager.CheckPasswordAsync(await _userManager.FindByIdAsync(userId), password);
@@ -198,7 +198,7 @@ public class UsersManagementController : ControllerBase
     /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
     /// of the operation.
     /// </returns>
-    [HttpPost("SetPhoneNumber/{userId}")]
+    [HttpPut("PhoneNumber/{userId}")]
     [AllowAnonymous]
     public async Task<ActionResult<IdentityResult>> SetPhoneNumberAsync(string userId, string phoneNumber)
     {
@@ -237,10 +237,10 @@ public class UsersManagementController : ControllerBase
     }
 
     /// <summary>
-    /// Change language selected user.
+    /// Change cart selected user.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPost("editcart")]
+    [HttpPut("cart")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -259,7 +259,7 @@ public class UsersManagementController : ControllerBase
     }
 
     /// <summary>
-    /// Change language selected user.
+    /// Purchase methods for selected user.
     /// </summary>
     /// <returns>.</returns>
     [HttpPost("purchase")]
@@ -288,7 +288,7 @@ public class UsersManagementController : ControllerBase
     /// Change language selected user.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPost("setlanguage")]
+    [HttpPost("language/{userId}")]
     [AllowAnonymous]
     public async Task SetLanguage(string culture, string userId)
     {
@@ -304,7 +304,7 @@ public class UsersManagementController : ControllerBase
     /// Change role selected user.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPost("changerole")]
+    [HttpPut("role/{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ChangeRoleAsync(string userId, IEnumerable<string> roles)
