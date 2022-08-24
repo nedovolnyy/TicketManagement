@@ -13,8 +13,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<IEventSeatService, EventSeatService>();
 
-            services.AddTransient<IEventService, EventService>();
-
             services.AddTransient<ILayoutService, LayoutService>();
 
             services.AddTransient<ISeatService, SeatService>();

@@ -2,14 +2,16 @@
 @using TicketManagement.Common.DI
 @using TicketManagement.Common.Entities
 @using TicketManagement.WebUI.Helpers
+@using EventManagementApiClientGenerated
 
 @inject IServiceProvider ServiceProvider
 @inject IViewLocalizer Localizer
+@inject EventManagementApiClient EventManagementApiClient
 
 @model IEnumerable<EventArea>
 
 @{
-    var evnt = await ServiceProvider.GetRequiredService<IEventService>().GetByIdAsync(Model.First().EventId);
+    var evnt = await EventManagementApiClient.GetByIdEventAsync(Model.First().EventId);
 }
 
 <div class="text-center">
@@ -20,7 +22,7 @@
             <div class="img__header"><h2 style="text-decoration: none;">@evnt.Name</h2></div>
             <div class="text">
                 <div class="right">
-                    <p>@(await ServiceProvider.GetRequiredService<IEventService>().GetSeatsAvailableCountAsync(evnt.Id)) / @(await ServiceProvider.GetRequiredService<IEventService>().GetSeatsCountAsync(evnt.LayoutId))</p>
+                    <p>@(await EventManagementApiClient.GetSeatsAvailableCountAsync(evnt.Id)) / @(await EventManagementApiClient.GetSeatsCountAsync(evnt.LayoutId))</p>
                 </div>
             </div>
             <div class="text">
