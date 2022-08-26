@@ -1,16 +1,16 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using TicketManagement.Common.DI
+﻿@using EventManagementApiClientGenerated
+@using Microsoft.AspNetCore.Mvc.Localization
 @using TicketManagement.WebUI.Models
 @model EventModel
 
 @inject IViewLocalizer Localizer
-@inject ILayoutService LayoutService
+@inject LayoutManagementApiClient LayoutManagementApiClient
 
 @{
     var timezoneList = TimeZoneInfo.GetSystemTimeZones()
         ?.Select(c => new SelectListItem { Value = c.BaseUtcOffset.ToString(), Text = c.DisplayName })
         .ToList();
-    var selectListLayoutsId = (await LayoutService.GetAllAsync())
+    var selectListLayoutsId = (await LayoutManagementApiClient.GetAllLayoutsAsync())
         ?.Select(c => new SelectListItem { Value = Model.LayoutsId.FirstOrDefault(x => x == c.Id.ToString()), Text = c.Name })
         .Where(x => x.Value is not null).ToList();
 }

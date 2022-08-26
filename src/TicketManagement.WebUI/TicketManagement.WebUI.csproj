@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TicketManagement.Common\TicketManagement.Common.csproj" />
-    <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,10 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Security.Policy;
+using EventManagementApiClientGenerated;
 using Microsoft.AspNetCore.Mvc;
-using TicketManagement.Common.DI;
-using TicketManagement.Common.Entities;
 using TicketManagement.WebUI.Models;
 using UserApiClientGenerated;
 
@@ -13,13 +10,19 @@ namespace TicketManagement.WebUI.Controllers;
 public class EventController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly EventAreaManagementApiClient _eventAreaManagementApiClient;
+    private readonly EventSeatManagementApiClient _eventSeatManagementApiClient;
     private readonly UsersManagementApiClient _usersManagementApiClient;
 
-    public EventController(ILogger<HomeController> logger, IServiceProvider serviceProvider, UsersManagementApiClient usersManagementApiClient)
+    public EventController(
+        ILogger<HomeController> logger,
+        EventAreaManagementApiClient eventAreaManagementApiClient,
+        EventSeatManagementApiClient eventSeatManagementApiClient,
+        UsersManagementApiClient usersManagementApiClient)
     {
         _logger = logger;
-        _serviceProvider = serviceProvider;
+        _eventAreaManagementApiClient = eventAreaManagementApiClient;
+        _eventSeatManagementApiClient = eventSeatManagementApiClient;
         _usersManagementApiClient = usersManagementApiClient;
     }
 
@@ -27,7 +30,7 @@ public class EventController : Controller
     {
         if (eventId != default)
         {
-            IEnumerable<EventArea> eventAreas = await _serviceProvider.GetRequiredService<IEventAreaService>().GetAllByEventIdAsync(eventId);
+            IEnumerable<EventArea> eventAreas = await _eventAreaManagementApiClient.GetAllEventAreasByEventIdAsync(eventId);
             if (eventAreas != null)
             {
                 return View(eventAreas);
@@ -53,7 +56,7 @@ public class EventController : Controller
             else
             {
                 await _usersManagementApiClient.PurchaseAsync(eventSeatId, returnUrl, price, User.FindFirstValue(ClaimTypes.NameIdentifier));
-                await _serviceProvider.GetRequiredService<IEventSeatService>().ChangeEventSeatStatusAsync(eventSeatId);
+                await _eventSeatManagementApiClient.ChangeEventSeatStatusAsync(eventSeatId);
             }
         }
 

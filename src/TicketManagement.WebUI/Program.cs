@@ -1,17 +1,13 @@
 using System.Globalization;
 using System.Security.Claims;
-using System.Text;
 using EventManagementApiClientGenerated;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using TicketManagement.Common;
 using TicketManagement.Common.Identity;
@@ -116,45 +112,53 @@ services.AddControllersWithViews(options =>
     options.Filters.Add<SerilogMvcLoggingAttribute>();
 });
 
-services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-services.AddHttpClient("AreaManagementApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
+services.AddHttpClient("EventManagementApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
     .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 services.AddScoped(scope =>
 {
-    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("AreaManagementApiClient");
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
     var baseUrl = builder.Configuration["EventManagementApiAddress"];
     return new AreaManagementApiClient(baseUrl, httpClient);
 });
-services.AddHttpClient("EventManagementAPIClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
-    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 services.AddScoped(scope =>
 {
-    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementAPIClient");
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
+    var baseUrl = builder.Configuration["EventManagementApiAddress"];
+    return new EventAreaManagementApiClient(baseUrl, httpClient);
+});
+services.AddScoped(scope =>
+{
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
+    var baseUrl = builder.Configuration["EventManagementApiAddress"];
+    return new EventSeatManagementApiClient(baseUrl, httpClient);
+});
+services.AddScoped(scope =>
+{
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
     var baseUrl = builder.Configuration["EventManagementApiAddress"];
     return new EventManagementApiClient(baseUrl, httpClient);
 });
-services.AddHttpClient("LayoutManagementApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
-    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 services.AddScoped(scope =>
 {
-    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("LayoutManagementApiClient");
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
     var baseUrl = builder.Configuration["EventManagementApiAddress"];
     return new LayoutManagementApiClient(baseUrl, httpClient);
 });
-services.AddHttpClient("ThirdPartyEventApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
-    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 services.AddScoped(scope =>
 {
-    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("ThirdPartyEventApiClient");
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
     var baseUrl = builder.Configuration["EventManagementApiAddress"];
     return new ThirdPartyEventApiClient(baseUrl, httpClient);
 });
-services.AddHttpClient("VenueManagementApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
-    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 services.AddScoped(scope =>
 {
-    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("VenueManagementApiClient");
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
+    var baseUrl = builder.Configuration["EventManagementApiAddress"];
+    return new SeatManagementApiClient(baseUrl, httpClient);
+});
+services.AddScoped(scope =>
+{
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("EventManagementApiClient");
     var baseUrl = builder.Configuration["EventManagementApiAddress"];
     return new VenueManagementApiClient(baseUrl, httpClient);
 });

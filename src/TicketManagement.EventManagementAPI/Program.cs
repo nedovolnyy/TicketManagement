@@ -12,7 +12,7 @@ var logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(builder.Configuration)
                         .Enrich.FromLogContext()
                         .WriteTo.File(builder.Configuration["Logging:FilePath"], rollingInterval: RollingInterval.Day)
-.WriteTo.Console()
+                        .WriteTo.Console()
                         .CreateLogger();
 builder.Host.UseSerilog(logger);
 

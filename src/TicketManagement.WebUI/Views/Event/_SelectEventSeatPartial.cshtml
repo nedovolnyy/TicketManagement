@@ -1,20 +1,20 @@
-﻿@using Microsoft.AspNetCore.Builder
+﻿@using EventManagementApiClientGenerated
+@using Microsoft.AspNetCore.Builder
 @using Microsoft.AspNetCore.Http.Features
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Options
 @using TicketManagement.Common.DI
-@using TicketManagement.Common.Entities
 
 @model EventArea
 
+@inject EventSeatManagementApiClient EventSeatManagementApiClient
 @inject IViewLocalizer Localizer
-@inject IServiceProvider ServiceProvider
 
 @{
-    var eventSeatsQuaryable = ServiceProvider.GetRequiredService<IEventSeatRepository>().GetAllByEventAreaId(Model.Id);
-    var maxRow = eventSeatsQuaryable.Max(x => x.Row);
-    var maxNumber = eventSeatsQuaryable.Max(x => x.Number);
+    var eventSeatsCollection = await EventSeatManagementApiClient.GetAllEventSeatsByEventAreaIdAsync(Model.Id);
+    var maxRow = eventSeatsCollection.Max(x => x.Row);
+    var maxNumber = eventSeatsCollection.Max(x => x.Number);
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}" + Context.Request.QueryString.ToString();
 }
 
@@ -22,7 +22,7 @@
 <div class="input-group">
     @{
         int tempRow = 0;
-        foreach (var seat in eventSeatsQuaryable.ToList())
+        foreach (var seat in eventSeatsCollection.ToList())
         {
             if (seat.Row != tempRow)
             {
