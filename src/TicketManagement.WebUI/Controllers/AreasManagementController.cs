@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using EventManagementApiClientGenerated;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TicketManagement.Common.DI;
-using TicketManagement.Common.Entities;
 using TicketManagement.Common.Identity;
 
 namespace TicketManagement.WebUI.Controllers;
@@ -9,39 +8,39 @@ namespace TicketManagement.WebUI.Controllers;
 [Authorize(Roles = nameof(Roles.Administrator))]
 public class AreasManagementController : Controller
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly AreaManagementApiClient _areaManagementApiClient;
 
-    public AreasManagementController(IServiceProvider serviceProvider)
+    public AreasManagementController(AreaManagementApiClient areaManagementApiClient)
     {
-        _serviceProvider = serviceProvider;
+        _areaManagementApiClient = areaManagementApiClient;
     }
 
     public async Task<IActionResult> Index()
-        => View(await _serviceProvider.GetRequiredService<IAreaService>().GetAllAsync());
+        => View(await _areaManagementApiClient.GetAllAreasAsync());
 
     public IActionResult Create() => View();
 
     [HttpPost]
     public async Task<IActionResult> Create(Area area)
     {
-        await _serviceProvider.GetRequiredService<IAreaService>().InsertAsync(area);
+        await _areaManagementApiClient.InsertAreaAsync(area);
         return RedirectToAction("Index");
     }
 
     public async Task<IActionResult> Edit(string id)
-        => View(await _serviceProvider.GetRequiredService<IAreaService>().GetByIdAsync(int.Parse(id)));
+        => View(await _areaManagementApiClient.GetByIdAreaAsync(int.Parse(id)));
 
     [HttpPost]
     public async Task<IActionResult> Edit(Area area)
     {
-        await _serviceProvider.GetRequiredService<IAreaService>().UpdateAsync(area);
+        await _areaManagementApiClient.UpdateAreaAsync(area);
         return RedirectToAction("Index");
     }
 
     [HttpPost]
     public async Task<ActionResult> Delete(string id)
     {
-        await _serviceProvider.GetRequiredService<IAreaService>().DeleteAsync(int.Parse(id));
+        await _areaManagementApiClient.DeleteAreaAsync(int.Parse(id));
         return RedirectToAction("Index");
     }
 }

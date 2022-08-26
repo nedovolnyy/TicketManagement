@@ -118,6 +118,14 @@ services.AddControllersWithViews(options =>
 
 services.AddRepositories(builder.Configuration.GetConnectionString("DefaultConnection"));
 
+services.AddHttpClient("AreaManagementApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
+    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+services.AddScoped(scope =>
+{
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("AreaManagementApiClient");
+    var baseUrl = builder.Configuration["EventManagementApiAddress"];
+    return new AreaManagementApiClient(baseUrl, httpClient);
+});
 services.AddHttpClient("EventManagementAPIClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
     .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 services.AddScoped(scope =>
@@ -126,8 +134,30 @@ services.AddScoped(scope =>
     var baseUrl = builder.Configuration["EventManagementApiAddress"];
     return new EventManagementApiClient(baseUrl, httpClient);
 });
-
-services.AddTransient<BackendApiAuthenticationHttpClientHandler>();
+services.AddHttpClient("LayoutManagementApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
+    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+services.AddScoped(scope =>
+{
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("LayoutManagementApiClient");
+    var baseUrl = builder.Configuration["EventManagementApiAddress"];
+    return new LayoutManagementApiClient(baseUrl, httpClient);
+});
+services.AddHttpClient("ThirdPartyEventApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
+    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+services.AddScoped(scope =>
+{
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("ThirdPartyEventApiClient");
+    var baseUrl = builder.Configuration["EventManagementApiAddress"];
+    return new ThirdPartyEventApiClient(baseUrl, httpClient);
+});
+services.AddHttpClient("VenueManagementApiClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["EventManagementApiAddress"]))
+    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+services.AddScoped(scope =>
+{
+    var httpClient = scope.GetService<IHttpClientFactory>().CreateClient("VenueManagementApiClient");
+    var baseUrl = builder.Configuration["EventManagementApiAddress"];
+    return new VenueManagementApiClient(baseUrl, httpClient);
+});
 services.AddHttpClient("UsersAPIClient").ConfigureHttpClient((provider, c) => c.BaseAddress = new Uri(builder.Configuration["UserApiAddress"]))
     .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 services.AddScoped(scope =>
@@ -136,12 +166,11 @@ services.AddScoped(scope =>
     var baseUrl = builder.Configuration["UserApiAddress"];
     return new UsersManagementApiClient(baseUrl, httpClient);
 });
+services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+services.AddSingleton<ListThirdPartyEventsService>();
+services.AddTransient<BackendApiAuthenticationHttpClientHandler>();
 
 services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
-
-services.AddBLLServices();
-services.AddSingleton<ListThirdPartyEventsService>();
-services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 services.AddMvc(options =>
 {

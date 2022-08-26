@@ -3,17 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.EventManagementAPI.Controllers;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
-    public class LayoutServiceTests
+    public class LayoutManagementTests
     {
         private static readonly Mock<ILayoutRepository> _layoutRepository = new Mock<ILayoutRepository> { CallBase = true };
-        private readonly LayoutService _layoutService = new LayoutService(_layoutRepository.Object);
+        private readonly LayoutManagementController _layoutManagementController = new LayoutManagementController(_layoutRepository.Object);
         private readonly List<Layout> _expectedLayouts = new List<Layout>
         {
             new Layout(1, "First layout", 1, "description first layout"),
@@ -51,7 +51,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _layoutService.ValidateAsync(layoutExpected));
+                            async () => await _layoutManagementController.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -72,7 +72,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _layoutService.ValidateAsync(layoutExpected));
+                            async () => await _layoutManagementController.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -93,7 +93,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _layoutService.ValidateAsync(layoutExpected));
+                            async () => await _layoutManagementController.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -114,7 +114,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _layoutService.ValidateAsync(layoutExpected));
+                            async () => await _layoutManagementController.ValidateAsync(layoutExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -127,7 +127,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout("1st layout", 1, "any description for first layout");
 
             // act
-            await _layoutService.InsertAsync(layoutExpected);
+            await _layoutManagementController.InsertLayoutAsync(layoutExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -141,7 +141,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var layoutExpected = new Layout(3, "2nd layout", 2, "any description for second layout");
 
             // act
-            await _layoutService.UpdateAsync(layoutExpected);
+            await _layoutManagementController.UpdateLayoutAsync(layoutExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -152,7 +152,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Delete_WhenCallDeleteLayout_ShouldNotZeroCallback()
         {
             // act
-            await _layoutService.DeleteAsync(1);
+            await _layoutManagementController.DeleteLayoutAsync(1);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -163,7 +163,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetById_WhenReturnLayoutById_ShouldNotNull()
         {
             // act
-            var actual = await _layoutService.GetByIdAsync(1);
+            var actual = await _layoutManagementController.GetByIdLayoutAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -173,7 +173,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetAll_WhenReturnLayouts_ShouldNotZero()
         {
             // act
-            var actual = (await _layoutService.GetAllAsync()).Count();
+            var actual = (await _layoutManagementController.GetAllLayoutsAsync()).Count;
 
             // assert
             Assert.NotZero(actual);

@@ -4,17 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.EventManagementAPI.Controllers;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
-    public class EventServiceTests
+    public class EventManagementTests
     {
         private static readonly Mock<IEventRepository> _eventRepository = new Mock<IEventRepository> { CallBase = true };
-        private readonly EventService _eventService = new EventService(_eventRepository.Object);
+        private readonly EventManagementController _eventManagementController = new EventManagementController(_eventRepository.Object);
         private readonly List<Event> _expectedEvents = new List<Event>
         {
             new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"), "image1"),
@@ -26,7 +26,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         protected void SetUp()
         {
             _eventRepository.Setup(x => x.InsertAsync(It.IsAny<Event>(), It.IsAny<decimal>())).Callback(() => _timesApplyRuleCalled++);
-            _eventRepository.Setup(x => x.UpdateAsync(It.IsAny<Event>())).Callback(() => _timesApplyRuleCalled++);
+            _eventRepository.Setup(x => x.UpdateAsync(It.IsAny<Event>(), It.IsAny<decimal>())).Callback(() => _timesApplyRuleCalled++);
             _eventRepository.Setup(x => x.DeleteAsync(It.IsAny<int>())).Callback(() => _timesApplyRuleCalled++);
             _eventRepository.Setup(x => x.GetAll()).Returns(_expectedEvents.AsQueryable());
             _eventRepository.Setup(x => x.GetSeatsAvailableCountAsync(It.IsAny<int>())).ReturnsAsync(1);
@@ -43,7 +43,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetSeatsAvailableCount_When1_ShouldNotZero()
         {
             // act
-            var actual = await _eventService.GetSeatsAvailableCountAsync(1);
+            var actual = (await _eventManagementController.GetSeatsAvailableCountAsync(1)).Value;
 
             // assert
             Assert.NotZero(actual);
@@ -67,7 +67,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -91,7 +91,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -115,7 +115,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -139,7 +139,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -163,7 +163,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -187,7 +187,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -211,7 +211,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -235,7 +235,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -259,7 +259,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -283,7 +283,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _eventService.ValidateAsync(eventExpected));
+                            async () => await _eventManagementController.ValidateAsync(eventExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -296,7 +296,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var eventExpected = new Event("Stanger Serie", DateTimeOffset.Parse("2022-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-19 00:50:00"), "image");
 
             // act
-            await _eventService.InsertAsync(eventExpected);
+            await _eventManagementController.InsertEventAsync(eventExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -307,10 +307,10 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Update_WhenCallUpdateEvent_ShouldNotZeroCallback()
         {
             // arrange
-            var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("2022-09-09 00:05:00"), "Kitchen Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image");
+            var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("2023-09-09 00:05:00"), "Kitchen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
 
             // act
-            await _eventService.UpdateAsync(eventExpected);
+            await _eventManagementController.UpdateEventAsync(eventExpected, decimal.One);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -321,7 +321,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Delete_WhenCallDeleteEvent_ShouldNotZeroCallback()
         {
             // act
-            await _eventService.DeleteAsync(1);
+            await _eventManagementController.DeleteEventAsync(1);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -332,7 +332,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetById_WhenReturnEventById_ShouldNotNull()
         {
             // act
-            var actual = await _eventService.GetByIdAsync(1);
+            var actual = await _eventManagementController.GetByIdEventAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -342,7 +342,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetAll_WhenReturnEvents_ShouldNotZero()
         {
             // act
-            var actual = (await _eventService.GetAllAsync()).Count();
+            var actual = (await _eventManagementController.GetAllEventsAsync()).Count;
 
             // assert
             Assert.NotZero(actual);

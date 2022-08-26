@@ -1,13 +1,13 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using EventManagementApiClientGenerated
+@using Microsoft.AspNetCore.Mvc.Localization
 @using TicketManagement.Common.DI
-@using TicketManagement.Common.Entities
 
 @model Layout
 @inject IViewLocalizer Localizer
-@inject IVenueService VenueService
+@inject VenueManagementApiClient VenueManagementApiClient
 
 @{
-    var selectListVenueId = (await VenueService.GetAllAsync())
+    var selectListVenueId = (await VenueManagementApiClient.GetAllVenuesAsync())
         ?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
         .ToList();
 }

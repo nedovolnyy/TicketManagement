@@ -136,7 +136,7 @@ public class EventManagementController : ControllerBase
     [HttpGet("SeatsCount/{layoutId:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    public async Task<ActionResult<int>> GetSeatsCountAsync(int layoutId)
+    public async Task<int> GetSeatsCountAsync(int layoutId)
     {
         return await _eventRepository.GetSeatsCountAsync(layoutId);
     }
@@ -176,7 +176,7 @@ public class EventManagementController : ControllerBase
         }
     }
 
-    private async Task ValidateAsync(Event entity)
+    internal async Task ValidateAsync(Event entity)
     {
         if (entity.LayoutId == default)
         {

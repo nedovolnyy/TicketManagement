@@ -14,9 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TicketManagement.BusinessLogic\TicketManagement.BusinessLogic.csproj" />
     <ProjectReference Include="..\..\src\TicketManagement.Common\TicketManagement.Common.csproj" />
     <ProjectReference Include="..\..\src\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
+    <ProjectReference Include="..\..\src\TicketManagement.EventManagementAPI\TicketManagement.EventManagementAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

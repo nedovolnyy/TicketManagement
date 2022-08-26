@@ -5,6 +5,8 @@ namespace TicketManagement.IntegrationTests.Web
 {
     public class BasicTests
     {
+        [TestCase("/AreasManagement")]
+        [TestCase("/EventsManagement/SelectVenues")]
         [TestCase("/LayoutsManagement")]
         [TestCase("/VenuesManagement")]
         [TestCase("/UsersManagement")]

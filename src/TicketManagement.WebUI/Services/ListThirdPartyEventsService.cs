@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
+using EventManagementApiClientGenerated;
 using ThirdPartyEventEditor.Models;
-using TicketManagement.Common.Entities;
 
 namespace TicketManagement.WebUI.Services;
 public class ListThirdPartyEventsService

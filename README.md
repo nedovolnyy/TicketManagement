@@ -14,11 +14,10 @@
 * [WebUI](/src/TicketManagement.WebUI/) - Constains ASP.NET Core WebApp project.
 * [UserAPI](/src/TicketManagement.UserAPI/) - Constains ASP.NET Core WebAPI project.
 * [EventManagementAPI](/src/TicketManagement.EventManagementAPI/) - Constains ASP.NET Core WebAPI project.
-* [BusinessLogic Layer](/src/TicketManagement.BusinessLogic/) - Constains services and validations.
 * [Common](src/TicketManagement.Common) - Contains entity classes and validation of exception class.
 * [DataAccess Layer](src/TicketManagement.DataAccess/) - Contains repository for each entity.
 * [Database](src/TicketManagement.Database/) - Project database.
-* [Unit Tests](test/TicketManagement.UnitTests/) for BusinessLogic Layer.
+* [Unit Tests](test/TicketManagement.UnitTests/) Unit tests for business logic's of Controllers.
 * [Integration Tests](test/TicketManagement.IntegrationTests/) for DataAccess Layer.
 
 # How to build and run the whole solution

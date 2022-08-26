@@ -1,8 +1,6 @@
 ﻿using EventManagementApiClientGenerated;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TicketManagement.Common.DI;
-using TicketManagement.Common.Entities;
 using TicketManagement.Common.Identity;
 using TicketManagement.WebUI.Models;
 
@@ -12,17 +10,22 @@ namespace TicketManagement.WebUI.Controllers;
 public class EventsManagementController : Controller
 {
     private readonly EventManagementApiClient _eventManagementApiClient;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly LayoutManagementApiClient _layoutManagementApiClient;
+    private readonly VenueManagementApiClient _venueManagementApiClient;
 
-    public EventsManagementController(IServiceProvider serviceProvider, EventManagementApiClient eventManagementApiClient)
+    public EventsManagementController(
+        EventManagementApiClient eventManagementApiClient,
+        LayoutManagementApiClient layoutManagementApiClient,
+        VenueManagementApiClient venueManagementApiClient)
     {
-        _serviceProvider = serviceProvider;
         _eventManagementApiClient = eventManagementApiClient;
+        _layoutManagementApiClient = layoutManagementApiClient;
+        _venueManagementApiClient = venueManagementApiClient;
     }
 
     public async Task<IActionResult> SelectVenues()
     {
-        var venues = await _serviceProvider.GetRequiredService<IVenueService>().GetAllAsync();
+        var venues = await _venueManagementApiClient.GetAllVenuesAsync();
         if (venues != null)
         {
             return View(venues);
@@ -37,7 +40,7 @@ public class EventsManagementController : Controller
         var layouts = new List<Layout>();
         foreach (var venueId in venuesId)
         {
-            layouts.Add(await _serviceProvider.GetRequiredService<ILayoutService>().GetByIdAsync(int.Parse(venueId)));
+            layouts.Add(await _layoutManagementApiClient.GetByIdLayoutAsync(int.Parse(venueId)));
         }
 
         return View(layouts);

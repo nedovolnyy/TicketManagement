@@ -3,17 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.EventManagementAPI.Controllers;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
-    public class VenueServiceTests
+    public class VenueManagementTests
     {
         private static readonly Mock<IVenueRepository> _venueRepository = new Mock<IVenueRepository> { CallBase = true };
-        private readonly VenueService _venueService = new VenueService(_venueRepository.Object);
+        private readonly VenueManagementController _venueManagementController = new VenueManagementController(_venueRepository.Object);
         private readonly List<Venue> _expectedVenues = new List<Venue>
         {
             new Venue(1, "First venue", "description first venue", "address first venue", "+4988955568"),
@@ -52,7 +52,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _venueService.ValidateAsync(venueExpected));
+                            async () => await _venueManagementController.ValidateAsync(venueExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -74,7 +74,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _venueService.ValidateAsync(venueExpected));
+                            async () => await _venueManagementController.ValidateAsync(venueExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -96,7 +96,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _venueService.ValidateAsync(venueExpected));
+                            async () => await _venueManagementController.ValidateAsync(venueExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -117,7 +117,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _venueService.ValidateAsync(venueExpected));
+                            async () => await _venueManagementController.ValidateAsync(venueExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -130,7 +130,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueExpected = new Venue(3, "2nd venue", "any description for second venue", "address second venue", "+84845464");
 
             // act
-            await _venueService.InsertAsync(venueExpected);
+            await _venueManagementController.InsertVenueAsync(venueExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -144,7 +144,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var venueExpected = new Venue(1, "1st venue", "any description for first venue", "address first venue", "+4988955568");
 
             // act
-            await _venueService.UpdateAsync(venueExpected);
+            await _venueManagementController.UpdateVenueAsync(venueExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -155,7 +155,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Delete_WhenCallDeleteVenue_ShouldNotZeroCallback()
         {
             // act
-            await _venueService.DeleteAsync(1);
+            await _venueManagementController.DeleteVenueAsync(1);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -166,7 +166,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetById_WhenReturnVenueById_ShouldNotNull()
         {
             // act
-            var actual = await _venueService.GetByIdAsync(1);
+            var actual = await _venueManagementController.GetByIdVenueAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -176,7 +176,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetAll_WhenReturnVenues_ShouldNotZero()
         {
             // act
-            var actual = (await _venueService.GetAllAsync()).Count();
+            var actual = (await _venueManagementController.GetAllVenuesAsync()).Count;
 
             // assert
             Assert.NotZero(actual);

@@ -3,17 +3,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using TicketManagement.BusinessLogic.Services;
 using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Validation;
+using TicketManagement.EventManagementAPI.Controllers;
 
 namespace TicketManagement.BusinessLogic.UnitTests
 {
-    public class AreaServiceTests
+    public class AreaManagementTests
     {
         private static readonly Mock<IAreaRepository> _areaRepository = new Mock<IAreaRepository> { CallBase = true };
-        private readonly AreaService _areaService = new AreaService(_areaRepository.Object);
+        private readonly AreaManagementController _areaManagementController = new AreaManagementController(_areaRepository.Object);
         private readonly List<Area> _expectedAreas = new List<Area>
         {
             new Area(1, 2, "First area of second layout", 2, 4),
@@ -52,7 +52,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _areaService.ValidateAsync(areaExpected));
+                            async () => await _areaManagementController.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -74,7 +74,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _areaService.ValidateAsync(areaExpected));
+                            async () => await _areaManagementController.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -96,7 +96,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _areaService.ValidateAsync(areaExpected));
+                            async () => await _areaManagementController.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -118,7 +118,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _areaService.ValidateAsync(areaExpected));
+                            async () => await _areaManagementController.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -140,7 +140,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
 
             // act
             var actualException = Assert.ThrowsAsync<ValidationException>(
-                            async () => await _areaService.ValidateAsync(areaExpected));
+                            async () => await _areaManagementController.ValidateAsync(areaExpected));
 
             // assert
             Assert.That(actualException.Message, Is.EqualTo(strException));
@@ -153,7 +153,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(2, "1st area of second layout", 2, 4);
 
             // act
-            await _areaService.InsertAsync(areaExpected);
+            await _areaManagementController.InsertAreaAsync(areaExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -167,7 +167,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
             var areaExpected = new Area(1, 2, "1st area of second layout", 2, 4);
 
             // act
-            await _areaService.UpdateAsync(areaExpected);
+            await _areaManagementController.UpdateAreaAsync(areaExpected);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -178,7 +178,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task Delete_WhenCallDeleteArea_ShouldNotZeroCallback()
         {
             // act
-            await _areaService.DeleteAsync(1);
+            await _areaManagementController.DeleteAreaAsync(1);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -189,7 +189,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetById_WhenReturnAreaById_ShouldNotNull()
         {
             // act
-            var actual = await _areaService.GetByIdAsync(1);
+            var actual = await _areaManagementController.GetByIdAreaAsync(1);
 
             // assert
             Assert.NotNull(actual);
@@ -199,7 +199,7 @@ namespace TicketManagement.BusinessLogic.UnitTests
         public async Task GetAll_WhenReturnAreas_ShouldNotZero()
         {
             // act
-            var actual = (await _areaService.GetAllAsync()).Count();
+            var actual = (await _areaManagementController.GetAllAreasAsync()).Count;
 
             // assert
             Assert.NotZero(actual);

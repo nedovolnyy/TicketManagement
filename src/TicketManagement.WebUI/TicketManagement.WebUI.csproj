@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TicketManagement.BusinessLogic\TicketManagement.BusinessLogic.csproj" />
     <ProjectReference Include="..\TicketManagement.Common\TicketManagement.Common.csproj" />
     <ProjectReference Include="..\TicketManagement.DataAccess\TicketManagement.DataAccess.csproj" />
   </ItemGroup>
