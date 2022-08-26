@@ -37,7 +37,7 @@ public class UsersManagementController : ControllerBase
     /// Returns list of the users.
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet]
+    [HttpGet("users")]
     [AllowAnonymous]
     public List<User> GetAllUsers()
         => _userManager.Users.AsEnumerable().ToList();
@@ -46,7 +46,7 @@ public class UsersManagementController : ControllerBase
     /// Add new user.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPost]
+    [HttpPost("user")]
     public async Task<IdentityResult> CreateUserAsync(User model, string password)
     {
         model.UserName = model.Email;
@@ -80,7 +80,7 @@ public class UsersManagementController : ControllerBase
     /// Update existed user.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPut]
+    [HttpPut("user")]
     public async Task<CreateUser> EditUserAsync(CreateUser model)
     {
         var user = await _userManager.FindByIdAsync(model.Id);
@@ -96,10 +96,26 @@ public class UsersManagementController : ControllerBase
     }
 
     /// <summary>
+    /// Delete selected user.
+    /// </summary>
+    /// <returns>.</returns>
+    [HttpDelete("user/{id}")]
+    public async Task<IdentityResult> DeleteUserAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user is not null)
+        {
+            return await _userManager.DeleteAsync(user);
+        }
+
+        return IdentityResult.Failed();
+    }
+
+    /// <summary>
     /// Returns selected user.
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet("{userId}")]
+    [HttpGet("user/{userId}")]
     [AllowAnonymous]
     public async Task<ActionResult<User>> GetByIdUserAsync(string userId)
     {
@@ -322,22 +338,6 @@ public class UsersManagementController : ControllerBase
         }
 
         return BadRequest();
-    }
-
-    /// <summary>
-    /// Delete selected user.
-    /// </summary>
-    /// <returns>.</returns>
-    [HttpDelete("{id}")]
-    public async Task<IdentityResult> DeleteUserAsync(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user is not null)
-        {
-            return await _userManager.DeleteAsync(user);
-        }
-
-        return IdentityResult.Failed();
     }
 
     private IUserEmailStore<User> GetEmailStore()

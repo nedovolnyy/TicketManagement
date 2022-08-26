@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/UsersManagement": {
+    "/api/UsersManagement/users": {
       "get": {
         "tags": [
           "UsersManagement"
@@ -28,7 +28,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/UsersManagement/user": {
       "post": {
         "tags": [
           "UsersManagement"
@@ -103,7 +105,40 @@
         }
       }
     },
-    "/api/UsersManagement/{userId}": {
+    "/api/UsersManagement/user/{id}": {
+      "delete": {
+        "tags": [
+          "UsersManagement"
+        ],
+        "summary": "Delete selected user.",
+        "operationId": "UsersManagement_DeleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UsersManagement/user/{userId}": {
       "get": {
         "tags": [
           "UsersManagement"
@@ -677,39 +712,6 @@
         "responses": {
           "200": {
             "description": "."
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/{id}": {
-      "delete": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Delete selected user.",
-        "operationId": "UsersManagement_DeleteUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityResult"
-                }
-              }
-            }
           }
         }
       }

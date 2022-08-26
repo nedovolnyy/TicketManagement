@@ -28,7 +28,7 @@ public class EventManagementController : ControllerBase
     /// Returns list of the events.
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet]
+    [HttpGet("events")]
     [AllowAnonymous]
     public async Task<List<Event>> GetAllEventsAsync()
         => await _eventRepository.GetAll().ToListAsyncSafe();
@@ -37,7 +37,7 @@ public class EventManagementController : ControllerBase
     /// Add new event.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPost]
+    [HttpPost("event")]
     public async Task InsertEventAsync(Event @event, [Optional] decimal price)
     {
         await ValidateAsync(@event);
@@ -48,7 +48,7 @@ public class EventManagementController : ControllerBase
     /// Update selected event.
     /// </summary>
     /// <returns>.</returns>
-    [HttpPut]
+    [HttpPut("event")]
     public async Task UpdateEventAsync(Event @event, [Optional] decimal price)
     {
         await ValidateAsync(@event);
@@ -59,7 +59,7 @@ public class EventManagementController : ControllerBase
     /// Delete selected event.
     /// </summary>
     /// <returns>.</returns>
-    [HttpDelete("{eventId:int}")]
+    [HttpDelete("event/{eventId:int}")]
     public async Task DeleteEventAsync(int eventId)
     {
         await _eventRepository.DeleteAsync(eventId);
@@ -69,7 +69,7 @@ public class EventManagementController : ControllerBase
     /// Returns selected event.
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet("{eventId:int}")]
+    [HttpGet("event/{eventId:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(Event), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -96,7 +96,7 @@ public class EventManagementController : ControllerBase
     /// Returns list of the events into selected layoutId.
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet("GetAllEventsByLayoutId/{layoutId:int}")]
+    [HttpGet("EventsByLayoutId/{layoutId:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<Event>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -109,7 +109,7 @@ public class EventManagementController : ControllerBase
     /// Get price by eventId.
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet("GetPriceByEventId/{eventId:int}")]
+    [HttpGet("PriceByEventId/{eventId:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(decimal), StatusCodes.Status200OK)]
     public async Task<ActionResult<decimal>> GetPriceByEventIdAsync(int eventId)
@@ -121,7 +121,7 @@ public class EventManagementController : ControllerBase
     /// Get seats available count by eventId..
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet("GetSeatsAvailableCount/{eventId:int}")]
+    [HttpGet("SeatsAvailableCount/{eventId:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     public async Task<ActionResult<int>> GetSeatsAvailableCountAsync(int eventId)
@@ -133,7 +133,7 @@ public class EventManagementController : ControllerBase
     /// Get seats count by layoutId.
     /// </summary>
     /// <returns>.</returns>
-    [HttpGet("GetSeatsCount/{layoutId:int}")]
+    [HttpGet("SeatsCount/{layoutId:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     public async Task<ActionResult<int>> GetSeatsCountAsync(int layoutId)

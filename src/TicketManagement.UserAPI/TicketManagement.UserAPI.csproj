@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Compile Remove="Client\UserApiClientGenerated.cs" />
-    <Compile Remove="Controllers\TestController.cs" />
   </ItemGroup>
 
   <ItemGroup>
