@@ -1,0 +1,93 @@
+﻿@using EventManagementApiClientGenerated
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.WebUI.Models
+@model EventModel
+
+@inject IViewLocalizer Localizer
+@inject LayoutManagementApiClient LayoutManagementApiClient
+
+@{
+    var timezoneList = TimeZoneInfo.GetSystemTimeZones()
+        ?.Select(c => new SelectListItem { Value = c.BaseUtcOffset.ToString(), Text = c.DisplayName })
+        .ToList();
+    var eventId = Context.Request.Query["eventId"];
+    var layout = await LayoutManagementApiClient.GetByIdLayoutAsync(int.Parse(Model.LayoutsId[0]));
+    var layoutId = layout.Id;
+    var selectListLayoutsId = (await LayoutManagementApiClient.GetAllLayoutsAsync())
+        ?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+        .ToList();
+}
+
+<h3>@ViewData["Title"]</h3>
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post" asp-action="Edit" asp-controller="EventsManagement">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Name" class="form-control" />
+                <label asp-for="Name" class="form-label"></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Description" class="form-control" />
+                <label asp-for="Description" class="form-label"></label>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="EventTime" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+                <label asp-for="EventTime" class="form-label"></label>
+                <span asp-validation-for="EventTime" class="text-danger"></span>
+                <div class="form-floating">
+                    <select name="timeZone" asp-items="timezoneList" class="form-select"></select>
+                    <label class="form-label">@Localizer["Time Zone for Event"]</label>
+                </div>
+            </div>
+            <div class="form-floating">
+                <input asp-for="EventEndTime" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+                <label asp-for="EventEndTime" class="form-label"></label>
+                <span asp-validation-for="EventEndTime" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="EventLogoImage" class="form-control" />
+                <label asp-for="EventLogoImage" class="form-label"></label>
+                <span asp-validation-for="EventLogoImage" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                @{
+                    if (ViewBag.isAllAvailableSeats)
+                    {
+                        @Html.DropDownListFor(m=>layoutId, selectListLayoutsId, "Default label", new { @class = "form-select"})
+                    }
+                    else
+                    {
+                        <input name="layoutId" value="@layout.Id" class="form-control invisible" hidden></input>
+                        <input class="form-control" value="@layout.Name" disabled></input>
+                    }
+                }
+                <label class="form-label">@Localizer["Layout"]</label>
+            </div>
+            <div class="form-floating">
+                @{
+                    if (ViewBag.isAllAvailableSeats)
+                    {
+                        <input asp-for="Price" class="currencyInput form-control"></input>
+                    }
+                    else
+                    {
+                        <input asp-for="Price" class="currencyInput form-control" disabled></input>
+                    }
+                }
+                <label asp-for="Price" class="form-label"></label>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="table-active invisible">
+                <input name="eventId" value="@eventId" hidden />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">@Localizer["Edit Event"]</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

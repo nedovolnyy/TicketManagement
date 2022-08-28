@@ -1,0 +1,36 @@
+﻿@using EventManagementApiClientGenerated
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.DI
+
+@model Layout
+@inject IViewLocalizer Localizer
+@inject VenueManagementApiClient VenueManagementApiClient
+
+@{
+    var selectListVenueId = (await VenueManagementApiClient.GetAllVenuesAsync())
+        ?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+        .ToList();
+}
+
+<form asp-action="Create" asp-controller="LayoutsManagement">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input type="text" asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <input type="text" asp-for="Description" class="form-control" />
+    </div>
+    <div class="form-floating">
+        <select asp-for="VenueId" asp-items="selectListVenueId" class="form-select"></select>
+        <label class="form-label">VenueId</label>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="@Localizer["Add"]" class="btn btn-outline-secondary" />
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

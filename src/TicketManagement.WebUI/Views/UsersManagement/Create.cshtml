@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using UserApiClientGenerated
+
+@model CreateUser
+@inject IViewLocalizer Localizer
+
+<form asp-action="Create" asp-controller="UsersManagement">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input type="text" asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input type="password" asp-for="Password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="FirstName" class="control-label"></label>
+        <input type="text" asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="SurName" class="control-label"></label>
+        <input type="text" asp-for="SurName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="control-label"></label>
+        <input type="text" asp-for="PhoneNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="@Localizer["Add"]" class="btn btn-outline-secondary" />
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

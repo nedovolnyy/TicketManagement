@@ -1,0 +1,55 @@
+﻿@using EventManagementApiClientGenerated
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@model IEnumerable<Venue>
+@inject IViewLocalizer Localizer
+
+<div class="form-group">
+    <div class="wrap">
+        <div class="left">
+            <table class="table">
+                <tr><th>@Localizer["Name"]</th><th>@Localizer["Description"]</th><th>@Localizer["Address"]</th><th>@Localizer["Phone"]</th></tr>
+                @foreach (var venue in Model)
+                {
+                    <tr>
+                        <td>
+                            @venue.Name;
+                            <br />
+                        </td>
+                        <td>
+                            @venue.Description;
+                            <br />
+                        </td>
+                        <td>
+                            @venue.Address;
+                            <br />
+                        </td>
+                        <td>
+                            @venue.Phone;
+                            <br />
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div><div class="right">
+            <table class="table">
+                <tr><th></th></tr>
+                <tr>
+                    <td>
+                        <form asp-action="SelectLayouts" asp-controller="EventsManagement" method="post">
+                            <input type="hidden" />
+                            <div class="table-active">
+                                @foreach (var venue in Model)
+                                {
+                                    <input type="checkbox" name="venuesId" value="@venue.Id" />
+                                    <hr />
+                                }
+                            </div>
+                            <button type="submit" class="btn btn-primary">@Localizer["Select"]</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TicketManagement.Common.Identity
+
+@inject IViewLocalizer Localizer
+
+@if (User.Identity is not null && User.Identity.IsAuthenticated)
+{
+    <ul class="navbar-nav">
+        @if (User.IsInRole(nameof(Roles.EventManager)) || User.IsInRole(nameof(Roles.Administrator)))
+        {
+            <li class="nav-item e-upload e-control-wrapper e-lib e-keyboard">
+                <form asp-controller="ThirdPartyEvents" asp-action="Preview" method="post"
+              enctype="multipart/form-data">
+                    <label>@Localizer["Upload Event from file:"]</label>
+                    <input type="file" name="file" accept=".json" onchange="this.form.submit()" style="border: 1px dashed #adb5bd; padding: 5px;"/>
+                </form>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="EventsManagement" asp-action="SelectVenues">@Localizer["Create event"]</a>
+            </li>
+        }
+        @if (User.IsInRole(nameof(Roles.Administrator)))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="AreasManagement" asp-action="Index">@Localizer["Areas management"]</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="LayoutsManagement" asp-action="Index">@Localizer["Layouts management"]</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="VenuesManagement" asp-action="Index">@Localizer["Venues management"]</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="UsersManagement" asp-action="Index">@Localizer["Users management"]</a>
+            </li>
+        }
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Home" asp-action="Cart" asp-action="Index">@Localizer["Cart"]</a>
+            </li>
+        }
+    </ul>
+}

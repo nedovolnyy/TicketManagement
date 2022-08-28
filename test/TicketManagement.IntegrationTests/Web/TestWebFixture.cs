@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Net.Http;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
 namespace TicketManagement.IntegrationTests.Web
@@ -25,8 +23,6 @@ namespace TicketManagement.IntegrationTests.Web
             WebApplicationFactory = new WebApplicationFactory<Program>()
         .WithWebHostBuilder(builder =>
         {
-            builder.UseEnvironment("Testing");
-            builder.ConfigureLogging(p => p.AddFilter(logLevel => logLevel >= LogLevel.Warning));
             builder.ConfigureServices(services =>
             {
             });

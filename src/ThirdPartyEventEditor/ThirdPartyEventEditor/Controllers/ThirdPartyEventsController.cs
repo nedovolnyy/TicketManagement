@@ -54,5 +54,15 @@
 
             return RedirectToAction("Index");
         }
+
+        public ActionResult Error(HandleErrorInfo exception)
+        {
+            return View(exception);
+        }
+
+        public ActionResult NotFound(HandleErrorInfo exception)
+        {
+            return View(exception);
+        }
     }
 }

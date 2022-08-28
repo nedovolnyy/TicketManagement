@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -7,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 
@@ -29,10 +29,14 @@ namespace TicketManagement.IntegrationTests.Database
             WebApplicationFactory = new WebApplicationFactory<Program>()
         .WithWebHostBuilder(builder =>
         {
-            builder.UseEnvironment("Testing");
-            builder.ConfigureLogging(p => p.AddFilter(logLevel => logLevel >= LogLevel.Warning));
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("testconfig.json", true)
+                .Build();
+            builder.UseConfiguration(config);
             builder.ConfigureServices(services =>
             {
+                services.AddRepositories(config.GetConnectionString("DefaultConnection"));
             });
         });
             Client = WebApplicationFactory.CreateClient();
@@ -40,7 +44,6 @@ namespace TicketManagement.IntegrationTests.Database
             _scope = WebApplicationFactory.Services.CreateScope();
             ServiceProvider = _scope.ServiceProvider;
             DatabaseContext = ServiceProvider.GetRequiredService<IDatabaseContext>();
-
             AssertionOptions.FormattingOptions.MaxLines = 500;
             await InitiallizeDatabase();
         }
