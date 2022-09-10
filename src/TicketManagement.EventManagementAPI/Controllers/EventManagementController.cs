@@ -5,6 +5,7 @@ using TicketManagement.Common.DI;
 using TicketManagement.Common.Entities;
 using TicketManagement.Common.Identity;
 using TicketManagement.Common.Validation;
+using TicketManagement.EventManagementAPI.Helper;
 
 namespace TicketManagement.EventManagementAPI.Controllers;
 
@@ -12,6 +13,7 @@ namespace TicketManagement.EventManagementAPI.Controllers;
 /// Resource for the operations against the event entity.
 /// </summary>
 [ApiController]
+[AllowCrossSiteJson]
 [Authorize(Roles = nameof(Roles.Administrator) + "," + nameof(Roles.EventManager))]
 [Route("api/[controller]")]
 [Produces("application/json")]

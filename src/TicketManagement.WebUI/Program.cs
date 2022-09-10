@@ -176,12 +176,16 @@ services.AddTransient<BackendApiAuthenticationHttpClientHandler>();
 
 services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
 
+if (!builder.Configuration.GetValue<bool>("UseReact"))
+{
 services.AddMvc(options =>
 {
     options.Filters.Add(new RequireHttpsAttribute());
     options.Filters.Add<SerilogMvcLoggingAttribute>();
 });
+}
 
+services.AddRazorPages();
 services.AddDatabaseDeveloperPageExceptionFilter();
 
 var app = builder.Build();
