@@ -1,0 +1,70 @@
+.eventTime
+{
+    font-size: 0.75em;
+}
+
+.noneDecoration
+{
+    text-decoration: none;
+}
+
+.img__container {
+    position: relative;
+    margin: 20px auto 30px auto;
+}
+
+    .img__container > img {
+        display: inline-block;
+        width: 450px;
+        height: 200px;
+        border-radius: 4px;
+        box-shadow: 0 0 6px #9E9E9E;
+        border: 4px solid #fff;
+    }
+
+.img__description {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 15px;
+    background: transparent;
+    background-image: linear-gradient(to bottom, #11de93, #0e7ad6);
+    opacity: 0.65;
+}
+
+.img__header {
+    font-weight: bold;
+    font-family: Georgia;
+    font-size: 0.85em;
+    text-decoration: none;
+    overflow: hidden;
+    color: black;
+}
+
+.image {
+    display: block;
+    margin: 20px auto 30px auto;
+    box-shadow: -6px 6px 0 #E0E0E0, -12px 12px 0 #BDBDBD;
+    margin-bottom: 10px;
+    border: 6px solid #F5F5F5;
+}
+
+div.text {
+    font-family: Impact;
+    overflow: hidden;
+    font-size: 0.95em;
+    margin-bottom: -18px;
+}
+
+    div.text div.left {
+        float: left;
+        margin-left: 5px;
+        color: black;
+    }
+
+    div.text div.right {
+        float: right;
+        margin-right: 5px;
+        color: brown;
+    }

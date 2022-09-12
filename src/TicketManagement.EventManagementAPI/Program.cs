@@ -21,6 +21,17 @@ builder.WebHost.UseUrls("https://*:5000").ConfigureKestrel(options =>
     options.ListenAnyIP(5003, configure => configure.UseHttps());
 });
 
+services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy", builder =>
+    {
+        builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins("https://localhost:44414");
+    });
+});
+
 services.AddEndpointsApiExplorer();
 services.AddOptions().Configure<UserApiOptions>(binder => binder.UserApiAddress = builder.Configuration["UserApiAddress"]);
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -44,6 +55,7 @@ app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
 app.UseOpenApi();
 app.UseSwaggerUi3();
 app.UseHttpsRedirection();
+app.UseCors("CORSPolicy");
 
 app.UseRouting();
 app.UseAuthentication();
