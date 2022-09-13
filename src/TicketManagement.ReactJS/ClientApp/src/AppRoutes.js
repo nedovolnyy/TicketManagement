@@ -1,4 +1,6 @@
 import { Counter } from "./views/Counter";
+import  Cart  from "./views/Cart";
+import { NoBalance } from "./views/NoBalance";
 import { Home } from "./views/Home";
 
 const AppRoutes = [
@@ -9,6 +11,14 @@ const AppRoutes = [
   {
     path: '/counter',
     element: <Counter />
+  },
+  {
+    path: '/cart',
+    element: <Cart />
+  },
+  {
+    path: '/nobalance',
+    element: <NoBalance />
   }
 ];
 
