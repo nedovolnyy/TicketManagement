@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import 'moment-timezone';
 import './EventImg.css';
 
 export default function EventImg(props) {
+  const { t } = useTranslation();
   const [seatsAvailableCount, setSeatsAvailableCount] = useState();
   const [seatsCount, setSeatsCount] = useState();
 
@@ -65,7 +67,7 @@ export default function EventImg(props) {
             </div>
             <div className='text' key={'text3_' + props.event.id}>
               <div className='right eventTime' key={'rightAv' + props.event.id}>
-                <p key={'p3' + props.event.id}>Avalaible</p>
+                <p key={'p3' + props.event.id}>{t('Avalaible')}</p>
               </div>
             </div>
           </div>

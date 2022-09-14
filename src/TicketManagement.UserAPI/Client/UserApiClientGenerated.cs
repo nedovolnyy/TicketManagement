@@ -1784,7 +1784,7 @@ namespace UserApiClientGenerated
                 throw new System.ArgumentNullException("model");
 
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Users/register");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Users/Register");
 
             var client_ = _httpClient;
             var disposeClient_ = false;

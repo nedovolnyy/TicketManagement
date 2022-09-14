@@ -25,7 +25,7 @@ public class UsersController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("register")]
+    [HttpPost("Register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         _logger.LogInformation("Trying to register a new user.");
@@ -79,7 +79,7 @@ public class UsersController : ControllerBase
             { StatusCode = 500 };
         }
 
-        var roleName = await _userManager.GetRolesAsync(newUser);
+        var roleName = (List<string>)await _userManager.GetRolesAsync(newUser);
         var jwtToken = _jwtTokenService.GenerateJwtToken(newUser, roleName);
 
         _logger.LogInformation($"The user with name {model.Email} was registered.");
@@ -88,6 +88,11 @@ public class UsersController : ControllerBase
         {
             Result = true,
             Token = jwtToken,
+            Roles = roleName.ConvertAll(
+                delegate(string x)
+                {
+                    return (Roles)Enum.Parse(typeof(Roles), x);
+                }),
         });
     }
 
@@ -150,7 +155,7 @@ public class UsersController : ControllerBase
             });
         }
 
-        var roleName = await _userManager.GetRolesAsync(existingUser);
+        var roleName = (List<string>)await _userManager.GetRolesAsync(existingUser);
         var jwtToken = _jwtTokenService.GenerateJwtToken(existingUser, roleName);
 
         _logger.LogInformation($"The user with email {model.Email} was logged in.");
@@ -160,6 +165,11 @@ public class UsersController : ControllerBase
             Result = true,
             Token = jwtToken,
             User = existingUser,
+            Roles = roleName.ConvertAll(
+                delegate(string x)
+                {
+                    return (Roles)Enum.Parse(typeof(Roles), x);
+                }),
         });
     }
 

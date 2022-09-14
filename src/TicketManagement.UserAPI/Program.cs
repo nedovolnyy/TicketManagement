@@ -29,6 +29,18 @@ builder.WebHost.UseUrls("https://*:5000").ConfigureKestrel(options =>
     options.ListenAnyIP(5004, configure => configure.UseHttps());
 });
 
+services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy", builder =>
+    {
+        builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .WithOrigins("https://localhost:44414", "http://localhost:3000", "http://localhost:3001");
+    });
+});
+
 services.AddDbContext<UserApiDbContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
@@ -104,6 +116,7 @@ app.UseRewriter(new RewriteOptions().AddRedirect("^$", "swagger"));
 app.UseOpenApi();
 app.UseSwaggerUi3();
 app.UseHttpsRedirection();
+app.UseCors("CORSPolicy");
 
 app.UseRouting();
 

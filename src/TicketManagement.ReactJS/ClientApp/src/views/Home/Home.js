@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import EventImg from '../components/EventImg';
+import EventImg from '..//../components/EventImg';
 
 export class Home extends Component {
   static displayName = Home.name;

@@ -11,6 +11,8 @@ namespace TicketManagement.Common.JwtTokenAuth
 
         public User User { get; set; }
 
+        public List<Roles> Roles { get; set; }
+
         public List<string> Errors { get; set; }
     }
 }

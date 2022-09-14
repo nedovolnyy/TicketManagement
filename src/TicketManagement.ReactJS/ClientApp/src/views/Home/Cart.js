@@ -22,7 +22,7 @@ export default function Cart() {
       <h2>{t('Total purchase:')} @Model.CartCount</h2>
       <h1>{t('Purchase history:')}</h1>
 
-      <h7>@Model.PayHistory</h7>
+      <h3>@Model.PayHistory</h3>
     </>
   );
 }

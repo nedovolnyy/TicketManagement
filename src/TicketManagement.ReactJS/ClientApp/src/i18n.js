@@ -1,4 +1,4 @@
-import by from './localization/by-BY.json'
+import by from './localization/be-BY.json'
 import en from './localization/en-EN.json'
 import ru from './localization/ru-RU.json'
 
@@ -23,7 +23,7 @@ i18n
   .init({
     resources,
     lng: JSON.parse(localStorage.getItem('language')),
-    fallbackLng: 'ru'
+    fallbackLng: 'en'
   })
 
 export default i18n;
