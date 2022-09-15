@@ -1,10 +1,12 @@
-# Task-4
+# Task-5
 
 ## How many items from requirements was completed?
-*  all
+    - Feature flags?
+    - Part of refactoring
+    - Switcher for presintation layers(into appsettings.json)
 
 ## Possible Drawbacks/Concerns (What should reviewers look out for?)
-* 
+*
 
 ## Testing Notes (How do we know this works & doesn't break other things)
 * Created automated db creation for integration tests.
@@ -12,6 +14,7 @@
 ## Structure
 * [ThirdPartyEventEditor](/src/ThirdPartyEventEditor/) - Third-party event editor(.NET Framework)
 * [WebUI](/src/TicketManagement.WebUI/) - Constains ASP.NET Core WebApp project.
+* [ReactJS](/src/TicketManagement.ReactJS/) - Constains single-page application (SPA).
 * [UserAPI](/src/TicketManagement.UserAPI/) - Constains ASP.NET Core WebAPI project.
 * [EventManagementAPI](/src/TicketManagement.EventManagementAPI/) - Constains ASP.NET Core WebAPI project.
 * [Common](src/TicketManagement.Common) - Contains entity classes and validation of exception class.
@@ -27,6 +30,7 @@
 4. Solution Property Pages
 5. Expand the Common Properties node, and choose Startup Project
 6. Choose the Multiple Startup Projects option and set this projects:
+    - [X] [ReactJS](/src/TicketManagement.ReactJS/) :44414
     - [X] [WebUI](/src/TicketManagement.WebUI/) :7114
     - [X] [UserAPI](/src/TicketManagement.UserAPI/) :5004
     - [X] [EventManagementAPI](/src/TicketManagement.EventManagementAPI/) :5003

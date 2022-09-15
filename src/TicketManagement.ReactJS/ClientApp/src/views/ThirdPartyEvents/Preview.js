@@ -2,24 +2,32 @@ import React, { Component } from "react"
 import { Container, Button, Form } from "reactstrap"
 import { withTranslation } from "react-i18next"
 import './Preview.css'
+import { DataNavigation } from 'react-data-navigation';
 
 class PreviewPlain extends Component {
   static displayName = PreviewPlain.name;
-  constructor(props){
-    super()
-    this.thirdPartyEvents = props.thirdPartyEvents;
-  }
-  
-  componentDidMount(){
-    this.getThirdPartyEvents();
-  }
-
-  getThirdPartyEvents () {
-    //const thirdPartyEvents = React.useContext();
+  constructor(props) {
+    super(props)
+    this.state = DataNavigation.getData('ThirdPartyEvents');
   }
 
   render() {
     const { t } = this.props;
+    var ThirdPartyEvents = JSON.parse(this.state.result);
+    console.log(ThirdPartyEvents);
+
+    fetch(this.state)
+  .then(async (response) => {
+    if (!response.ok) {
+      throw new Error('Network response was not OK');
+    }
+    console.log(await response);
+    return response.blob();
+  })
+  .catch((error) => {
+    console.error('There has been a problem with your fetch operation:', error);
+  });
+
     return (
       <>
         < div className="text-sm-center" >
@@ -57,7 +65,7 @@ class PreviewPlain extends Component {
                 </div>
                 <input className="btn btn-sm btn-primary" type="submit" value={t('Add')} />
               </Form>
-              <Form /*"ThirdPartyEvents/Delete:thirdPartyEvent.Name:@thirdPartyEvent.EventTime:@thirdPartyEvent.Description"*/  method="post">
+              <Form /*"ThirdPartyEvents/Delete:thirdPartyEvent.Name:@thirdPartyEvent.EventTime:@thirdPartyEvent.Description"*/ method="post">
                 <Button type="submit" className="btn btn-sm btn-danger" onClick={() => { window.confirm('Are you sure you want to delete this ThirdPartyEvent?') }} >{t('Delete')}</Button>
               </Form>
             </div>

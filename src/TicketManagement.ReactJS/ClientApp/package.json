@@ -12,6 +12,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.37",
     "react": "^18.2.0",
+    "react-data-navigation": "^1.0.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^11.18.6",
     "react-moment": "^1.1.2",

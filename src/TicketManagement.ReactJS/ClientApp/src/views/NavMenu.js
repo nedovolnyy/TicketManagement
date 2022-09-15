@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ROLES } from '../App';
 import './NavMenu.css';
 import RequireRole from '../helpers/RequireRole';
+import { DataNavigation } from 'react-data-navigation';
 
 function NavMenuPlain(props) {
   const { t } = props;
@@ -15,22 +16,12 @@ function NavMenuPlain(props) {
     setCollapsed(!collapsed);
   }
 
-  const postFile = () => {
-    React.createContext(document.querySelector('input[type="file"]').files[0]);
+  const handleSelectFile = (event) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {};
+    reader.readAsText(event.target.files[0]);
+    DataNavigation.setData('ThirdPartyEvents', reader);
     navigate("ThirdPartyEvents/Preview");
-    /*fetch(
-      mode: 'no-cors',
-      method: "POST",
-      body: data
-    }).then(function (res) {
-      if (res.ok) {
-        alert("Perfect! ");
-      } else if (res.status == 401) {
-        alert("Oops! ");
-      }
-    }, function (e) {
-      alert("Error submitting form!");
-    });*/
   }
 
   return (
@@ -45,7 +36,7 @@ function NavMenuPlain(props) {
                 <li className='nav-item e-upload e-control-wrapper e-lib e-keyboard'>
                   <form /*'ThirdPartyEvents/Preview'*/ method='post' encType='multipart/form-data'>
                     <Label>{t('Upload Event from file:')}</Label>
-                    <Input type='file' name='file' accept='.json' onChange={postFile.bind(this)} className='inputFileStyle' /> {/* todo */}
+                    <Input type='file' name='file' accept='.json' onChange={handleSelectFile} className='inputFileStyle' /> {/* todo */}
                   </form>
                 </li>
                 <NavItem className='nav-item'>
