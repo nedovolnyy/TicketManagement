@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { useTranslation, withTranslation } from 'react-i18next';
 import EventImg from '..//../components/EventImg';
+import RequireRole from '../../helpers/RequireRole';
+import { ROLES } from '../../App';
+import useAuth from '../../hooks/useAuth';
 
-export class Home extends Component {
-  static displayName = Home.name;
+class HomePlain extends Component {
+  static displayName = HomePlain.name;
 
   constructor(props) {
     super(props);
@@ -18,7 +22,7 @@ export class Home extends Component {
       <div className='container'>
         <div className='row'>
           {events.map(event =>
-            <EventImg event={event} key={'EventImg' + event.id} />
+            <EventImg event={event} key={'EventImg' + event.id} allowedRoles={[ROLES.Administrator]}/>
           )}
         </div>
       </div>
@@ -26,13 +30,14 @@ export class Home extends Component {
   }
 
   render() {
+    const { t } = this.props;
     let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : Home.renderIndexPage(this.state.events);
+      ? <p><em>{t('Loading...')}</em></p>
+      : HomePlain.renderIndexPage(this.state.events);
 
     return (
       <div>
-        <p>This component demonstrates fetching data from the server.</p>
+        <EventCount allowedRoles={[ROLES.Administrator, ROLES.EventManager]} count={this.state.events.length} />
         {contents}
       </div>
     );
@@ -52,4 +57,19 @@ export class Home extends Component {
         alert(error);
       });
   }
+}
+
+export const Home = withTranslation()(HomePlain);
+
+export const EventCount = ({ allowedRoles, count }) => {
+  const { auth } = useAuth();
+  const {t}=useTranslation();
+  
+  return (
+    auth?.roles?.find(role => allowedRoles?.includes(role))
+      ? (<div className="text-sm-center">
+        <h5 className="display-4">{t('Total Events:')} {count}</h5>
+      </div>)
+      : false
+  );
 }

@@ -37,7 +37,7 @@ services.AddCors(options =>
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
-        .WithOrigins("https://localhost:44414", "http://localhost:3000", "http://localhost:3001");
+        .WithOrigins("https://localhost:44414");
     });
 });
 

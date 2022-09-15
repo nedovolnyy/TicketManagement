@@ -28,6 +28,7 @@ services.AddCors(options =>
         builder
         .AllowAnyMethod()
         .AllowAnyHeader()
+        .AllowCredentials()
         .WithOrigins("https://localhost:44414");
     });
 });

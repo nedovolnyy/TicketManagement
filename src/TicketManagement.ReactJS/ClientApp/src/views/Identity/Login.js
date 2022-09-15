@@ -1,9 +1,10 @@
-import { useRef, useState, useEffect } from 'react';
-import useAuth from '../../hooks/useAuth';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from '../../api/axios';
+import { useRef, useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import useAuth from '../../hooks/useAuth'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import axios from '../../api/axios'
 
-const LOGIN_URL = '/api/Users/Login';
+const LOGIN_URL = '/api/Users/Login'
 
 const Login = () => {
   const { setAuth } = useAuth();
@@ -57,42 +58,50 @@ const Login = () => {
       errRef.current.focus();
     }
   }
+  const { t } = useTranslation();
 
   return (
-
-    <section>
-      <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-      <h1>Sign In</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">email:</label>
-        <input
-          type="text"
-          id="email"
-          ref={userRef}
-          autoComplete="off"
-          onChange={(e) => setUser(e.target.value)}
-          value={user}
-          required
-        />
-
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          onChange={(e) => setPwd(e.target.value)}
-          value={pwd}
-          required
-        />
-        <button>Sign In</button>
-      </form>
-      <p>
-        Need an Account?<br />
-        <span className="line">
-          <Link to="/Identity/Account/Register">Sign Up</Link>
-        </span>
-      </p>
-    </section>
-
+    <div className="row">
+      <div className="col-md-4">
+        <section>
+          <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+          <h2>{t('Use a local account to log in.')}</h2>
+          <hr />
+          <form onSubmit={handleSubmit}>
+            <div className="form-floating">
+              <label htmlFor="email">{t('Email')}:</label>
+              <input
+                type="text"
+                id="email"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
+                required
+              />
+            </div>
+            <div className="form-floating">
+              <label htmlFor="password">{t('Password')}:</label>
+              <input
+                type="password"
+                id="password"
+                onChange={(e) => setPwd(e.target.value)}
+                value={pwd}
+                required
+              />
+            </div>
+            <div>
+              <button id="login-submit" type="submit" className="w-100 btn btn-lg btn-primary">{t('Log in')}</button>
+            </div>
+            <div>
+              <p>
+                <Link to="/Identity/Account/Register">{t('Register as a new user')}</Link>
+              </p>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
   )
 }
 

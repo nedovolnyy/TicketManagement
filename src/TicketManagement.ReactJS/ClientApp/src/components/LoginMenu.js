@@ -1,75 +1,46 @@
-﻿import React, { Component, Fragment } from 'react';
-import { NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
+﻿import React, { Fragment, useContext } from 'react'
+import { NavItem, NavLink } from 'reactstrap'
+import { useNavigate, Link } from 'react-router-dom'
+import { withTranslation } from 'react-i18next'
+import AuthContext from "../context/AuthProvider";
+import useAuth from '../hooks/useAuth';
 
-class LoginMenuPlain extends Component {
-    constructor(props) {
-        super(props);
+function LoginMenuPlain(props) {
+  const { t } = props;
+  const { auth } = useAuth();
+  const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-        this.state = {
-            isAuthenticated: false,
-            userName: null
-        };
-    }
+  const logout = async () => {
+    setAuth({});
+  }
 
-    componentDidMount() {
-        //this._subscription = authService.subscribe(() => this.populateState());
-        this.populateState();
-    }
-
-    componentWillUnmount() {
-        //authService.unsubscribe(this._subscription);
-    }
-
-    async populateState() {
-        /*const [isAuthenticated, user] = await Promise.all([authService.isAuthenticated(), authService.getUser()])
-        this.setState({
-            isAuthenticated,
-            userName: user && user.name
-        });*/
-    }
-
-    render() {
-        const { isAuthenticated, userName } = this.state;
-        if (!isAuthenticated) {
-            const registerPath = 'Identity/Account/Register';
-            const loginPath = 'Identity/Account/Login';
-            return this.anonymousView(registerPath, loginPath);
-        } else {
-            const profilePath = '/';
-            const logoutPath = { pathname: 'Identity/Account/Logout', state: { local: true } };
-            return this.authenticatedView(userName, profilePath, logoutPath);
-        }
-    }
-
-	authenticatedView(userName, profilePath, logoutPath) {
-		const { t, i18n } = this.props;
-
-        return (<Fragment>
-            <NavItem>
-				<NavLink tag={Link} className="text-dark" to={profilePath}>
-					{t('Hello')} {userName}
-				</NavLink>
-            </NavItem>
-            <NavItem>
-				<NavLink tag={Link} className="text-dark" to={logoutPath}>
-					{t('Logout')}
-				</NavLink>
-            </NavItem>
-        </Fragment>);
-    }
-
-    anonymousView(registerPath, loginPath) {
-        return (<Fragment>
-            <NavItem>
-                <NavLink tag={Link} className="text-dark" to={registerPath}>Register</NavLink>
-            </NavItem>
-            <NavItem>
-                <NavLink tag={Link} className="text-dark" to={loginPath}>Login</NavLink>
-            </NavItem>
-        </Fragment>);
-    }
+  if (!auth?.user) {
+    const registerPath = 'Identity/Account/Register';
+    const loginPath = 'Identity/Account/Login';
+    return (<Fragment>
+      <NavItem>
+        <NavLink tag={Link} className="text-dark" to={registerPath}>{t('Register')}</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink tag={Link} className="text-dark" to={loginPath}>{t('Login')}</NavLink>
+      </NavItem>
+    </Fragment>);
+  } else {
+    const logoutPath = { pathname: 'Identity/Account/Logout', state: { local: true } };
+    return (<Fragment>
+      <NavItem>
+        <NavLink tag={Link} className="text-dark" to='/'>
+          {t('Hello')}, {auth?.user}
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink tag={Link} className="text-dark" to={logoutPath} onClick={logout}>
+          {t('Logout')}
+        </NavLink>
+      </NavItem>
+    </Fragment >);
+  }
 }
 
 export const LoginMenu = withTranslation()(LoginMenuPlain);
