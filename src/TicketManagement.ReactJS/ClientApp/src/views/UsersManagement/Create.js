@@ -9,8 +9,7 @@ class UsersManagementCreatePlain extends Component {
     const { t } = this.props;
     return (
       <>
-        <form asp-action="Create" asp-controller="UsersManagement">
-          <div asp-validation-summary="All" className="text-danger"></div>
+        <form /*UsersManagement/Create*/>
           <div className="form-group">
             <Label asp-for="Email" className="control-label" />
             <Input type="text" asp-for="Email" className="form-control" />
@@ -32,7 +31,7 @@ class UsersManagementCreatePlain extends Component {
             <Input type="text" asp-for="PhoneNumber" className="form-control" />
           </div>
           <div className="form-group">
-            <Input type="submit" value='Add' className="btn btn-outline-secondary" />
+            <Input type="submit" value={t('Add')} className="btn btn-outline-secondary" />
           </div>
         </form>
       </>

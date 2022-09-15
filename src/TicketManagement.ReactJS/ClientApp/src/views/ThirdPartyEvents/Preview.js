@@ -6,69 +6,61 @@ import { DataNavigation } from 'react-data-navigation';
 
 class PreviewPlain extends Component {
   static displayName = PreviewPlain.name;
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = DataNavigation.getData('ThirdPartyEvents');
   }
 
   render() {
     const { t } = this.props;
     var ThirdPartyEvents = JSON.parse(this.state.result);
-    console.log(ThirdPartyEvents);
-
-    fetch(this.state)
-  .then(async (response) => {
-    if (!response.ok) {
-      throw new Error('Network response was not OK');
-    }
-    console.log(await response);
-    return response.blob();
-  })
-  .catch((error) => {
-    console.error('There has been a problem with your fetch operation:', error);
-  });
 
     return (
       <>
         < div className="text-sm-center" >
-          <h5 className="display-4">{t('Total ThirdPartyEvents to Add:')} </h5>
+          <h5 className="display-4">{t('Total ThirdPartyEvents to Add:')} {ThirdPartyEvents.length}</h5>
         </div >
 
         <Container>
           <div className="row">
-            <div className="col">
-              <Form /*"ThirdPartyEvents/Add"*/ method="post" className="form-horizontal" role="form">
-                <div className="img__container visible">
-                  <img className="image shadow-lg" alt="" src='{thirdPartyEvent.EventLogoImage}' />
-                  <div className="img__description">
-                    <div className="text">
-                      <div className="img__header right">Html.ModifyDateTime(thirdPartyEvent.EventTime)</div>
-                      <div className="img__header left"><h2 className="none__text_decoration">@thirdPartyEvent.Name</h2></div>
-                    </div>
-                    <div className="text">
-                      <div className="left">
-                        <p>thirdPartyEvent.Price</p>
+
+            {ThirdPartyEvents.map(ThirdPartyEvent => (
+              <div className="col" key={"col" + ThirdPartyEvents.Id} >
+                <Form /*"ThirdPartyEvents/Add"*/ method="post" className="form-horizontal" role="form" key={"form1_" + ThirdPartyEvents.Id} >
+                  <div className="img__container visible" key={"img__container" + ThirdPartyEvents.Id}>
+                    <img className="image shadow-lg" alt="" src={(ThirdPartyEvent.EventLogoImage)} key={"shadow" + ThirdPartyEvents.Id} />
+                    <div className="img__description" key={"img__description" + ThirdPartyEvents.Id} >
+                      <div className="text" key={"text1_" + ThirdPartyEvents.Id} >
+                        <div className="img__header right" key={"img__headerR" + ThirdPartyEvents.Id} >{ThirdPartyEvent.EventTime}</div>
+                        <div className="img__header left" key={"img__headerL" + ThirdPartyEvents.Id} >
+                          <h2 className="none__text_decoration" key={"none__text_decoration" + ThirdPartyEvents.Id}>{ThirdPartyEvent.Name}</h2>
+                        </div>
                       </div>
-                      <div className="right">
-                        <p>thirdPartyEvent.LayoutId</p>
+                      <div className="text" key={"text2_" + ThirdPartyEvents.Id}>
+                        <div className="left" key={"left1_" + ThirdPartyEvents.Id}>
+                          <p key={"p1_" + ThirdPartyEvents.Id}>{ThirdPartyEvent.Price}</p>
+                        </div>
+                        <div className="right" key={"right1_" + ThirdPartyEvents.Id}>
+                          <p key={"p2_" + ThirdPartyEvents.Id}> {ThirdPartyEvent.LayoutId}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="text">
-                      <div className="right">
-                        <p className="font__size">{t('Layout')}</p>
+                      <div className="text" key={"text3_" + ThirdPartyEvents.Id}>
+                        <div className="right" key={"right2_" + ThirdPartyEvents.Id}>
+                          <p className="font__size" key={"p3_" + ThirdPartyEvents.Id}>{t('Layout')}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="text">
-                  <p>thirdPartyEvent.Description</p>
-                </div>
-                <input className="btn btn-sm btn-primary" type="submit" value={t('Add')} />
-              </Form>
-              <Form /*"ThirdPartyEvents/Delete:thirdPartyEvent.Name:@thirdPartyEvent.EventTime:@thirdPartyEvent.Description"*/ method="post">
-                <Button type="submit" className="btn btn-sm btn-danger" onClick={() => { window.confirm('Are you sure you want to delete this ThirdPartyEvent?') }} >{t('Delete')}</Button>
-              </Form>
-            </div>
+                  <div className="text" key={"text4_" + ThirdPartyEvents.Id}>
+                    <p key={"p4_" + ThirdPartyEvents.Id}>{ThirdPartyEvent.Description}</p>
+                  </div>
+                  <input className="btn btn-sm btn-primary" type="submit" value={t('Add')} key={"btnAdd" + ThirdPartyEvents.Id} />
+                </Form>
+                <Form /*"ThirdPartyEvents/Delete:thirdPartyEvent.Name:@thirdPartyEvent.EventTime:@thirdPartyEvent.Description"*/ method="post" key={"form2_" + ThirdPartyEvents.Id}>
+                  <Button key={"btnDelete" + ThirdPartyEvents.Id} type="submit" className="btn btn-sm btn-danger" onClick={() => { window.confirm('Are you sure you want to delete this ThirdPartyEvent?') }} >{t('Delete')}</Button>
+                </Form>
+              </div>
+            ))}
           </div>
         </Container >
       </>
