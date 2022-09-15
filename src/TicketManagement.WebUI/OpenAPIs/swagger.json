@@ -6,13 +6,13 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/UsersManagement/users": {
+    "/api/AreaManagement/areas": {
       "get": {
         "tags": [
-          "UsersManagement"
+          "AreaManagement"
         ],
-        "summary": "Returns list of the users.",
-        "operationId": "UsersManagement_GetAllUsers",
+        "summary": "Returns list of the areas.",
+        "operationId": "AreaManagement_GetAllAreas",
         "responses": {
           "200": {
             "description": ".",
@@ -21,7 +21,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/Area"
                   }
                 }
               }
@@ -30,30 +30,19 @@
         }
       }
     },
-    "/api/UsersManagement/user": {
+    "/api/AreaManagement/area": {
       "post": {
         "tags": [
-          "UsersManagement"
+          "AreaManagement"
         ],
-        "summary": "Add new user.",
-        "operationId": "UsersManagement_CreateUser",
-        "parameters": [
-          {
-            "name": "password",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
+        "summary": "Add new area.",
+        "operationId": "AreaManagement_InsertArea",
         "requestBody": {
-          "x-name": "model",
+          "x-name": "area",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/Area"
               }
             }
           },
@@ -62,29 +51,22 @@
         },
         "responses": {
           "200": {
-            "description": ".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityResult"
-                }
-              }
-            }
+            "description": "."
           }
         }
       },
       "put": {
         "tags": [
-          "UsersManagement"
+          "AreaManagement"
         ],
-        "summary": "Update existed user.",
-        "operationId": "UsersManagement_EditUser",
+        "summary": "Update selected area.",
+        "operationId": "AreaManagement_UpdateArea",
         "requestBody": {
-          "x-name": "model",
+          "x-name": "area",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateUser"
+                "$ref": "#/components/schemas/Area"
               }
             }
           },
@@ -93,411 +75,50 @@
         },
         "responses": {
           "200": {
-            "description": ".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateUser"
-                }
-              }
-            }
+            "description": "."
           }
         }
       }
     },
-    "/api/UsersManagement/user/{id}": {
+    "/api/AreaManagement/area/{areaId}": {
       "delete": {
         "tags": [
-          "UsersManagement"
+          "AreaManagement"
         ],
-        "summary": "Delete selected user.",
-        "operationId": "UsersManagement_DeleteUser",
+        "summary": "Delete selected area.",
+        "operationId": "AreaManagement_DeleteArea",
         "parameters": [
           {
-            "name": "id",
+            "name": "areaId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "integer",
+              "format": "int32"
             },
             "x-position": 1
           }
         ],
         "responses": {
           "200": {
-            "description": ".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/user/{userId}": {
-      "get": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Returns selected user.",
-        "operationId": "UsersManagement_GetByIdUser",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/UserName/{userId}": {
-      "post": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Sets the given userName for the specified userId.",
-        "operationId": "UsersManagement_SetUserName",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "The user whose name should be set.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "userName",
-            "in": "query",
-            "description": "The user name to set.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The Task that represents the asynchronous operation."
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/HasPassword/{userId}": {
-      "get": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Gets a flag indicating whether the specified user has a password.",
-        "operationId": "UsersManagement_HasPassword",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/IsEmailConfirmed/{userId}": {
-      "get": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Gets a flag indicating whether the email address for the specified userId has been verified, true if the email address is verified otherwise\nfalse.",
-        "operationId": "UsersManagement_IsEmailConfirmed",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "The user whose email confirmation status should be returned.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The task object containing the results of the asynchronous operation, a flag indicating whether the email address for the specified userId\nhas been confirmed or not.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/EmailToken/{userId}": {
-      "post": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Generates an email change token for the specified user.",
-        "operationId": "UsersManagement_GenerateChangeEmailToken",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "The user to generate an email change token for.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "newEmail",
-            "in": "query",
-            "description": "The new email address.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The Task that represents the asynchronous operation, an email change token.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/password/{userId}": {
-      "put": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Returns selected user.",
-        "operationId": "UsersManagement_ChangePassword",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "currentPassword",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          },
-          {
-            "name": "newPassword",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 3
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityResult"
-                }
-              }
-            }
+            "description": "."
           }
         }
       },
-      "post": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Returns a flag indicating whether the given password is valid for the\nspecified userId.",
-        "operationId": "UsersManagement_CheckPassword",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "The user whose password should be validated.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "description": "The password to validate.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The Task that represents the asynchronous operation, containing true if\n            the specified password matches the one store for the userId,\n            otherwise false.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/RefreshSignIn/{userId}": {
-      "post": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Signs in the specified userId, whilst preserving the existing\nAuthenticationProperties of the current signed-in user like rememberMe, as an asynchronous operation.",
-        "operationId": "UsersManagement_RefreshSignIn",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "The user to sign-in.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The task object representing the asynchronous operation."
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/PhoneNumber/{userId}": {
-      "put": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Sets the phone number for the specified userId.",
-        "operationId": "UsersManagement_SetPhoneNumber",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "description": "The user whose phone number to set.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "phoneNumber",
-            "in": "query",
-            "description": "The phone number to set.",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The Task that represents the asynchronous operation, containing the IdentityResult\nof the operation.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/IdentityResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/role/{userId}": {
       "get": {
         "tags": [
-          "UsersManagement"
+          "AreaManagement"
         ],
-        "summary": "Returns selected users role.",
-        "operationId": "UsersManagement_GetRoleById",
+        "summary": "Returns selected area.",
+        "operationId": "AreaManagement_GetByIdArea",
         "parameters": [
           {
-            "name": "userId",
+            "name": "areaId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "integer",
+              "format": "int32"
             },
             "x-position": 1
           }
@@ -508,7 +129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChangeRole"
+                  "$ref": "#/components/schemas/Area"
                 }
               }
             }
@@ -524,151 +145,42 @@
             }
           }
         }
-      },
-      "put": {
+      }
+    },
+    "/api/AreaManagement/AreasByLayoutId/{layoutId}": {
+      "get": {
         "tags": [
-          "UsersManagement"
+          "AreaManagement"
         ],
-        "summary": "Change role selected user.",
-        "operationId": "UsersManagement_ChangeRole",
+        "summary": "Returns list of the areas into selected layoutId.",
+        "operationId": "AreaManagement_GetAllAreasByLayoutId",
         "parameters": [
           {
-            "name": "userId",
+            "name": "layoutId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "requestBody": {
-          "x-name": "roles",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "required": true,
-          "x-position": 2
-        },
-        "responses": {
-          "200": {
-            "description": "."
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/cart": {
-      "put": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Change cart selected user.",
-        "operationId": "UsersManagement_EditCart",
-        "parameters": [
-          {
-            "name": "money",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "userId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "."
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/UsersManagement/purchase": {
-      "post": {
-        "tags": [
-          "UsersManagement"
-        ],
-        "summary": "Purchase methods for selected user.",
-        "operationId": "UsersManagement_Purchase",
-        "parameters": [
-          {
-            "name": "eventSeatId",
-            "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
             },
             "x-position": 1
-          },
-          {
-            "name": "returnUrl",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 2
-          },
-          {
-            "name": "price",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 3
-          },
-          {
-            "name": "userId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 4
           }
         ],
         "responses": {
           "200": {
-            "description": "."
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Area"
+                  }
+                }
+              }
+            }
           },
-          "400": {
+          "404": {
             "description": "",
             "content": {
               "application/json": {
@@ -681,32 +193,695 @@
         }
       }
     },
-    "/api/UsersManagement/language/{userId}": {
+    "/api/EventAreaManagement/eventAreas": {
+      "get": {
+        "tags": [
+          "EventAreaManagement"
+        ],
+        "summary": "Returns list of the eventAreas.",
+        "operationId": "EventAreaManagement_GetAllEventAreas",
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventArea"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventAreaManagement/eventArea": {
       "post": {
         "tags": [
-          "UsersManagement"
+          "EventAreaManagement"
         ],
-        "summary": "Change language selected user.",
-        "operationId": "UsersManagement_SetLanguage",
+        "summary": "Add new eventArea.",
+        "operationId": "EventAreaManagement_InsertEventArea",
+        "requestBody": {
+          "x-name": "eventArea",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventArea"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "EventAreaManagement"
+        ],
+        "summary": "Update selected eventArea.",
+        "operationId": "EventAreaManagement_UpdateEventArea",
+        "requestBody": {
+          "x-name": "eventArea",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventArea"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/EventAreaManagement/eventArea/{eventAreaId}": {
+      "delete": {
+        "tags": [
+          "EventAreaManagement"
+        ],
+        "summary": "Delete selected eventArea.",
+        "operationId": "EventAreaManagement_DeleteEventArea",
         "parameters": [
           {
-            "name": "culture",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          },
-          {
-            "name": "userId",
+            "name": "eventAreaId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "EventAreaManagement"
+        ],
+        "summary": "Returns selected eventArea.",
+        "operationId": "EventAreaManagement_GetByIdEventArea",
+        "parameters": [
+          {
+            "name": "eventAreaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventArea"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventAreaManagement/EventAreasByEventId/{eventId}": {
+      "get": {
+        "tags": [
+          "EventAreaManagement"
+        ],
+        "summary": "Returns list of the eventAreas into selected eventId.",
+        "operationId": "EventAreaManagement_GetAllEventAreasByEventId",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventArea"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventManagement/events": {
+      "get": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Returns list of the events.",
+        "operationId": "EventManagement_GetAllEvents",
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventManagement/event": {
+      "post": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Add new event.",
+        "operationId": "EventManagement_InsertEvent",
+        "parameters": [
+          {
+            "name": "price",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
             },
             "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "event",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Update selected event.",
+        "operationId": "EventManagement_UpdateEvent",
+        "parameters": [
+          {
+            "name": "price",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "decimal"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "event",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/EventManagement/event/{eventId}": {
+      "delete": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Delete selected event.",
+        "operationId": "EventManagement_DeleteEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Returns selected event.",
+        "operationId": "EventManagement_GetByIdEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventManagement/IsAllAvailableSeats/{eventId}": {
+      "get": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Is all available seats in selected event.",
+        "operationId": "EventManagement_IsAllAvailableSeats",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventManagement/EventsByLayoutId/{layoutId}": {
+      "get": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Returns list of the events into selected layoutId.",
+        "operationId": "EventManagement_GetAllEventsByLayoutId",
+        "parameters": [
+          {
+            "name": "layoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventManagement/PriceByEventId/{eventId}": {
+      "get": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Get price by eventId.",
+        "operationId": "EventManagement_GetPriceByEventId",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "decimal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventManagement/SeatsAvailableCount/{eventId}": {
+      "get": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Get seats available count by eventId..",
+        "operationId": "EventManagement_GetSeatsAvailableCount",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventManagement/SeatsCount/{layoutId}": {
+      "get": {
+        "tags": [
+          "EventManagement"
+        ],
+        "summary": "Get seats count by layoutId.",
+        "operationId": "EventManagement_GetSeatsCount",
+        "parameters": [
+          {
+            "name": "layoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventSeatManagement/eventSeats": {
+      "get": {
+        "tags": [
+          "EventSeatManagement"
+        ],
+        "summary": "Returns list of the eventSeats.",
+        "operationId": "EventSeatManagement_GetAllEventSeats",
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSeat"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventSeatManagement/eventSeat": {
+      "post": {
+        "tags": [
+          "EventSeatManagement"
+        ],
+        "summary": "Add new eventSeat.",
+        "operationId": "EventSeatManagement_InsertEventSeat",
+        "requestBody": {
+          "x-name": "eventSeat",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventSeat"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "EventSeatManagement"
+        ],
+        "summary": "Update selected eventSeat.",
+        "operationId": "EventSeatManagement_UpdateEventSeat",
+        "requestBody": {
+          "x-name": "eventSeat",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventSeat"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/EventSeatManagement/eventSeat/{eventSeatId}": {
+      "delete": {
+        "tags": [
+          "EventSeatManagement"
+        ],
+        "summary": "Delete selected eventSeat.",
+        "operationId": "EventSeatManagement_DeleteEventSeat",
+        "parameters": [
+          {
+            "name": "eventSeatId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "EventSeatManagement"
+        ],
+        "summary": "Returns selected eventSeat.",
+        "operationId": "EventSeatManagement_GetByIdEventSeat",
+        "parameters": [
+          {
+            "name": "eventSeatId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventSeat"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/EventSeatManagement/EventSeatStatus/{eventSeatId}": {
+      "post": {
+        "tags": [
+          "EventSeatManagement"
+        ],
+        "summary": "Change eventseat status by eventSeatId.",
+        "operationId": "EventSeatManagement_ChangeEventSeatStatus",
+        "parameters": [
+          {
+            "name": "eventSeatId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
           }
         ],
         "responses": {
@@ -716,85 +891,605 @@
         }
       }
     },
-    "/api/Users/Register": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "Users_Register",
-        "requestBody": {
-          "x-name": "model",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/Login": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Login into the new API.",
-        "description": "Here is the code sample of usage.",
-        "operationId": "Users_Login",
-        "requestBody": {
-          "x-name": "model",
-          "description": ".",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginModel"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "..",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/validate": {
+    "/api/EventSeatManagement/EventSeatsByEventAreaId/{eventAreaId}": {
       "get": {
         "tags": [
-          "Users"
+          "EventSeatManagement"
         ],
-        "operationId": "Users_Validate",
+        "summary": "Returns list of the eventSeats into selected eventAreaId.",
+        "operationId": "EventSeatManagement_GetAllEventSeatsByEventAreaId",
         "parameters": [
           {
-            "name": "token",
-            "in": "query",
+            "name": "eventAreaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventSeat"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/LayoutManagement/layouts": {
+      "get": {
+        "tags": [
+          "LayoutManagement"
+        ],
+        "summary": "Returns list of the layouts.",
+        "operationId": "LayoutManagement_GetAllLayouts",
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Layout"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/LayoutManagement/layout": {
+      "post": {
+        "tags": [
+          "LayoutManagement"
+        ],
+        "summary": "Add new layout.",
+        "operationId": "LayoutManagement_InsertLayout",
+        "requestBody": {
+          "x-name": "layout",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Layout"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "LayoutManagement"
+        ],
+        "summary": "Update selected layout.",
+        "operationId": "LayoutManagement_UpdateLayout",
+        "requestBody": {
+          "x-name": "layout",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Layout"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/LayoutManagement/layout/{layoutId}": {
+      "delete": {
+        "tags": [
+          "LayoutManagement"
+        ],
+        "summary": "Delete selected layout.",
+        "operationId": "LayoutManagement_DeleteLayout",
+        "parameters": [
+          {
+            "name": "layoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "LayoutManagement"
+        ],
+        "summary": "Returns selected layout.",
+        "operationId": "LayoutManagement_GetByIdLayout",
+        "parameters": [
+          {
+            "name": "layoutId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Layout"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/LayoutManagement/LayoutsByVenueId/{venueId}": {
+      "get": {
+        "tags": [
+          "LayoutManagement"
+        ],
+        "summary": "Returns list of the layouts into selected layoutId.",
+        "operationId": "LayoutManagement_GetAllLayoutsByVenueId",
+        "parameters": [
+          {
+            "name": "venueId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Layout"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SeatManagement/seats": {
+      "get": {
+        "tags": [
+          "SeatManagement"
+        ],
+        "summary": "Returns list of the seats.",
+        "operationId": "SeatManagement_GetAllSeats",
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Seat"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SeatManagement/seat": {
+      "post": {
+        "tags": [
+          "SeatManagement"
+        ],
+        "summary": "Add new seat.",
+        "operationId": "SeatManagement_InsertSeat",
+        "requestBody": {
+          "x-name": "seat",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Seat"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "SeatManagement"
+        ],
+        "summary": "Update selected seat.",
+        "operationId": "SeatManagement_UpdateSeat",
+        "requestBody": {
+          "x-name": "seat",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Seat"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/SeatManagement/seat/{seatId}": {
+      "delete": {
+        "tags": [
+          "SeatManagement"
+        ],
+        "summary": "Delete selected seat.",
+        "operationId": "SeatManagement_DeleteSeat",
+        "parameters": [
+          {
+            "name": "seatId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "SeatManagement"
+        ],
+        "summary": "Returns selected seat.",
+        "operationId": "SeatManagement_GetByIdSeat",
+        "parameters": [
+          {
+            "name": "seatId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Seat"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SeatManagement/SeatsByAreaId/{areaId}": {
+      "get": {
+        "tags": [
+          "SeatManagement"
+        ],
+        "summary": "Returns list of the seats into selected areaId.",
+        "operationId": "SeatManagement_GetAllSeatsByAreaId",
+        "parameters": [
+          {
+            "name": "areaId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Seat"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ThirdPartyEvent/ThirdPartyEvent": {
+      "post": {
+        "tags": [
+          "ThirdPartyEvent"
+        ],
+        "summary": "Add new event from ThirdPartyEvent.",
+        "operationId": "ThirdPartyEvent_InsertEvent",
+        "requestBody": {
+          "x-name": "eventFromJson",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventFromJson"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/VenueManagement/venues": {
+      "get": {
+        "tags": [
+          "VenueManagement"
+        ],
+        "summary": "Returns list of the venues.",
+        "operationId": "VenueManagement_GetAllVenues",
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Venue"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VenueManagement/venue": {
+      "post": {
+        "tags": [
+          "VenueManagement"
+        ],
+        "summary": "Add new venue.",
+        "operationId": "VenueManagement_InsertVenue",
+        "requestBody": {
+          "x-name": "venue",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Venue"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "VenueManagement"
+        ],
+        "summary": "Update selected venue.",
+        "operationId": "VenueManagement_UpdateVenue",
+        "requestBody": {
+          "x-name": "venue",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Venue"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      }
+    },
+    "/api/VenueManagement/venue/{venueId}": {
+      "delete": {
+        "tags": [
+          "VenueManagement"
+        ],
+        "summary": "Delete selected venue.",
+        "operationId": "VenueManagement_DeleteVenue",
+        "parameters": [
+          {
+            "name": "venueId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "VenueManagement"
+        ],
+        "summary": "Returns selected venue.",
+        "operationId": "VenueManagement_GetByIdVenue",
+        "parameters": [
+          {
+            "name": "venueId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Venue"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VenueManagement/VenueIdByName/{name}": {
+      "get": {
+        "tags": [
+          "VenueManagement"
+        ],
+        "summary": "Return VenueId by venues name.",
+        "operationId": "VenueManagement_GetVenueIdByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -804,12 +1499,22 @@
         ],
         "responses": {
           "200": {
+            "description": ".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "404": {
             "description": "",
             "content": {
-              "application/octet-stream": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -820,276 +1525,52 @@
   },
   "components": {
     "schemas": {
-      "User": {
+      "Area": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/IdentityUser"
+            "$ref": "#/components/schemas/BaseEntity"
           },
           {
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "balance"
+              "layoutId",
+              "description",
+              "coordX",
+              "coordY"
             ],
             "properties": {
-              "firstName": {
-                "type": "string",
-                "nullable": true
-              },
-              "surName": {
-                "type": "string",
-                "nullable": true
-              },
-              "language": {
-                "type": "string",
-                "nullable": true
-              },
-              "timeZone": {
-                "type": "string",
-                "nullable": true
-              },
-              "cartCount": {
+              "layoutId": {
                 "type": "integer",
                 "format": "int32"
               },
-              "balance": {
-                "title": "Balance",
-                "type": "number",
-                "format": "decimal"
-              },
-              "payHistory": {
+              "description": {
                 "type": "string",
-                "nullable": true
+                "maxLength": 200,
+                "minLength": 1
+              },
+              "coordX": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "coordY": {
+                "type": "integer",
+                "format": "int32"
               }
             }
           }
         ]
       },
-      "IdentityUser": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IdentityUserOfString"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false
-          }
-        ]
-      },
-      "IdentityUserOfString": {
+      "BaseEntity": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "id"
+        ],
         "properties": {
           "id": {
-            "type": "string",
-            "nullable": true
-          },
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedUserName": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedEmail": {
-            "type": "string",
-            "nullable": true
-          },
-          "emailConfirmed": {
-            "type": "boolean"
-          },
-          "passwordHash": {
-            "type": "string",
-            "nullable": true
-          },
-          "securityStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "concurrencyStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumberConfirmed": {
-            "type": "boolean"
-          },
-          "twoFactorEnabled": {
-            "type": "boolean"
-          },
-          "lockoutEnd": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "lockoutEnabled": {
-            "type": "boolean"
-          },
-          "accessFailedCount": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "IdentityResult": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "succeeded": {
-            "type": "boolean"
-          },
-          "errors": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/IdentityError"
-            }
-          }
-        }
-      },
-      "IdentityError": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "code": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "CreateUser": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/User"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "id",
-              "email"
-            ],
-            "properties": {
-              "id": {
-                "type": "string",
-                "minLength": 1
-              },
-              "email": {
-                "title": "Email",
-                "type": "string",
-                "format": "email",
-                "minLength": 1
-              },
-              "userName": {
-                "title": "UserName",
-                "type": "string",
-                "format": "email",
-                "nullable": true
-              },
-              "password": {
-                "title": "Password",
-                "type": "string",
-                "maxLength": 100,
-                "minLength": 6,
-                "nullable": true
-              },
-              "phoneNumber": {
-                "type": "string",
-                "nullable": true
-              },
-              "firstName": {
-                "type": "string",
-                "nullable": true
-              },
-              "surName": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "ChangeRole": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userId": {
-            "type": "string",
-            "nullable": true
-          },
-          "userEmail": {
-            "type": "string",
-            "nullable": true
-          },
-          "allRoles": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/Role"
-            }
-          },
-          "userRoles": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "Role": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IdentityRole"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false
-          }
-        ]
-      },
-      "IdentityRole": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IdentityRoleOfString"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false
-          }
-        ]
-      },
-      "IdentityRoleOfString": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedName": {
-            "type": "string",
-            "nullable": true
-          },
-          "concurrencyStamp": {
-            "type": "string",
-            "nullable": true
           }
         }
       },
@@ -1122,55 +1603,267 @@
           }
         }
       },
-      "RegisterModel": {
+      "EventArea": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "eventId",
+              "description",
+              "coordX",
+              "coordY",
+              "price"
+            ],
+            "properties": {
+              "eventId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              "coordX": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "coordY": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "price": {
+                "title": "Price",
+                "type": "number",
+                "format": "decimal"
+              }
+            }
+          }
+        ]
+      },
+      "Event": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "eventTime",
+              "description",
+              "layoutId",
+              "eventEndTime",
+              "eventLogoImage"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              "eventTime": {
+                "type": "string",
+                "format": "date-time",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "layoutId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "eventEndTime": {
+                "type": "string",
+                "format": "date-time",
+                "minLength": 1
+              },
+              "eventLogoImage": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      },
+      "EventSeat": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "eventAreaId",
+              "row",
+              "number",
+              "state"
+            ],
+            "properties": {
+              "eventAreaId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "row": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "number": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "state": {
+                "$ref": "#/components/schemas/State"
+              }
+            }
+          }
+        ]
+      },
+      "State": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Available",
+          "NotAvailable"
+        ],
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "Layout": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "venueId",
+              "description"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              "venueId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      },
+      "Seat": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "areaId",
+              "row",
+              "number"
+            ],
+            "properties": {
+              "areaId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "row": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "number": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "EventFromJson": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "email",
-          "password"
-        ],
         "properties": {
-          "email": {
-            "title": "Email",
+          "fullImagePath": {
             "type": "string",
-            "format": "email",
-            "minLength": 1
+            "nullable": true
           },
-          "password": {
-            "title": "Password",
-            "type": "string",
-            "maxLength": 100,
-            "minLength": 6
+          "event": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Event"
+              }
+            ]
           },
-          "confirmPassword": {
-            "title": "Confirm password",
+          "price": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "eventLogoImage": {
             "type": "string",
             "nullable": true
           }
         }
       },
-      "LoginModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "email",
-          "password"
-        ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "format": "email",
-            "minLength": 1
+      "Venue": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
           },
-          "password": {
-            "type": "string",
-            "minLength": 1
-          },
-          "rememberMe": {
-            "title": "Remember me?",
-            "type": "boolean"
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "description",
+              "address"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              "address": {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              "phone": {
+                "type": "string",
+                "maxLength": 30,
+                "nullable": true
+              }
+            }
           }
-        }
+        ]
       }
     }
   }
