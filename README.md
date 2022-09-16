@@ -1,7 +1,7 @@
 # Task-5
 
 ## How many items from requirements was completed?
-    - Part of refactoring
+- [ ] Part of refactoring
 
 ## Possible Drawbacks/Concerns (What should reviewers look out for?)
 *
@@ -27,11 +27,13 @@
 4. Solution Property Pages
 5. Expand the Common Properties node, and choose Startup Project
 6. Choose the Multiple Startup Projects option and set this projects:
-    - [X] [ReactJS](/src/TicketManagement.WebUI/appsettings...json__UseReact: true) :44414
-    - [X] [WebUI](/src/TicketManagement.WebUI/appsettings...json__UseReact: false) :7114
+    - [X] [WebUI](/src/TicketManagement.WebUI/) :7114
     - [X] [UserAPI](/src/TicketManagement.UserAPI/) :5004
     - [X] [EventManagementAPI](/src/TicketManagement.EventManagementAPI/) :5003
-7. Ok => Run
+7. To switch WebUI, change "UseReact" flag(appsettings.Develop.json):
+	- `true` to run ReactJS
+	- `false` to run ICC.
+8. Ok => Run
 
 ## Steps how to check
 Deployment of the database for tests is automatic.
