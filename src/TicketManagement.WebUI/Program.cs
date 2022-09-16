@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+
 using Serilog;
 using TicketManagement.Common;
 using TicketManagement.Common.Identity;
@@ -17,7 +18,6 @@ using UserApiClientGenerated;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
-
 if (!builder.Configuration.GetValue<bool>("UseReact"))
 {
     var logger = new LoggerConfiguration()
@@ -239,11 +239,12 @@ if (!builder.Configuration.GetValue<bool>("UseReact"))
 }
 else
 {
+    services.AddSpaYarp();
     var app = builder.Build();
-
     app.UseHttpsRedirection();
     app.UseStaticFiles();
     app.UseRouting();
+    app.UseSpaYarp();
     app.MapFallbackToFile("index.html");
 
     app.Run();
