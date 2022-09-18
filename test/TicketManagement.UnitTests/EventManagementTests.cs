@@ -17,8 +17,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
         private readonly EventManagementController _eventManagementController = new EventManagementController(_eventRepository.Object);
         private readonly List<Event> _expectedEvents = new List<Event>
         {
-            new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"), "image1"),
-            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00 +03:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image2"),
+            new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2023"), "Kitchen Serie", 2, DateTime.Parse("2023-09-09 00:50:00"), "image1"),
+            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-09 00:00:00 +03:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image2"),
         };
         private int _timesApplyRuleCalled;
 
