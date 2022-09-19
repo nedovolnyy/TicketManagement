@@ -1,60 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import RequireRole from '../helpers/RequireRole'
-import useAuth from '../hooks/useAuth'
-import moment from 'moment'
-import 'moment-timezone'
+import { FormatDateTime } from '../helpers/FormatDateTime'
 import './EventImg.css'
-import { ROLES } from '../App'
-import { Configuration, EventManagementApi } from '../api/EventsManagementAPI'
+import { EventManagementApi } from '../api/EventsManagementAPI'
 import { useNavigate } from 'react-router-dom'
 import { EventManagementButton } from './EventManagementButton'
+import { configHTTPS } from '../configurations/httpsConf'
 
 export default function EventImg(props) {
   const { t } = useTranslation();
+  const EventClient = new EventManagementApi(configHTTPS);
   const [seatsAvailableCount, setSeatsAvailableCount] = useState();
   const navigate = useNavigate();
   const [seatsCount, setSeatsCount] = useState();
 
   useEffect(() => {
-    (async () => {
-      const urlForAvailableSeats = 'https://localhost:5003/api/EventManagement/SeatsAvailableCount/' + props.event.id;
-      try {
-        await fetch(urlForAvailableSeats, {
-          method: 'GET'
-        })
-          .then(response => response.json())
-          .then(seatsAvailableCount =>
-            setSeatsAvailableCount(seatsAvailableCount));
-      }
-      catch (error) {
-        console.log(error);
-      }
+    (() => {
+      EventClient.apiEventManagementSeatsAvailableCountEventIdGet(props.event.id).then(result =>
+        setSeatsAvailableCount(result));
     })();
-  }, [props]);
+  });
 
   useEffect(() => {
-    (async function () {
-      const urlForSeatsCount = 'https://localhost:5003/api/EventManagement/SeatsCount/' + props.event.layoutId;
-      try {
-        await fetch(urlForSeatsCount, {
-          method: 'GET'
-        })
-          .then(response => response.json())
-          .then(seatsCount =>
-            setSeatsCount(seatsCount));
-      }
-      catch (error) {
-        console.log(error);
-      }
+    (() => {
+      EventClient.apiEventManagementSeatsCountLayoutIdGet(props.event.layoutId).then(result =>
+        setSeatsCount(result));
     })();
-  }, [props]);
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      navigate('Event')
+      navigate('Event', { state: { event: props.event, seatsAvailableCount: seatsAvailableCount, seatsCount: seatsCount } })
     } catch (error) {
       console.log(error);
     }
@@ -62,14 +39,14 @@ export default function EventImg(props) {
 
   return (
     <div className='col' key={'col' + props.event.id}>
-      <form onSubmit={handleSubmit} method="post" className="form-horizontal" role="form">
+      <form onSubmit={handleSubmit} method="post" className="form-horizontal">
         <button className='invisible' type='submit' key={'submit' + props.event.id}>
           <div className='img__container visible' key={'img__container' + props.event.id}>
             <img className='image shadow-lg' alt='' src={props.event.eventLogoImage} key={'image' + props.event.id} />
             <div className='img__description' key={'img__description' + props.event.id}>
               <div className='text' key={'text1_' + props.event.id}>
                 <div className='img__header right eventTime' key={'img__headerR' + props.event.id}>
-                  {moment(props.event.eventTime).format('h:mm A M/d/yyyy')}
+                  {FormatDateTime(props.event.eventTime)}
                 </div>
                 <div className='img__header left noneDecoration' key={'img__headerL' + props.event.id}>
                   <h2 key={'h2' + props.event.id}>{props.event.name}</h2>

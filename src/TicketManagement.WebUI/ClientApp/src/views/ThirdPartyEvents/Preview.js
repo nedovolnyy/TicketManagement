@@ -13,7 +13,7 @@ class PreviewPlain extends Component {
 
   render() {
     const { t } = this.props;
-    var ThirdPartyEvents = JSON.parse(this.state.result);
+    let ThirdPartyEvents = JSON.parse(this.state.result);
 
     return (
       <>

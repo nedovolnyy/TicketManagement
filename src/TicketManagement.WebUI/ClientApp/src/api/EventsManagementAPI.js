@@ -1,5 +1,3 @@
-import React, { useState } from "react"
-
 /* eslint-disable */
 /*
     My Title generated
@@ -9,7 +7,6 @@ import React, { useState } from "react"
 
 export class Configuration {
   basePath = '';
-  fetchMethod = window.fetch;
   headers: any = {};
   getHeaders: any = () => { return {} };
   responseHandler: any = null;
@@ -19,9 +16,6 @@ export class Configuration {
     if (config) {
       if (config.basePath) {
         this.basePath = config.basePath;
-      }
-      if (config.fetchMethod) {
-        this.fetchMethod = config.fetchMethod;
       }
       if (config.headers) {
         this.headers = config.headers;
@@ -51,13 +45,13 @@ export function AreaManagementApi(config) {
   this.config = config || new Configuration();
 
   this.apiAreaManagementAreasGet = (options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/AreaManagement/areas';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -79,13 +73,13 @@ export function AreaManagementApi(config) {
   };
 
   this.apiAreaManagementAreaPost = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/AreaManagement/area';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -104,13 +98,13 @@ export function AreaManagementApi(config) {
   };
 
   this.apiAreaManagementAreaPut = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/AreaManagement/area';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'put',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -129,14 +123,14 @@ export function AreaManagementApi(config) {
   };
 
   this.apiAreaManagementAreaAreaIdDelete = (areaId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/AreaManagement/area/{areaId}';
     url = url.split(['{', '}'].join('areaId')).join(encodeURIComponent(String(areaId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'delete',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -154,14 +148,14 @@ export function AreaManagementApi(config) {
   };
 
   this.apiAreaManagementAreaAreaIdGet = (areaId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/AreaManagement/area/{areaId}';
     url = url.split(['{', '}'].join('areaId')).join(encodeURIComponent(String(areaId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -183,14 +177,14 @@ export function AreaManagementApi(config) {
   };
 
   this.apiAreaManagementAreasByLayoutIdLayoutIdGet = (layoutId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/AreaManagement/AreasByLayoutId/{layoutId}';
     url = url.split(['{', '}'].join('layoutId')).join(encodeURIComponent(String(layoutId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -216,13 +210,13 @@ export function EventAreaManagementApi(config) {
   this.config = config || new Configuration();
 
   this.apiEventAreaManagementEventAreasGet = (options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventAreaManagement/eventAreas';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -244,13 +238,13 @@ export function EventAreaManagementApi(config) {
   };
 
   this.apiEventAreaManagementEventAreaPost = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventAreaManagement/eventArea';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -269,13 +263,13 @@ export function EventAreaManagementApi(config) {
   };
 
   this.apiEventAreaManagementEventAreaPut = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventAreaManagement/eventArea';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'put',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -294,14 +288,14 @@ export function EventAreaManagementApi(config) {
   };
 
   this.apiEventAreaManagementEventAreaEventAreaIdDelete = (eventAreaId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventAreaManagement/eventArea/{eventAreaId}';
     url = url.split(['{', '}'].join('eventAreaId')).join(encodeURIComponent(String(eventAreaId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'delete',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -319,14 +313,14 @@ export function EventAreaManagementApi(config) {
   };
 
   this.apiEventAreaManagementEventAreaEventAreaIdGet = (eventAreaId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventAreaManagement/eventArea/{eventAreaId}';
     url = url.split(['{', '}'].join('eventAreaId')).join(encodeURIComponent(String(eventAreaId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -348,14 +342,14 @@ export function EventAreaManagementApi(config) {
   };
 
   this.apiEventAreaManagementEventAreasByEventIdEventIdGet = (eventId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventAreaManagement/EventAreasByEventId/{eventId}';
     url = url.split(['{', '}'].join('eventId')).join(encodeURIComponent(String(eventId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -377,19 +371,17 @@ export function EventAreaManagementApi(config) {
   };
 }
 
-export class EventManagementApi {
-  constructor(config: Configuration | any) {
-      this.config = config;
-  }
+export function EventManagementApi(config) {
+  this.config = config || new Configuration();
 
-  apiEventManagementEventsGet = (options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementEventsGet = (options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/events';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -410,8 +402,8 @@ export class EventManagementApi {
     });
   };
 
-  apiEventManagementEventPost = (price, body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementEventPost = (price, body, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/event';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
@@ -420,7 +412,7 @@ export class EventManagementApi {
     }
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -438,8 +430,8 @@ export class EventManagementApi {
     });
   };
 
-  apiEventManagementEventPut = (price, body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementEventPut = (price, body, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/event';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
@@ -448,7 +440,7 @@ export class EventManagementApi {
     }
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'put',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -466,15 +458,15 @@ export class EventManagementApi {
     });
   };
 
-  apiEventManagementEventEventIdDelete = (eventId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementEventEventIdDelete = (eventId, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/event/{eventId}';
     url = url.split(['{', '}'].join('eventId')).join(encodeURIComponent(String(eventId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'delete',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -491,15 +483,15 @@ export class EventManagementApi {
     });
   };
 
-  apiEventManagementEventEventIdGet = (eventId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementEventEventIdGet = (eventId, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/event/{eventId}';
     url = url.split(['{', '}'].join('eventId')).join(encodeURIComponent(String(eventId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -520,8 +512,8 @@ export class EventManagementApi {
     });
   };
 
-apiEventManagementIsAllAvailableSeatsEventIdGet = (eventId, options = {}) => {
-      const { fetchMethod, basePath, headers, responseHandler, errorHandler } = this.config;
+this.apiEventManagementIsAllAvailableSeatsEventIdGet = (eventId, options = {}) => {
+      const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
       let url = '/api/EventManagement/IsAllAvailableSeats/{eventId}';
       url = url.split(['{', '}'].join('eventId')).join(encodeURIComponent(String(eventId)));
       const params = new URLSearchParams();
@@ -530,7 +522,7 @@ apiEventManagementIsAllAvailableSeatsEventIdGet = (eventId, options = {}) => {
       return new Promise((resolve, reject) => {
         const promise = fetch(basePath + url + (query ? '?' + query : ''), {
           method: 'get',
-          headers: { ...headers, ...options.headers }
+          headers: { ...headers, ...getHeaders(), ...options.headers }
         });
         !!responseHandler && promise.then(responseHandler);
         !!errorHandler && promise.catch(errorHandler);
@@ -549,15 +541,15 @@ apiEventManagementIsAllAvailableSeatsEventIdGet = (eventId, options = {}) => {
       });
     };
 
-  apiEventManagementEventsByLayoutIdLayoutIdGet = (layoutId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementEventsByLayoutIdLayoutIdGet = (layoutId, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/EventsByLayoutId/{layoutId}';
     url = url.split(['{', '}'].join('layoutId')).join(encodeURIComponent(String(layoutId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -578,15 +570,15 @@ apiEventManagementIsAllAvailableSeatsEventIdGet = (eventId, options = {}) => {
     });
   };
 
-  apiEventManagementPriceByEventIdEventIdGet = (eventId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementPriceByEventIdEventIdGet = (eventId, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/PriceByEventId/{eventId}';
     url = url.split(['{', '}'].join('eventId')).join(encodeURIComponent(String(eventId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -607,15 +599,15 @@ apiEventManagementIsAllAvailableSeatsEventIdGet = (eventId, options = {}) => {
     });
   };
 
-  apiEventManagementSeatsAvailableCountEventIdGet = (eventId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementSeatsAvailableCountEventIdGet = (eventId, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/SeatsAvailableCount/{eventId}';
     url = url.split(['{', '}'].join('eventId')).join(encodeURIComponent(String(eventId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -636,15 +628,15 @@ apiEventManagementIsAllAvailableSeatsEventIdGet = (eventId, options = {}) => {
     });
   };
 
-  apiEventManagementSeatsCountLayoutIdGet = (layoutId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+  this.apiEventManagementSeatsCountLayoutIdGet = (layoutId, options = {}) => {
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventManagement/SeatsCount/{layoutId}';
     url = url.split(['{', '}'].join('layoutId')).join(encodeURIComponent(String(layoutId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -670,13 +662,13 @@ export function EventSeatManagementApi(config) {
   this.config = config || new Configuration();
 
   this.apiEventSeatManagementEventSeatsGet = (options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventSeatManagement/eventSeats';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -698,13 +690,13 @@ export function EventSeatManagementApi(config) {
   };
 
   this.apiEventSeatManagementEventSeatPost = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventSeatManagement/eventSeat';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -723,13 +715,13 @@ export function EventSeatManagementApi(config) {
   };
 
   this.apiEventSeatManagementEventSeatPut = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventSeatManagement/eventSeat';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'put',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -748,14 +740,14 @@ export function EventSeatManagementApi(config) {
   };
 
   this.apiEventSeatManagementEventSeatEventSeatIdDelete = (eventSeatId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventSeatManagement/eventSeat/{eventSeatId}';
     url = url.split(['{', '}'].join('eventSeatId')).join(encodeURIComponent(String(eventSeatId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'delete',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -773,14 +765,14 @@ export function EventSeatManagementApi(config) {
   };
 
   this.apiEventSeatManagementEventSeatEventSeatIdGet = (eventSeatId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventSeatManagement/eventSeat/{eventSeatId}';
     url = url.split(['{', '}'].join('eventSeatId')).join(encodeURIComponent(String(eventSeatId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -802,14 +794,14 @@ export function EventSeatManagementApi(config) {
   };
 
   this.apiEventSeatManagementEventSeatStatusEventSeatIdPost = (eventSeatId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventSeatManagement/EventSeatStatus/{eventSeatId}';
     url = url.split(['{', '}'].join('eventSeatId')).join(encodeURIComponent(String(eventSeatId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -827,14 +819,14 @@ export function EventSeatManagementApi(config) {
   };
 
   this.apiEventSeatManagementEventSeatsByEventAreaIdEventAreaIdGet = (eventAreaId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/EventSeatManagement/EventSeatsByEventAreaId/{eventAreaId}';
     url = url.split(['{', '}'].join('eventAreaId')).join(encodeURIComponent(String(eventAreaId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -860,13 +852,13 @@ export function LayoutManagementApi(config) {
   this.config = config || new Configuration();
 
   this.apiLayoutManagementLayoutsGet = (options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/LayoutManagement/layouts';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -888,13 +880,13 @@ export function LayoutManagementApi(config) {
   };
 
   this.apiLayoutManagementLayoutPost = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/LayoutManagement/layout';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -913,13 +905,13 @@ export function LayoutManagementApi(config) {
   };
 
   this.apiLayoutManagementLayoutPut = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/LayoutManagement/layout';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'put',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -938,14 +930,14 @@ export function LayoutManagementApi(config) {
   };
 
   this.apiLayoutManagementLayoutLayoutIdDelete = (layoutId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/LayoutManagement/layout/{layoutId}';
     url = url.split(['{', '}'].join('layoutId')).join(encodeURIComponent(String(layoutId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'delete',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -963,14 +955,14 @@ export function LayoutManagementApi(config) {
   };
 
   this.apiLayoutManagementLayoutLayoutIdGet = (layoutId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/LayoutManagement/layout/{layoutId}';
     url = url.split(['{', '}'].join('layoutId')).join(encodeURIComponent(String(layoutId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -992,14 +984,14 @@ export function LayoutManagementApi(config) {
   };
 
   this.apiLayoutManagementLayoutsByVenueIdVenueIdGet = (venueId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/LayoutManagement/LayoutsByVenueId/{venueId}';
     url = url.split(['{', '}'].join('venueId')).join(encodeURIComponent(String(venueId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1025,13 +1017,13 @@ export function SeatManagementApi(config) {
   this.config = config || new Configuration();
 
   this.apiSeatManagementSeatsGet = (options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/SeatManagement/seats';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1053,13 +1045,13 @@ export function SeatManagementApi(config) {
   };
 
   this.apiSeatManagementSeatPost = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/SeatManagement/seat';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -1078,13 +1070,13 @@ export function SeatManagementApi(config) {
   };
 
   this.apiSeatManagementSeatPut = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/SeatManagement/seat';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'put',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -1103,14 +1095,14 @@ export function SeatManagementApi(config) {
   };
 
   this.apiSeatManagementSeatSeatIdDelete = (seatId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/SeatManagement/seat/{seatId}';
     url = url.split(['{', '}'].join('seatId')).join(encodeURIComponent(String(seatId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'delete',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1128,14 +1120,14 @@ export function SeatManagementApi(config) {
   };
 
   this.apiSeatManagementSeatSeatIdGet = (seatId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/SeatManagement/seat/{seatId}';
     url = url.split(['{', '}'].join('seatId')).join(encodeURIComponent(String(seatId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1157,14 +1149,14 @@ export function SeatManagementApi(config) {
   };
 
   this.apiSeatManagementSeatsByAreaIdAreaIdGet = (areaId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/SeatManagement/SeatsByAreaId/{areaId}';
     url = url.split(['{', '}'].join('areaId')).join(encodeURIComponent(String(areaId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1190,13 +1182,13 @@ export function ThirdPartyEventApi(config) {
   this.config = config || new Configuration();
 
   this.apiThirdPartyEventThirdPartyEventPost = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/ThirdPartyEvent/ThirdPartyEvent';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -1219,13 +1211,13 @@ export function VenueManagementApi(config) {
   this.config = config || new Configuration();
 
   this.apiVenueManagementVenuesGet = (options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/VenueManagement/venues';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1247,13 +1239,13 @@ export function VenueManagementApi(config) {
   };
 
   this.apiVenueManagementVenuePost = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/VenueManagement/venue';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'post',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -1272,13 +1264,13 @@ export function VenueManagementApi(config) {
   };
 
   this.apiVenueManagementVenuePut = (body, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/VenueManagement/venue';
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'put',
         headers: { 'Content-Type': 'application/json', ...headers, ...getHeaders(), ...options.headers },
         body: 'object' === typeof body ? JSON.stringify(body) : body
@@ -1297,14 +1289,14 @@ export function VenueManagementApi(config) {
   };
 
   this.apiVenueManagementVenueVenueIdDelete = (venueId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/VenueManagement/venue/{venueId}';
     url = url.split(['{', '}'].join('venueId')).join(encodeURIComponent(String(venueId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'delete',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1322,14 +1314,14 @@ export function VenueManagementApi(config) {
   };
 
   this.apiVenueManagementVenueVenueIdGet = (venueId, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/VenueManagement/venue/{venueId}';
     url = url.split(['{', '}'].join('venueId')).join(encodeURIComponent(String(venueId)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });
@@ -1351,14 +1343,14 @@ export function VenueManagementApi(config) {
   };
 
   this.apiVenueManagementVenueIdByNameNameGet = (name, options = {}) => {
-    const { fetchMethod, basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
+    const { basePath, headers, getHeaders, responseHandler, errorHandler } = this.config;
     let url = '/api/VenueManagement/VenueIdByName/{name}';
     url = url.split(['{', '}'].join('name')).join(encodeURIComponent(String(name)));
     const params = new URLSearchParams();
     setAdditionalParams(params, options.params);
     const query = params.toString();
     return new Promise((resolve, reject) => {
-      const promise = fetchMethod(basePath + url + (query ? '?' + query : ''), {
+      const promise = fetch(basePath + url + (query ? '?' + query : ''), {
         method: 'get',
         headers: { ...headers, ...getHeaders(), ...options.headers }
       });

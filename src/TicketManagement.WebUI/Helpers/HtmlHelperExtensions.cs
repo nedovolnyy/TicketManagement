@@ -25,6 +25,10 @@ public static class HtmlHelperExtensions
     public static void SaveUserCookies(HttpResponse response, User user)
     {
         response.Cookies.Append(
+            "us.id", user.Id,
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });
+
+        response.Cookies.Append(
             CookieRequestCultureProvider.DefaultCookieName,
             CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(user.Language)),
             new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), });

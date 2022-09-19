@@ -5,9 +5,12 @@
 @inject IViewLocalizer Localizer
 
 @{
+    Layout = "/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
+    ViewData["Title"] = "Personal Data";
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
+<h4>@ViewData["Title"]</h4>
 <div class="row">
     <div class="col-md-6">
         <p>@Localizer["Your account contains personal data that you have given us. This page allows you to download or delete that data."]</p>

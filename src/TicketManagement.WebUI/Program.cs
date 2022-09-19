@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
-
 using Serilog;
 using TicketManagement.Common;
 using TicketManagement.Common.Identity;

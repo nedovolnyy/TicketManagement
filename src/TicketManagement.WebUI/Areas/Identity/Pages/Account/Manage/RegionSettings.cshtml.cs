@@ -60,13 +60,13 @@ public class RegionSettingsModel : PageModel
             return Page();
         }
 
-        await _usersManagementApiClient.EditUserAsync(new CreateUser
-        {
-            Language = culture,
-            TimeZone = timeZone,
-        });
+        user.SecurityStamp = Guid.NewGuid().ToString();
+        user.Language = culture;
+        user.TimeZone = timeZone;
 
-        await _usersManagementApiClient.RefreshSignInAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        await _usersManagementApiClient.UpdateAsync(user);
+
+        await _usersManagementApiClient.RefreshSignInAsync(user.Id);
         StatusMessage = "Your profile has been updated";
 
         HtmlHelperExtensions.SaveUserCookies(Response, user);

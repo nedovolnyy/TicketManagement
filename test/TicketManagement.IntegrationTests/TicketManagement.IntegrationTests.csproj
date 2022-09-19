@@ -6,7 +6,19 @@
     <OutputType>Library</OutputType>
     <IsPackable>false</IsPackable>
     <EnvironmentName>Testing</EnvironmentName>
+    <Nullable>disable</Nullable>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <SpaClientUrl>https://localhost:7115</SpaClientUrl>
+    <SpaLaunchCommand>npm start</SpaLaunchCommand>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TestTicketManagement.Database.dacpac" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="TestTicketManagement.Database.dacpac">
@@ -16,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.17.1" />
+    <PackageReference Include="AspNetCore.SpaYarp" Version="1.0.0" />
     <PackageReference Include="FluentAssertions" Version="6.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.9" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
