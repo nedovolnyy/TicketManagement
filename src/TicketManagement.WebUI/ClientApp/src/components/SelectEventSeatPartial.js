@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { withTranslation } from "react-i18next"
 import './SelectEventSeatPartial.css'
-import useAuth from '../../hooks/useAuth';
-import { EventSeatManagementApi } from '../../api/EventsManagementAPI'
-import { configHTTPS } from '../../configurations/httpsConf'
-import { ROLES } from "../../App";
+import useAuth from '../hooks/useAuth';
+import { EventSeatManagementApi } from '../api/EventsManagementAPI'
+import { configHTTPS } from '../configurations/httpsConf'
+import { ROLES } from "../App";
 
 function SelectEventSeatPartialPlain(props) {
   const { t } = props;
@@ -15,8 +15,8 @@ function SelectEventSeatPartialPlain(props) {
   useEffect(() => {
     (() => {
       EventSeatClient.apiEventSeatManagementEventSeatsByEventAreaIdEventAreaIdGet(props.eventArea.id)
-      .then(result =>
-        setEventSeatsCollection(result));
+        .then(result =>
+          setEventSeatsCollection(result));
     })();
   });
 
@@ -69,27 +69,30 @@ function SelectEventSeatPartialPlain(props) {
   return (
     <table>
       <tbody>
-        {eventSeatsCollection.map(seat => (
-          (seat.row !== tempRow) ? (
-            <div className="input-group">
+        <div className="input-group">
+          {(tempRow = 0)}
+          {(console.log(tempRow))}
+          {eventSeatsCollection.map(seat => (
+            (seat.row !== tempRow) ? (
               <tr>
                 <td>
                   <div className="container">
                     {rowOdd(seat)}
                   </div>
                 </td>
-              </tr>
-            </div>) : false
-          (seat.row === tempRow) ? (
-            <td>
-              <div className="container">
-                {rowNoOdd(seat)}
-              </div>
-            </td>
+              </tr>) : false // tr X
+                (seat.row === tempRow) ? (
+                  <td>
+                    <div className="container">
+                      {rowNoOdd(seat)}
+                    </div>
+                  </td>
           (tempRow = seat.row)
-            (console.log(tempRow))
+              // tr
+              (console.log(tempRow))
           ):false
           ))}
+        </div>
       </tbody>
     </table>
   );

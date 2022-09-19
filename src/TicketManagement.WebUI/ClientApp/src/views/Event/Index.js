@@ -1,18 +1,16 @@
-import React, { Component, useEffect, useState } from "react"
+import React, { Component } from "react"
 import { withTranslation } from "react-i18next"
 import { useLocation } from 'react-router-dom'
-import { FormatDateTime } from '../../helpers/FormatDateTime'
 import './Index.css'
 import { EventAreaManagementApi } from '../../api/EventsManagementAPI'
+import { EventAreasMap } from '../../components/EventAreasMap'
 import { configHTTPS } from '../../configurations/httpsConf'
-import { SelectEventSeatPartial } from './SelectEventSeatPartial'
 
 class EventPlain extends Component {
   static displayName = EventPlain.name;
 
   constructor(props) {
     super(props);
-    this.eventAreas = [];
     this.state = { eventAreas: [], loading: true };
   }
 
@@ -22,54 +20,25 @@ class EventPlain extends Component {
 
   async getEventAreas() {
     const EventAreaClient = new EventAreaManagementApi(configHTTPS);
-    if (this.eventAreas === []) {
-      return await EventAreaClient.apiEventAreaManagementEventAreasByEventIdEventIdGet(this.props.event.id)
-        .then(result => this.eventAreas = result)
-        .catch((error) => {
-          console.log(error);
-          alert(error);
-        });
-    }
+    await EventAreaClient.apiEventAreaManagementEventAreasByEventIdEventIdGet(this.props.event.id)
+      .then(result => this.setState({ eventAreas: result, loading: false }))
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      })
   }
 
   static renderIndexPage(eventAreas, event) {
     return (
-      <div className='container'>
-        <div className='row'>
-          {eventAreas.map(eventArea => (
-            <tr>
-              <td>
-                <div className="text">
-                  <div className="container">
-                    <div className="container text-right">
-                      <SelectEventSeatPartial eventArea={eventArea} />
-                    </div>
-                  </div>
-                  <div className="right">
-                    <p>{eventArea.description}</p>
-                  </div>
-                </div>
-                <div className="textE">
-                  <div className="right">
-                    <p className="eventTime">{FormatDateTime(event.eventTime)}</p>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </div>
-      </div>
+      <EventAreasMap eventAreas={eventAreas} eventTime={event.eventTime} />
     );
   }
 
   render() {
-    this.getEventAreas();
     const { t } = this.props;
     const event = this.props.event;
-    let contents = this.state.loading
-      ? <p><em>{t('Loading...')}</em></p>
-      : EventPlain.renderIndexPage(this.state.eventAreas, event);
-console.log(this.eventAreas);
+    let contents = !this.state.loading ?
+      EventPlain.renderIndexPage(this.state.eventAreas, event) : false
     return (
       <>
         <div className="text-center">
