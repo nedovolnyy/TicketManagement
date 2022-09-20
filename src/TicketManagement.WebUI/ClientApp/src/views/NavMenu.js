@@ -1,15 +1,13 @@
-import React, { Component } from 'react'
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Form, Label, Input } from 'reactstrap'
+import React, { Component, Fragment } from 'react'
+import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Label, Input } from 'reactstrap'
 import { withTranslation } from 'react-i18next'
 import { LoginMenu } from '../components/LoginMenu'
-import { Link, Route, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { ROLES } from '../App'
 import './NavMenu.css'
-import RequireRole from '../helpers/RequireRole'
-import { DataNavigation } from 'react-data-navigation'
-import { ThirdPartyEvents } from './ThirdPartyEvents/Preview'
 import { withRouter } from '../helpers/withRouter'
 import { Auth } from '../helpers/Auth'
+import { DataNavigation } from 'react-data-navigation'
 
 class NavMenuPlain extends Component {
   static displayName = NavMenuPlain.name;
@@ -23,20 +21,15 @@ class NavMenuPlain extends Component {
     this.setState({ collapsed: !this.state.collapsed });
   }
 
-  getThirdPartyEvents(event) {
+  handleSelectFile = (event) => {
     const reader = new FileReader();
     reader.onload = (event) => {
-      this.setState({ thirdPartyEvents: JSON.parse(event.target.result) })
+      this.setState({ thirdPartyEvents: JSON.parse(event.target.result) }, () => {
+        DataNavigation.setData('thirdPartyEvents', this.state.thirdPartyEvents);
+        this.props.router.navigate('ThirdPartyEvents/Preview');
+      })
     }
     reader.readAsText(event.target.files[0]);
-  }
-
-  static handleSelectFile = (event, that) => {
-    console.log(that.state.thirdPartyEvents);
-    that.props.router.navigate('ThirdPartyEvents/Preview', { thirdPartyEvent: that.state.thirdPartyEvents })
-    //<Route path="ThirdPartyEvents/Preview" element={<ThirdPartyEvents thirdPartyEvent={this.state.thirdPartyEvents} />}></Route>
-    //DataNavigation.setData('ThirdPartyEvents', thirdPartyEvent);
-    //navigate("ThirdPartyEvents/Preview");
   }
 
   render() {
@@ -49,20 +42,20 @@ class NavMenuPlain extends Component {
           <Collapse className='d-sm-inline-flex flex-sm-row-reverse' isOpen={!this.state.collapsed} navbar>
             <ul className='navbar-nav flex-grow'>
               {this.props.auth?.roles?.find(role => [ROLES.Administrator, ROLES.EventManager].includes(role)) &&
-                <>
+                <Fragment>
                   <li className='nav-item e-upload e-control-wrapper e-lib e-keyboard'>
-                    <form /*'ThirdPartyEvents/Preview'*/ method='post' encType='multipart/form-data'>
+                    <form method='post' encType='multipart/form-data'>
                       <Label>{t('Upload Event from file:')}</Label>
-                      <Input type='file' name='file' accept='.json' onChange={(event) => (this.getThirdPartyEvents, NavMenuPlain.handleSelectFile(event, this))} className='inputFileStyle' /> {/* todo */}
+                      <Input type='file' name='file' accept='.json' onChange={(event) => (this.handleSelectFile(event))} className='inputFileStyle' />
                     </form>
                   </li>
                   <NavItem className='nav-item'>
                     <NavLink tag={Link} className='text-dark' to='/EventsManagement/SelectVenues'>{t('Create event')}</NavLink>
                   </NavItem>
-                </>
+                </Fragment>
               }
               {this.props.auth?.roles?.find(role => [ROLES.Administrator].includes(role)) &&
-                <>
+                <Fragment>
                   <NavItem>
                     <NavLink tag={Link} className='text-dark' to='/AreasManagement'>{t('Areas management')}</NavLink>
                   </NavItem>
@@ -75,7 +68,7 @@ class NavMenuPlain extends Component {
                   <NavItem>
                     <NavLink tag={Link} className='text-dark' to='/UsersManagement'>{t('Users management')}</NavLink>
                   </NavItem>
-                </>
+                </Fragment>
               }
               {this.props.auth?.roles?.find(role => [ROLES.Administrator, ROLES.EventManager, ROLES.User].includes(role)) &&
                 <NavItem>

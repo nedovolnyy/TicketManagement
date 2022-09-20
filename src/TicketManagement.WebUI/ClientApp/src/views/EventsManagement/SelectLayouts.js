@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import { Button, Form } from 'reactstrap'
 import { withTranslation } from 'react-i18next'
 import './SelectLayouts.css'
 import { LayoutManagementApi } from '../../api/EventsManagementAPI'

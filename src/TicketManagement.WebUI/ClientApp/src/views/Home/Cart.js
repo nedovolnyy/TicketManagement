@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react'
 import { withTranslation } from 'react-i18next'
-import useAuth from '../../hooks/useAuth'
+import { Auth } from '../../helpers/Auth'
 
 function CartPlain(props) {
   const { t } = props;
-  const { auth } = useAuth();
 
   return (
     <Fragment>
@@ -25,12 +24,12 @@ function CartPlain(props) {
         </tbody>
       </table>
 
-      <h2>{t('Total purchase:')} {auth?.userResponse?.cartCount}</h2>
+      <h2>{t('Total purchase:')} {props.auth?.userResponse?.cartCount}</h2>
       <h1>{t('Purchase history:')}</h1>
 
-      <h3>{auth?.userResponse?.payHistory}</h3>
+      <h3>{props.auth?.userResponse?.payHistory}</h3>
     </Fragment>
   );
 }
 
-export const Cart = withTranslation()(CartPlain);
+export const Cart = Auth(withTranslation()(CartPlain));

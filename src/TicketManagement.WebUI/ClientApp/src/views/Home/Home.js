@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react'
-import { useTranslation, withTranslation } from 'react-i18next'
+import { withTranslation } from 'react-i18next'
 import EventImg from '../../components/EventImg'
 import { ROLES } from '../../App'
-import useAuth from '../../hooks/useAuth'
 import { EventManagementApi } from '../../api/EventsManagementAPI'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
+import { Auth } from '../../helpers/Auth'
 
 class HomePlain extends Component {
   static displayName = HomePlain.name;
@@ -48,24 +48,15 @@ class HomePlain extends Component {
 
     return (
       <Fragment>
-        <EventCount allowedRoles={[ROLES.Administrator, ROLES.EventManager]} count={this.state.events.length} />
+        {this.props.auth?.roles?.find(role => [ROLES.Administrator, ROLES.EventManager].includes(role)) &&
+          <div className="text-sm-center">
+            <h5 className="display-4">{t('Total Events:')} {this.state.events.length}</h5>
+          </div>
+        }
         {contents}
       </Fragment>
     );
   }
 }
 
-export const Home = withTranslation()(HomePlain);
-
-export const EventCount = ({ allowedRoles, count }) => {
-  const { auth } = useAuth();
-  const { t } = useTranslation();
-
-  return (
-    auth?.roles?.find(role => allowedRoles?.includes(role))
-      ? (<div className="text-sm-center">
-        <h5 className="display-4">{t('Total Events:')} {count}</h5>
-      </div>)
-      : false
-  );
-}
+export const Home = Auth(withTranslation()(HomePlain));
