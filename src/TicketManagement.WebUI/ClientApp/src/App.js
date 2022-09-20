@@ -1,35 +1,34 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Layout } from './views/Layout';
-import './custom.css';
-import RequireAuth from './helpers/RequireAuth';
-import Register from './views/Identity/Register';
-import Login from './views/Identity/Login';
-import Logout from './views/Identity/Logout';
-import Missing from './views/Identity/Missing';
-import Unauthorized from './views/Identity/Unauthorized';
-import Cart from "./views/Home/Cart";
-import NoBalance from "./views/Home/NoBalance";
-import { Home } from "./views/Home/Home";
-import { ThirdPartyEvents } from './views/ThirdPartyEvents/Preview';
-import { VenuesManagement } from './views/VenuesManagement/Index';
-import { VenuesManagementCreate } from './views/VenuesManagement/Create';
-import { VenuesManagementEdit } from './views/VenuesManagement/Edit';
-import { AreasManagementCreate } from './views/AreasManagement/Create';
-import { AreasManagementEdit } from './views/AreasManagement/Edit';
-import { AreasManagement } from './views/AreasManagement/Index';
-import { Event } from './views/Event/Index';
-import { EventsManagementEdit } from './views/EventsManagement/Edit';
-import { EventsManagementInsert } from './views/EventsManagement/Insert';
-import { EventsManagementSelectLayouts } from './views/EventsManagement/SelectLayouts';
-import { EventsManagementSelectVenues } from './views/EventsManagement/SelectVenues';
-import { LayoutsManagement } from './views/LayoutsManagement/Index';
-import { LayoutsManagementCreate } from './views/LayoutsManagement/Create';
-import { LayoutsManagementEdit } from './views/LayoutsManagement/Edit';
-import { UsersManagement } from './views/UsersManagement/Index';
-import { UsersManagementCreate } from './views/UsersManagement/Create';
-import { UsersManagementEdit } from './views/UsersManagement/Edit';
-import { UsersManagementChangeRole } from './views/UsersManagement/ChangeRole';
+import React from 'react'
+import { Route, Routes } from 'react-router-dom'
+import { Layout } from './views/Layout'
+import RequireAuth from './helpers/RequireAuth'
+import Register from './views/Identity/Register'
+import Login from './views/Identity/Login'
+import Logout from './views/Identity/Logout'
+import Missing from './views/Identity/Missing'
+import Unauthorized from './views/Identity/Unauthorized'
+import { Cart } from './views/Home/Cart'
+import { NoBalance } from './views/Home/NoBalance'
+import { Home } from './views/Home/Home'
+import { ThirdPartyEvents } from './views/ThirdPartyEvents/Preview'
+import { VenuesManagement } from './views/VenuesManagement/Index'
+import { VenuesManagementCreate } from './views/VenuesManagement/Create'
+import { VenuesManagementEdit } from './views/VenuesManagement/Edit'
+import { AreasManagementCreate } from './views/AreasManagement/Create'
+import { AreasManagementEdit } from './views/AreasManagement/Edit'
+import { AreasManagement } from './views/AreasManagement/Index'
+import { Event } from './views/Event/Index'
+import { EventsManagementEdit } from './views/EventsManagement/Edit'
+import { EventsManagementInsert } from './views/EventsManagement/Insert'
+import { EventsManagementSelectLayouts } from './views/EventsManagement/SelectLayouts'
+import { EventsManagementSelectVenues } from './views/EventsManagement/SelectVenues'
+import { LayoutsManagement } from './views/LayoutsManagement/Index'
+import { LayoutsManagementCreate } from './views/LayoutsManagement/Create'
+import { LayoutsManagementEdit } from './views/LayoutsManagement/Edit'
+import { UsersManagement } from './views/UsersManagement/Index'
+import { UsersManagementCreate } from './views/UsersManagement/Create'
+import { UsersManagementEdit } from './views/UsersManagement/Edit'
+import { UsersManagementChangeRole } from './views/UsersManagement/ChangeRole'
 
 export const ROLES = {
   'Administrator': 5150,

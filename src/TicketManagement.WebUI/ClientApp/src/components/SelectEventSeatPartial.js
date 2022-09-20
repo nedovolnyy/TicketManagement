@@ -2,7 +2,7 @@ import './SelectEventSeatPartial.css'
 import React, { Component, Fragment } from 'react'
 import { withTranslation } from 'react-i18next'
 import { EventSeatManagementApi } from '../api/EventsManagementAPI'
-import { configHTTPS } from '../configurations/httpsConf'
+import { EventsManagementApiHTTPSconfig } from '../configurations/httpsConf'
 import { Seat } from './Seat'
 
 class SelectEventSeatPartialPlain extends Component {
@@ -18,7 +18,7 @@ class SelectEventSeatPartialPlain extends Component {
   }
 
   async getEventSeats() {
-    const EventSeatClient = new EventSeatManagementApi(configHTTPS);
+    const EventSeatClient = new EventSeatManagementApi(EventsManagementApiHTTPSconfig);
     await EventSeatClient.apiEventSeatManagementEventSeatsByEventAreaIdEventAreaIdGet(this.props.eventArea.id)
       .then(result => this.setState({ eventSeats: result, loading: false }))
       .catch((error) => {
@@ -27,21 +27,21 @@ class SelectEventSeatPartialPlain extends Component {
       });
   }
 
-  static renderIndexPage(eventSeats, eventArea, that) {
+  static renderContent(eventSeats, eventArea, that) {
     var tempRow, tempNumber = 0;
     return (
       <div className="input-group" key={"eventArea".concat(eventArea.id)} >
         {eventSeats.map(seat => {
           return (
             (seat.row !== tempRow) ? (
-              <Fragment>
+              <Fragment key={"fr1".concat(seat.id)}>
                 {(tempNumber > seat.number) ? (<></>) : (<div className='container row' key={"ContRow".concat(seat.row, seat.number)}></div>)}
                 <div className='container col' key={"ContCol".concat(seat.row, seat.number)}>
-                    <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row} {tempNumber = seat.number}</Seat>
+                  <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row} {tempNumber = seat.number}</Seat>
                 </div>
               </Fragment>) :
               (
-                <Fragment>
+                <Fragment key={"fr2".concat(seat.id)}>
                   <div className='container col' key={"ContCol".concat(seat.row, seat.number)} >
                     <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row}</Seat>
                   </div>
@@ -57,10 +57,12 @@ class SelectEventSeatPartialPlain extends Component {
     const { t } = this.props;
     let contents = this.state.loading
       ? <p><em>{t('Loading...')}</em></p>
-      : SelectEventSeatPartialPlain.renderIndexPage(this.state.eventSeats, this.props.eventArea, this);
+      : SelectEventSeatPartialPlain.renderContent(this.state.eventSeats, this.props.eventArea, this);
 
     return (
-      <>{contents}</>
+      <Fragment>
+        {contents}
+      </Fragment>
     );
   }
 }

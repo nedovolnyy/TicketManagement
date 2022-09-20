@@ -4,7 +4,7 @@ import EventImg from '../../components/EventImg'
 import { ROLES } from '../../App'
 import useAuth from '../../hooks/useAuth'
 import { EventManagementApi } from '../../api/EventsManagementAPI'
-import { configHTTPS } from '../../configurations/httpsConf'
+import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 
 class HomePlain extends Component {
   static displayName = HomePlain.name;
@@ -19,7 +19,7 @@ class HomePlain extends Component {
   }
 
   async getEvents() {
-    const EventClient = new EventManagementApi(configHTTPS);
+    const EventClient = new EventManagementApi(EventsManagementApiHTTPSconfig);
     await EventClient.apiEventManagementEventsGet()
       .then(result => this.setState({ events: result, loading: false }))
       .catch((error) => {

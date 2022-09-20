@@ -6,14 +6,14 @@ import { DataNavigation } from 'react-data-navigation';
 
 class PreviewPlain extends Component {
   static displayName = PreviewPlain.name;
-  constructor() {
-    super()
-    this.state = DataNavigation.getData('ThirdPartyEvents');
+  constructor(props) {
+    super(props)
+    //this.state = DataNavigation.getData('ThirdPartyEvents');
   }
 
   render() {
     const { t } = this.props;
-    let ThirdPartyEvents = JSON.parse(this.state.result);
+    let ThirdPartyEvents = JSON.parse(this.props.thirdPartyEvents);
 
     return (
       <>

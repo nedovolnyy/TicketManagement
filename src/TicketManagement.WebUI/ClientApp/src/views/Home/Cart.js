@@ -1,11 +1,13 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { Fragment } from 'react'
+import { withTranslation } from 'react-i18next'
+import useAuth from '../../hooks/useAuth'
 
-export default function Cart() {
-  const { t } = useTranslation();
+function CartPlain(props) {
+  const { t } = props;
+  const { auth } = useAuth();
 
   return (
-    <>
+    <Fragment>
       <table>
         <tbody>
           <tr>
@@ -23,10 +25,12 @@ export default function Cart() {
         </tbody>
       </table>
 
-      <h2>{t('Total purchase:')} @Model.CartCount</h2>
+      <h2>{t('Total purchase:')} {auth?.userResponse?.cartCount}</h2>
       <h1>{t('Purchase history:')}</h1>
 
-      <h3>@Model.PayHistory</h3>
-    </>
+      <h3>{auth?.userResponse?.payHistory}</h3>
+    </Fragment>
   );
 }
+
+export const Cart = withTranslation()(CartPlain);

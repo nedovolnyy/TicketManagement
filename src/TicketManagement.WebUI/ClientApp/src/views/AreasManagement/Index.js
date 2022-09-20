@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react"
 import { withTranslation } from "react-i18next"
 import { AreaManagementApi, LayoutManagementApi } from '../../api/EventsManagementAPI'
-import { configHTTPS } from '../../configurations/httpsConf'
+import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 
 function AreasManagementPlain(props) {
   const { t } = props;
   const [areas, setAreas] = useState([]);
   const [layouts, setLayouts] = useState([]);
-  const AreaClient = new AreaManagementApi(configHTTPS);
-  const LayoutClient = new LayoutManagementApi(configHTTPS);
+  const AreaClient = new AreaManagementApi(EventsManagementApiHTTPSconfig);
+  const LayoutClient = new LayoutManagementApi(EventsManagementApiHTTPSconfig);
 
   useEffect(() => {
     (() => {
       AreaClient.apiAreaManagementAreasGet().then(result => setAreas(result));
     })();
-  });
+  },[]);
 
   useEffect(() => {
     (() => {
       LayoutClient.apiLayoutManagementLayoutsGet().then(result => setLayouts(result));
     })();
-  });
+  },[]);
 
   function layoutNameFromArea(layoutId) {
-    for (var i=0; i< layouts.length;i++){
+    for (var i = 0; i < layouts.length; i++) {
       if (layouts[i].id === layoutId)
         return layouts[i].name;
     }
@@ -49,7 +49,7 @@ function AreasManagementPlain(props) {
         ))}
         <tr>
           <td>
-            <button className="btn btn-sm btn-block btn-success" asp-action="Create">{t('Add area')}</button>
+            <button className="btn btn-sm btn-block btn-success" /*asp-action="Create"*/>{t('Add area')}</button>
           </td>
         </tr>
       </tbody>

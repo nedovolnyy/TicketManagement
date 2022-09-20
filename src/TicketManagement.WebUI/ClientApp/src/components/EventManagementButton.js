@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { EventManagementApi } from '../api/EventsManagementAPI'
 import { ROLES } from '../App'
 import useAuth from '../hooks/useAuth'
-import { configHTTPS } from '../configurations/httpsConf'
+import { EventsManagementApiHTTPSconfig } from '../configurations/httpsConf'
 
 export function EventManagementButton({ eventId }) {
   const { auth } = useAuth();
   const { t } = useTranslation();
   const allowedRoles = [ROLES.Administrator, ROLES.EventManager];
   const [canRemoveState, setCanRemoveState] = useState(false);
-  const client = new EventManagementApi(configHTTPS);
+  const client = new EventManagementApi(EventsManagementApiHTTPSconfig);
 
   useEffect(() => {
     (() => {

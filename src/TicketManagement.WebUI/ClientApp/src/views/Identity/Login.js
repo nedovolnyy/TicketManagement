@@ -40,7 +40,8 @@ const Login = () => {
       );
       const accessToken = response?.data?.token;
       const roles = response?.data?.roles;
-      setAuth({ user, pwd, roles, accessToken });
+      const userResponse = response?.data?.user;
+      setAuth({ user, userResponse, roles, accessToken });
       setUser('');
       setPwd('');
       navigate(from, { replace: true });

@@ -5,31 +5,29 @@
     version: 1.0.0
 */
 
-export class Configuration {
-  basePath = '';
-  headers: any = {};
-  getHeaders: any = () => { return {} };
-  responseHandler: any = null;
-  errorHandler: any = null;
+export function Configuration(config) {
+  this.basePath = '';
+  this.headers = {};
+  this.getHeaders = () => { return {} };
+  this.responseHandler = null;
+  this.errorHandler = null;
 
-  constructor(config: Configuration | any) {
-    if (config) {
+  if (config) {
       if (config.basePath) {
-        this.basePath = config.basePath;
+          this.basePath = config.basePath;
       }
       if (config.headers) {
-        this.headers = config.headers;
+          this.headers = config.headers;
       }
       if (config.getHeaders) {
-        this.getHeaders = config.getHeaders;
+          this.getHeaders = config.getHeaders;
       }
       if (config.responseHandler) {
-        this.responseHandler = config.responseHandler;
+          this.responseHandler = config.responseHandler;
       }
       if (config.errorHandler) {
-        this.errorHandler = config.errorHandler;
+          this.errorHandler = config.errorHandler;
       }
-    }
   }
 }
 

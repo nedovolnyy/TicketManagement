@@ -5,11 +5,11 @@ import './EventImg.css'
 import { EventManagementApi } from '../api/EventsManagementAPI'
 import { useNavigate } from 'react-router-dom'
 import { EventManagementButton } from './EventManagementButton'
-import { configHTTPS } from '../configurations/httpsConf'
+import { EventsManagementApiHTTPSconfig } from '../configurations/httpsConf'
 
 export default function EventImg(props) {
   const { t } = useTranslation();
-  const EventClient = new EventManagementApi(configHTTPS);
+  const EventClient = new EventManagementApi(EventsManagementApiHTTPSconfig);
   const [seatsAvailableCount, setSeatsAvailableCount] = useState();
   const navigate = useNavigate();
   const [seatsCount, setSeatsCount] = useState();
