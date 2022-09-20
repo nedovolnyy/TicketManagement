@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import { withTranslation } from "react-i18next"
+import React, { Component } from 'react'
+import { withTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import './Index.css'
 import { EventAreaManagementApi } from '../../api/EventsManagementAPI'
@@ -12,6 +12,7 @@ class EventPlain extends Component {
   constructor(props) {
     super(props);
     this.state = { eventAreas: [], loading: true };
+    this.eventId = this.props.event.id;
   }
 
   componentDidMount() {
@@ -19,16 +20,19 @@ class EventPlain extends Component {
   }
 
   async getEventAreas() {
+    const that = this;
     const EventAreaClient = new EventAreaManagementApi(configHTTPS);
-    await EventAreaClient.apiEventAreaManagementEventAreasByEventIdEventIdGet(this.props.event.id)
-      .then(result => this.setState({ eventAreas: result, loading: false }))
+    await EventAreaClient.apiEventAreaManagementEventAreasByEventIdEventIdGet(this.eventId)
+      .then(function (result) {
+        that.setState({ eventAreas: result, loading: false })
+      }.bind(this))
       .catch((error) => {
         console.log(error);
         alert(error);
-      })
+      });
   }
 
-  static renderIndexPage(eventAreas, event) {
+  static renderContent(eventAreas, event) {
     return (
       <EventAreasMap eventAreas={eventAreas} eventTime={event.eventTime} />
     );
@@ -37,8 +41,9 @@ class EventPlain extends Component {
   render() {
     const { t } = this.props;
     const event = this.props.event;
-    let contents = !this.state.loading ?
-      EventPlain.renderIndexPage(this.state.eventAreas, event) : false
+    let contents = this.state.loading
+      ? <p><em>{t('Loading...')}</em></p>
+      : EventPlain.renderContent(this.state.eventAreas, event)
     return (
       <>
         <div className="text-center">
@@ -63,11 +68,7 @@ class EventPlain extends Component {
         </div>
 
         <div className="row">
-          <table className="table">
-            <tbody>
-              {contents}
-            </tbody>
-          </table>
+          {contents}
         </div>
       </>
     )

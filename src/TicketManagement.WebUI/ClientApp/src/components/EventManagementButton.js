@@ -29,6 +29,6 @@ export function EventManagementButton({ eventId }) {
             }
           </form>
         </section>)
-      : false
+      : (<></>)
   );
 }

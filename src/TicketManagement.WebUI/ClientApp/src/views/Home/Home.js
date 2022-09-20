@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { useTranslation, withTranslation } from 'react-i18next'
 import EventImg from '../../components/EventImg'
 import { ROLES } from '../../App'
@@ -47,10 +47,10 @@ class HomePlain extends Component {
       : HomePlain.renderIndexPage(this.state.events);
 
     return (
-      <div>
+      <Fragment>
         <EventCount allowedRoles={[ROLES.Administrator, ROLES.EventManager]} count={this.state.events.length} />
         {contents}
-      </div>
+      </Fragment>
     );
   }
 }

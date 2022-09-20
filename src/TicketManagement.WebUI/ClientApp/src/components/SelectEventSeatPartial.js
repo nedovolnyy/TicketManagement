@@ -1,101 +1,68 @@
-import React, { useEffect, useState } from "react"
-import { withTranslation } from "react-i18next"
 import './SelectEventSeatPartial.css'
-import useAuth from '../hooks/useAuth';
+import React, { Component, Fragment } from 'react'
+import { withTranslation } from 'react-i18next'
 import { EventSeatManagementApi } from '../api/EventsManagementAPI'
 import { configHTTPS } from '../configurations/httpsConf'
-import { ROLES } from "../App";
+import { Seat } from './Seat'
 
-function SelectEventSeatPartialPlain(props) {
-  const { t } = props;
-  const { auth } = useAuth();
-  const EventSeatClient = new EventSeatManagementApi(configHTTPS);
-  const [eventSeatsCollection, setEventSeatsCollection] = useState([]);
+class SelectEventSeatPartialPlain extends Component {
+  static displayName = SelectEventSeatPartialPlain.name;
 
-  useEffect(() => {
-    (() => {
-      EventSeatClient.apiEventSeatManagementEventSeatsByEventAreaIdEventAreaIdGet(props.eventArea.id)
-        .then(result =>
-          setEventSeatsCollection(result));
-    })();
-  });
-
-  //let maxRow = Math.max(...eventSeatsCollection.map(eventSeat => eventSeat.row));
-  //let maxNumber = Math.max(...eventSeatsCollection.map(eventSeat => eventSeat.number));
-
-  let tempRow = 0;
-  /*
-    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}" + Context.Request.QueryString.ToString();
-  */
-
-  function rowOdd(seat) {
-    auth?.roles?.find(role => [ROLES.Administrator, ROLES.EventManager, ROLES.User]?.includes(role))
-      ? (<form key={"seat".concat("seat.Id")} /* Event/Purchase:{seat.Id, returnUrl,Model.Price"*/
-        method="post" className="form-horizontal">
-        <button className="btn btn-outline-secondary btn-lg btn-block btn_style" type="submit" onClick={() => window.confirm(t('Are you sure you want to buy this seat?'))} key={"btn".concat("seat.Id")} {...(seat.State !== 0) ? "disabled" : ""}>
-          <label className="text-sm-start">{seat.row}</label>
-          <label className="text-sm-start">{props.eventArea.price}</label>
-          <label className="text-sm-end">{seat.number}</label>
-        </button>
-      </form>
-      ) : (
-        <button className="btn btn-outline-secondary btn-lg btn-block btn_style" type="submit" key={"btn".concat("seat.Id")} {...(seat.State !== 0) ? "disabled" : ""}>
-          <label className="text-sm-start">{seat.row}</label>
-          <label className="text-sm-start">{props.eventArea.price}</label>
-          <label className="text-sm-end">{seat.number}</label>
-        </button>
-      );
+  constructor(props) {
+    super(props);
+    this.state = { eventSeats: [], loading: true };
   }
 
-  function rowNoOdd(seat) {
-    auth?.roles?.find(role => [ROLES.Administrator, ROLES.EventManager, ROLES.User]?.includes(role))
-      ? (<form key={"seat".concat("seat.Id")} /* Event/Purchase:{seat.Id, returnUrl,Model.Price"*/
-        method="post" className="form-horizontal">
-        <button className="btn btn-outline-secondary btn-lg btn-block btn_style" type="submit" onClick={() => window.confirm(t('Are you sure you want to buy this seat?'))} key={"btn".concat("seat.Id")} {...(seat.State !== 0) ? "disabled" : ""} >
-          <label className="text-sm-start">{seat.row}</label>
-          <label className="text-sm-start">{props.eventArea.price}</label>
-          <label className="text-sm-end">{seat.number}</label>
-        </button>
-      </form>
-      ) : (
-        <button className="btn btn-outline-secondary btn-lg btn-block btn_style" type="submit" key={"btn".concat("seat.Id")} {...(seat.State !== 0) ? "disabled" : ""} >
-          <label className="text-sm-start">{seat.row}</label>
-          <label className="text-sm-start">{props.eventArea.price}</label>
-          <label className="text-sm-end">{seat.number}</label>
-        </button>
-      );
+  componentDidMount() {
+    this.getEventSeats();
   }
 
-  return (
-    <table>
-      <tbody>
-        <div className="input-group">
-          {(tempRow = 0)}
-          {(console.log(tempRow))}
-          {eventSeatsCollection.map(seat => (
+  async getEventSeats() {
+    const EventSeatClient = new EventSeatManagementApi(configHTTPS);
+    await EventSeatClient.apiEventSeatManagementEventSeatsByEventAreaIdEventAreaIdGet(this.props.eventArea.id)
+      .then(result => this.setState({ eventSeats: result, loading: false }))
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
+  }
+
+  static renderIndexPage(eventSeats, eventArea, that) {
+    var tempRow, tempNumber = 0;
+    return (
+      <div className="input-group" key={"eventArea".concat(eventArea.id)} >
+        {eventSeats.map(seat => {
+          return (
             (seat.row !== tempRow) ? (
-              <tr>
-                <td>
-                  <div className="container">
-                    {rowOdd(seat)}
+              <Fragment>
+                {(tempNumber > seat.number) ? (<></>) : (<div className='container row' key={"ContRow".concat(seat.row, seat.number)}></div>)}
+                <div className='container col' key={"ContCol".concat(seat.row, seat.number)}>
+                    <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row} {tempNumber = seat.number}</Seat>
+                </div>
+              </Fragment>) :
+              (
+                <Fragment>
+                  <div className='container col' key={"ContCol".concat(seat.row, seat.number)} >
+                    <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row}</Seat>
                   </div>
-                </td>
-              </tr>) : false // tr X
-                (seat.row === tempRow) ? (
-                  <td>
-                    <div className="container">
-                      {rowNoOdd(seat)}
-                    </div>
-                  </td>
-          (tempRow = seat.row)
-              // tr
-              (console.log(tempRow))
-          ):false
-          ))}
-        </div>
-      </tbody>
-    </table>
-  );
+                </Fragment>)
+          );
+        }
+        )}
+      </div>
+    );
+  }
+
+  render() {
+    const { t } = this.props;
+    let contents = this.state.loading
+      ? <p><em>{t('Loading...')}</em></p>
+      : SelectEventSeatPartialPlain.renderIndexPage(this.state.eventSeats, this.props.eventArea, this);
+
+    return (
+      <>{contents}</>
+    );
+  }
 }
 
 export const SelectEventSeatPartial = withTranslation()(SelectEventSeatPartialPlain);
