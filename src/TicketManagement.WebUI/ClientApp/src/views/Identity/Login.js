@@ -67,7 +67,6 @@ const Login = () => {
         <hr />
         <form onSubmit={handleSubmit}>
           <div className="form-floating">
-            <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="email">{t('Email')}:</label>
             <input
               className="form-control"
               type="text"
@@ -78,10 +77,10 @@ const Login = () => {
               value={user}
               required
             />
+            <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="email">{t('Email')}:</label>
           </div>
           <br></br>
           <div className="form-floating">
-            <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="password">{t('Password')}:</label>
             <input
               className="form-control"
               type="password"
@@ -90,6 +89,7 @@ const Login = () => {
               value={pwd}
               required
             />
+            <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="password">{t('Password')}:</label>
           </div>
           <br></br>
           <div>

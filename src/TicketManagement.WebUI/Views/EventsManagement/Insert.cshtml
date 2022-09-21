@@ -24,46 +24,46 @@
                 <input asp-for="Name" class="form-control" />
                 <label asp-for="Name" class="form-label"></label>
                 <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+            </div><br />
             <div class="form-floating">
                 <input asp-for="Description" class="form-control" />
                 <label asp-for="Description" class="form-label"></label>
                 <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+            </div><br />
             <div class="form-floating">
                 <input asp-for="EventTime" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
                 <label asp-for="EventTime" class="form-label"></label>
                 <span asp-validation-for="EventTime" class="text-danger"></span>
-                <div class="form-floating">
-                    <select name="timeZone" asp-items="timezoneList" class="form-select"></select>
-                    <label class="form-label">@Localizer["Time Zone for Event"]</label>
-                </div>
-            </div>
+            </div><br />
+            <div class="form-floating">
+                <select name="timeZone" asp-items="timezoneList" class="form-select"></select>
+                <label class="form-label">@Localizer["Time Zone for Event"]</label>
+            </div><br />
             <div class="form-floating">
                 <input asp-for="EventEndTime" class="form-control" asp-format="{0:yyyy-MM-ddTHH:mm}" />
                 <label asp-for="EventEndTime" class="form-label"></label>
                 <span asp-validation-for="EventEndTime" class="text-danger"></span>
-            </div>
+            </div><br />
             <div class="form-floating">
                 <input asp-for="EventLogoImage" class="form-control" />
                 <label asp-for="EventLogoImage" class="control-label"></label>
                 <span asp-validation-for="EventLogoImage" class="text-danger"></span>
-            </div>
+            </div><br />
             <div class="form-floating">
                 <select name="layoutId" asp-items="selectListLayoutsId" class="form-select"></select>
-                <label class="form-label">@Localizer["Area"]</label>
-            </div>
+                <label class="form-label">@Localizer["Layout"]</label>
+            </div><br />
             <div class="form-floating">
                 <input asp-for="Price" class="form-control" />
                 <label asp-for="Price" class="control-label"></label>
                 <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
+            </div><br />
             <div class="table-active invisible">
                 @foreach (var layoutsId in Model.LayoutsId)
                 {
                     <input name="layoutsId" value="@layoutsId" hidden />
                 }
-            </div>
+            </div><br />
             <button type="submit" class="w-100 btn btn-lg btn-primary">@Localizer["Create Event"]</button>
         </form>
     </div>

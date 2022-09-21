@@ -3,37 +3,58 @@ import './SelectLayouts.css'
 import { withTranslation } from 'react-i18next'
 import { LayoutManagementApi } from '../../api/EventsManagementAPI'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
+import { DataNavigation } from 'react-data-navigation'
+import { withRouter } from '../../helpers/withRouter'
 
 class EventsManagementSelectLayoutsPlain extends Component {
   static displayName = EventsManagementSelectLayoutsPlain.name;
 
   constructor(props) {
     super(props);
-    this.state = { layouts: [], loading: true };
+    this.state = { layouts: [], selectedLayouts: [], loading: true };
   }
 
   componentDidMount() {
     this.getLayouts();
   }
 
-  async getLayouts() {
+  getLayouts() {
+    let selectedVenues = DataNavigation.getData('selectedVenues');
     const LayoutClient = new LayoutManagementApi(EventsManagementApiHTTPSconfig);
-    await LayoutClient.apiLayoutManagementLayoutsGet()
-      .then(result => this.setState({ layouts: result, loading: false }))
-      .catch((error) => {
-        console.log(error);
-        alert(error);
-      });
+    selectedVenues.map(venue => (
+      LayoutClient.apiLayoutManagementLayoutsByVenueIdVenueIdGet(+venue)
+        .then(result => this.setState({ layouts: [...this.state.layouts, result], loading: false }))
+        .catch((error) => {
+          console.log(error);
+          alert(error);
+        })
+    ));
   }
-  static renderContent(layouts, props) {
-    const { t } = props;
+
+  handleSubmit = (event) => {
+    DataNavigation.setData('selectedLayouts', this.state.selectedLayouts);
+    this.props.router.navigate('/EventsManagement/Insert');
+  }
+
+  handleCheckboxChange = (event) => {
+    let newArray = [...this.state.selectedLayouts, event.target.id];
+    if (this.state.selectedLayouts.includes(event.target.id)) {
+      newArray = newArray.filter(venue => venue !== event.target.id);
+    }
+    this.setState({
+      selectedLayouts: newArray
+    });
+  }
+
+  renderContent(layoutsFromVenues) {
+    const { t } = this.props;
     return (<div className="form-group">
       <div className="wrap">
         <div className="layouts_left">
           <table className="table">
             <tbody>
               <tr><th>{t('Name')}</th><th>{t('Description')}</th></tr>
-              {layouts.map(layout => (
+              {layoutsFromVenues.map(layouts => layouts.map(layout => (
                 <tr key={"tr_".concat(layout.id)}>
                   <td key={"td_name_".concat(layout.id)}>
                     {layout.name}
@@ -44,7 +65,7 @@ class EventsManagementSelectLayoutsPlain extends Component {
                     <br key={"br2_".concat(layout.id)} />
                   </td>
                 </tr>
-              ))}
+              )))}
             </tbody>
           </table>
         </div><div className="layouts_right">
@@ -53,17 +74,16 @@ class EventsManagementSelectLayoutsPlain extends Component {
               <tr><th></th></tr>
               <tr>
                 <td>
-                  <form /*asp-action="Insert" asp-controller="EventsManagement"*/ method="get">
-                    <input type="hidden" />
+                  <form>
                     <div className="table-active">
-                      {layouts.map(layout => (
+                      {layoutsFromVenues.map(layouts => layouts.map(layout => (
                         <Fragment key={"fr_".concat(layout.id)} >
-                          <input key={"checkbox_".concat(layout.id)} type="checkbox" name="layoutsId" value="@layout.Id" />
+                          <input key={"checkbox_".concat(layout.id)} type="checkbox" id={layout.id} value={layout.id} onChange={this.handleCheckboxChange} />
                           <hr key={"hr".concat(layout.id)} />
                         </Fragment>
-                      ))}
+                      )))}
                     </div>
-                    <button type="submit" className="btn btn-primary">{t('Select')}</button>
+                    <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>{t('Select')}</button>
                   </form>
                 </td>
               </tr>
@@ -79,7 +99,7 @@ class EventsManagementSelectLayoutsPlain extends Component {
     const { t } = this.props;
     let contents = this.state.loading
       ? <p><em>{t('Loading...')}</em></p>
-      : EventsManagementSelectLayoutsPlain.renderContent(this.state.layouts, this.props);
+      : this.renderContent(this.state.layouts);
 
     return (
       <Fragment>
@@ -89,4 +109,4 @@ class EventsManagementSelectLayoutsPlain extends Component {
   }
 }
 
-export const EventsManagementSelectLayouts = withTranslation()(EventsManagementSelectLayoutsPlain);
+export const EventsManagementSelectLayouts = withRouter(withTranslation()(EventsManagementSelectLayoutsPlain));

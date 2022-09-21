@@ -103,11 +103,6 @@ const Register = () => {
               <hr />
               <form onSubmit={handleSubmit}>
                 <div className="form-floating">
-                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="email">
-                    {t('Email')}:
-                    <FontAwesomeIcon icon={faCheck} className={validName ? "d-block" : "d-none"} />
-                    <FontAwesomeIcon icon={faTimes} className={validName || !user ? "d-none" : "d-block"} />
-                  </label>
                   <input
                     className="form-control"
                     type="text"
@@ -122,6 +117,11 @@ const Register = () => {
                     onFocus={() => setUserFocus(true)}
                     onBlur={() => setUserFocus(false)}
                   />
+                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="email">
+                    {t('Email')}:
+                    <FontAwesomeIcon icon={faCheck} className={validName ? "d-block" : "d-none"} />
+                    <FontAwesomeIcon icon={faTimes} className={validName || !user ? "d-none" : "d-block"} />
+                  </label>
                   <br></br>
                   <p id="uidnote" className={userFocus && user && !validName ? "d-block" : "d-none"}>
                     <FontAwesomeIcon icon={faInfoCircle} />
@@ -132,11 +132,6 @@ const Register = () => {
                 </div>
                 <br></br>
                 <div className="form-floating">
-                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="password">
-                    {t('Password')}:
-                    <FontAwesomeIcon icon={faCheck} className={validPwd ? "d-block" : "d-none"} />
-                    <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "d-none" : "d-block"} />
-                  </label>
                   <input
                     className="form-control"
                     type="password"
@@ -149,6 +144,11 @@ const Register = () => {
                     onFocus={() => setPwdFocus(true)}
                     onBlur={() => setPwdFocus(false)}
                   />
+                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="password">
+                    {t('Password')}:
+                    <FontAwesomeIcon icon={faCheck} className={validPwd ? "d-block" : "d-none"} />
+                    <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "d-none" : "d-block"} />
+                  </label>
                   <br></br>
                   <p id="pwdnote" className={pwdFocus && !validPwd ? "d-block" : "d-none"}>
                     <FontAwesomeIcon icon={faInfoCircle} />
@@ -159,11 +159,6 @@ const Register = () => {
                 </div>
                 <br></br>
                 <div className="form-floating">
-                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="confirm_pwd">
-                    {t('Confirm Password')}:
-                    <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "d-block" : "d-none"} />
-                    <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "d-none" : "d-block"} />
-                  </label>
                   <input
                     className="form-control"
                     type="password"
@@ -176,6 +171,11 @@ const Register = () => {
                     onFocus={() => setMatchFocus(true)}
                     onBlur={() => setMatchFocus(false)}
                   />
+                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="confirm_pwd">
+                    {t('Confirm Password')}:
+                    <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "d-block" : "d-none"} />
+                    <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "d-none" : "d-block"} />
+                  </label>
                   <br></br>
                   <p id="confirmnote" className={matchFocus && !validMatch ? "d-block" : "d-none"}>
                     <FontAwesomeIcon icon={faInfoCircle} />

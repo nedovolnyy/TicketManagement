@@ -3,13 +3,15 @@ import './SelectVenues.css'
 import { withTranslation } from 'react-i18next'
 import { VenueManagementApi } from '../../api/EventsManagementAPI'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
+import { DataNavigation } from 'react-data-navigation'
+import { withRouter } from '../../helpers/withRouter'
 
 class EventsManagementSelectVenuesPlain extends Component {
   static displayName = EventsManagementSelectVenuesPlain.name;
 
   constructor(props) {
     super(props);
-    this.state = { venues: [], loading: true };
+    this.state = { venues: [], selectedVenues: [], loading: true };
   }
 
   componentDidMount() {
@@ -26,8 +28,23 @@ class EventsManagementSelectVenuesPlain extends Component {
       });
   }
 
-  static renderContent(venues, props) {
-    const { t } = props;
+  handleSubmit = (event) => {
+    DataNavigation.setData('selectedVenues', this.state.selectedVenues);
+    this.props.router.navigate('/EventsManagement/SelectLayouts');
+  }
+
+  handleCheckboxChange = (event) => {
+    let newArray = [...this.state.selectedVenues, event.target.id];
+    if (this.state.selectedVenues.includes(event.target.id)) {
+      newArray = newArray.filter(venue => venue !== event.target.id);
+    }
+    this.setState({
+      selectedVenues: newArray
+    });
+  }
+
+  renderContent(venues) {
+    const { t } = this.props;
     return (
       <Fragment>
         <div className="form-group">
@@ -64,17 +81,16 @@ class EventsManagementSelectVenuesPlain extends Component {
                   <tr><th></th></tr>
                   <tr>
                     <td>
-                      <form /*asp-action="SelectLayouts" asp-controller="EventsManagement"*/ method="post">
-                        <input type="hidden" />
-                        <div className="table-active">
+                      <form>
+                        <div className="table-active" id="venues">
                           {venues.map(venue => (
                             <Fragment key={"fr_".concat(venue.id)} >
-                              <input key={"checkbox_".concat(venue.id)} type="checkbox" name="venuesId" value="@venue.Id" />
+                              <input key={"checkbox_".concat(venue.id)} type="checkbox" id={venue.id} value={venue.id} onChange={this.handleCheckboxChange} />
                               <hr key={"hr".concat(venue.id)} />
                             </Fragment>
                           ))}
                         </div>
-                        <button type="submit" className="btn btn-primary">{t('Select')}</button>
+                        <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>{t('Select')}</button>
                       </form>
                     </td>
                   </tr>
@@ -91,7 +107,7 @@ class EventsManagementSelectVenuesPlain extends Component {
     const { t } = this.props;
     let contents = this.state.loading
       ? <p><em>{t('Loading...')}</em></p>
-      : EventsManagementSelectVenuesPlain.renderContent(this.state.venues, this.props);
+      : this.renderContent(this.state.venues);
 
     return (
       <Fragment>
@@ -101,4 +117,4 @@ class EventsManagementSelectVenuesPlain extends Component {
   }
 }
 
-export const EventsManagementSelectVenues = withTranslation()(EventsManagementSelectVenuesPlain);
+export const EventsManagementSelectVenues = withRouter(withTranslation()(EventsManagementSelectVenuesPlain));
