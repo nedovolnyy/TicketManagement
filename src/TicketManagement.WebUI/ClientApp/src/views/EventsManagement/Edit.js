@@ -83,7 +83,7 @@ class EventsManagementEditPlain extends Component {
     const timeZonesList = momentTZ.tz.names();
     const eventLayout = this.state.layouts[this.state.event.layoutId];
     let eventTime = moment(this.state.event.eventTime).format('yyyy-MM-DDThh:mm');
-    let date = moment(new Date()).format('yyyy-MM-DDThh:mm');
+    let eventEndTime = moment(new Date()).format('yyyy-MM-DDThh:mm');
     return (
       (!this.state.render) ? (<p><em>{t('Loading...')}</em></p>) : (
         <Fragment>
@@ -119,7 +119,7 @@ class EventsManagementEditPlain extends Component {
                 </div>
                 <br></br>
                 <div className="form-floating">
-                  <input type="datetime-local" id="eventEventEndTime" defaultValue={this.state.event.eventEndTime} className="form-control" value={this.state.eventEventEndTime} required
+                  <input type="datetime-local" id="eventEventEndTime" defaultValue={eventEndTime} className="form-control" value={this.state.eventEventEndTime} required
                     onChange={(event) => { event.preventDefault(); this.setState({ eventEventEndTime: event.target.value }) }} />
                   <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="eventEventEndTime">{t('EventEndTime')}:</label>
                 </div>
@@ -144,7 +144,7 @@ class EventsManagementEditPlain extends Component {
                 <div className="form-floating">{(this.state.canRemoveState) ? (<input type="currency" id="eventPrice" required className="currencyInput form-control"
                   onChange={(event) => this.setState({ eventEventPrice: event.target.value })}></input>) :
                   (<input type="currency" id="eventPrice" required className="currencyInput form-control" disabled></input>)}
-                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="eventPricePrice" className="form-label"></label>
+                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="eventPricePrice" ></label>
                 </div>
                 <br></br>
                 <button type="button" className="w-100 btn btn-lg btn-primary" onClick={(event) => this.handleSubmit(event)}>{t('Edit Event')}</button>

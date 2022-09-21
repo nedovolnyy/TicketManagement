@@ -2,11 +2,52 @@ import React, { Component, Fragment } from 'react'
 import './Preview.css'
 import { Container } from 'reactstrap'
 import { withTranslation } from 'react-i18next'
-import { FormatDateTime} from '../../helpers/FormatDateTime'
+import { FormatDateTime } from '../../helpers/FormatDateTime'
 import { DataNavigation } from 'react-data-navigation'
+import { EventManagementApi } from '../../api/EventsManagementAPI'
+import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
+import { Auth } from '../../helpers/Auth'
+import { withRouter } from '../../helpers/withRouter'
 
 class PreviewPlain extends Component {
   static displayName = PreviewPlain.name;
+
+  handleAddSubmit(event, ThirdPartyEvent) {
+    event.preventDefault();
+
+    const EventClient = new EventManagementApi(EventsManagementApiHTTPSconfig);
+    EventClient.apiEventManagementEventPost(ThirdPartyEvent.Price, JSON.stringify({
+      name: ThirdPartyEvent.Name,
+      eventTime: ThirdPartyEvent.EventTime,
+      description: ThirdPartyEvent.Description,
+      layoutId: ThirdPartyEvent.LayoutId,
+      eventEndTime: ThirdPartyEvent.EventEndTime,
+      eventLogoImage: ThirdPartyEvent.EventLogoImage
+    }),
+      {
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer '.concat(this.props.auth?.accessToken) },
+        withCredentials: true
+      }).then(response => {
+        if (response.status === 200 || response.status === 204) {
+          console.log(response);
+        } else {
+          console.log(response);
+        }
+      });
+  }
+
+  handleDeleteSubmit(event, ThirdPartyEvent) {
+    event.preventDefault();
+
+    const { t } = this.props;
+    let ThirdPartyEvents = DataNavigation.getData('thirdPartyEvents');
+    const conf = window.confirm(t('Are you sure you want to delete this ThirdPartyEvent?'));
+    if (conf) {
+      ThirdPartyEvents.splice(ThirdPartyEvents.indexOf(String(ThirdPartyEvent)) - 1, 1)
+      console.log(ThirdPartyEvents);
+      this.props.routes.navigate('ThirdPartyEvents/Preview', { replace: true });
+    }
+  }
 
   render() {
     const { t } = this.props;
@@ -23,7 +64,7 @@ class PreviewPlain extends Component {
             {ThirdPartyEvents?.map(ThirdPartyEvent => (
               (tempId++),
               <div className="col" key={"col" + tempId} >
-                <form /*"ThirdPartyEvents/Add"*/ method="post" className="form-horizontal" key={"form1_" + tempId} >
+                <form className="form-horizontal" key={"form1_" + tempId} >
                   <div className="thirdPartyEvent_img__container visible" key={"img__container" + tempId}>
                     <img className="thirdPartyEvent_image shadow-lg" alt="" src={(ThirdPartyEvent.EventLogoImage)} key={"shadow" + tempId} />
                     <div className="thirdPartyEvent_img__description" key={"img__description" + tempId} >
@@ -51,10 +92,10 @@ class PreviewPlain extends Component {
                   <div className="thirdPartyEvent_text" key={"text4_" + tempId}>
                     <p key={"p4_" + tempId}>{ThirdPartyEvent.Description}</p>
                   </div>
-                  <input className="btn btn-sm btn-primary" type="submit" value={t('Add')} key={"btnAdd" + tempId} />
+                  <input className="btn btn-sm btn-primary" type="button" onClick={(event) => this.handleAddSubmit(event, ThirdPartyEvent)} value={t('Add')} key={"btnAdd" + tempId} />
                 </form>
-                <form /*"ThirdPartyEvents/Delete:thirdPartyEvent.Name:@thirdPartyEvent.EventTime:@thirdPartyEvent.Description"*/ method="post" key={"form2_" + tempId}>
-                  <button key={"btnDelete" + tempId} type="submit" className="btn btn-sm btn-danger" onClick={() => { window.confirm('Are you sure you want to delete this ThirdPartyEvent?') }} >{t('Delete')}</button>
+                <form key={"form2_" + tempId}>
+                  <button key={"btnDelete" + tempId} type="submit" className="btn btn-sm btn-danger" onClick={(event) => this.handleDeleteSubmit(event, ThirdPartyEvent)} >{t('Delete')}</button>
                 </form>
               </div>
             ))}
@@ -65,4 +106,4 @@ class PreviewPlain extends Component {
   }
 }
 
-export const ThirdPartyEvents = withTranslation()(PreviewPlain);
+export const ThirdPartyEvents = Auth(withRouter(withTranslation()(PreviewPlain)));

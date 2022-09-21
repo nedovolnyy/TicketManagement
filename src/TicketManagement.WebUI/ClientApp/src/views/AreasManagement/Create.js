@@ -1,6 +1,5 @@
-import React, { Component } from "react"
-import { Button, Form } from "reactstrap"
-import { withTranslation } from "react-i18next"
+import React, { Component } from 'react'
+import { withTranslation } from 'react-i18next'
 
 class AreasManagementCreatePlain extends Component {
   static displayName = AreasManagementCreatePlain.name;

@@ -55,7 +55,7 @@ class EventsManagementInsertPlain extends Component {
 
     console.log(tempSelectedLayouts + '  :  ' + removingLayout);
 
-    tempSelectedLayouts.splice(tempSelectedLayouts.indexOf(String(removingLayout)), 1)
+    tempSelectedLayouts.splice(tempSelectedLayouts.indexOf(String(removingLayout))-1, 1)
     this.setState({ eventLayoutId: +tempSelectedLayouts[0] });
 
     let select = document.getElementById('selectListLayoutsId');

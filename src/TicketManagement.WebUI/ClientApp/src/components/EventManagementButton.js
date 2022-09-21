@@ -22,13 +22,14 @@ export function EventManagementButton({ eventId }) {
   });
 
   const handleEditSubmit = (event) => {
+    event.preventDefault();
+    
     DataNavigation.setData('eventIdForEdit', eventId);
     navigate('/EventsManagement/Edit', { state: { eventIdForEdit: eventId } });
   }
 
   const handleDeleteSubmit = (event) => {
     const conf = window.confirm(t('Are you sure you want to delete this event?'));
-    let number = parseFloat(event.target.parentNode.getAttribute("data-key"));
     if (conf) {
       const EventClient = new EventManagementApi(EventsManagementApiHTTPSconfig);
       EventClient.apiEventManagementEventEventIdDelete(eventId,
