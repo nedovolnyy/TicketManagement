@@ -5,9 +5,10 @@ import { ROLES } from '../App'
 import useAuth from '../hooks/useAuth'
 import { EventsManagementApiHTTPSconfig } from '../configurations/httpsConf'
 import { DataNavigation } from 'react-data-navigation'
+import { withRouter } from '../helpers/withRouter'
 import { useNavigate } from 'react-router-dom'
 
-export function EventManagementButton({ eventId }) {
+function EventManagementButtonPlain({ eventId }) {
   const { auth } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -23,12 +24,14 @@ export function EventManagementButton({ eventId }) {
 
   const handleEditSubmit = (event) => {
     event.preventDefault();
-    
+
     DataNavigation.setData('eventIdForEdit', eventId);
     navigate('/EventsManagement/Edit', { state: { eventIdForEdit: eventId } });
   }
 
   const handleDeleteSubmit = (event) => {
+    event.preventDefault();
+
     const conf = window.confirm(t('Are you sure you want to delete this event?'));
     if (conf) {
       const EventClient = new EventManagementApi(EventsManagementApiHTTPSconfig);
@@ -38,13 +41,11 @@ export function EventManagementButton({ eventId }) {
           withCredentials: true
         }).then(response => {
           if (response.status === 200 || response.status === 204) {
-            console.log(response);
+            navigate('/', { replace: true });
           } else {
             console.log(response);
           }
         });
-
-      navigate('/', { replace: true });
     }
   }
 
@@ -53,12 +54,14 @@ export function EventManagementButton({ eventId }) {
       ? (
         <section>
           <form>
-            <button type="button" className="btn btn-sm btn-primary" onClick={handleEditSubmit} >{t('Edit')}</button>
+            <button type="button" className="btn btn-sm btn-primary" onClick={(event) => handleEditSubmit(event)} >{t('Edit')}</button>
             {canRemoveState &&
-              <button type="button" className="btn btn-sm btn-danger" onClick={handleDeleteSubmit} > {t('Delete')}</button>
+              <button type="button" className="btn btn-sm btn-danger" onClick={(event) => handleDeleteSubmit(event)} > {t('Delete')}</button>
             }
           </form>
         </section>)
       : (<Fragment></Fragment>)
   );
 }
+
+export const EventManagementButton = withRouter(EventManagementButtonPlain);

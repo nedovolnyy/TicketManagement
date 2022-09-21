@@ -15,6 +15,8 @@ class PreviewPlain extends Component {
   handleAddSubmit(event, ThirdPartyEvent) {
     event.preventDefault();
 
+    let ThirdPartyEvents = DataNavigation.getData('thirdPartyEvents');
+    ThirdPartyEvents.splice(ThirdPartyEvents.indexOf(String(ThirdPartyEvent)) - 1, 1)
     const EventClient = new EventManagementApi(EventsManagementApiHTTPSconfig);
     EventClient.apiEventManagementEventPost(ThirdPartyEvent.Price, JSON.stringify({
       name: ThirdPartyEvent.Name,
@@ -28,12 +30,12 @@ class PreviewPlain extends Component {
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer '.concat(this.props.auth?.accessToken) },
         withCredentials: true
       }).then(response => {
-        if (response.status === 200 || response.status === 204) {
-          console.log(response);
-        } else {
+        if (!response.status === 200 || !response.status === 204) {
           console.log(response);
         }
       });
+
+    this.props.router.navigate('/ThirdPartyEvents/Preview', { replace: true });
   }
 
   handleDeleteSubmit(event, ThirdPartyEvent) {
@@ -44,8 +46,7 @@ class PreviewPlain extends Component {
     const conf = window.confirm(t('Are you sure you want to delete this ThirdPartyEvent?'));
     if (conf) {
       ThirdPartyEvents.splice(ThirdPartyEvents.indexOf(String(ThirdPartyEvent)) - 1, 1)
-      console.log(ThirdPartyEvents);
-      this.props.routes.navigate('ThirdPartyEvents/Preview', { replace: true });
+      this.props.router.navigate('/ThirdPartyEvents/Preview', { replace: true });
     }
   }
 

@@ -48,18 +48,17 @@ class EventsManagementInsertPlain extends Component {
     event.preventDefault();
 
     this.setState({ firstRender: false });
-
-    /*
+/*
     let tempSelectedLayouts = [...this.state.selectedLayouts];
     let removingLayout = this.state.eventLayoutId;
+
 
     console.log(tempSelectedLayouts + '  :  ' + removingLayout);
 
     tempSelectedLayouts.splice(tempSelectedLayouts.indexOf(String(removingLayout))-1, 1)
     this.setState({ eventLayoutId: +tempSelectedLayouts[0] });
 
-    let select = document.getElementById('selectListLayoutsId');
-    select.remove('optLayout'.concat(removingLayout));
+    React.unmountComponentAtNode(document.getElementById('optLayoutCreate'.concat(removingLayout)));
 
     console.log('[id="optLayout' + removingLayout + '"]');
 
@@ -146,7 +145,7 @@ class EventsManagementInsertPlain extends Component {
                     onChange={(event) => this.setState({ eventLayoutId: event.target.value })}>
                     {this.state.firstRender &&
                       this.state.layouts.map(layout => {
-                        return <option id={"optLayout".concat(layout.id)} key={"optLayout".concat(layout.id)} value={layout.id}>{layout.name}</option>
+                        return <option id={"optLayoutCreate".concat(layout.id)} key={"optLayoutCreate".concat(layout.id)} value={layout.id}>{layout.name}</option>
                       })}
                   </select>
                   <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="selectListLayoutsId">{t('Layout')}</label>

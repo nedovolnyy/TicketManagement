@@ -5,8 +5,7 @@
   }
   
   .footer {
-    position: fixed;
-    bottom: 0;
+    position: absolute;
     width: 100%;
     white-space: nowrap;
     line-height: 60px;

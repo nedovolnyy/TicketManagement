@@ -75,7 +75,7 @@ class EventsManagementEditPlain extends Component {
         }
       });
 
-    this.props.routes.navigate(this.props.routes.location.state?.from?.pathname || "/", { replace: true });
+    this.props.router.navigate(this.props.routes.location.state?.from?.pathname || "/", { replace: true });
   }
 
   render() {
