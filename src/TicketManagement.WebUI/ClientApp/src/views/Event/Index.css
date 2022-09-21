@@ -1,19 +1,9 @@
-.eventTime
-{
-    font-size: 0.75em;
-}
-
-.noneDecoration
-{
-    text-decoration: none;
-}
-
-.img__containerE {
+.eventPage_img__container {
     position: relative;
     margin: 20px auto 30px auto;
 }
 
-    .img__containerE > img {
+    .eventPage_img__container > img {
         display: inline-block;
         width: 450px;
         height: 200px;
@@ -22,7 +12,7 @@
         border: 4px solid #fff;
     }
 
-.img__descriptionE {
+.eventPage_img__description {
     position: absolute;
     left: 0;
     right: 0;
@@ -32,7 +22,7 @@
     border-bottom-right-radius: 4px;
 }
 
-.img__headerE {
+.eventPage_img__header {
     font-weight: bold;
     font-family: Georgia;
     font-size: 0.85em;
@@ -41,7 +31,11 @@
     color: black;
 }
 
-.image {
+div.homePage_img__header h2.noneDecoration {
+    text-decoration: none;
+}
+
+.eventPage_image {
     display: block;
     margin: 20px auto 30px auto;
     box-shadow: -6px 6px 0 #E0E0E0, -12px 12px 0 #BDBDBD;
@@ -49,20 +43,20 @@
     border: 6px solid #F5F5F5;
 }
 
-div.textE {
+div.eventPage_text {
     font-family: Impact;
     overflow: hidden;
     font-size: 0.95em;
     margin-bottom: -18px;
 }
 
-    div.textE div.left {
+    div.eventPage_text div.left {
         float: left;
         margin-left: 20px;
         color: black;
     }
 
-    div.textE div.right {
+    div.eventPage_text div.right {
         float: right;
         margin-right: 200px;
         color: brown;

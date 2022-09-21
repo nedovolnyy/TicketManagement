@@ -36,7 +36,7 @@ class NavMenuPlain extends Component {
     const { t } = this.props;
     return (
       <header>
-        <Navbar className='navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3' light>
+        <Navbar className='navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3' light>
           <NavbarBrand tag={Link} to='/'>TicketManagement</NavbarBrand>
           <NavbarToggler onClick={this.toggleNavbar} className='mr-2' />
           <Collapse className='d-sm-inline-flex flex-sm-row-reverse' isOpen={!this.state.collapsed} navbar>

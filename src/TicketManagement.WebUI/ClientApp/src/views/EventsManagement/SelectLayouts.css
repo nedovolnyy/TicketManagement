@@ -1,11 +1,11 @@
-.left {
+.layouts_left {
     display: table-cell;
     zoom: 1.18;
     margin-right: -100%;
     margin-top: -10%;
 }
 
-.right {
+.layouts_right {
     display: table-cell;
     text-align: left;
     line-height: 1;
@@ -13,18 +13,18 @@
     padding-top: 50px;
 }
 
-    .left a, .right a {
+    .layouts_left a, .layouts_right a {
         display: inline-block;
         position: relative;
     }
 
-.wrap.right hr {
+.wrap.layouts_right hr {
 
     height: 100px;
     visibility: hidden;
     margin-bottom: -1px;
 }
-.wrap.left hr {
+.wrap.layouts_left hr {
     height: -100px;
     visibility: hidden;
     margin-bottom: -1px;

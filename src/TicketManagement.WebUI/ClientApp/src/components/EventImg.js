@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormatDateTime } from '../helpers/FormatDateTime'
-import './EventImg.css'
 import { EventManagementApi } from '../api/EventsManagementAPI'
 import { useNavigate } from 'react-router-dom'
 import { EventManagementButton } from './EventManagementButton'
@@ -38,21 +37,21 @@ export default function EventImg(props) {
   }
 
   return (
-    <div className='col' key={'col' + props.event.id}>
+    <div className='homePage col' key={'col' + props.event.id}>
       <form onSubmit={handleSubmit} method="post" className="form-horizontal">
-        <button className='invisible' type='submit' key={'submit' + props.event.id}>
-          <div className='img__container visible' key={'img__container' + props.event.id}>
-            <img className='image shadow-lg' alt='' src={props.event.eventLogoImage} key={'image' + props.event.id} />
-            <div className='img__description' key={'img__description' + props.event.id}>
-              <div className='text' key={'text1_' + props.event.id}>
-                <div className='img__header right eventTime' key={'img__headerR' + props.event.id}>
+        <button className='homePage invisible' type='submit' key={'submit' + props.event.id}>
+          <div className='homePage_img__container visible' key={'img__container' + props.event.id}>
+            <img className='homePage_image shadow-lg' alt='' src={props.event.eventLogoImage} key={'image' + props.event.id} />
+            <div className='homePage_img__description' key={'img__description' + props.event.id}>
+              <div className='homePage_text' key={'text1_' + props.event.id}>
+                <div className='homePage_img__header right eventTime' key={'img__headerR' + props.event.id}>
                   {FormatDateTime(props.event.eventTime)}
                 </div>
-                <div className='img__header left noneDecoration' key={'img__headerL' + props.event.id}>
-                  <h2 key={'h2' + props.event.id}>{props.event.name}</h2>
+                <div className='homePage_img__header left noneDecoration' key={'img__headerL' + props.event.id}>
+                  <h2>{props.event.name}</h2>
                 </div>
               </div>
-              <div className='text' key={'text2_' + props.event.id}>
+              <div className='homePage_text' key={'text2_' + props.event.id}>
                 <div className='left' key={'leftText' + props.event.id}>
                   <p key={'p1' + props.event.id}>{props.event.description.substring(0, Math.min(props.event.description.length, 45)) + '...'}</p>
                 </div>
@@ -60,7 +59,7 @@ export default function EventImg(props) {
                   <p key={'p2' + props.event.id}>{seatsAvailableCount}/{seatsCount}</p>
                 </div>
               </div>
-              <div className='text' key={'text3_' + props.event.id}>
+              <div className='homePage_text' key={'text3_' + props.event.id}>
                 <div className='right eventTime' key={'rightAv' + props.event.id}>
                   <p key={'p3' + props.event.id}>{t('Avalaible')}</p>
                 </div>

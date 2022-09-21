@@ -35,7 +35,7 @@ class EventPlain extends Component {
       <Fragment>
         {eventAreas.map(eventArea => (
           <Fragment key={"fr".concat(eventArea.id)}>
-            <div className="text" key={"SelectEventSeatPartial".concat(eventArea.id)}>
+            <div className="eventPage_text" key={"SelectEventSeatPartial".concat(eventArea.id)}>
               <div className="container" key={"containerEA".concat(eventArea.id)} >
                 <div className="container text-right" key={"containerEAtr".concat(eventArea.id)}>
                   <SelectEventSeatPartial eventArea={eventArea} key={"SelectEventSeatPartial".concat(eventArea.id)} />
@@ -45,7 +45,7 @@ class EventPlain extends Component {
                 <p>{eventArea.description}</p>
               </div>
             </div>
-            <div className="textE" key={"containerEAte".concat(eventArea.id)}>
+            <div className="eventPage_text" key={"containerEAte".concat(eventArea.id)}>
               <div className="right" key={"containerEArr".concat(eventArea.id)}>
                 <p className="eventTime" key={"containerP".concat(eventArea.id)}>{FormatDateTime(eventTime)}</p>
               </div>
@@ -66,16 +66,18 @@ class EventPlain extends Component {
       <Fragment>
         <div className="text-center">
           <h1 className="display-4">{t('Welcome to')} {event.name}</h1>
-          <div className="img__containerE">
-            <img className="image shadow-lg" alt="" src={event.eventLogoImage} />
-            <div className="img__descriptionE">
-              <div className="img__headerE"><h2 className="noneDecoration">{event.name}</h2></div>
-              <div className="text">
+          <div className="eventPage_img__container">
+            <img className="eventPage_image shadow-lg" alt="" src={event.eventLogoImage} />
+            <div className="eventPage_img__description">
+              <div className="eventPage_img__header">
+                <h2 className='noneDecoration'>{event.name}</h2>
+                </div>
+              <div className="eventPage_text">
                 <div className="right">
                   <p>{this.props.seatsAvailableCount} / {this.props.seatsCount}</p>
                 </div>
               </div>
-              <div className="text">
+              <div className="eventPage_text">
                 <div className="right">
                   <p className="eventTime">{t('Avalaible')}</p>
                 </div>

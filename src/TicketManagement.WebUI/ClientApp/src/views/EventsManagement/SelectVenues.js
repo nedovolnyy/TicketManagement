@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
+import './SelectVenues.css'
 import { withTranslation } from 'react-i18next'
 import { VenueManagementApi } from '../../api/EventsManagementAPI'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
-import './SelectVenues.css'
 
 class EventsManagementSelectVenuesPlain extends Component {
   static displayName = EventsManagementSelectVenuesPlain.name;
@@ -32,7 +32,7 @@ class EventsManagementSelectVenuesPlain extends Component {
       <Fragment>
         <div className="form-group">
           <div className="wrap">
-            <div className="left">
+            <div className="venues_left">
               <table className="table">
                 <tbody>
                   <tr><th>{t('Name')}</th><th>{t('Description')}</th><th>{t('Address')}</th><th>{t('Phone')}</th></tr>
@@ -58,7 +58,7 @@ class EventsManagementSelectVenuesPlain extends Component {
                   ))}
                 </tbody>
               </table>
-            </div><div className="right">
+            </div><div className="venues_right">
               <table className="table">
                 <tbody>
                   <tr><th></th></tr>

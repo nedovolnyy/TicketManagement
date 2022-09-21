@@ -1,0 +1,100 @@
+﻿body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    background: white;
+  }
+
+.homePage_img__container {
+    position: relative;
+    margin: 20px auto 30px auto;
+}
+
+    .homePage_img__container > img {
+        display: inline-block;
+        width: 450px;
+        height: 200px;
+        border-radius: 4px;
+        box-shadow: 0 0 6px #9E9E9E;
+        border: 4px solid #fff;
+    }
+
+.homePage_img__description {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 15px;
+    background: transparent;
+    background-image: linear-gradient(to bottom, #11de93, #0e7ad6);
+    opacity: 0.65;
+}
+
+.homePage_img__header {
+    font-weight: bold;
+    font-family: Georgia;
+    font-size: 0.85em;
+    text-decoration: none;
+    overflow: hidden;
+    color: black;
+}
+
+.homePage_img__header.left.noneDecoration {
+    text-decoration: none;
+}
+
+.homePage_image {
+    display: block;
+    margin: 20px auto 30px auto;
+    box-shadow: -6px 6px 0 #E0E0E0, -12px 12px 0 #BDBDBD;
+    margin-bottom: 10px;
+    border: 6px solid #F5F5F5;
+}
+
+div.homePage_text {
+    font-family: Impact;
+    overflow: hidden;
+    font-size: 0.95em;
+    margin-bottom: -18px;
+}
+
+    div.homePage_text div.left {
+        float: left;
+        margin-left: 5px;
+        color: black;
+    }
+
+    div.homePage_text div.right {
+        float: right;
+        margin-right: 5px;
+        color: brown;
+    }
+
+    div.homePage_text div.homePage_img__header.right.eventTime
+    {
+        font-size: 0.75em;
+    }
+
+    div.homePage_text div.homePage_right.eventTime
+    {
+        font-size: 0.75em;
+    }
+
+    .btn-group > :not(.btn-check:first-child) + .btn, .btn-group > .btn-group:not(:first-child) {
+        margin-left: 10px;
+        max-height: 30px;
+        margin-top: 15px;
+    }
+
+    .btn-group > .btn:nth-child(n+3), .btn-group > :not(.btn-check) + .btn, .btn-group > .btn-group:not(:first-child) > .btn {
+        border-top-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+    }

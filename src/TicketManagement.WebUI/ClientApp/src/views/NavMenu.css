@@ -18,6 +18,6 @@ html {
 }
 
 .inputFileStyle {
-  border: "1px dashed #adb5bd";
-  padding: "5px"
+  border: 1px dashed #adb5bd;
+  padding: 7px;
 }

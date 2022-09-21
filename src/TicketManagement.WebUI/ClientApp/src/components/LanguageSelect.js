@@ -1,6 +1,6 @@
-﻿import React, { Component } from 'react';
-import { withTranslation } from 'react-i18next';
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import React, { Component } from 'react'
+import { withTranslation } from 'react-i18next'
+import { CDropdown, CDropdownToggle, CDropdownMenu, CDropdownItem } from '@coreui/react';
 
 export class LanguageSelectPlain extends Component {
 	static displayName = LanguageSelectPlain.name;
@@ -42,31 +42,19 @@ export class LanguageSelectPlain extends Component {
 	}
 
 	render() {
-		const { t, i18n } = this.props;
+		const { t } = this.props;
 		return (
-			<>
-				<label htmlFor='languageSelector'>
-					{t('Language')}:
-				</label>
-				<div id='languageSelector'>
-					<UncontrolledDropdown nav inNavbar className="col-md-4">
-						<DropdownToggle nav caret >
-							{this.renderSwitch(this.state.lang)}
-						</DropdownToggle>
-						<DropdownMenu end>
-							<DropdownItem onClick={this.handleLanguageChange.bind(this, "en")}>
-								English(en-EN)
-							</DropdownItem>
-							<DropdownItem onClick={this.handleLanguageChange.bind(this, "ru")}>
-								Русский язык(ru-RU)
-							</DropdownItem>
-							<DropdownItem onClick={this.handleLanguageChange.bind(this, "by")}>
-								Беларуская мова(be-BY)
-							</DropdownItem>
-						</DropdownMenu>
-					</UncontrolledDropdown>
+				<div className="col-md-4">
+					<CDropdown variant="btn-group" direction="dropup">
+						<label>{t('Language')}:</label>
+						<CDropdownToggle color="secondary">{this.renderSwitch(this.state.lang)}</CDropdownToggle>
+						<CDropdownMenu>
+							<CDropdownItem onClick={this.handleLanguageChange.bind(this, "en")}>English(en-EN)</CDropdownItem>
+							<CDropdownItem onClick={this.handleLanguageChange.bind(this, "ru")}>Русский язык(ru-RU)</CDropdownItem>
+							<CDropdownItem onClick={this.handleLanguageChange.bind(this, "by")}>Беларуская мова(be-BY)</CDropdownItem>
+						</CDropdownMenu>
+					</CDropdown>
 				</div>
-			</>
 		);
 	}
 }

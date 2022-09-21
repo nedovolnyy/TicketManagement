@@ -1,4 +1,3 @@
-import './SelectEventSeatPartial.css'
 import React, { Component, Fragment } from 'react'
 import { withTranslation } from 'react-i18next'
 import { EventSeatManagementApi } from '../api/EventsManagementAPI'
@@ -36,13 +35,13 @@ class SelectEventSeatPartialPlain extends Component {
             (seat.row !== tempRow) ? (
               <Fragment key={"fr1".concat(seat.id)}>
                 {(tempNumber > seat.number) ? (<></>) : (<div className='container row' key={"ContRow".concat(seat.row, seat.number)}></div>)}
-                <div className='container col' key={"ContCol".concat(seat.row, seat.number)}>
+                <div className='col-1' key={"ContCol".concat(seat.row, seat.number)}>
                   <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row} {tempNumber = seat.number}</Seat>
                 </div>
               </Fragment>) :
               (
                 <Fragment key={"fr2".concat(seat.id)}>
-                  <div className='container col' key={"ContCol".concat(seat.row, seat.number)} >
+                  <div className='col-1' key={"ContCol".concat(seat.row, seat.number)} >
                     <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row}</Seat>
                   </div>
                 </Fragment>)

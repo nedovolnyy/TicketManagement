@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from 'react'
+import './Home.css'
 import { withTranslation } from 'react-i18next'
 import EventImg from '../../components/EventImg'
 import { ROLES } from '../../App'
 import { EventManagementApi } from '../../api/EventsManagementAPI'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 import { Auth } from '../../helpers/Auth'
+import { Container } from 'reactstrap'
 
 class HomePlain extends Component {
   static displayName = HomePlain.name;
@@ -30,13 +32,13 @@ class HomePlain extends Component {
 
   static renderIndexPage(events) {
     return (
-      <div className='container'>
+      <Container>
         <div className='row'>
           {events.map(event =>
             <EventImg event={event} key={'EventImg' + event.id} allowedRoles={[ROLES.Administrator]} />
           )}
         </div>
-      </div>
+      </Container>
     );
   }
 

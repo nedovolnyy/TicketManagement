@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
-import { withTranslation } from 'react-i18next'
 import './SelectLayouts.css'
+import { withTranslation } from 'react-i18next'
 import { LayoutManagementApi } from '../../api/EventsManagementAPI'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 
@@ -29,7 +29,7 @@ class EventsManagementSelectLayoutsPlain extends Component {
     const { t } = props;
     return (<div className="form-group">
       <div className="wrap">
-        <div className="left">
+        <div className="layouts_left">
           <table className="table">
             <tbody>
               <tr><th>{t('Name')}</th><th>{t('Description')}</th></tr>
@@ -47,13 +47,13 @@ class EventsManagementSelectLayoutsPlain extends Component {
               ))}
             </tbody>
           </table>
-        </div><div className="right">
+        </div><div className="layouts_right">
           <table className="table">
             <tbody>
               <tr><th></th></tr>
               <tr>
                 <td>
-                  <form asp-action="Insert" asp-controller="EventsManagement" method="get">
+                  <form /*asp-action="Insert" asp-controller="EventsManagement"*/ method="get">
                     <input type="hidden" />
                     <div className="table-active">
                       {layouts.map(layout => (
