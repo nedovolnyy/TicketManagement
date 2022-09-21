@@ -79,6 +79,7 @@ public class UsersController : ControllerBase
             { StatusCode = 500 };
         }
 
+        await _userManager.AddToRoleAsync(newUser, "User");
         var roleName = (List<string>)await _userManager.GetRolesAsync(newUser);
         var jwtToken = _jwtTokenService.GenerateJwtToken(newUser, roleName);
 

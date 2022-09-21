@@ -1,16 +1,19 @@
-import { useRef, useState, useEffect } from "react"
-import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useTranslation } from "react-i18next"
+import { useRef, useState, useEffect, Fragment } from 'react'
+import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useTranslation } from 'react-i18next'
 import axios from '../../api/axios'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from 'react-router-dom'
+import useAuth from '../../hooks/useAuth'
 
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const EMAIL_REGEX = /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const REGISTER_URL = '/register';
+const REGISTER_URL = '/api/Users/Register';
 
 const Register = () => {
   const { t } = useTranslation();
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
   const userRef = useRef();
   const errRef = useRef();
 
@@ -34,7 +37,7 @@ const Register = () => {
   }, [])
 
   useEffect(() => {
-    setValidName(USER_REGEX.test(user));
+    setValidName(EMAIL_REGEX.test(user));
   }, [user])
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const v1 = USER_REGEX.test(user);
+    const v1 = EMAIL_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
     if (!v1 || !v2) {
       setErrMsg("Invalid Entry");
@@ -56,18 +59,21 @@ const Register = () => {
     }
     try {
       const response = await axios.post(REGISTER_URL,
-        JSON.stringify({ user, pwd }),
+        JSON.stringify({ email: user, password: pwd, confirmPassword: matchPwd }),
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         }
       );
-      // TODO: remove console.logs before deployment
-      console.log(JSON.stringify(response?.data));
       setSuccess(true);
+      const accessToken = response?.data?.token;
+      const roles = response?.data?.roles;
+      const userResponse = response?.data?.user;
+      setAuth({ user, userResponse, roles, accessToken });
       setUser('');
       setPwd('');
       setMatchPwd('');
+      navigate('/', { replace: true });
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
@@ -80,57 +86,59 @@ const Register = () => {
     }
   }
 
-
-
-
   return (
-    <>
+    <Fragment>
       {success ? (
         <section>
           <h1>{t('Success')}!</h1>
           <p>
-            <a href="#">{t('Sign In')}</a>
+            <Link href="#">{t('Sign In')}</Link>
           </p>
         </section>
       ) : (
         <section>
           <div className="row">
             <div className="col-md-4">
-              <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
               <h2>{t('Create a new account.')}</h2>
               <hr />
               <form onSubmit={handleSubmit}>
-                <label htmlFor="email">
-                  {t('Email')}:
-                  <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
-                  <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"} />
-                </label>
-                <input
-                  type="text"
-                  id="email"
-                  ref={userRef}
-                  autoComplete="off"
-                  onChange={(e) => setUser(e.target.value)}
-                  value={user}
-                  required
-                  aria-invalid={validName ? "false" : "true"}
-                  aria-describedby="uidnote"
-                  onFocus={() => setUserFocus(true)}
-                  onBlur={() => setUserFocus(false)}
-                />
-                <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                  4 to 24 characters.<br />
-                  Must begin with a letter.<br />
-                  Letters, numbers, underscores, hyphens allowed.
-                </p>
                 <div className="form-floating">
-                  <label htmlFor="password">
-                    {t('Password')}:
-                    <FontAwesomeIcon icon={faCheck} className={validPwd ? "valid" : "hide"} />
-                    <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "hide" : "invalid"} />
+                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="email">
+                    {t('Email')}:
+                    <FontAwesomeIcon icon={faCheck} className={validName ? "d-block" : "d-none"} />
+                    <FontAwesomeIcon icon={faTimes} className={validName || !user ? "d-none" : "d-block"} />
                   </label>
                   <input
+                    className="form-control"
+                    type="text"
+                    id="email"
+                    ref={userRef}
+                    autoComplete="off"
+                    onChange={(e) => setUser(e.target.value)}
+                    value={user}
+                    required
+                    aria-invalid={validName ? "false" : "true"}
+                    aria-describedby="uidnote"
+                    onFocus={() => setUserFocus(true)}
+                    onBlur={() => setUserFocus(false)}
+                  />
+                  <br></br>
+                  <p id="uidnote" className={userFocus && user && !validName ? "d-block" : "d-none"}>
+                    <FontAwesomeIcon icon={faInfoCircle} />
+                    4 to 24 characters.<br />
+                    Must begin with a letter.<br />
+                    Letters, numbers, underscores, hyphens allowed.
+                  </p>
+                </div>
+                <br></br>
+                <div className="form-floating">
+                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="password">
+                    {t('Password')}:
+                    <FontAwesomeIcon icon={faCheck} className={validPwd ? "d-block" : "d-none"} />
+                    <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "d-none" : "d-block"} />
+                  </label>
+                  <input
+                    className="form-control"
                     type="password"
                     id="password"
                     onChange={(e) => setPwd(e.target.value)}
@@ -141,20 +149,23 @@ const Register = () => {
                     onFocus={() => setPwdFocus(true)}
                     onBlur={() => setPwdFocus(false)}
                   />
-                  <p id="pwdnote" className={pwdFocus && !validPwd ? "instructions" : "offscreen"}>
+                  <br></br>
+                  <p id="pwdnote" className={pwdFocus && !validPwd ? "d-block" : "d-none"}>
                     <FontAwesomeIcon icon={faInfoCircle} />
                     8 to 24 characters.<br />
                     Must include uppercase and lowercase letters, a number and a special character.<br />
                     Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
                   </p>
                 </div>
+                <br></br>
                 <div className="form-floating">
-                  <label htmlFor="confirm_pwd">
+                  <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="confirm_pwd">
                     {t('Confirm Password')}:
-                    <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "valid" : "hide"} />
-                    <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "hide" : "invalid"} />
+                    <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "d-block" : "d-none"} />
+                    <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "d-none" : "d-block"} />
                   </label>
                   <input
+                    className="form-control"
                     type="password"
                     id="confirm_pwd"
                     onChange={(e) => setMatchPwd(e.target.value)}
@@ -165,13 +176,16 @@ const Register = () => {
                     onFocus={() => setMatchFocus(true)}
                     onBlur={() => setMatchFocus(false)}
                   />
-                  <p id="confirmnote" className={matchFocus && !validMatch ? "instructions" : "offscreen"}>
+                  <br></br>
+                  <p id="confirmnote" className={matchFocus && !validMatch ? "d-block" : "d-none"}>
                     <FontAwesomeIcon icon={faInfoCircle} />
                     Must match the first password input field.
                   </p>
                 </div>
-                <button disabled={!validName || !validPwd || !validMatch ? true : false}>{t('Register')}</button>
+                <br></br>
+                <button className="w-100 btn btn-lg btn-primary" disabled={!validName || !validPwd || !validMatch ? true : false}>{t('Register')}</button>
               </form>
+              <h5 ref={errRef} className={errMsg ? "errmsg" : "d-none"} aria-live="assertive">{errMsg}</h5>
               <p>
                 <span className="line">
                   <Link to="/Identity/Account/Login">{t('Sign In')}</Link>
@@ -181,7 +195,7 @@ const Register = () => {
           </div>
         </section>
       )}
-    </>
+    </Fragment>
   )
 }
 

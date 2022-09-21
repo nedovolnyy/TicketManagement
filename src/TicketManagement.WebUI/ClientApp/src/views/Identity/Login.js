@@ -63,43 +63,46 @@ const Login = () => {
   return (
     <div className="row">
       <div className="col-md-4">
-        <section>
-          <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-          <h2>{t('Use a local account to log in.')}</h2>
-          <hr />
-          <form onSubmit={handleSubmit}>
-            <div className="form-floating">
-              <label htmlFor="email">{t('Email')}:</label>
-              <input
-                type="text"
-                id="email"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => setUser(e.target.value)}
-                value={user}
-                required
-              />
-            </div>
-            <div className="form-floating">
-              <label htmlFor="password">{t('Password')}:</label>
-              <input
-                type="password"
-                id="password"
-                onChange={(e) => setPwd(e.target.value)}
-                value={pwd}
-                required
-              />
-            </div>
-            <div>
-              <button id="login-submit" type="submit" className="w-100 btn btn-lg btn-primary">{t('Log in')}</button>
-            </div>
-            <div>
-              <p>
-                <Link to="/Identity/Account/Register">{t('Register as a new user')}</Link>
-              </p>
-            </div>
-          </form>
-        </section>
+        <h2>{t('Use a local account to log in.')}</h2>
+        <hr />
+        <form onSubmit={handleSubmit}>
+          <div className="form-floating">
+            <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="email">{t('Email')}:</label>
+            <input
+              className="form-control"
+              type="text"
+              id="email"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setUser(e.target.value)}
+              value={user}
+              required
+            />
+          </div>
+          <br></br>
+          <div className="form-floating">
+            <label className="col-sm-2 col-form-label col-form-label-sm text-muted" htmlFor="password">{t('Password')}:</label>
+            <input
+              className="form-control"
+              type="password"
+              id="password"
+              onChange={(e) => setPwd(e.target.value)}
+              value={pwd}
+              required
+            />
+          </div>
+          <br></br>
+          <div>
+            <button id="login-submit" type="submit" className="w-100 btn btn-lg btn-primary">{t('Log in')}</button>
+          </div>
+          <h5 ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</h5>
+          <br></br>
+          <div>
+            <p>
+              <Link to="/Identity/Account/Register">{t('Register as a new user')}</Link>
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   )
