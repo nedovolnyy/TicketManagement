@@ -4,6 +4,10 @@
 @model DeletePersonalDataModel
 @inject IViewLocalizer Localizer
 
+@{
+    Layout = "/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
+}
+
 <div class="alert alert-warning" role="alert">
     <p>
         <strong>@Localizer["Deleting this data will permanently remove your account, and this cannot be recovered."]</strong>

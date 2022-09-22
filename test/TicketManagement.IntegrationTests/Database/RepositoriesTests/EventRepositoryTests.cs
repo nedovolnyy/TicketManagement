@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -17,7 +19,9 @@ namespace TicketManagement.IntegrationTests.Database
         public async Task Insert_WhenInsertEvent_ShouldBeEqualSameEvent()
         {
             // arrange
-            var expectedEvent = new Event(0, "Stanger Things Serie", DateTimeOffset.Parse("2023-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2023-09-19 00:50:00"), "image");
+            var expectedEventTime = DateTimeOffset.UtcNow.AddDays(2).ToString(DateTimeFormatInfo.CurrentInfo.ShortTimePattern + " " + DateTimeFormatInfo.CurrentInfo.ShortDatePattern);
+            var expectedEndEventTime = DateTime.UtcNow.AddDays(2).AddMinutes(30).ToString(DateTimeFormatInfo.CurrentInfo.ShortTimePattern + " " + DateTimeFormatInfo.CurrentInfo.ShortDatePattern);
+            var expectedEvent = new Event(0, "Stanger Things Serie", DateTimeOffset.Parse(expectedEventTime), "Stanger Things Serie", 1, DateTime.Parse(expectedEndEventTime), "image");
 
             // act
             await _evntRepository.InsertAsync(expectedEvent);
@@ -32,7 +36,9 @@ namespace TicketManagement.IntegrationTests.Database
         public async Task Update_WhenUpdateEvent_ShouldBeEqualSameEvent()
         {
             // arrange
-            var expectedEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse("2023-09-19 00:15:00"), "Kitcsdhen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
+            var expectedEventTime = DateTimeOffset.UtcNow.AddDays(2).ToString(DateTimeFormatInfo.CurrentInfo.ShortTimePattern + " " + DateTimeFormatInfo.CurrentInfo.ShortDatePattern);
+            var expectedEndEventTime = DateTime.UtcNow.AddDays(2).AddMinutes(30).ToString(DateTimeFormatInfo.CurrentInfo.ShortTimePattern + " " + DateTimeFormatInfo.CurrentInfo.ShortDatePattern);
+            var expectedEvent = new Event(1, "Kitch45yen Serie", DateTimeOffset.Parse(expectedEventTime), "Kitcsdhen Serie", 1, DateTime.Parse(expectedEndEventTime), "image");
 
             // act
             await _evntRepository.UpdateAsync(expectedEvent);

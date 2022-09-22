@@ -6,9 +6,9 @@ namespace TicketManagement.Common.Identity;
 
 public enum Roles
 {
-    Administrator,
-    EventManager,
-    User,
+    Administrator = 5150,
+    EventManager = 1984,
+    User = 2001,
 }
 
 public class RoleConfiguration : IEntityTypeConfiguration<Role>

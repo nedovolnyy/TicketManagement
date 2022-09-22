@@ -1,21 +1,18 @@
 ﻿using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using TicketManagement.Common.Identity;
+using UserApiClientGenerated;
 
 namespace TicketManagement.WebUI.Areas.Identity.Pages.Account;
 
 public class ConfirmEmailChangeModel : PageModel
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly UsersManagementApiClient _usersManagementApiClient;
 
-    public ConfirmEmailChangeModel(UserManager<User> userManager, SignInManager<User> signInManager)
+    public ConfirmEmailChangeModel(UsersManagementApiClient usersManagementApiClient)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
+        _usersManagementApiClient = usersManagementApiClient;
     }
 
     [TempData]
@@ -28,28 +25,23 @@ public class ConfirmEmailChangeModel : PageModel
             return RedirectToPage("/Index");
         }
 
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _usersManagementApiClient.GetByIdUserAsync(userId);
         if (user == null)
         {
             return NotFound($"Unable to load user with ID '{userId}'.");
         }
 
         code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-        var result = await _userManager.ChangeEmailAsync(user, email, code);
+        var result = await _usersManagementApiClient.ChangeEmailAsync(user.Id, email, code);
         if (!result.Succeeded)
         {
             StatusMessage = "Error changing email.";
             return Page();
         }
 
-        var setUserNameResult = await _userManager.SetUserNameAsync(user, email);
-        if (!setUserNameResult.Succeeded)
-        {
-            StatusMessage = "Error changing user name.";
-            return Page();
-        }
+        await _usersManagementApiClient.SetUserNameAsync(user.Id, email);
 
-        await _signInManager.RefreshSignInAsync(user);
+        await _usersManagementApiClient.RefreshSignInAsync(user.Id);
         StatusMessage = "Thank you for confirming your email change.";
         return Page();
     }

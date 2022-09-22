@@ -13,8 +13,6 @@
 
 @{
     var eventSeatsCollection = await EventSeatManagementApiClient.GetAllEventSeatsByEventAreaIdAsync(Model.Id);
-    var maxRow = eventSeatsCollection.Max(x => x.Row);
-    var maxNumber = eventSeatsCollection.Max(x => x.Number);
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}" + Context.Request.QueryString.ToString();
 }
 

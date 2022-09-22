@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UserApiClientGenerated;
@@ -14,11 +15,12 @@ public class ChangePasswordModel : PageModel
 
     public ChangePasswordModel(
         ILogger<ChangePasswordModel> logger,
-        UsersManagementApiClient usersManagementApiClient)
+        UsersManagementApiClient usersManagementApiClient,
+        IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         _usersManagementApiClient = usersManagementApiClient;
-        _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        _userId = httpContextAccessor.HttpContext.Request.Cookies["us.id"];
     }
 
     [BindProperty]

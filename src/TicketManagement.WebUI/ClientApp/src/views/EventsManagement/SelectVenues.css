@@ -1,0 +1,31 @@
+.venues_left {
+    display: table-cell;
+    zoom: 1.18;
+    margin-right: -100%;
+    margin-top: -10%;
+}
+
+.venues_right {
+    display: table-cell;
+    text-align: left;
+    line-height: 1;
+    padding-left: 50px;
+    padding-top: 50px;
+}
+
+    .venues_left a, .venues_right a {
+        display: inline-block;
+        position: relative;
+    }
+
+.wrap.venues_right hr {
+
+    height: 100px;
+    visibility: hidden;
+    margin-bottom: -1px;
+}
+.wrap.venues_left hr {
+    height: -100px;
+    visibility: hidden;
+    margin-bottom: -1px;
+}

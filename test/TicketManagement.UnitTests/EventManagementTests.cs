@@ -17,8 +17,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
         private readonly EventManagementController _eventManagementController = new EventManagementController(_eventRepository.Object);
         private readonly List<Event> _expectedEvents = new List<Event>
         {
-            new Event(1, "Kitchen Serie", DateTimeOffset.Parse("09/09/2022"), "Kitchen Serie", 2, DateTime.Parse("2022-09-09 00:50:00"), "image1"),
-            new Event(2, "Stanger Things Serie", DateTimeOffset.Parse("2022-09-09 00:00:00 +03:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-09 00:50:00"), "image2"),
+            new Event(1, "Kitchen Serie", DateTimeOffset.UtcNow.AddDays(2), "Kitchen Serie", 2, DateTime.UtcNow.AddDays(2).AddMinutes(30), "image1"),
+            new Event(2, "Stanger Things Serie", DateTimeOffset.UtcNow.AddDays(2), "Stanger Things Serie", 1, DateTime.UtcNow.AddDays(2).AddMinutes(30), "image2"),
         };
         private int _timesApplyRuleCalled;
 
@@ -292,11 +292,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [Test]
         public async Task Insert_WhenCallInsertEvent_ShouldNotZeroCallback()
         {
-            // arrange
-            var eventExpected = new Event("Stanger Serie", DateTimeOffset.Parse("2022-09-19 00:05:00"), "Stanger Things Serie", 1, DateTime.Parse("2022-09-19 00:50:00"), "image");
-
             // act
-            await _eventManagementController.InsertEventAsync(eventExpected);
+            await _eventManagementController.InsertEventAsync(_expectedEvents[1]);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);
@@ -306,11 +303,8 @@ namespace TicketManagement.BusinessLogic.UnitTests
         [Test]
         public async Task Update_WhenCallUpdateEvent_ShouldNotZeroCallback()
         {
-            // arrange
-            var eventExpected = new Event(1, "Kitchen Serie", DateTimeOffset.Parse("2023-09-09 00:05:00"), "Kitchen Serie", 1, DateTime.Parse("2023-09-09 00:50:00"), "image");
-
             // act
-            await _eventManagementController.UpdateEventAsync(eventExpected, decimal.One);
+            await _eventManagementController.UpdateEventAsync(_expectedEvents[1], decimal.One);
 
             // assert
             Assert.NotZero(_timesApplyRuleCalled);

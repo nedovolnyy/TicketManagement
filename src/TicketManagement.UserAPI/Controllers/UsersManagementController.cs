@@ -47,6 +47,7 @@ public class UsersManagementController : ControllerBase
     /// </summary>
     /// <returns>.</returns>
     [HttpPost("user")]
+    [AllowAnonymous]
     public async Task<IdentityResult> CreateUserAsync(User model, string password)
     {
         model.UserName = model.Email;
@@ -124,18 +125,6 @@ public class UsersManagementController : ControllerBase
     }
 
     /// <summary>
-    /// Sets the given <paramref name="userName" /> for the specified <paramref name="userId"/>.
-    /// </summary>
-    /// <param name="userId">The user whose name should be set.</param>
-    /// <param name="userName">The user name to set.</param>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-    /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-    [HttpPost("UserName/{userId}")]
-    [AllowAnonymous]
-    public async Task SetUserNameAsync(string userId, string userName, CancellationToken cancellationToken)
-        => await _userStore.SetUserNameAsync(await _userManager.FindByIdAsync(userId), userName, cancellationToken);
-
-    /// <summary>
     /// Gets a flag indicating whether the specified user has a password.
     /// </summary>
     /// <returns>.</returns>
@@ -170,6 +159,33 @@ public class UsersManagementController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<string>> GenerateChangeEmailTokenAsync(string userId, string newEmail)
         => await _userManager.GenerateChangeEmailTokenAsync(await _userManager.FindByIdAsync(userId), newEmail);
+
+    /// <summary>
+    /// Updates a users emails if the specified email change <paramref name="token"/> is valid for the user.
+    /// </summary>
+    /// <param name="userId">The user whose email should be updated.</param>
+    /// <param name="newEmail">The new email address.</param>
+    /// <param name="token">The change email token to be verified.</param>
+    /// <returns>
+    /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+    /// of the operation.
+    /// </returns>
+    [HttpPost("Email/{userId}")]
+    [AllowAnonymous]
+    public async Task<IdentityResult> ChangeEmailAsync(string userId, string newEmail, string token)
+        => await _userManager.ChangeEmailAsync(await _userManager.FindByIdAsync(userId), newEmail, token);
+
+    /// <summary>
+    /// Sets the given <paramref name="userName" /> for the specified <paramref name="userId"/>.
+    /// </summary>
+    /// <param name="userId">The user whose name should be set.</param>
+    /// <param name="userName">The user name to set.</param>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+    /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
+    [HttpPost("UserName/{userId}")]
+    [AllowAnonymous]
+    public async Task SetUserNameAsync(string userId, string userName, CancellationToken cancellationToken)
+        => await _userStore.SetUserNameAsync(await _userManager.FindByIdAsync(userId), userName, cancellationToken);
 
     /// <summary>
     /// Returns selected user.
@@ -317,6 +333,20 @@ public class UsersManagementController : ControllerBase
     }
 
     /// <summary>
+    /// Add the specified <paramref name="email"/> to the named role.
+    /// </summary>
+    /// <param name="email">The user to add to the named role.</param>
+    /// <param name="role">The name of the role to add the user to.</param>
+    /// <returns>
+    /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+    /// of the operation.
+    /// </returns>
+    [HttpPost("role/{email}")]
+    [AllowAnonymous]
+    public async Task<IdentityResult> AddToRoleAsync(string email, string role)
+        => await _userManager.AddToRoleAsync(await _userManager.FindByEmailAsync(email), role);
+
+    /// <summary>
     /// Change role selected user.
     /// </summary>
     /// <returns>.</returns>
@@ -339,6 +369,30 @@ public class UsersManagementController : ControllerBase
 
         return BadRequest();
     }
+
+    /// <summary>
+    /// Updates the specified <paramref name="user"/> in the backing store.
+    /// </summary>
+    /// <param name="user">The user to update.</param>
+    /// <returns>
+    /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+    /// of the operation.
+    /// </returns>
+    [HttpPost("user/u")]
+    [AllowAnonymous]
+    public async Task<IdentityResult> UpdateAsync(User user)
+      => await _userManager.UpdateAsync(user);
+
+    /// <summary>
+    /// Signs in the specified <paramref name="email"/>.
+    /// </summary>
+    /// <param name="email">The user to sign-in.</param>
+    /// <param name="isPersistent">Flag indicating whether the sign-in cookie should persist after the browser is closed.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    [HttpPost("SignIn/{email}")]
+    [AllowAnonymous]
+    public async Task SignInAsync(string email, bool isPersistent)
+      => await _signInManager.SignInAsync(await _userManager.FindByEmailAsync(email), isPersistent);
 
     private IUserEmailStore<User> GetEmailStore()
     {

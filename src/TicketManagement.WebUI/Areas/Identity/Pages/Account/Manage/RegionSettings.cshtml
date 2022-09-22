@@ -10,6 +10,7 @@
 @inject IOptions<RequestLocalizationOptions> LocalizationOptions
 
 @{
+    Layout = "/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
     ViewData["ActivePage"] = ManageNavPages.RegionSettings;
     var requestCulture = PageContext.HttpContext.Features.Get<IRequestCultureFeature>();
     var culturesList = LocalizationOptions.Value.SupportedUICultures

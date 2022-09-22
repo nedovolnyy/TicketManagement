@@ -65,8 +65,10 @@ public class IndexModel : PageModel
             return Page();
         }
 
+        user.SecurityStamp=Guid.NewGuid().ToString();
         user.FirstName = Input.FirstName;
         user.SurName = Input.SurName;
+        await _usersManagementApiClient.UpdateAsync(user);
 
         if (Input.PhoneNumber != user.PhoneNumber)
         {

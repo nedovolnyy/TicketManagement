@@ -52,10 +52,10 @@ public class LoginModel : PageModel
         if (ModelState.IsValid)
         {
             var authenticationResult = await GetAuthenticationResultAfterSignIn();
-            HttpContext.Response.Cookies.Append("token", authenticationResult.Token);
-            var userRole = await _usersManagementApiClient.GetRoleByIdAsync(authenticationResult.User.Id);
             if (authenticationResult.Result)
             {
+                HttpContext.Response.Cookies.Append("token", authenticationResult.Token);
+                var userRole = await _usersManagementApiClient.GetRoleByIdAsync(authenticationResult.User.Id);
                 _logger.LogInformation("User logged in.");
 
                 var userClaims = new List<Claim>
@@ -70,15 +70,17 @@ public class LoginModel : PageModel
                 await HttpContext.SignInAsync(Settings.Jwt.JwtOrCookieScheme, new ClaimsPrincipal(claimsIdentity));
                 HtmlHelperExtensions.SaveUserCookies(Response, new User
                 {
+                    Id = authenticationResult.User.Id,
                     Language = "en-US",
                     TimeZone = authenticationResult.User.TimeZone,
                 });
 
                 return LocalRedirect(returnUrl);
             }
-            else
+
+            foreach (var error in authenticationResult.Errors)
             {
-                return RedirectToPage();
+                ModelState.AddModelError(string.Empty, error);
             }
         }
 

@@ -1,0 +1,15 @@
+.text-sm-start {
+  font-size: 0.5em;
+  display:table-cell;
+  vertical-align:top;
+}
+
+.text-sm-end {
+  font-size: 0.5em;
+  display:table-cell;
+  vertical-align:top;
+}
+
+.btn_style {
+  height: 80px;
+}
