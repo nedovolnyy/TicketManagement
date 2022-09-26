@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import './SelectLayouts.css'
 import { withTranslation } from 'react-i18next'
-import { LayoutManagementApi } from '../../api/EventsManagementAPI'
+import { LayoutManagementApi } from '../../api/EventsManagementApi'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 import { DataNavigation } from 'react-data-navigation'
 import { withRouter } from '../../helpers/withRouter'

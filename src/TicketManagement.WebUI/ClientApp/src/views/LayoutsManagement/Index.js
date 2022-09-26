@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { withTranslation } from 'react-i18next'
-import { LayoutManagementApi, VenueManagementApi } from '../../api/EventsManagementAPI'
+import { LayoutManagementApi, VenueManagementApi } from '../../api/EventsManagementApi'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 
 function LayoutsManagementPlain(props) {

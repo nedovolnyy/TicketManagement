@@ -4,7 +4,7 @@ import momentTZ from 'moment-timezone'
 import moment from 'moment-timezone'
 import { Auth } from '../../helpers/Auth'
 import { withRouter } from '../../helpers/withRouter'
-import { EventManagementApi, LayoutManagementApi } from '../../api/EventsManagementAPI'
+import { EventManagementApi, LayoutManagementApi } from '../../api/EventsManagementApi'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 import { DataNavigation } from 'react-data-navigation'
 

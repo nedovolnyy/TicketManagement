@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EventManagementApi } from '../api/EventsManagementAPI'
+import { EventManagementApi } from '../api/EventsManagementApi'
 import { ROLES } from '../App'
 import useAuth from '../hooks/useAuth'
 import { EventsManagementApiHTTPSconfig } from '../configurations/httpsConf'

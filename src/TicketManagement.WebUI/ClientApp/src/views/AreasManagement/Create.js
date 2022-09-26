@@ -4,6 +4,8 @@ import { withTranslation } from 'react-i18next'
 class AreasManagementCreatePlain extends Component {
   static displayName = AreasManagementCreatePlain.name;
 
+
+  
   /*
     var selectListLayoutsId = (await LayoutManagementApiClient.GetAllLayoutsAsync())
         ?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })

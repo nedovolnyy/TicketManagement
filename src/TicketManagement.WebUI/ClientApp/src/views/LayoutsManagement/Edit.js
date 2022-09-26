@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import { Button, Form } from "reactstrap"
 import { withTranslation } from "react-i18next"
 
 class LayoutsManagementEditPlain extends Component {
@@ -14,7 +13,7 @@ class LayoutsManagementEditPlain extends Component {
     const { t } = this.props;
     return (
       <>
-        <Form asp-action="Edit" asp-controller="LayoutsManagement">
+        <form asp-action="Edit" asp-controller="LayoutsManagement">
           <div asp-validation-summary="All" className="text-danger"></div>
           <div className="form-group">
             <label asp-for="Name" className="control-label"></label>
@@ -31,7 +30,7 @@ class LayoutsManagementEditPlain extends Component {
           <div className="form-group">
             <input type="submit" value="Save" className="btn btn-outline-secondary" />
           </div>
-        </Form>
+        </form>
       </>
     );
   }

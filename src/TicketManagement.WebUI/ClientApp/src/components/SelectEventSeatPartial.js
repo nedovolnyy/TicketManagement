@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { withTranslation } from 'react-i18next'
-import { EventSeatManagementApi } from '../api/EventsManagementAPI'
+import { EventSeatManagementApi } from '../api/EventsManagementApi'
 import { EventsManagementApiHTTPSconfig } from '../configurations/httpsConf'
-import { Seat } from './Seat'
+import EventSeat from './EventSeat'
 
 class SelectEventSeatPartialPlain extends Component {
   static displayName = SelectEventSeatPartialPlain.name;
@@ -30,19 +30,19 @@ class SelectEventSeatPartialPlain extends Component {
     var tempRow, tempNumber = 0;
     return (
       <div className="input-group" key={"eventArea".concat(eventArea.id)} >
-        {eventSeats.map(seat => {
+        {eventSeats.map(eventSeat => {
           return (
-            (seat.row !== tempRow) ? (
-              <Fragment key={"fr1".concat(seat.id)}>
-                {(tempNumber > seat.number) ? (<></>) : (<div className='container row' key={"ContRow".concat(seat.row, seat.number)}></div>)}
-                <div className='col-1' key={"ContCol".concat(seat.row, seat.number)}>
-                  <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row} {tempNumber = seat.number}</Seat>
+            (eventSeat.row !== tempRow) ? (
+              <Fragment key={"fr1".concat(eventSeat.id)}>
+                {(tempNumber > eventSeat.number) ? (<></>) : (<div className='container row' key={"ContRow".concat(eventSeat.row, eventSeat.number)}></div>)}
+                <div className='col-1' key={"ContCol".concat(eventSeat.row, eventSeat.number)}>
+                  <EventSeat eventSeat={eventSeat} eventAreaPrice={eventArea.price}>{tempRow = eventSeat.row} {tempNumber = eventSeat.number}</EventSeat>
                 </div>
               </Fragment>) :
               (
-                <Fragment key={"fr2".concat(seat.id)}>
-                  <div className='col-1' key={"ContCol".concat(seat.row, seat.number)} >
-                    <Seat seat={seat} eventAreaPrice={eventArea.price}>{tempRow = seat.row}</Seat>
+                <Fragment key={"fr2".concat(eventSeat.id)}>
+                  <div className='col-1' key={"ContCol".concat(eventSeat.row, eventSeat.number)} >
+                    <EventSeat eventSeat={eventSeat} eventAreaPrice={eventArea.price}>{tempRow = eventSeat.row}</EventSeat>
                   </div>
                 </Fragment>)
           );

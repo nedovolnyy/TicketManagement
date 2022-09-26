@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import './SelectVenues.css'
 import { withTranslation } from 'react-i18next'
-import { VenueManagementApi } from '../../api/EventsManagementAPI'
+import { VenueManagementApi } from '../../api/EventsManagementApi'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 import { DataNavigation } from 'react-data-navigation'
 import { withRouter } from '../../helpers/withRouter'
