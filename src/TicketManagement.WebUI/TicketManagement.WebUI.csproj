@@ -14,10 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.SpaYarp" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
@@ -26,9 +22,6 @@
   
   <ItemGroup>
     <Compile Include="..\TicketManagement.EventManagementAPI\Client\EventManagementApiClientGenerated.cs" Link="Client\EventManagementApiClientGenerated.cs" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <Compile Include="..\TicketManagement.UserAPI\Client\UserApiClientGenerated.cs" Link="Client\UserApiClientGenerated.cs" />
   </ItemGroup>
 
@@ -37,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.SpaYarp" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.9" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="6.0.9">
