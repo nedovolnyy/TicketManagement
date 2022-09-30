@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,9 +25,17 @@ var logger = new LoggerConfiguration()
                         .CreateLogger();
 builder.Host.UseSerilog(logger);
 
-builder.WebHost.UseUrls("https://*:5000").ConfigureKestrel(options =>
+builder.WebHost.UseKestrel(options =>
 {
-    options.ListenAnyIP(5004, configure => configure.UseHttps());
+    var configuration = (IConfiguration)options.ApplicationServices.GetService(typeof(IConfiguration));
+    var httpsPort = configuration.GetValue("ASPNETCORE_HTTPS_PORT", 5004);
+    var certPassword = configuration.GetValue<string>("CertPassword");
+    var certPath = configuration.GetValue<string>("CertPath");
+
+    options.Listen(IPAddress.Any, httpsPort, listenOptions =>
+    {
+        listenOptions.UseHttps(certPath, certPassword);
+    });
 });
 
 services.AddCors(options =>

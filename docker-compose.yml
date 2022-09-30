@@ -1,0 +1,44 @@
+version: '3.4'
+
+services:
+  ticketmanagementeventmanagementapi:
+    build: ./src/TicketManagement.EventManagementAPI
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "5003"
+      ASPNETCORE_ENVIRONMENT: Development
+      CertPath: "/https/aspnetapp.pfx"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets/:/root/.microsoft/usersecrets
+      - ${USERPROFILE}/.aspnet/Https:/https/:ro
+    ports:
+      - "5013:5013"
+      - "5003:5003"
+    depends_on:
+      - "ticketmanagementuserapi"
+  ticketmanagementwebui:
+    build: ./src/TicketManagement.WebUI
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "7114"
+      ASPNETCORE_ENVIRONMENT: Development
+      CertPath: "/https/aspnetapp.pfx"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets/:/root/.microsoft/usersecrets
+      - ${USERPROFILE}/.aspnet/Https:/https/:ro
+    ports:
+      - "7115:7115"
+      - "7114:7114"
+  ticketmanagementuserapi:
+    build: ./src/TicketManagement.UserAPI
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "5004"
+      ASPNETCORE_ENVIRONMENT: Development
+      CertPath: "/https/aspnetapp.pfx"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets/:/root/.microsoft/usersecrets
+      - ${USERPROFILE}/.aspnet/Https:/https/:ro
+    ports:
+      - "5014:5014"
+      - "5004:5004"

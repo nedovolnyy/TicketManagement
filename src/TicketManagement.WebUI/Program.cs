@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using System.Security.Claims;
 using EventManagementApiClientGenerated;
 using Microsoft.AspNetCore.Authentication;
@@ -17,6 +18,20 @@ using UserApiClientGenerated;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+
+builder.WebHost.UseKestrel(options =>
+{
+    var configuration = (IConfiguration)options.ApplicationServices.GetService(typeof(IConfiguration));
+    var httpsPort = configuration.GetValue("ASPNETCORE_HTTPS_PORT", 7114);
+    var certPassword = configuration.GetValue<string>("CertPassword");
+    var certPath = configuration.GetValue<string>("CertPath");
+
+    options.Listen(IPAddress.Any, httpsPort, listenOptions =>
+    {
+        listenOptions.UseHttps(certPath, certPassword);
+    });
+});
+
 if (!builder.Configuration.GetValue<bool>("UseReact"))
 {
     var logger = new LoggerConfiguration()
