@@ -21,10 +21,8 @@ class CartPlain extends Component {
   changeBalance(event) {
     event.preventDefault();
     const UserClient = new UsersManagementApi(UsersManagementApiHTTPSconfig);
-    UserClient.apiUsersManagementCartPut(({
-      money: this.state.balance,
-      userId: this.props.auth?.userResponse?.id
-    }),
+    // ToDo: update auth?.user
+    UserClient.apiUsersManagementCartPut(this.state.balance, this.props.auth?.userResponse?.id,
       {
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer '.concat(this.props.auth?.accessToken) },
         withCredentials: true

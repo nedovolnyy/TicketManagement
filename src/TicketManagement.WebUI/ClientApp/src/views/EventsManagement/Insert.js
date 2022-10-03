@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { DataNavigation } from 'react-data-navigation'
 import { withTranslation } from 'react-i18next'
-import { EventManagementApi, LayoutManagementApi } from '../../api/EventsManagementAPI'
+import { EventManagementApi, LayoutManagementApi } from '../../api/EventsManagementApi'
 import { EventsManagementApiHTTPSconfig } from '../../configurations/httpsConf'
 import { Auth } from '../../helpers/Auth'
 import momentTZ from 'moment-timezone'

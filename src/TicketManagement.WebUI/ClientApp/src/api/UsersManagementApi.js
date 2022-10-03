@@ -7,6 +7,7 @@
 
 export function Configuration(config) {
     this.basePath = '';
+    this.fetchMethod = window.fetch;
     this.headers = {};
     this.getHeaders = () => { return {} };
     this.responseHandler = null;
@@ -15,6 +16,9 @@ export function Configuration(config) {
     if (config) {
         if (config.basePath) {
             this.basePath = config.basePath;
+        }
+        if (config.fetchMethod) {
+            this.fetchMethod = config.fetchMethod;
         }
         if (config.headers) {
             this.headers = config.headers;
@@ -42,7 +46,7 @@ const setAdditionalParams = (params = [], additionalParams = {}) => {
 export function UsersManagementApi(config) {
     this.config = config || new Configuration();
 
-    this.apiUsersManagementUsersGet = (options = {}) => { 
+    this.apiUsersManagementUsersGet = (options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/users';
         const params = new URLSearchParams();
@@ -74,8 +78,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementUserPost = (args, body, options = {}) => { 
-        const { password } = args;
+    this.apiUsersManagementUserPost = (password, body, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/user';
         const params = new URLSearchParams();
@@ -111,7 +114,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementUserPut = (body, options = {}) => { 
+    this.apiUsersManagementUserPut = (body, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/user';
         const params = new URLSearchParams();
@@ -144,8 +147,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementUserIdDelete = (args, options = {}) => { 
-        const { id } = args;
+    this.apiUsersManagementUserIdDelete = (id, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/user/{id}';
         url = url.split(['{', '}'].join('id')).join(encodeURIComponent(String(id)));
@@ -178,8 +180,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementUserUserIdGet = (args, options = {}) => { 
-        const { userId } = args;
+    this.apiUsersManagementUserUserIdGet = (userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/user/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -212,8 +213,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementHasPasswordUserIdGet = (args, options = {}) => { 
-        const { userId } = args;
+    this.apiUsersManagementHasPasswordUserIdGet = (userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/HasPassword/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -246,8 +246,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementIsEmailConfirmedUserIdGet = (args, options = {}) => { 
-        const { userId } = args;
+    this.apiUsersManagementIsEmailConfirmedUserIdGet = (userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/IsEmailConfirmed/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -280,8 +279,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementEmailTokenUserIdPost = (args, options = {}) => { 
-        const { userId, newEmail } = args;
+    this.apiUsersManagementEmailTokenUserIdPost = (userId, newEmail, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/EmailToken/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -317,8 +315,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementEmailUserIdPost = (args, options = {}) => { 
-        const { userId, newEmail, token } = args;
+    this.apiUsersManagementEmailUserIdPost = (userId, newEmail, token, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/Email/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -357,8 +354,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementUserNameUserIdPost = (args, options = {}) => { 
-        const { userId, userName } = args;
+    this.apiUsersManagementUserNameUserIdPost = (userId, userName, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/UserName/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -390,8 +386,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementPasswordUserIdPut = (args, options = {}) => { 
-        const { userId, currentPassword, newPassword } = args;
+    this.apiUsersManagementPasswordUserIdPut = (userId, currentPassword, newPassword, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/password/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -430,8 +425,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementPasswordUserIdPost = (args, options = {}) => { 
-        const { userId, password } = args;
+    this.apiUsersManagementPasswordUserIdPost = (userId, password, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/password/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -467,8 +461,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementRefreshSignInUserIdPost = (args, options = {}) => { 
-        const { userId } = args;
+    this.apiUsersManagementRefreshSignInUserIdPost = (userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/RefreshSignIn/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -497,8 +490,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementPhoneNumberUserIdPut = (args, options = {}) => { 
-        const { userId, phoneNumber } = args;
+    this.apiUsersManagementPhoneNumberUserIdPut = (userId, phoneNumber, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/PhoneNumber/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -534,8 +526,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementRoleUserIdGet = (args, options = {}) => { 
-        const { userId } = args;
+    this.apiUsersManagementRoleUserIdGet = (userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/role/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -568,8 +559,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementRoleUserIdPut = (args, body, options = {}) => { 
-        const { userId } = args;
+    this.apiUsersManagementRoleUserIdPut = (userId, body, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/role/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -599,8 +589,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementCartPut = (args, options = {}) => { 
-        const { money, userId } = args;
+    this.apiUsersManagementCartPut = (money, userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/cart';
         const params = new URLSearchParams();
@@ -634,8 +623,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementPurchasePost = (args, options = {}) => { 
-        const { eventSeatId, returnUrl, price, userId } = args;
+    this.apiUsersManagementPurchasePost = (eventSeatId, returnUrl, price, userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/purchase';
         const params = new URLSearchParams();
@@ -675,8 +663,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementLanguageUserIdPost = (args, options = {}) => { 
-        const { culture, userId } = args;
+    this.apiUsersManagementLanguageUserIdPost = (culture, userId, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/language/{userId}';
         url = url.split(['{', '}'].join('userId')).join(encodeURIComponent(String(userId)));
@@ -708,8 +695,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementRoleEmailPost = (args, options = {}) => { 
-        const { email, role } = args;
+    this.apiUsersManagementRoleEmailPost = (email, role, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/role/{email}';
         url = url.split(['{', '}'].join('email')).join(encodeURIComponent(String(email)));
@@ -745,7 +731,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementUserUPost = (body, options = {}) => { 
+    this.apiUsersManagementUserUPost = (body, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/user/u';
         const params = new URLSearchParams();
@@ -778,8 +764,7 @@ export function UsersManagementApi(config) {
         return promise;
     };
 
-    this.apiUsersManagementSignInEmailPost = (args, options = {}) => { 
-        const { email, isPersistent } = args;
+    this.apiUsersManagementSignInEmailPost = (email, isPersistent, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/UsersManagement/SignIn/{email}';
         url = url.split(['{', '}'].join('email')).join(encodeURIComponent(String(email)));
@@ -815,7 +800,7 @@ export function UsersManagementApi(config) {
 export function UsersApi(config) {
     this.config = config || new Configuration();
 
-    this.apiUsersRegisterPost = (body, options = {}) => { 
+    this.apiUsersRegisterPost = (body, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/Users/Register';
         const params = new URLSearchParams();
@@ -844,7 +829,7 @@ export function UsersApi(config) {
         return promise;
     };
 
-    this.apiUsersLoginPost = (body, options = {}) => { 
+    this.apiUsersLoginPost = (body, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/Users/Login';
         const params = new URLSearchParams();
@@ -873,8 +858,7 @@ export function UsersApi(config) {
         return promise;
     };
 
-    this.apiUsersValidateGet = (args, options = {}) => { 
-        const { token } = args;
+    this.apiUsersValidateGet = (token, options = {}) => {
         const { basePath, headers, getHeaders, responseHandler, errorHandler} = this.config;
         let url = '/api/Users/validate';
         const params = new URLSearchParams();

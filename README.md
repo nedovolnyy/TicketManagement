@@ -1,7 +1,9 @@
-# Task-5
+# Task-6
+
+[![TicketManagement](https://github.com/EPAM-Gomel-NET-Lab/ArtsiomKrot/actions/workflows/CICD.yml/badge.svg?event=push)](https://github.com/EPAM-Gomel-NET-Lab/ArtsiomKrot/actions/workflows/dotnet.yml)
 
 ## How many items from requirements was completed?
-- [ ] Part of refactoring
+- 
 
 ## Possible Drawbacks/Concerns (What should reviewers look out for?)
 	- Skipped tests for ReacJS case, because proxy issue.

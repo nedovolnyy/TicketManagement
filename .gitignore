@@ -351,3 +351,4 @@ MigrationBackup/
 /src/TicketManagement.WebUI/Logging
 /src/TicketManagement.UserAPI/Logging
 /src/TicketManagement.EventManagementAPI/Logging
+/src/TicketManagement.WebUI/wwwroot/image

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormatDateTime } from '../helpers/FormatDateTime'
-import { EventManagementApi } from '../api/EventsManagementAPI'
+import { EventManagementApi } from '../api/EventsManagementApi'
 import { useNavigate } from 'react-router-dom'
 import { EventManagementButton } from './EventManagementButton'
 import { EventsManagementApiHTTPSconfig } from '../configurations/httpsConf'
