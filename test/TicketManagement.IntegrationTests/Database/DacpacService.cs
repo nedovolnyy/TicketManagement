@@ -8,17 +8,17 @@ namespace TicketManagement.IntegrationTests.Database
                                     string databaseName,
                                     string dacpacName)
         {
-            var dacOptions = new DacDeployOptions();
-            dacOptions.BlockOnPossibleDataLoss = false;
+            var dacOptions = new DacDeployOptions
+            {
+                BlockOnPossibleDataLoss = false,
+            };
 
             var dacServiceInstance = new DacServices(connectionString);
 
-            using (DacPackage dacpac = DacPackage.Load(dacpacName))
-            {
-                dacServiceInstance.Deploy(dacpac, databaseName,
-                                        upgradeExisting: true,
-                                        options: dacOptions);
-            }
+            using var dacpac = DacPackage.Load(dacpacName);
+            dacServiceInstance.Deploy(dacpac, databaseName,
+                                    upgradeExisting: true,
+                                    options: dacOptions);
         }
     }
 }

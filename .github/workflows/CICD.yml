@@ -8,7 +8,7 @@ on:
     types: [opened,reopened]
 
 env:
-  DOTNET_VERSION: '6.0.x' # The .NET SDK version to use
+  DOTNET_VERSION: '7.0.x' # The .NET SDK version to use
 
 jobs:
   build:
@@ -39,8 +39,6 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: 🛠 Install dependencies
       run:  dotnet restore
-    - name: 📚 Build TicketManagement.Database
-      run:  dotnet build "src/TicketManagement.Database" /p:NetCoreBuild=true
     - name: 🔨 Build unit tests
       run:  dotnet build "test/TicketManagement.UnitTests" --configuration Release --no-restore
     - name: 🔨 Build integration tests
@@ -93,8 +91,6 @@ jobs:
         mkdir "artifacts/TicketManagement.EventManagementAPI"
     - name: 🛠 Install dependencies
       run: dotnet restore
-    - name: 🏗 Publish Database
-      run: dotnet publish "src/TicketManagement.Database.CD" --configuration Release --output artifacts/TicketManagement.Database --no-restore
     - name: 🏗 Publish WebUI
       run: dotnet publish "src/TicketManagement.WebUI" --configuration Release --output artifacts/TicketManagement.WebUI --no-restore
       env:
@@ -103,33 +99,35 @@ jobs:
       run: dotnet publish "src/TicketManagement.UserAPI" --configuration Release --output artifacts/TicketManagement.UserAPI --no-restore
     - name: 🏗 Publish EventManagementAPI
       run: dotnet publish "src/TicketManagement.EventManagementAPI" --configuration Release --output artifacts/TicketManagement.EventManagementAPI --no-restore
-    - name: 🐙 Install Octopus CLI
-      uses: OctopusDeploy/install-octopus-cli-action@v1.1.6
-      with:
-        version: latest
-    - name: 🐙 Package Database
-      run: octo pack --id="TicketManagement.Database" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.Database" --outFolder="artifacts"
-    - name: 🐙 Package WebUI
-      run: octo pack --id="TicketManagement.WebUI" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.WebUI" --outFolder="artifacts"
-    - name: 🐙 Package UserAPI
-      run: octo pack --id="TicketManagement.UserAPI" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.UserAPI" --outFolder="artifacts"
-    - name: 🐙 Package EventManagementAPI
-      run: octo pack --id="TicketManagement.EventManagementAPI" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.EventManagementAPI" --outFolder="artifacts"
-    - name: 🐙 Push TicketManagement packages
-      uses: OctopusDeploy/push-package-action@v1.1.1
-      with:
-        api_key: ${{ secrets.OCTOPUSSERVERAPIKEY }}
-        server: ${{ secrets.OCTOPUSSERVERURL }}
-        packages: "artifacts/TicketManagement.Database.${{ github.run_number }}.zip,artifacts/TicketManagement.WebUI.${{ github.run_number }}.zip,artifacts/TicketManagement.UserAPI.${{ github.run_number }}.zip,artifacts/TicketManagement.EventManagementAPI.${{ github.run_number }}.zip"
-        space: ${{ secrets.OCTOPUSSERVER_SPACE }}
-    - name: 🐙 Create and deploy release
-      uses: OctopusDeploy/create-release-action@v1.1.1
-      with:
-        api_key: ${{ secrets.OCTOPUSSERVERAPIKEY }}
-        server: ${{ secrets.OCTOPUSSERVERURL }}
-        space: ${{ secrets.OCTOPUSSERVER_SPACE }}
-        project: "TicketManagement"
-        deploy_to: "Development"
-        progress: true
-    - name: 🐙 Deploy to Staging 
-      run: octo deploy-release --project TicketManagement --space ${{ secrets.OCTOPUSSERVER_SPACE }} --version latest --deployto Staging --server ${{ secrets.OCTOPUSSERVERURL }} --apiKey ${{ secrets.OCTOPUSSERVERAPIKEY }}
+# ***   My octopus account has been expired.    ***
+#
+#    - name: 🐙 Install Octopus CLI
+#      uses: OctopusDeploy/install-octopus-cli-action@v1.1.6
+#      with:
+#        version: latest
+#    - name: 🐙 Package Database
+#      run: octo pack --id="TicketManagement.Database" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.Database" --outFolder="artifacts"
+#    - name: 🐙 Package WebUI
+#      run: octo pack --id="TicketManagement.WebUI" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.WebUI" --outFolder="artifacts"
+#    - name: 🐙 Package UserAPI
+#      run: octo pack --id="TicketManagement.UserAPI" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.UserAPI" --outFolder="artifacts"
+#    - name: 🐙 Package EventManagementAPI
+#      run: octo pack --id="TicketManagement.EventManagementAPI" --format="zip" --version="${{ github.run_number }}" --basePath="artifacts/TicketManagement.EventManagementAPI" --outFolder="artifacts"
+#    - name: 🐙 Push TicketManagement packages
+#      uses: OctopusDeploy/push-package-action@v1.1.1
+#      with:
+#        api_key: ${{ secrets.OCTOPUSSERVERAPIKEY }}
+#        server: ${{ secrets.OCTOPUSSERVERURL }}
+#        packages: "artifacts/TicketManagement.Database.${{ github.run_number }}.zip,artifacts/TicketManagement.WebUI.${{ github.run_number }}.zip,artifacts/TicketManagement.UserAPI.${{ github.run_number }}.zip,artifacts/TicketManagement.EventManagementAPI.${{ github.run_number }}.zip"
+#        space: ${{ secrets.OCTOPUSSERVER_SPACE }}
+#    - name: 🐙 Create and deploy release
+#      uses: OctopusDeploy/create-release-action@v1.1.1
+#      with:
+#        api_key: ${{ secrets.OCTOPUSSERVERAPIKEY }}
+#        server: ${{ secrets.OCTOPUSSERVERURL }}
+#        space: ${{ secrets.OCTOPUSSERVER_SPACE }}
+#        project: "TicketManagement"
+#        deploy_to: "Development"
+#        progress: true
+#    - name: 🐙 Deploy to Staging 
+#      run: octo deploy-release --project TicketManagement --space ${{ secrets.OCTOPUSSERVER_SPACE }} --version latest --deployto Staging --server ${{ secrets.OCTOPUSSERVERURL }} --apiKey ${{ secrets.OCTOPUSSERVERAPIKEY }}

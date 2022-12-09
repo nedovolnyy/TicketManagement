@@ -6,7 +6,7 @@
     "emitEntryPoint": true
   },
   "ConnectionStrings": {
-    "DefaultConnection": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=TestTicketManagement.Database;Integrated Security=True"
+    "DefaultConnection": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=TestTicketManagement.Database;Integrated Security=True;Encrypt=False"
   },
   "Database": {
     "DefaultDatabaseName": "TestTicketManagement.Database",

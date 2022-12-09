@@ -1,12 +1,9 @@
-# Task-6
+# TicketManagement
 
-[![TicketManagement](https://github.com/EPAM-Gomel-NET-Lab/ArtsiomKrot/actions/workflows/CICD.yml/badge.svg?event=push)](https://github.com/EPAM-Gomel-NET-Lab/ArtsiomKrot/actions/workflows/dotnet.yml)
-
-## How many items from requirements was completed?
-- 
+[![TicketManagement](https://github.com/nedovolnyy/TicketManagement/actions/workflows/CICD.yml/badge.svg?event=push)](https://github.com/nedovolnyy/TicketManagement/actions/workflows/CICD.yml)
 
 ## Possible Drawbacks/Concerns (What should reviewers look out for?)
-	- Skipped tests for ReacJS case, because proxy issue.
+	- Skipped tests for ReactJS case, because proxy issue.
 
 ## Testing Notes (How do we know this works & doesn't break other things)
 * Created automated db creation for integration tests.
@@ -30,12 +27,12 @@
 5. Solution Property Pages
 6. Expand the Common Properties node, and choose Startup Project
 7. Choose the Multiple Startup Projects option and set this projects:
-    - [X] [WebUI](/src/TicketManagement.WebUI/) :7114
+    - [X] [WebUI](/src/TicketManagement.WebUI/) :7114 /// :7115 - port for ReactJS application
     - [X] [UserAPI](/src/TicketManagement.UserAPI/) :5004
     - [X] [EventManagementAPI](/src/TicketManagement.EventManagementAPI/) :5003
 8. To switch WebUI, change "UseReact" flag([appsettings.Develop.json](/src/TicketManagement.WebUI/appsettings.Develop.json)):
 	- `true` to run ReactJS
-	- `false` to run MVC.
+	- `false` to run ASP.NET MVC.
 9. Ok => Run
 
 ## Steps how to check
@@ -43,7 +40,7 @@ Deployment of the database for tests is automatic.
 To specify another test database, enter its path in [testconfig.json](test/TicketManagement.IntegrationTests/testconfig.json):
 ```
   "ConnectionStrings": {
-    "DefaultConnection": "Data Source=localhost\\SQLEXPRESS;Initial Catalog=TestTicketManagement.Database;Integrated Security=True"
+    "DefaultConnection": "Data Source=localhost\\SQLEXPRESS;Initial Catalog=TestTicketManagement.Database;Integrated Security=True;Encrypt=False"
   },
   "Database": {
     "DefaultDatabaseName": "TestTicketManagement.Database",

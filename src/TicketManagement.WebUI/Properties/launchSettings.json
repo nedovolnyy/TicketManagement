@@ -1,13 +1,13 @@
 {
   "profiles": {
     "TicketManagement.WebUI": {
+      "applicationUrl": "https://localhost:7114;http://localhost:7115",
       "commandName": "Project",
-      "launchBrowser": true,
+      "dotnetRunMessages": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7114;http://localhost:7115"
+      "launchBrowser": true
     },
     "IIS Express": {
       "commandName": "IISExpress",

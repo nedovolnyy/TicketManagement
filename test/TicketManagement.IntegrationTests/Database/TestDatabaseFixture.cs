@@ -1,13 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.AspNetCore.Hosting;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
 using TicketManagement.Common.DI;
 
@@ -17,6 +9,7 @@ namespace TicketManagement.IntegrationTests.Database
     internal class TestDatabaseFixture : WebApplicationFactory<Program>
     {
         private IServiceScope _scope;
+
         internal static IServiceProvider ServiceProvider { get; private set; }
         internal static IDatabaseContext DatabaseContext { get; private set; }
         public static HttpClient Client { get; private set; } = null!;
@@ -52,8 +45,19 @@ namespace TicketManagement.IntegrationTests.Database
         public async Task TearDown()
         {
             await DropDatabase();
-            WebApplicationFactory.Dispose();
-            Client.Dispose();
+            Dispose(true);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                WebApplicationFactory?.Dispose();
+                _scope?.Dispose();
+                Client?.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
@@ -71,9 +75,6 @@ namespace TicketManagement.IntegrationTests.Database
                                  Configuration["Database:DefaultDatabaseFileName"]);
         }
 
-        public async Task DropDatabase()
-        {
-            await DatabaseContext.Instance.Database.EnsureDeletedAsync();
-        }
+        public async Task DropDatabase() => await DatabaseContext.Instance.Database.EnsureDeletedAsync();
     }
 }

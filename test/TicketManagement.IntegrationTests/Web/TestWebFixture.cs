@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 
 namespace TicketManagement.IntegrationTests.Web
@@ -34,8 +32,19 @@ namespace TicketManagement.IntegrationTests.Web
         [OneTimeTearDown]
         public void TearDown()
         {
-            WebApplicationFactory.Dispose();
-            Client.Dispose();
+            Dispose(true);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                WebApplicationFactory?.Dispose();
+                _scope?.Dispose();
+                Client?.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
 
         protected override IHost CreateHost(IHostBuilder builder)
