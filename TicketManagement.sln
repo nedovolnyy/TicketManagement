@@ -39,8 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub Actions", "GitHub Ac
 		.github\workflows\CICD.yml = .github\workflows\CICD.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.Database.CD", "src\TicketManagement.Database.CD\TicketManagement.Database.CD.csproj", "{3AE6459C-4035-4BB5-8CFB-78C59B714972}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,10 +77,6 @@ Global
 		{E347106C-1FB0-4E23-9B3A-DB63AD2B1B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E347106C-1FB0-4E23-9B3A-DB63AD2B1B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E347106C-1FB0-4E23-9B3A-DB63AD2B1B20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AE6459C-4035-4BB5-8CFB-78C59B714972}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AE6459C-4035-4BB5-8CFB-78C59B714972}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AE6459C-4035-4BB5-8CFB-78C59B714972}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AE6459C-4035-4BB5-8CFB-78C59B714972}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,7 +91,6 @@ Global
 		{F6D52BDE-C32E-4CE6-87C1-20B2F1B3242F} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 		{E347106C-1FB0-4E23-9B3A-DB63AD2B1B20} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 		{884AF8F8-3FDB-4273-BA94-7762F6A67CCE} = {36299EA3-0F57-4055-A034-B5AD529F0758}
-		{3AE6459C-4035-4BB5-8CFB-78C59B714972} = {502C7BF9-0688-4EB0-ADDE-BE35C207FA89}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCBA386-043C-4C32-82A6-14ABB78C7FEC}

@@ -22,7 +22,7 @@ services:
       ASPNETCORE_URLS: "https://+;http://+"
       ASPNETCORE_HTTPS_PORT: "7114"
       ASPNETCORE_ENVIRONMENT: Development
-      CertPath: "/https/aspnetapp.pfx"
+      CertPath: "/https/dev_cert.pfx"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets/:/root/.microsoft/usersecrets
       - ${USERPROFILE}/.aspnet/Https:/https/:ro
